@@ -12,3 +12,11 @@
 * @course CIS 405
 * @assignment GameOfCells
 */
+
+
+Note: Java version has been set to 17 to avoid some warnings on build.
+
+
+For your own sanity. Not sure how to fix these warnings, setting the build
+to a newer version did not fix the issue. 
+gradle build --warning-mode none
