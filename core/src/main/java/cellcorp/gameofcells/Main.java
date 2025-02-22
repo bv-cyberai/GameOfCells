@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.Screens.GamePlayScreen;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 
 public class Main extends Game {
 

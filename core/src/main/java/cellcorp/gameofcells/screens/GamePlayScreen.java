@@ -1,10 +1,10 @@
-package cellcorp.gameofcells.Screens;
+package cellcorp.gameofcells.screens;
 
 /**
 * GamePlay Screen
 *
 * This screen provides the main gameplay loop
-* functionality. 
+* functionality.
 *
 * @author Brendon Vinyard / vineyabn207
 * @author Andrew Sennoga-Kimuli / sennogat106
@@ -37,7 +37,6 @@ public class GamePlayScreen implements Screen {
         this.game = game;
         this.camera = camera;
         this.viewport = viewport;
-
     }
 
     @Override
@@ -49,7 +48,6 @@ public class GamePlayScreen implements Screen {
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
         ScreenUtils.clear(0, 0, 0, 1);
-
     }
 
     @Override
