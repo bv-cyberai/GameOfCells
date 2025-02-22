@@ -40,7 +40,7 @@ public class Main extends Game {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
         // May need to set to gameScreenManager at somepoint.
         setScreen(new GamePlayScreen(this, camera, viewport));
