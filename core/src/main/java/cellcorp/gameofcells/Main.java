@@ -29,10 +29,25 @@ public class Main extends Game {
     // WORLD_WIDTH = 1200
     // WORLD_HEIGHT = 800
 
+    /// Gets information about inputs, like held-down keys.
+    /// Use this instead of `Gdx.input`, to avoid crashing tests.
+    private final InputProvider inputProvider;
+
     // Camera/Viewport - These can be shared by screens/don't need to be Fit
     // viewport but its not a bad choice per se.
     private OrthographicCamera camera;
     private FitViewport viewport;
+
+    /// Create a game instance with the default LibGDX input provider.
+    public Main() {
+        this(new DefaultInputProvider());
+    }
+
+    /// Create a game instance.
+    /// @param inputProvider Input provider. Use FakeInputProvider in test code.
+    public Main(InputProvider inputProvider) {
+        this.inputProvider = inputProvider;
+    }
 
     @Override
     public void create() {
@@ -44,7 +59,6 @@ public class Main extends Game {
 
         // May need to set to gameScreenManager at somepoint.
         setScreen(new GamePlayScreen(this, camera, viewport));
-
-
+        setScreen(new GamePlayScreen(this, inputProvider, camera, viewport));
     }
 }

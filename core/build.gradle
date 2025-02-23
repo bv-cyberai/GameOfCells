@@ -20,6 +20,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 
+  // Add Mockito for testing
+  testImplementation 'org.mockito:mockito-core:3.+'
+
 }
 
 tasks.named('test') {
@@ -27,7 +30,7 @@ tasks.named('test') {
     useJUnitPlatform()
 
 
-    // Show Print Statements in Debugs. 
+    // Show Print Statements in Debugs.
     testLogging {
         showStandardStreams = true
     }
