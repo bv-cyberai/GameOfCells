@@ -13,10 +13,32 @@
 * @assignment GameOfCells
 */
 
+Problem: Use agile methods to develop 'Game Of Cells' as part of a software 
+engineering team. Game Of Cells is a game used to teach students about cells,
+and cell functions.
+
+Directory:
+    
 
 Note: Java version has been set to 17 to avoid some warnings on build.
 
+Desktop:
+    Compilation:
+        gradle build
+    Run:
+        gradle Run
+Web:
+    Compilation:
+        gradle build
+    Run:
+        gradle superdev
+        Access the following url via a web browser.
+        http://localhost:8080/index.html
+        
 
-For your own sanity. Not sure how to fix these warnings, setting the build
-to a newer version did not fix the issue. 
-gradle build --warning-mode none
+Testing:
+    Test:
+        Feature:
+        Expected:
+        Result:
+    
