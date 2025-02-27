@@ -21,7 +21,8 @@ We make the cell, and move it, but we can't access `xPos`!
     But now everyone can read this private field.
 - We could add `getXPosTestOnly()`, and promise not to use it outside test methods.
 
-I don't know what's best. But let's say we add `getXPos()`.
+We plan to add public getters when needed for testing.
+While these expose internal fields, they are at least read-only (for primitive fields...)
 
 # Problem 2 -- Graphics methods crash tests!
 
@@ -85,6 +86,8 @@ and give it the fake input provider in test code.
 ![Problem 3 solution](assets/problem_3_good.png)
 
 And the test passes!
+
+We plan to use this solution for input handling.
 
 # Note -- Testing Game and Screen classes
 
