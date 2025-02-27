@@ -41,6 +41,8 @@ Use agile methods to develop 'Game Of Cells' as part of a software engineering t
 │   │   │           └── gameofcells
 │   │   │               ├── Main.gwt.xml
 │   │   │               ├── Main.java
+│   │   │               └── objects
+│   │   │                   └── Cell.java
 │   │   │               └── screens
 │   │   │                   └── GamePlayScreen.java
 │   │   └── test

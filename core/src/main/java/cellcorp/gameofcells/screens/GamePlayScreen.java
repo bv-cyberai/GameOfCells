@@ -16,27 +16,23 @@ package cellcorp.gameofcells.screens;
 * @assignment GameOfCells
 */
 
-import cellcorp.gameofcells.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import cellcorp.gameofcells.InputProvider;
 import cellcorp.gameofcells.Main;
-import com.badlogic.gdx.Gdx;
+import cellcorp.gameofcells.objects.Cell;
 
 /**
  * First screen of the application. Displayed after the application is created.
  */
 public class GamePlayScreen implements Screen {
     private Main game;
-    //The main texture for the cell;
-    Texture cellTexture;
-
 
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
@@ -51,6 +47,9 @@ public class GamePlayScreen implements Screen {
     private SpriteBatch batch;  // Define the batch for drawing text
     private String message = "Press the spacebar to continue...";
 
+    //Objects
+    private Cell cell;
+
     public GamePlayScreen(Main game, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
         this.game = game;
         this.inputProvider = inputProvider;
@@ -64,7 +63,7 @@ public class GamePlayScreen implements Screen {
         // Prepare your screen here.
         font = new BitmapFont();  // Initialize the font
         batch = new SpriteBatch();  // Initialize the batch
-        cellTexture = new Texture("Cell.png");
+        cell = new Cell(); // Initialize cell
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
@@ -101,7 +100,9 @@ public class GamePlayScreen implements Screen {
     public void dispose() {
         // Destroy screen's assets here.
         font.dispose();  // Dispose of the font
+        cell.dispose(); // dispose cell
         batch.dispose();  // Dispose of the batch
+
     }
 
     /// Handle input, responding to key-presses.
@@ -130,7 +131,7 @@ public class GamePlayScreen implements Screen {
         // Draw the prompt or message
         batch.begin();  // Start the batch for drawing 2d elements
         font.draw(batch, message, 100, 100);  // Draw the message
-        batch.draw(cellTexture, 500, 300, 200,200); //Draws the Cell on Screen
+        cell.draw(batch); //Draws the Cell on Screen
         batch.end(); // End the batch
     }
 
