@@ -140,8 +140,4 @@ Web:
         
 
 Testing:
-    Test:
-        Feature:
-        Expected:
-        Result:
-    
+    Test: Testing is performed via Junit Tests on each Build.
