@@ -18,12 +18,12 @@ package cellcorp.gameofcells;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
 public class Main extends Game {
-
     // Constants - These were the sizes of the beta, and have been noted here for
     // reference.
     // WORLD_WIDTH = 1200
@@ -36,7 +36,7 @@ public class Main extends Game {
 
     @Override
     public void create() {
-
+    
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -44,5 +44,7 @@ public class Main extends Game {
 
         // May need to set to gameScreenManager at somepoint.
         setScreen(new GamePlayScreen(this, camera, viewport));
+
+
     }
 }

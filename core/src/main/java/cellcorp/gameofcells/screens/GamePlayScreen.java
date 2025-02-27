@@ -18,6 +18,7 @@ package cellcorp.gameofcells.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +33,9 @@ import com.badlogic.gdx.Gdx;
  */
 public class GamePlayScreen implements Screen {
     private Main game;
+    //The main texture for the cell;
+    Texture cellTexture;
+    
 
     // Camera/Viewport
     private OrthographicCamera camera;
@@ -46,10 +50,12 @@ public class GamePlayScreen implements Screen {
         this.game = game;
         this.camera = camera;
         this.viewport = viewport;
+        cellTexture = new Texture("Cell.png");
     }
 
     @Override
     public void show() {
+
         // Prepare your screen here.
         font = new BitmapFont();  // Initialize the font
         batch = new SpriteBatch();  // Initialize the batch
@@ -72,6 +78,7 @@ public class GamePlayScreen implements Screen {
         // Draw the prompt or message
         batch.begin();  // Start the batch for drawing 2d elements
         font.draw(batch, message, 100, 100);  // Draw the message
+        batch.draw(cellTexture, 500, 300, 200,200); //Draws the Cell on Screen
         batch.end(); // End the batch
     }
 
@@ -101,4 +108,5 @@ public class GamePlayScreen implements Screen {
         font.dispose();  // Dispose of the font
         batch.dispose();  // Dispose of the batch
     }
+
 }
