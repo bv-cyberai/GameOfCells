@@ -51,14 +51,13 @@ public class Main extends Game {
 
     @Override
     public void create() {
-    
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new GamePlayScreen(this, camera, viewport));
         setScreen(new GamePlayScreen(this, inputProvider, camera, viewport));
     }
 }

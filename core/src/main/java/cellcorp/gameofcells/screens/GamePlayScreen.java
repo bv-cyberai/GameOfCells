@@ -56,7 +56,6 @@ public class GamePlayScreen implements Screen {
         this.inputProvider = inputProvider;
         this.camera = camera;
         this.viewport = viewport;
-        cellTexture = new Texture("Cell.png");
     }
 
     @Override
@@ -65,6 +64,7 @@ public class GamePlayScreen implements Screen {
         // Prepare your screen here.
         font = new BitmapFont();  // Initialize the font
         batch = new SpriteBatch();  // Initialize the batch
+        cellTexture = new Texture("Cell.png");
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
