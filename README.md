@@ -12,6 +12,13 @@ A game used to teach students about cells and cell functions.
 - **Course:** - CIS 405
 - **Assignment:** - GameOfCells
 
+# Pull Request Reviewer Roster
+When your PR is ready for review, ping the next person in the list to review:
+- Brenon
+- Tim
+- Andrew
+- Mark
+
 ## Problem
 
 Use agile methods to develop 'Game Of Cells' as part of a software engineering team. *Game Of Cells* is a game used to teach students about cells and cell functions.
