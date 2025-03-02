@@ -89,6 +89,43 @@ And the test passes!
 
 We plan to use this solution for input handling.
 
+# Problem 4 -- Constructing a class crashes
+
+We test that we can create a Cell without crashing:
+
+![](assets/problem_4_bad_test.png)
+
+It crashes!
+
+![](assets/problem_4_crash.png)
+
+Why? Because we create a new `Texture` in the `Cell` constructor.
+
+But LibGDX hates us, so we can't access `Gdx.files` in unit tests!
+
+## Solution -- AssetManager
+
+Use an `AssetManager`:
+
+https://libgdx.com/wiki/managing-your-assets
+
+If all loading of assets goes through the `AssetManager`, 
+and we only _use_ the assets in draw code,
+we can just mock the manager to do nothing in the test code,
+and solve our crashes
+
+![](assets/problem_4_good_main.png)
+
+![](assets/problem_4_good_cell.png)
+
+Now update our test to mock the asset manager
+
+![](assets/problem_4_good_test.png)
+
+And everything works. The game still runs and draws the cell,
+and the test doesn't crash.
+
+
 # Note -- Testing Game and Screen classes
 
 The LibGDX-provided implementations of `Game` and `Screen` don't play nice
