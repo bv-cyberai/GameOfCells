@@ -14,7 +14,7 @@ A game used to teach students about cells and cell functions.
 
 # Pull Request Reviewer Roster
 When your PR is ready for review, ping the next person in the list to review:
-- Brenon
+- Brendon
 - Tim
 - Andrew
 - Mark
