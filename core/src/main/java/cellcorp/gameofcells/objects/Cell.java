@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 /**
@@ -17,24 +18,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 * @assignment GameOfCells
 */
 public class Cell {
-    Texture cellTexture;
+    private final AssetManager assetManager;
+
     float cellPositionX;
     float cellPositionY;
     float cellWidth;
     float cellHeight;
 
-    public Cell() {
+    public Cell(AssetManager assetManager) {
+        this.assetManager = assetManager;
+
         cellPositionX = 500;
         cellPositionY = 300;
         cellWidth = 200;
         cellHeight = 200;
-        cellTexture = new Texture("Cell.png");
     }
     /**
      * Draw
      * @param batch - The passed spritebatch.
      */
     public void draw(SpriteBatch batch) {
+        // Get the already-loaded cell texture
+        // The asset manager expects the asset's file name,
+        // and the class of the asset to load.
+        var cellTexture = assetManager.get("Cell.png", Texture.class);
+        assert (cellTexture != null);
         batch.draw(cellTexture, cellPositionX, cellPositionY, cellWidth, cellHeight);
     }
 
@@ -42,6 +50,6 @@ public class Cell {
      * Dispose
      */
     public void dispose() {
-        cellTexture.dispose();
+        assetManager.unload("Cell.png");
     }
 }

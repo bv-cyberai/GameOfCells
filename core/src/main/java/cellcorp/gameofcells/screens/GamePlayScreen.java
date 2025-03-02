@@ -18,6 +18,7 @@ package cellcorp.gameofcells.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,6 +34,11 @@ import cellcorp.gameofcells.objects.Cell;
  */
 public class GamePlayScreen implements Screen {
     private Main game;
+
+
+    /// Loads assets during game creation,
+    /// then provides loaded assets to draw code, using [AssetManager#get(String)]
+    private final AssetManager assetManager;
 
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
@@ -50,7 +56,8 @@ public class GamePlayScreen implements Screen {
     //Objects
     private Cell cell;
 
-    public GamePlayScreen(Main game, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
+    public GamePlayScreen(Main game, AssetManager assetManager, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
+        this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
         this.camera = camera;
@@ -63,7 +70,7 @@ public class GamePlayScreen implements Screen {
         // Prepare your screen here.
         font = new BitmapFont();  // Initialize the font
         batch = new SpriteBatch();  // Initialize the batch
-        cell = new Cell(); // Initialize cell
+        cell = new Cell(assetManager); // Initialize cell
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.

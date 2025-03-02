@@ -14,6 +14,7 @@ package cellcorp.gameofcells.screens;
 import cellcorp.gameofcells.FakeInputProvider;
 import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.junit.jupiter.api.Test;
@@ -30,14 +31,15 @@ public class TestGamePlayScreen {
     public void pressingSpaceOnceChangesText() {
         // Create a new GamePlayScreen, giving it our input provider to use, instead of the default one.
         var inputProvider = new FakeInputProvider();
-        // `GamePlayScreen` expects a game, camera, and viewport.
+        // `GamePlayScreen` expects a game, assetManager, camera, and viewport.
         // I claim that none of these should affect the outcome of this test,
         // so I use Mockito to create fake versions of each, which return nothing.
         // For more information, see the class testing book or ask Mark.
         var game = Mockito.mock(Main.class);
+        var assetManager = Mockito.mock(AssetManager.class);
         var camera = Mockito.mock(OrthographicCamera.class);
         var viewport = Mockito.mock(FitViewport.class);
-        var screen = new GamePlayScreen(game, inputProvider, camera, viewport);
+        var screen = new GamePlayScreen(game, assetManager, inputProvider, camera, viewport);
 
         // Hold down space, and call update once.
         inputProvider.setHeldDownKeys(Set.of(
