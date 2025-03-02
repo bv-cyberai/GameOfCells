@@ -1,6 +1,10 @@
 ---
 
 name: "Pull Request Template"
+about: "Pull request template"
+title: ""
+assignees: []
+labels:
 
 ---
 
