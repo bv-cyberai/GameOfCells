@@ -19,14 +19,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito.*;
+import org.mockito.Mockito;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.ArgumentMatchers.eq;
 
 /// Tests for [GamePlayScreen]
 public class TestGamePlayScreen {
