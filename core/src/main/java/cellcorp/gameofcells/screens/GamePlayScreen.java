@@ -45,7 +45,7 @@ public class GamePlayScreen implements Screen {
     private FitViewport viewport;
 
     // For rendering text
-    private SpriteBatch batch;  // Define the batch for drawing text
+    protected SpriteBatch batch;  // Define the batch for drawing text
     private BitmapFont font;  // Define the font for text
 
     private static final String MESSAGE_START = "Press Enter to Start";  // Message for the start screen
@@ -59,7 +59,7 @@ public class GamePlayScreen implements Screen {
 
     // Background textures
     private Texture startBackground;
-    private Texture gameBackground;
+    protected Texture gameBackground;
 
     /**
      * Constructs the GamePlayScreen.
@@ -217,5 +217,21 @@ public class GamePlayScreen implements Screen {
      */
     public String getMessage() {
         return gameStarted ? MESSAGE_GAME : MESSAGE_START;
+    }
+
+    /**
+     * Get the batch for rendering.
+     * @return The batch for rendering.
+     */
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
+    /**
+     * Get the game background texture.
+     * @return The game background texture.
+     */
+    public Texture getGameBackground() {
+        return gameBackground;
     }
 }

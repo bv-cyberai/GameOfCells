@@ -12,20 +12,43 @@ package cellcorp.gameofcells.screens;
  */
 
 import cellcorp.gameofcells.FakeInputProvider;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Gdx;
 import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mockito.*;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.eq;
 
 /// Tests for [GamePlayScreen]
 public class TestGamePlayScreen {
 
+    // Test that the game starts at the start screen.
+    // This test creates a new GamePlayScreen instance and checks that the message is correct.
+    @Test
+    public void gameStartsAtStartScreen() {
+        // Create a new GamePlayScreen instance with mock dependencies. 
+        var inputProvider = new FakeInputProvider();
+        var game = Mockito.mock(Main.class);
+        var camera = Mockito.mock(OrthographicCamera.class);
+        var viewport = Mockito.mock(FitViewport.class);
+        var screen = new GamePlayScreen(game, inputProvider, camera, viewport);
+
+        // Check that the game initially starts at the start screen with the correct message.
+        assertEquals("Press Enter to Start", screen.getMessage(), "Expected start message");
+    }
+
+    // Test that pressing ENTER starts the game.
+    // This test uses a fake input provider to simulate pressing the ENTER key.
+    // It then checks that the game has started by checking the message on the screen.
     @Test
     public void pressingEnterStartsGame() {
         // Create a new GamePlayScreen, giving it our input provider to use, instead of the default one.
