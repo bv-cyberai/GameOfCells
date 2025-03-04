@@ -22,7 +22,6 @@ dependencies {
 
   // Add Mockito for testing
   testImplementation 'org.mockito:mockito-core:3.+'
-
 }
 
 tasks.named('test') {

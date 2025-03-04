@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestGamePlayScreen {
 
     @Test
-    public void pressingSpaceOnceChangesText() {
+    public void pressingEnterStartsGame() {
         // Create a new GamePlayScreen, giving it our input provider to use, instead of the default one.
         var inputProvider = new FakeInputProvider();
         // `GamePlayScreen` expects a game, camera, and viewport.
@@ -39,27 +39,15 @@ public class TestGamePlayScreen {
         var viewport = Mockito.mock(FitViewport.class);
         var screen = new GamePlayScreen(game, inputProvider, camera, viewport);
 
-        // Hold down space, and call update once.
-        inputProvider.setHeldDownKeys(Set.of(
-            Input.Keys.SPACE,
-            Input.Keys.RIGHT // It should be fine to hold down another key as well.
-        ));
-        // Screen.render expects a deltaTime -- the amount of time that has passed.
-        // Let's say it was 1 second
-        var delta_time = 1.0f;
-        // In actual game code, `screen.render` is called, which calls `handleInput`, `update`, and `draw`.
-        // To match that, we'll always call `screen.update` right after `screen.handleInput`.
-        screen.handleInput(delta_time);
-        screen.update(delta_time);
+        // Initially, check that the start screen message is shown.
+        assertTrue(screen.getMessage().equals("Press Enter to Start"), "Expected start message");
 
-        // Reset held down keys, then call update a few more times.
-        inputProvider.setHeldDownKeys(Set.of());
-        screen.handleInput(delta_time);
-        screen.update(delta_time);
-        screen.handleInput(delta_time);
-        screen.update(delta_time);
+        // Simulate pressing ENTER to start the game.
+        inputProvider.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        screen.handleInput();   // Process input (ENTER IS PRESSED)
+        screen.update(0.016f);        // Update the screen
 
-        // Test that the game screen is a `GamePlayScreen`, and that the message has been updated.
-        assertEquals("Spacebar was pressed!", screen.getMessage());
+        // Now, check that the message has change to the game-playing message.
+        assertTrue(screen.getMessage().equals("Game is now playing..."), "Expected game message");
     }
 }
