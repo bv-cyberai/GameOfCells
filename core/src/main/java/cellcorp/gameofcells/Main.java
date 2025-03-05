@@ -70,6 +70,7 @@ public class Main extends Game {
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
         assetManager.load("Cell.png", Texture.class);
+        assetManager.load("glucose2.png", Texture.class);
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.

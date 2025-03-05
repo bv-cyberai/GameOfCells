@@ -27,7 +27,7 @@ import com.badlogic.gdx.math.Circle;
 public class Glucose {
     private final AssetManager assetManager;
     private Circle boundCircle;
-    private Texture glucoseTexture;
+    // private Texture glucoseTexture;
     private Random rand;
 
     // WORLD_WIDTH = 1200
@@ -37,7 +37,7 @@ public class Glucose {
     public Glucose(AssetManager assetManager) {
         this.assetManager = assetManager;
         boundCircle = new Circle(0, 0, 30);
-        glucoseTexture = new Texture("glucose2.png");
+
         rand = new Random();
 
         // do better
@@ -45,11 +45,15 @@ public class Glucose {
     }
 
     public void draw(SpriteBatch batch) {
+        
+        var glucoseTexture = assetManager.get("glucose2.png", Texture.class);
+        assert (glucoseTexture != null);
         batch.draw(glucoseTexture, boundCircle.x, boundCircle.y, boundCircle.radius, boundCircle.radius);
     }
 
     public void dispose() {
-        glucoseTexture.dispose();
+        // glucoseTexture.dispose();
+        assetManager.unload("glucose2.png");
     }
 
     public void generateRandomPosition() {
