@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import cellcorp.gameofcells.inputproviders.DefaultInputProvider;
+import cellcorp.gameofcells.inputproviders.InputProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
 public class Main extends Game {

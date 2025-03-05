@@ -13,6 +13,8 @@ package cellcorp.gameofcells;
 
 import java.util.Set;
 
+import cellcorp.gameofcells.inputproviders.InputProvider;
+
 /// Fake [InputProvider] for use in tests.
 ///
 /// To test behavior when a key is held down, pass a [FakeInputProvider]
