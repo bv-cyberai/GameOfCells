@@ -70,6 +70,7 @@ public class GamePlayScreen implements Screen {
         //gen glucose
         //probably need like a max glucose limit
         glucoseArray = new ArrayList<>();
+        spawnGlucose();
 
     }
 
