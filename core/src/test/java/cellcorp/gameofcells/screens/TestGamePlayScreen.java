@@ -1,18 +1,8 @@
 package cellcorp.gameofcells.screens;
 
-/*
- * @author Brendon Vinyard / vineyabn207
- * @author Andrew Sennoga-Kimuli / sennogat106
- * @author Mark Murphy / murphyml207
- * @author Tim Davey / daveytj206
- *
- * @date 02/27/2025
- * @course CIS 405
- * @assignment GameOfCells
- */
-
-import cellcorp.gameofcells.FakeInputProvider;
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.inputproviders.FakeInputProvider;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;

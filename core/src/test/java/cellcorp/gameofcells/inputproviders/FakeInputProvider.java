@@ -1,4 +1,4 @@
-package cellcorp.gameofcells;
+package cellcorp.gameofcells.inputproviders;
 
 /*
  * @author Brendon Vinyard / vineyabn207

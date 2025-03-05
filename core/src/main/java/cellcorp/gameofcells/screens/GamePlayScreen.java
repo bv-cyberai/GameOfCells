@@ -44,12 +44,19 @@ public class GamePlayScreen implements Screen {
     private Cell cell;
     private ArrayList<Glucose> glucoseArray;
 
+    //Constants
+
+    private final int GLUCOSE_LIMIT;
+
     public GamePlayScreen(Main game, AssetManager assetManager, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
         this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
+
         this.camera = camera;
         this.viewport = viewport;
+
+        GLUCOSE_LIMIT = 10;
     }
 
     @Override
@@ -63,9 +70,7 @@ public class GamePlayScreen implements Screen {
         //gen glucose
         //probably need like a max glucose limit
         glucoseArray = new ArrayList<>();
-        for(int i = 0; i<10; i++ ) {
-            glucoseArray.add(new Glucose(assetManager));
-        }
+
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
@@ -147,5 +152,11 @@ public class GamePlayScreen implements Screen {
     /// Get the current message of this screen.
     public String getMessage() {
         return this.message;
+    }
+
+    private void spawnGlucose() {
+        for(int i = 0; i<GLUCOSE_LIMIT; i++ ) {
+            glucoseArray.add(new Glucose(assetManager));
+        }
     }
 }
