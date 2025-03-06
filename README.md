@@ -169,11 +169,10 @@
  
  ### List of assets/licenses:
  
- 
  ### Creative Commons:
  Glucose: - Still Undecided.
  - https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png
  - https://openclipart.org/detail/75313/glossy-balls
-+
-+### SIL Open Font License
-+- Rubik
+ 
+ ### SIL Open Font License
+ - Rubik
