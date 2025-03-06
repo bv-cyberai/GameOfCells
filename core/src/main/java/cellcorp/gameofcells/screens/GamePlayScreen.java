@@ -121,7 +121,7 @@ public class GamePlayScreen implements Screen {
     /// to let us write tests where we call only [GamePlayScreen#handleInput] and [GamePlayScreen#update]
     @Override
     public void render(float delta) {
-        handleInput();
+        handleInput(delta);
         update(delta);
         draw();
     }

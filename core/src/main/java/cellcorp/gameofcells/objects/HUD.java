@@ -46,30 +46,6 @@ public class HUD {
      */
     public HUD(AssetManager assetManager) {
         this.assetManager = assetManager;
-        // font = new BitmapFont(AssetManager assetManager);
-        // assetManager.update();
-        
-        // assetManager.load("rubik.fnt", BitmapFont.class);
-        // assetManager.load("rubik1.png", Texture.class);  // Texture for font characters
-        // assetManager.load("rubik2.png", Texture.class);  // Texture for font characters
-        // assetManager.finishLoading();
-
-
-         // Ensure the font is loaded properly
-        // if (assetManager.isLoaded("rubik.fnt", BitmapFont.class)) {
-        //     font = assetManager.get("rubik.fnt", BitmapFont.class);
-        //     font.getData().setScale(0.25f); // Set the scale of the font
-        // } else {
-        //     // Handle the error if font is not loaded
-        //     System.err.println("Error: Font not loaded correctly!");
-        // }
-
-        // font = assetManager.get("rubik.fnt", BitmapFont.class);
-
-        // assetManager.load("rubik.fnt", BitmapFont.class);
-        // font = new BitmapFont(Gdx.files.internal("rubik.fnt")); // Initialize the font
-        // font.getData().setScale(.25f); // font resize
-
         timer = 0f;
         displayTime = 0;
 
@@ -79,16 +55,26 @@ public class HUD {
 
     }
 
+    /**
+     * Draw
+     * 
+     * Draw the hud
+     * 
+     * @param batch - The game spritebatch.
+     */
     public void draw(SpriteBatch batch) {
-            assetManager.load("rubik.fnt", BitmapFont.class);
-            assetManager.load("rubik1.png", Texture.class);  // Texture for font characters
-            assetManager.load("rubik2.png", Texture.class);  // Texture for font characters
-            assert(font != null);
-            font = assetManager.get("rubik.fnt", BitmapFont.class);
-            font.getData().setScale(0.25f); // Set the scale of the font
-            font.draw(batch, cellHealthString, 10, 790);
-            font.draw(batch, atpString, 10, 770);
-            font.draw(batch, timerString, 10, 750);
+
+        // figure out how to load once.
+        assetManager.load("rubik.fnt", BitmapFont.class);
+        assetManager.load("rubik1.png", Texture.class); // Texture for font characters
+        assetManager.load("rubik2.png", Texture.class); // Texture for font characters
+        assert (font != null);
+        font = assetManager.get("rubik.fnt", BitmapFont.class);
+        font.getData().setScale(0.25f); // Set the scale of the font
+
+        font.draw(batch, cellHealthString, 10, 790);
+        font.draw(batch, atpString, 10, 770);
+        font.draw(batch, timerString, 10, 750);
 
     }
 
@@ -102,10 +88,6 @@ public class HUD {
      */
     public void update(float delta) {
         timer += delta;
-
-
-        
-
 
         roundTime();
         timerString = "Timer: " + displayTime;
@@ -134,6 +116,7 @@ public class HUD {
 
     /**
      * Timer String getter
+     * 
      * @return The timing string
      */
     public String getTimerString() {
@@ -142,6 +125,7 @@ public class HUD {
 
     /**
      * ATP String getter
+     * 
      * @return the ATP String
      */
     public String getAtpString() {
@@ -150,6 +134,7 @@ public class HUD {
 
     /**
      * Health String Getter
+     * 
      * @return - the Health String
      */
     public String getCellHealthString() {
