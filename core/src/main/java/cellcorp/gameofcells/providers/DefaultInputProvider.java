@@ -1,4 +1,4 @@
-package cellcorp.gameofcells.inputproviders;
+package cellcorp.gameofcells.providers;
 
 import com.badlogic.gdx.Gdx;
 

@@ -13,7 +13,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+        return new Lwjgl3Application(Main.createMain(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
@@ -35,7 +35,7 @@ public class Lwjgl3Launcher {
         //// hardware.
         //// You may also need to configure GPU drivers to fully disable Vsync; this can
         //// cause screen tearing.
-        configuration.setWindowedMode(1200, 800);
+        configuration.setWindowedMode(Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return configuration;

@@ -1,24 +1,8 @@
 package cellcorp.gameofcells.screens;
 
-/**
-* GamePlay Screen
-*
-* This screen provides the main gameplay loop
-* functionality.
-*
-* @author Brendon Vineyard / vineyabn207
-* @author Andrew Sennoga-Kimuli / sennogat106
-* @author Mark Murphy / murphyml207
-* @author Tim Davey / daveytj206
-*
-* @date 02/18/2025
-* @course CIS 405
-* @assignment GameOfCells
-*/
-
-import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.TextureNames;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.assets.AssetManager;
@@ -29,18 +13,31 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.inputproviders.InputProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
+
+/**
+ * GamePlay Screen
+ * <p>
+ * Contains the main gameplay loop.
+ *
+ * @author Brendon Vinyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 
 
 /**
  * First screen of the application. Displayed after the application is created.
  */
-public class GamePlayScreen implements Screen {
+public class GamePlayScreen implements GameOfCellsScreen {
     private Main game;
-
 
     /// Loads assets during game creation,
     /// then provides loaded assets to draw code, using [AssetManager#get(String)]
@@ -49,14 +46,14 @@ public class GamePlayScreen implements Screen {
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
+    private final GraphicsProvider graphicsProvider;
 
     // Camera/Viewport
-    private OrthographicCamera camera;
-    private FitViewport viewport;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
 
     // For rendering text
     protected SpriteBatch batch;  // Define the batch for drawing text
-    private BitmapFont font;  // Define the font for text
 
     private static final String MESSAGE_START = "Press Enter to Start";  // Message for the start screen
     private static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
@@ -66,29 +63,37 @@ public class GamePlayScreen implements Screen {
     private boolean startScreen = true;  // Flag to indicate if the start screen is being displayed
 
     //Objects for rendering the game
-    private Cell cell;
-    private GlucoseManager glucoseManager;
-    private HUD hud;
-
-    // Background textures
-    private Texture startBackground;
-    protected Texture gameBackground;
-    protected Texture shopBackground;
+    private final Cell cell;
+    private final GlucoseManager glucoseManager;
+    private final HUD hud;
 
     /**
      * Constructs the GamePlayScreen.
-     * @param game The main game instance.
-     * @param inputProvider Handles user input.
-     * @param camera The camera for rendering.
-     * @param viewport The viewport for screen rendering scaling.
+     *
+     * @param inputProvider Provides user input information.
+     * @param graphicsProvider Provide graphics information.
+     * @param game          The main game instance.
+     * @param camera        The camera for rendering.
+     * @param viewport      The viewport for screen rendering scaling.
      */
-    public GamePlayScreen(Main game, AssetManager assetManager, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
+    public GamePlayScreen(
+        InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
+        AssetManager assetManager,
+        OrthographicCamera camera,
+        FitViewport viewport
+    ) {
         this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
+        this.graphicsProvider = graphicsProvider;
 
         this.camera = camera;
         this.viewport = viewport;
+
+        this.cell = new Cell(assetManager);
+        this.glucoseManager = new GlucoseManager(assetManager);
+        this.hud = new HUD(assetManager);
+        this.batch = graphicsProvider.createSpriteBatch();
     }
 
     /**
@@ -96,39 +101,25 @@ public class GamePlayScreen implements Screen {
      */
     @Override
     public void show() {
-        // Prepare your screen here.
-        font = new BitmapFont();  // Initialize the font
-        font.getData().setScale(2);  // Set the font size
-
-        // Set the font color to white
-        font.setColor(Color.BLACK);
-
-        batch = new SpriteBatch();  // Initialize the batch
-
-        // Load background textures
-        startBackground = new Texture("startBackground.png");
-        gameBackground = new Texture("gameBackground.png");
-        shopBackground = new Texture("shopBackground.jpg");
-
-        hud = new HUD(assetManager); // Initialize hud
-        cell = new Cell(assetManager); // Initialize cell
-        glucoseManager = new GlucoseManager(assetManager);
-
+        // This method should be "test-safe".
+        // When run, if the game has been constructed with properly-mocked providers,
+        // it should not crash test code.
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
     /// LibGDX combines these into a single method call, but we separate them out into public methods,
     /// to let us write tests where we call only [GamePlayScreen#handleInput] and [GamePlayScreen#update]
     @Override
-    public void render(float delta) {
-        handleInput(delta);
-        update(delta);
+    public void render(float deltaTimeSeconds) {
+        handleInput(deltaTimeSeconds);
+        update(deltaTimeSeconds);
         draw();
     }
 
     /**
      * Resize the screen.
-     * @param width The new width of the screen.
+     *
+     * @param width  The new width of the screen.
      * @param height The new height of the screen.
      */
     @Override
@@ -176,17 +167,13 @@ public class GamePlayScreen implements Screen {
 
         //need to handle actually disposing but for now meh
         // glucose.dispose();
-
-        // Dispose of background textures
-        startBackground.dispose();
-        gameBackground.dispose();
-        shopBackground.dispose();
     }
 
     /**
      * Handle input from the user and transitions to the GamePlayScreen when Enter is pressed.
      */
-    public void handleInput(float deltaTime) {
+    @Override
+    public void handleInput(float deltaTimeSeconds) {
         // Check for key input
         if (!gameStarted && inputProvider.isKeyPressed(Input.Keys.ENTER)) {
             gameStarted = true;
@@ -196,9 +183,11 @@ public class GamePlayScreen implements Screen {
 
     /**
      * Update the game state.
-     * @param deltaTime The time since the last frame in seconds.
+     *
+     * @param deltaTimeSeconds The time since the last frame in seconds.
      */
-    public void update(float deltaTime) {
+    @Override
+    public void update(float deltaTimeSeconds) {
         // Future update logic can do here
         if (gameStarted) {
             // Any updates for the game state after it starts
@@ -206,13 +195,27 @@ public class GamePlayScreen implements Screen {
                 game.setScreen(new ShopScreen(game, inputProvider, camera, viewport, this));
             }
         }
-        hud.update(deltaTime);
+
+        hud.update(deltaTimeSeconds);
     }
 
     /**
      * Renders the start screen.
      */
+    @Override
     public void draw() {
+        var startBackground = assetManager.get(TextureNames.START_BACKGROUND, Texture.class);
+        var gameBackground = assetManager.get(TextureNames.GAME_BACKGROUND, Texture.class);
+
+        // Set up font
+        var font = assetManager.get(TextureNames.DEFAULT_FONT, BitmapFont.class);
+
+        font.getData().setScale(2);  // Set the font size
+
+        // Set the font color to white
+        font.setColor(Color.BLACK);
+
+        // Draw the screen
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
         camera.update();    // Update the camera
@@ -262,10 +265,9 @@ public class GamePlayScreen implements Screen {
     }
 
     /**
-     * Get the game background texture.
-     * @return The game background texture.
+     * Get this screen's glucose manager.
      */
-    public Texture getGameBackground() {
-        return gameBackground;
+    public GlucoseManager getGlucoseManager() {
+        return glucoseManager;
     }
 }

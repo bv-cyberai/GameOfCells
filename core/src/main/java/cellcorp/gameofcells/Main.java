@@ -1,21 +1,23 @@
 package cellcorp.gameofcells;
 
 /**
-* Game Class
-*
-* The base game class for GameOfCells
-*
-* @author Brendon Vinyard / vineyabn207
-* @author Andrew Sennoga-Kimuli / sennogat106
-* @author Mark Murphy / murphyml207
-* @author Tim Davey / daveytj206
-*
-* @date 02/18/2025
-* @course CIS 405
-* @assignment GameOfCells
-*/
+ * Game Class
+ * <p>
+ * The base game class for GameOfCells
+ *
+ * @author Brendon Vinyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 
-import com.badlogic.gdx.Game;
+import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
+import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.screens.GameOfCellsScreen;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,67 +25,171 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.inputproviders.DefaultInputProvider;
-import cellcorp.gameofcells.inputproviders.InputProvider;
+import cellcorp.gameofcells.providers.DefaultInputProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
-public class Main extends Game {
-    // Constants - These were the sizes of the beta, and have been noted here for
-    // reference.
-    // WORLD_WIDTH = 1200
-    // WORLD_HEIGHT = 800
+public class Main implements ApplicationListener {
+    // These configuration values are referenced in `cellcorp.gameofcells.lwjgl3.Lwjgl3Launcher`
+    // Changing them will change the default size of the game window in Java.
+    public static int WORLD_WIDTH = 1200;
+    public static int WORLD_HEIGHT = 800;
 
-    /// Loads assets during game creation,
-    /// then provides loaded assets to draw code, using [AssetManager#get(String)]
+    /**
+     * The currently-shown screen.
+     */
+    private GameOfCellsScreen screen;
+
+    /**
+     * Loads assets during game creation,
+     * then provides loaded assets to draw code, using [AssetManager#get(String)]
+     */
     private final AssetManager assetManager;
 
-    /// Gets information about inputs, like held-down keys.
-    /// Use this instead of `Gdx.input`, to avoid crashing tests.
+    /**
+     * Gets information about inputs, like held-down keys.
+     * Use this instead of `Gdx.input`, to avoid crashing tests.
+     */
     private final InputProvider inputProvider;
+
+    /**
+     * Gets information about graphics. Use this instead of `Gdx.graphics` in game code,
+     * to avoid crashing tests.
+     */
+    private final GraphicsProvider graphicsProvider;
 
     // Camera/Viewport - These can be shared by screens/don't need to be Fit
     // viewport but its not a bad choice per se.
-    private OrthographicCamera camera;
-    private FitViewport viewport;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
 
-    /// Create a game instance with default providers.
-    public Main() {
-        this(new AssetManager(), new DefaultInputProvider());
+    /**
+     * Constructs a new `Main`.
+     * This is a
+     * <a href=https://en.wikipedia.org/wiki/Factory_method_pattern>"factory method"</a>.
+     * Here, it's necessary because the `FitViewport` constructor references `camera`.
+     * @return The new GameRunner
+     */
+    public static Main createMain() {
+        var inputProvider = new DefaultInputProvider();
+        var graphicsProvider = new DefaultGraphicsProvider();
+        var assetManager = new AssetManager();
+        var camera = new OrthographicCamera();
+        // Gdx.graphics is not instantiated until `create()`.
+        // Just use the configuration constants here.
+        var viewport = new FitViewport(
+            WORLD_WIDTH,
+            WORLD_HEIGHT,
+            camera
+        );
+        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);
     }
 
-    /// Create a game instance.
-    /// @param assetManager Loads assets. Use `mock(AssetManager.class)` in test code.
-    /// @param inputProvider Input provider. Use FakeInputProvider in test code.
-    public Main(AssetManager assetManager, InputProvider inputProvider) {
-        this.assetManager = assetManager;
+    /**
+     * Creates a game instance.
+     *
+     * @param inputProvider    Input provider. Use FakeInputProvider in test code.
+     * @param graphicsProvider Graphics provider. Use FakeGraphicsProvider in test code.
+     * @param assetManager     Loads assets. Use `mock(AssetManager.class)` in test code.
+     * @param camera           The camera. Use `mock(OrthographicCamera.class)` in test code.
+     * @param viewport         The viewport. Use `mock(FitViewport.class)` in test code.
+     */
+    public Main(InputProvider inputProvider,
+                GraphicsProvider graphicsProvider,
+                AssetManager assetManager,
+                OrthographicCamera camera,
+                FitViewport viewport
+    ) {
         this.inputProvider = inputProvider;
+        this.graphicsProvider = graphicsProvider;
+        this.assetManager = assetManager;
+        this.camera = camera;
+        this.viewport = viewport;
     }
 
     @Override
     public void create() {
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // This method should be "test-safe".
+        // When run with properly-faked providers, it should not crash test code.
 
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        camera.setToOrtho(false, graphicsProvider.getWidth(), graphicsProvider.getHeight());
 
         // Load up the assets, blocking until they're loaded.
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
-        assetManager.load("Cell.png", Texture.class);
-        assetManager.load("glucose2.png", Texture.class);
         assetManager.load("rubik.fnt", BitmapFont.class);
         assetManager.load("rubik1.png", Texture.class);
         assetManager.load("rubik2.png", Texture.class);
+        assetManager.load(TextureNames.CELL, Texture.class);
+        assetManager.load(TextureNames.GLUCOSE, Texture.class);
+
+        assetManager.load(TextureNames.DEFAULT_FONT, BitmapFont.class);
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new GamePlayScreen(this, assetManager, inputProvider, camera, viewport));
+        setScreen(new GamePlayScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
     }
 
     @Override
-    public void dispose () {
-        super.dispose();
+    public void dispose() {
+        if (screen != null) screen.hide();
         assetManager.dispose();
     }
 
+
+    @Override
+    public void pause() {
+        if (screen != null) screen.pause();
+    }
+
+    @Override
+    public void resume() {
+        if (screen != null) screen.resume();
+    }
+
+    @Override
+    public void render() {
+        if (screen != null) screen.render(Gdx.graphics.getDeltaTime());
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        if (screen != null) screen.resize(width, height);
+    }
+
+    public void setScreen(GameOfCellsScreen screen) {
+        assert screen != null;
+        if (this.screen != null) this.screen.hide();
+
+        this.screen = screen;
+        this.screen.show();
+        this.screen.resize(graphicsProvider.getWidth(), graphicsProvider.getHeight());
+    }
+
+    public GameOfCellsScreen getScreen() {
+        return this.screen;
+    }
+
+    /**
+     * Responds to key-presses, updating game state.
+     * @param deltaTimeSeconds The time passed since the last call to `handleInput`, in seconds.
+     */
+    public void handleInput(float deltaTimeSeconds) {
+        screen.handleInput(deltaTimeSeconds);
+    }
+
+    /**
+     * Updates game state that does not depend on input.
+     * @param deltaTimeSeconds The time passed since the last call to `update`, in seconds.
+     */
+    public void update(float deltaTimeSeconds) {
+        screen.handleInput(deltaTimeSeconds);
+    }
+
+    /**
+     * @return this game's graphics provider.
+     */
+    public GraphicsProvider getGraphicsProvider() {
+        return this.graphicsProvider;
+    }
 }

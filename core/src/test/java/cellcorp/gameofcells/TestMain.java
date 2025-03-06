@@ -1,0 +1,57 @@
+package cellcorp.gameofcells;
+
+import cellcorp.gameofcells.runner.GameRunner;
+import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.Input;
+import org.junit.jupiter.api.Test;
+
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestMain {
+
+    @Test
+    public void movingToGamePlayScreenSpawnsGlucose() {
+        // Create a new `GameRunner`.
+        // We use a static method instead of the constructor,
+        // for reasons described in the method documentation.
+        var gameRunner = GameRunner.create();
+
+        // Hold down space and step forward a frame.
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+
+        // Make sure we're on the gameplay screen, and that some glucose have spawned
+        var screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+        var gamePlayScreen = (GamePlayScreen) screen;
+        var glucoseArray = gamePlayScreen.getGlucoseManager().getGlucoseArray();
+        assertNotEquals(0, glucoseArray.size());
+
+        // Let the game run for 2 seconds, with nothing held down.
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.runForSeconds(2);
+        // Test that the game ran the expected number of ticks.
+        assertEquals(1 + GameRunner.TICKS_PER_SECOND * 2, gameRunner.getTicksElapsed());
+        // Test that there are still glucose on the screen.
+        // `Main.screen`, `GamePlayScreen.glucoseManager`, and `GlucoseManager.glucoseArray`
+        //   are _not_ final in their respective classes, so we should set them again,
+        //   to make sure we're not using an old reference that's been replaced in the actual game.
+        screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+        gamePlayScreen = (GamePlayScreen) screen;
+        glucoseArray = gamePlayScreen.getGlucoseManager().getGlucoseArray();
+        assertNotEquals(0, glucoseArray.size());
+    }
+
+    @Test
+    public void gameCreatedWithCorrectScreenDimensions() {
+        // Games should be created with screen dimensions matching the world dimensions.
+        // This is subject to change.
+        var gameRunner = GameRunner.create();
+
+        assertEquals(Main.WORLD_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
+        assertEquals(Main.WORLD_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
+    }
+}

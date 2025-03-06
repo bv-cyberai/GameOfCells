@@ -11,6 +11,8 @@ package cellcorp.gameofcells;
  * @assignment GameOfCells
  */
 
+import cellcorp.gameofcells.providers.InputProvider;
+
 import java.util.Set;
 
 /// Fake [InputProvider] for use in tests.

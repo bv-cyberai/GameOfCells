@@ -1,23 +1,22 @@
 package cellcorp.gameofcells.screens;
 
 /**
-* GamePlay Screen
-*
-* This screen provides the main gameplay loop
-* functionality.
-*
-* @author Brendon Vineyard / vineyabn207
-* @author Andrew Sennoga-Kimuli / sennogat106
-* @author Mark Murphy / murphyml207
-* @author Tim Davey / daveytj206
-*
-* @date 02/18/2025
-* @course CIS 405
-* @assignment GameOfCells
-*/
+ * GamePlay Screen
+ * <p>
+ * This screen provides the main gameplay loop
+ * functionality.
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.inputproviders.InputProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -32,7 +31,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 /**
  * First screen of the application. Displayed after the application is created.
  */
-public class ShopScreen implements Screen {
+public class ShopScreen implements GameOfCellsScreen {
     private Main game;
 
     /// Gets information about inputs, like held-down keys.
@@ -44,7 +43,7 @@ public class ShopScreen implements Screen {
     private FitViewport viewport;
 
     // Keeps track of the initial screen prior to transition
-    private Screen previousScreen;
+    private GameOfCellsScreen previousScreen;
 
     // For rendering text
     protected SpriteBatch batch;  // Define the batch for drawing text
@@ -70,7 +69,12 @@ public class ShopScreen implements Screen {
      * @param viewport The viewport for screen rendering scaling.
      * @param previousScreen The current screen gameplayscreen
      */
-    public ShopScreen(Main game, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport, Screen previousScreen) {
+    public ShopScreen(Main game,
+                      InputProvider inputProvider,
+                      OrthographicCamera camera,
+                      FitViewport viewport,
+                      GameOfCellsScreen previousScreen
+    ) {
         this.game = game;
         this.inputProvider = inputProvider;
         this.camera = camera;
@@ -102,7 +106,7 @@ public class ShopScreen implements Screen {
     /// to let us write tests where we call only [ShopScreen#handleInput] and [ShopScreen#update]
     @Override
     public void render(float delta) {
-        handleInput();
+        handleInput(delta);
         update(delta);
         draw();
     }
@@ -159,10 +163,8 @@ public class ShopScreen implements Screen {
         shopBackground.dispose();
     }
 
-    /**
-     * Handle input from the user and transitions to the GamePlayScreen when Enter is pressed.
-     */
-    public void handleInput() {
+    @Override
+    public void handleInput(float deltaTimeSeconds) {
         // Check for key input
         if (!gameStarted && inputProvider.isKeyPressed(Input.Keys.ENTER)) {
             gameStarted = true;
@@ -170,11 +172,8 @@ public class ShopScreen implements Screen {
         }
     }
 
-    /**
-     * Update the game state.
-     * @param deltaTime The time since the last frame in seconds.
-     */
-    public void update(float deltaTime) {
+    @Override
+    public void update(float deltaTimeSeconds) {
         // Future update logic can do here
         if (gameStarted) {
             if (inputProvider.isKeyPressed(Input.Keys.E)) {
@@ -183,9 +182,8 @@ public class ShopScreen implements Screen {
         }
     }
 
-    /**
-     * Renders the start screen.
-     */
+
+    @Override
     public void draw() {
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
@@ -193,14 +191,14 @@ public class ShopScreen implements Screen {
 
         batch.begin();  // Start the batch for drawing 2d elements
 
-            // Draw the shop screen
-            batch.draw(shopBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
+        // Draw the shop screen
+        batch.draw(shopBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
 
-            // Draw the text in white
-            font.setColor(Color.WHITE);  // white for text
-            font.draw(batch, "Welcome to the Shop Screen", 100, 100);  // Regular position
-            font.draw(batch, "Press E to exit", 102, 70);
-            // You can start rendering other game objects (like the cell) here
+        // Draw the text in white
+        font.setColor(Color.WHITE);  // white for text
+        font.draw(batch, "Welcome to the Shop Screen", 100, 100);  // Regular position
+        font.draw(batch, "Press E to exit", 102, 70);
+        // You can start rendering other game objects (like the cell) here
 
         batch.end();    // End the batch
     }

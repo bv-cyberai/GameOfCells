@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * GlucoseManager
  *
  * Used to manage all glucose in the game
- * 
+ *
  * @author Brendon Vinyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -46,9 +46,9 @@ public class GlucoseManager {
 
     /**
      * Random Coordinates
-     * 
+     *
      * Creates random coordinates for use in glucose creation.
-     * 
+     *
      * @return float[xCoordinate,yCoordinate]
      */
     private float[] getRandomCoordinate() {
@@ -74,9 +74,9 @@ public class GlucoseManager {
 
     /**
      * Glucose Populator
-     * 
+     *
      * Populates the glucoseArray with the games current glucose objects.
-     * 
+     *
      * @post glucose array is populated with glucose objects up to MAX_GLUCOSE
      */
     private void fillGlucoseArray() {
@@ -88,11 +88,11 @@ public class GlucoseManager {
 
     /**
      * Draw
-     * 
+     *
      * Draws each glucose in the glucose array.
-     * 
+     *
      * @param batch The GamePlayScreen spritebatch
-     * 
+     *
      * @post glucose is drawn.
      */
     public void draw(SpriteBatch batch) {
@@ -103,9 +103,9 @@ public class GlucoseManager {
 
     /**
      * Dispose
-     * 
+     *
      * Disposes of each glucose object in the glucose array.
-     * 
+     *
      * @post Glucose assets are disposed.
      */
     public void dispose() {
@@ -116,7 +116,7 @@ public class GlucoseManager {
 
     /**
      * Glucose getter
-     * 
+     *
      * @return MAX_GLUCOSE
      */
     public int getMAX_GLUCOSE() {
@@ -125,7 +125,7 @@ public class GlucoseManager {
 
     /**
      * RADIUS getter
-     * 
+     *
      * @return radius constant
      */
     public float getRADIUS() {
@@ -134,7 +134,7 @@ public class GlucoseManager {
 
     /**
      * Array Getter
-     * 
+     *
      * @return the Glucose array
      */
     public ArrayList<Glucose> getGlucoseArray() {

@@ -1,4 +1,4 @@
-package cellcorp.gameofcells.inputproviders;
+package cellcorp.gameofcells.providers;
 
 /*
  * @author Brendon Vinyard / vineyabn207
@@ -12,8 +12,6 @@ package cellcorp.gameofcells.inputproviders;
  */
 
 import java.util.Set;
-
-import cellcorp.gameofcells.inputproviders.InputProvider;
 
 /// Fake [InputProvider] for use in tests.
 ///
@@ -41,10 +39,10 @@ public class FakeInputProvider implements InputProvider {
     /// fakeInputProvider.setHeldDownKeys(Set.of())
     ///```
     ///
-    /// @param heldDown The set of keys.
-    ///                                                 Gdx represents these as ints, but use `Input.Keys.SOME_KEY_NAME` to name them.
-    public void setHeldDownKeys(Set<Integer> heldDown) {
-        this.heldDown = heldDown;
+    /// @param keys The set of held-down keys.
+    ///  Gdx represents these as ints, but use `Input.Keys.SOME_KEY_NAME` to name them.
+    public void setHeldDownKeys(Set<Integer> keys) {
+        this.heldDown = keys;
     }
 
     @Override
