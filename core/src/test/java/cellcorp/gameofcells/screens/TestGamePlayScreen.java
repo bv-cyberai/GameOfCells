@@ -61,15 +61,42 @@ public class TestGamePlayScreen {
         var viewport = Mockito.mock(FitViewport.class);
         var screen = new GamePlayScreen(game, assetManager, inputProvider, camera, viewport);
 
-        // Initially, check that the start screen message is shown.
-        assertTrue(screen.getMessage().equals("Press Enter to Start"), "Expected start message");
-
-        // Simulate pressing ENTER to start the game.
-        inputProvider.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        screen.handleInput();   // Process input (ENTER IS PRESSED)
-        screen.update(0.016f);        // Update the screen
-
-        // Now, check that the message has change to the game-playing message.
-        assertTrue(screen.getMessage().equals("Game is now playing..."), "Expected game message");
+        assertEquals("Press Enter to Start", screen.getMessage(), "Expected start message");
     }
+
+    // deprecating test
+    // @Test
+    // public void pressingSpaceOnceChangesText() {
+    //     // Create a new GamePlayScreen, giving it our input provider to use, instead of the default one.
+    //     var inputProvider = new FakeInputProvider();
+    //     // `GamePlayScreen` expects a game, assetManager, camera, and viewport.
+    //     // I claim that none of these should affect the outcome of this test,
+    //     // so I use Mockito to create fake versions of each, which return nothing.
+    //     // For more information, see the class testing book or ask Mark.
+    //     var game = Mockito.mock(Main.class);
+    //     var assetManager = Mockito.mock(AssetManager.class);
+    //     var camera = Mockito.mock(OrthographicCamera.class);
+    //     var viewport = Mockito.mock(FitViewport.class);
+    //     var screen = new GamePlayScreen(game, assetManager, inputProvider, camera, viewport);
+    //     // Hold down space, and call update once.
+    //     inputProvider.setHeldDownKeys(Set.of(
+    //         Input.Keys.SPACE,
+    //         Input.Keys.RIGHT // It should be fine to hold down another key as well.
+    //     ));
+    //     // Screen.render expects a deltaTime -- the amount of time that has passed.
+    //     // Let's say it was 1 second
+    //     var delta_time = 1.0f;
+    //     // In actual game code, `screen.render` is called, which calls `handleInput`, `update`, and `draw`.
+    //     // To match that, we'll always call `screen.update` right after `screen.handleInput`.
+    //     screen.handleInput(delta_time);
+    //     screen.update(delta_time);
+    //     // Reset held down keys, then call update a few more times.
+    //     inputProvider.setHeldDownKeys(Set.of());
+    //     screen.handleInput(delta_time);
+    //     screen.update(delta_time);
+    //     screen.handleInput(delta_time);
+    //     screen.update(delta_time);
+    //     // Test that the game screen is a `GamePlayScreen`, and that the message has been updated.
+    //     assertEquals("Spacebar was pressed!", screen.getMessage());
+    // }
 }

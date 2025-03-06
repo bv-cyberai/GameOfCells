@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.inputproviders.DefaultInputProvider;
@@ -70,6 +71,9 @@ public class Main extends Game {
         // and the class of the asset to load.
         assetManager.load("Cell.png", Texture.class);
         assetManager.load("glucose2.png", Texture.class);
+        assetManager.load("rubik.fnt", BitmapFont.class);
+        assetManager.load("rubik1.png", Texture.class);
+        assetManager.load("rubik2.png", Texture.class);
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.

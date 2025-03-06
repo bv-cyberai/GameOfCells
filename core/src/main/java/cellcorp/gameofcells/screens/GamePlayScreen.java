@@ -32,21 +32,7 @@ import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.inputproviders.InputProvider;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.GlucoseManager;
-
-/**
-* GamePlay Screen
-*
-* Contains the main gameplay loop.
-*
-* @author Brendon Vinyard / vineyabn207
-* @author Andrew Sennoga-Kimuli / sennogat106
-* @author Mark Murphy / murphyml207
-* @author Tim Davey / daveytj206
-*
-* @date 03/05/2025
-* @course CIS 405
-* @assignment GameOfCells
-*/
+import cellcorp.gameofcells.objects.HUD;
 
 
 /**
@@ -82,6 +68,7 @@ public class GamePlayScreen implements Screen {
     //Objects for rendering the game
     private Cell cell;
     private GlucoseManager glucoseManager;
+    private HUD hud;
 
     // Background textures
     private Texture startBackground;
@@ -123,6 +110,7 @@ public class GamePlayScreen implements Screen {
         gameBackground = new Texture("gameBackground.png");
         shopBackground = new Texture("shopBackground.jpg");
 
+        hud = new HUD(assetManager); // Initialize hud
         cell = new Cell(assetManager); // Initialize cell
         glucoseManager = new GlucoseManager(assetManager);
 
@@ -181,9 +169,9 @@ public class GamePlayScreen implements Screen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
-        font.dispose();  // Dispose of the font
         cell.dispose(); // dispose cell
         glucoseManager.dispose();
+        hud.dispose();
         batch.dispose();  // Dispose of the batch
 
         //need to handle actually disposing but for now meh
@@ -198,7 +186,7 @@ public class GamePlayScreen implements Screen {
     /**
      * Handle input from the user and transitions to the GamePlayScreen when Enter is pressed.
      */
-    public void handleInput() {
+    public void handleInput(float deltaTime) {
         // Check for key input
         if (!gameStarted && inputProvider.isKeyPressed(Input.Keys.ENTER)) {
             gameStarted = true;
@@ -218,6 +206,7 @@ public class GamePlayScreen implements Screen {
                 game.setScreen(new ShopScreen(game, inputProvider, camera, viewport, this));
             }
         }
+        hud.update(deltaTime);
     }
 
     /**
@@ -227,6 +216,7 @@ public class GamePlayScreen implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
         camera.update();    // Update the camera
+        batch.setProjectionMatrix(camera.combined);
 
         batch.begin();  // Start the batch for drawing 2d element
 
@@ -246,8 +236,9 @@ public class GamePlayScreen implements Screen {
             font.draw(batch, MESSAGE_GAME, 100, 100);  // Regular position
             font.draw(batch, MESSAGE_SHOP, 102, 75);
 
-            glucoseManager.draw(batch); // draws glucose beneath the cell.
             // You can start rendering other game objects (like the cell) here
+            glucoseManager.draw(batch); // draws glucose beneath the cell.
+            hud.draw(batch); // Draw hud
             cell.draw(batch);
         }
 
