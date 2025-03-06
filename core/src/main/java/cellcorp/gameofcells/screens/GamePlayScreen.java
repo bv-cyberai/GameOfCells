@@ -1,7 +1,5 @@
 package cellcorp.gameofcells.screens;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -14,7 +12,23 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.inputproviders.InputProvider;
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.objects.Glucose;
+import cellcorp.gameofcells.objects.GlucoseManager;
+
+/**
+* GamePlay Screen
+*
+* Contains the main gameplay loop.
+*
+* @author Brendon Vinyard / vineyabn207
+* @author Andrew Sennoga-Kimuli / sennogat106
+* @author Mark Murphy / murphyml207
+* @author Tim Davey / daveytj206
+*
+* @date 03/05/2025
+* @course CIS 405
+* @assignment GameOfCells
+*/
+
 
 /**
  * First screen of the application. Displayed after the application is created.
@@ -42,11 +56,7 @@ public class GamePlayScreen implements Screen {
 
     //Objects
     private Cell cell;
-    private ArrayList<Glucose> glucoseArray;
-
-    //Constants
-
-    private final int GLUCOSE_LIMIT;
+    private GlucoseManager glucoseManager;
 
     public GamePlayScreen(Main game, AssetManager assetManager, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
         this.assetManager = assetManager;
@@ -55,8 +65,6 @@ public class GamePlayScreen implements Screen {
 
         this.camera = camera;
         this.viewport = viewport;
-
-        GLUCOSE_LIMIT = 10;
     }
 
     @Override
@@ -66,11 +74,7 @@ public class GamePlayScreen implements Screen {
         font = new BitmapFont();  // Initialize the font
         batch = new SpriteBatch();  // Initialize the batch
         cell = new Cell(assetManager); // Initialize cell
-
-        //gen glucose
-        //probably need like a max glucose limit
-        glucoseArray = new ArrayList<>();
-        spawnGlucose();
+        glucoseManager = new GlucoseManager(assetManager);
 
     }
 
@@ -110,6 +114,7 @@ public class GamePlayScreen implements Screen {
         // Destroy screen's assets here.
         font.dispose();  // Dispose of the font
         cell.dispose(); // dispose cell
+        glucoseManager.dispose();
         batch.dispose();  // Dispose of the batch
         
         //need to handle actually disposing but for now meh 
@@ -143,9 +148,7 @@ public class GamePlayScreen implements Screen {
         // Draw the prompt or message
         batch.begin();  // Start the batch for drawing 2d elements
         font.draw(batch, message, 100, 100);  // Draw the message
-        for(Glucose g : glucoseArray) {
-            g.draw(batch);
-        }
+        glucoseManager.draw(batch); // draws glucose beneath the cell.
         cell.draw(batch); //Draws the Cell on Screen
         batch.end(); // End the batch
     }
@@ -153,11 +156,5 @@ public class GamePlayScreen implements Screen {
     /// Get the current message of this screen.
     public String getMessage() {
         return this.message;
-    }
-
-    private void spawnGlucose() {
-        for(int i = 0; i<GLUCOSE_LIMIT; i++ ) {
-            glucoseArray.add(new Glucose(assetManager));
-        }
     }
 }

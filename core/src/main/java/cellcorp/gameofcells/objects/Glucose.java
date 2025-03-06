@@ -1,72 +1,94 @@
 package cellcorp.gameofcells.objects;
 
-import java.util.Random;
-
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 
 /**
-* Glucose Object
-*
-* Represents a glucose which a cell converts
-* to ATP.
-* 
-* @author Brendon Vinyard / vineyabn207
-* @author Andrew Sennoga-Kimuli / sennogat106
-* @author Mark Murphy / murphyml207
-* @author Tim Davey / daveytj206
-*
-* @date 03/04/2025
-* @course CIS 405
-* @assignment GameOfCells
-*/
-
+ * Glucose Object
+ *
+ * Represents a glucose molecule which a cell converts
+ * to ATP.
+ * 
+ * @author Brendon Vinyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ *
+ * @date 03/04/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 
 public class Glucose {
     private final AssetManager assetManager;
     private Circle boundCircle;
-    // private Texture glucoseTexture;
-    private Random rand;
 
-    // WORLD_WIDTH = 1200
-    // WORLD_HEIGHT = 800
-
-    //x and y currently not needed to be passed but gonna leave it. 
-    public Glucose(AssetManager assetManager) {
+    /**
+     * Constructor
+     * 
+     * @param assetManager The Game assetManager
+     * @param x            - The x position
+     * @param y            - The y position
+     * @param radius       - The radius of the circle hitbox.
+     */
+    public Glucose(AssetManager assetManager, float x, float y, float radius) {
         this.assetManager = assetManager;
-        boundCircle = new Circle(0, 0, 30);
-
-        rand = new Random();
-
-        // do better
-        generateRandomPosition();
+        boundCircle = new Circle(x, y, radius);
     }
 
+    /**
+     * Draw
+     * 
+     * Draws a cell.
+     * 
+     * @param batch The gamePlayScreen Spritebatch
+     */
     public void draw(SpriteBatch batch) {
-        
+        // other options for glucose exist within assests.
         var glucoseTexture = assetManager.get("glucose2.png", Texture.class);
         assert (glucoseTexture != null);
         batch.draw(glucoseTexture, boundCircle.x, boundCircle.y, boundCircle.radius, boundCircle.radius);
     }
 
+    /**
+     * Dispose
+     * 
+     * Unloads a glucose asset.
+     */
     public void dispose() {
-        // glucoseTexture.dispose();
         assetManager.unload("glucose2.png");
     }
 
-    public void generateRandomPosition() {
-        // probably should actually be tied to a constant.
-        // check if bounds are correct
-        int genX = rand.nextInt(1200);
-        int genY = rand.nextInt(800);
-        
-        boundCircle.setX((float)genX);
-        boundCircle.setY((float)genY);
+    /**
+     * xGetter
+     * 
+     * @return x Coordinate of the hitbox.
+     */
+    public float getX() {
+        return boundCircle.x;
     }
 
-    //opensource assets
-    //https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png
-    //https://openclipart.org/detail/75313/glossy-balls
+    /**
+     * yGetter
+     * 
+     * @return y Coordinate of the hitbox.
+     */
+    public float getY() {
+        return boundCircle.y;
+    }
+
+    /**
+     * Radius Getter
+     * 
+     * @return The radius of the hitbox.
+     */
+    public float getRadius() {
+        return boundCircle.radius;
+    }
+
+    // opensource assets
+    // https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png
+    // https://openclipart.org/detail/75313/glossy-balls
 }
