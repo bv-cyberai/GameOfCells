@@ -16,9 +16,11 @@ package cellcorp.gameofcells.screens;
  */
 
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,46 +39,42 @@ public class ShopScreen implements GameOfCellsScreen {
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
+    private final GraphicsProvider graphicsProvider;
+
+    private final AssetManager assetManager;
 
     // Camera/Viewport
-    private OrthographicCamera camera;
-    private FitViewport viewport;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
 
     // Keeps track of the initial screen prior to transition
-    private GameOfCellsScreen previousScreen;
+    private final GameOfCellsScreen previousScreen;
 
     // For rendering text
-    protected SpriteBatch batch;  // Define the batch for drawing text
-    private BitmapFont font;  // Define the font for text
-
-    private static final String MESSAGE_START = "Press Enter to Start";  // Message for the start screen
-    private static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
-
-    private boolean gameStarted = true;  // Flag to indicate if the game has started
-    private boolean startScreen = false;  // Flag to indicate if the start screen is being displayed
-
-    // Background textures
-    private Texture startBackground;
-    protected Texture gameBackground;
-    protected Texture shopBackground;
-
+    private SpriteBatch batch;  // Define the batch for drawing text
 
     /**
      * Constructs the GamePlayScreen.
-     * @param game The main game instance.
-     * @param inputProvider Handles user input.
-     * @param camera The camera for rendering.
-     * @param viewport The viewport for screen rendering scaling.
+     *
+     * @param game           The main game instance.
+     * @param inputProvider  Handles user input.
+     * @param camera         The camera for rendering.
+     * @param viewport       The viewport for screen rendering scaling.
      * @param previousScreen The current screen gameplayscreen
      */
-    public ShopScreen(Main game,
-                      InputProvider inputProvider,
-                      OrthographicCamera camera,
-                      FitViewport viewport,
-                      GameOfCellsScreen previousScreen
+    public ShopScreen(
+            Main game,
+            InputProvider inputProvider,
+            GraphicsProvider graphicsProvider,
+            AssetManager assetManager,
+            OrthographicCamera camera,
+            FitViewport viewport,
+            GameOfCellsScreen previousScreen
     ) {
         this.game = game;
         this.inputProvider = inputProvider;
+        this.graphicsProvider = graphicsProvider;
+        this.assetManager = assetManager;
         this.camera = camera;
         this.viewport = viewport;
         this.previousScreen = previousScreen;
@@ -87,18 +85,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
-        // Prepare your screen here.
-        font = new BitmapFont();  // Initialize the font
-        font.getData().setScale(2);  // Set the font size
-
-        // Set the font color to white
-        font.setColor(Color.BLACK);
-
-        batch = new SpriteBatch();  // Initialize the batch
-
-        // Load background textures
-
-        shopBackground = new Texture("shopBackground.jpg");
+        this.batch = graphicsProvider.createSpriteBatch();
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
@@ -113,7 +100,8 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Resize the screen.
-     * @param width The new width of the screen.
+     *
+     * @param width  The new width of the screen.
      * @param height The new height of the screen.
      */
     @Override
@@ -154,37 +142,32 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
-        font.dispose();  // Dispose of the font
         batch.dispose();  // Dispose of the batch
-
-        // Dispose of background textures
-        startBackground.dispose();
-        gameBackground.dispose();
-        shopBackground.dispose();
     }
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        // Check for key input
-        if (!gameStarted && inputProvider.isKeyPressed(Input.Keys.ENTER)) {
-            gameStarted = true;
-            startScreen = false;
+        if (inputProvider.isKeyPressed(Input.Keys.E)) {
+            game.setScreen(previousScreen);
         }
     }
 
     @Override
     public void update(float deltaTimeSeconds) {
-        // Future update logic can do here
-        if (gameStarted) {
-            if (inputProvider.isKeyPressed(Input.Keys.E)) {
-                game.setScreen(previousScreen);
-            }
-        }
     }
 
 
     @Override
     public void draw() {
+        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
+        var shopBackground = assetManager.get(AssetFileNames.SHOP_BACKGROUND, Texture.class);
+
+        // Set up font
+        font.getData().setScale(2);  // Set the font size
+
+        // Set the font color to white
+        font.setColor(Color.BLACK);
+
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
         camera.update();    // Update the camera
@@ -203,28 +186,12 @@ public class ShopScreen implements GameOfCellsScreen {
         batch.end();    // End the batch
     }
 
-
-    /**
-     * Get the message being displayed.
-     * @return The message being displayed.
-     */
-    public String getMessage() {
-        return gameStarted ? MESSAGE_GAME : MESSAGE_START;
-    }
-
     /**
      * Get the batch for rendering.
+     *
      * @return The batch for rendering.
      */
     public SpriteBatch getBatch() {
         return batch;
-    }
-
-    /**
-     * Get the game background texture.
-     * @return The game background texture.
-     */
-    public Texture getGameBackground() {
-        return shopBackground;
     }
 }

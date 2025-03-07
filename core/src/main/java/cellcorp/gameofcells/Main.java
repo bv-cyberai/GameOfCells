@@ -120,10 +120,12 @@ public class Main implements ApplicationListener {
         assetManager.load("rubik.fnt", BitmapFont.class);
         assetManager.load("rubik1.png", Texture.class);
         assetManager.load("rubik2.png", Texture.class);
-        assetManager.load(TextureNames.CELL, Texture.class);
-        assetManager.load(TextureNames.GLUCOSE, Texture.class);
-
-        assetManager.load(TextureNames.DEFAULT_FONT, BitmapFont.class);
+        assetManager.load(AssetFileNames.START_SCREEN_BACKGROUND, Texture.class);
+        assetManager.load(AssetFileNames.GAME_BACKGROUND, Texture.class);
+        assetManager.load(AssetFileNames.SHOP_BACKGROUND, Texture.class);
+        assetManager.load(AssetFileNames.CELL, Texture.class);
+        assetManager.load(AssetFileNames.GLUCOSE, Texture.class);
+        assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.
@@ -183,7 +185,7 @@ public class Main implements ApplicationListener {
      * @param deltaTimeSeconds The time passed since the last call to `update`, in seconds.
      */
     public void update(float deltaTimeSeconds) {
-        screen.handleInput(deltaTimeSeconds);
+        screen.update(deltaTimeSeconds);
     }
 
     /**

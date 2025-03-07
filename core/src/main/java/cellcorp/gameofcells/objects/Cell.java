@@ -1,6 +1,6 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.TextureNames;
+import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -43,7 +43,7 @@ public class Cell {
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
-        var cellTexture = assetManager.get(TextureNames.CELL, Texture.class);
+        var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
         batch.draw(cellTexture, cellPositionX, cellPositionY, cellWidth, cellHeight);
     }
@@ -84,7 +84,7 @@ public class Cell {
      * Dispose
      */
     public void dispose() {
-        assetManager.unload(TextureNames.CELL);
+        assetManager.unload(AssetFileNames.CELL);
     }
 
 }

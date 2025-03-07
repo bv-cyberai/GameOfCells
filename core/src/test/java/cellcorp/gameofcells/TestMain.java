@@ -2,6 +2,7 @@ package cellcorp.gameofcells;
 
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GamePlayScreen;
+import cellcorp.gameofcells.screens.ShopScreen;
 import com.badlogic.gdx.Input;
 import org.junit.jupiter.api.Test;
 
@@ -53,5 +54,20 @@ public class TestMain {
 
         assertEquals(Main.WORLD_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
         assertEquals(Main.WORLD_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
+    }
+
+    @Test
+    public void canMoveToShopScreen() {
+        var gameRunner = GameRunner.create();
+
+        // Press space to move to game screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Press 's' to move to shop screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.step();
+
+        assertInstanceOf(ShopScreen.class, gameRunner.game.getScreen());
     }
 }

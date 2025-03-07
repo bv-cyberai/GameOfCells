@@ -1,6 +1,6 @@
 package cellcorp.gameofcells.screens;
 
-import cellcorp.gameofcells.TextureNames;
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -70,17 +70,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Constructs the GamePlayScreen.
      *
-     * @param inputProvider Provides user input information.
+     * @param inputProvider    Provides user input information.
      * @param graphicsProvider Provide graphics information.
-     * @param game          The main game instance.
-     * @param camera        The camera for rendering.
-     * @param viewport      The viewport for screen rendering scaling.
+     * @param game             The main game instance.
+     * @param camera           The camera for rendering.
+     * @param viewport         The viewport for screen rendering scaling.
      */
     public GamePlayScreen(
-        InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
-        AssetManager assetManager,
-        OrthographicCamera camera,
-        FitViewport viewport
+            InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
+            AssetManager assetManager,
+            OrthographicCamera camera,
+            FitViewport viewport
     ) {
         this.assetManager = assetManager;
         this.game = game;
@@ -192,7 +192,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (gameStarted) {
             // Any updates for the game state after it starts
             if (inputProvider.isKeyPressed(Input.Keys.S)) {
-                game.setScreen(new ShopScreen(game, inputProvider, camera, viewport, this));
+                game.setScreen(new ShopScreen(
+                        game,
+                        inputProvider,
+                        graphicsProvider,
+                        assetManager,
+                        camera,
+                        viewport,
+                        this
+                ));
             }
         }
 
@@ -204,11 +212,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        var startBackground = assetManager.get(TextureNames.START_BACKGROUND, Texture.class);
-        var gameBackground = assetManager.get(TextureNames.GAME_BACKGROUND, Texture.class);
+        var startBackground = assetManager.get(AssetFileNames.START_SCREEN_BACKGROUND, Texture.class);
+        var gameBackground = assetManager.get(AssetFileNames.GAME_BACKGROUND, Texture.class);
 
         // Set up font
-        var font = assetManager.get(TextureNames.DEFAULT_FONT, BitmapFont.class);
+        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
 
         font.getData().setScale(2);  // Set the font size
 
@@ -250,6 +258,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Get the message being displayed.
+     *
      * @return The message being displayed.
      */
     public String getMessage() {
@@ -258,6 +267,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Get the batch for rendering.
+     *
      * @return The batch for rendering.
      */
     public SpriteBatch getBatch() {
