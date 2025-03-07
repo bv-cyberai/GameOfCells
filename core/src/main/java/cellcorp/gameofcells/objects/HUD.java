@@ -52,7 +52,6 @@ public class HUD {
         // int values that should be updated in update.
         cellHealth = 100;
         cellATP = 0;
-
     }
 
     /**

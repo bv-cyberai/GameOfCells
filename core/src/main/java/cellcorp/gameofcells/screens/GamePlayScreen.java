@@ -125,7 +125,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height);  // Update the viewport
+        viewport.update(width, height, true);  // Update the viewport
         camera.viewportWidth = width;   // Update the camera viewport width
         camera.viewportHeight = height; // Update the camera viewport height
     }
@@ -226,6 +226,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Draw the screen
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
+        viewport.apply(true);
         camera.update();    // Update the camera
         batch.setProjectionMatrix(camera.combined);
 
