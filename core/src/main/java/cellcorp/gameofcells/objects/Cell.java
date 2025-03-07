@@ -25,6 +25,7 @@ public class Cell {
     float cellPositionY;
     float cellWidth;
     float cellHeight;
+    private final float cellSpeed = 200f;   // Speed of the cell
 
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -33,6 +34,22 @@ public class Cell {
         cellPositionY = 300;
         cellWidth = 200;
         cellHeight = 200;
+    }
+
+    /**
+     * Moves the cell based on input direction
+     * 
+     * @param deltaTime - The time passed since the last frame
+     * @param moveLeft - If the cell should move left
+     * @param moveRight - If the cell should move right
+     * @param moveUp - If the cell should move up
+     * @param moveDown - If the cell should move down
+     */
+    public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
+        if (moveLeft) cellPositionX -= cellSpeed * deltaTime;
+        if (moveRight) cellPositionX += cellSpeed * deltaTime;
+        if (moveUp) cellPositionY += cellSpeed * deltaTime;
+        if (moveDown) cellPositionY -= cellSpeed * deltaTime;
     }
 
     /**

@@ -191,6 +191,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Future update logic can do here
         if (gameStarted) {
             // Any updates for the game state after it starts
+
+            // Move the cell based on input
+            cell.move(
+                    deltaTimeSeconds,
+                    inputProvider.isKeyPressed(Input.Keys.LEFT),    // Check if the left key is pressed
+                    inputProvider.isKeyPressed(Input.Keys.RIGHT),   // Check if the right key is pressed
+                    inputProvider.isKeyPressed(Input.Keys.UP),    // Check if the up key is pressed
+                    inputProvider.isKeyPressed(Input.Keys.DOWN)   // Check if the down key is pressed
+            );
+
             if (inputProvider.isKeyPressed(Input.Keys.S)) {
                 game.setScreen(new ShopScreen(
                         game,
