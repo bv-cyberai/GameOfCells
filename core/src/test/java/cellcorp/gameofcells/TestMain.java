@@ -2,6 +2,7 @@ package cellcorp.gameofcells;
 
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GamePlayScreen;
+import cellcorp.gameofcells.screens.MainMenuScreen;
 import cellcorp.gameofcells.screens.ShopScreen;
 import com.badlogic.gdx.Input;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class TestMain {
         var gameRunner = GameRunner.create();
 
         // Hold down space and step forward a frame.
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
 
         // Make sure we're on the gameplay screen, and that some glucose have spawned
@@ -69,5 +70,11 @@ public class TestMain {
         gameRunner.step();
 
         assertInstanceOf(ShopScreen.class, gameRunner.game.getScreen());
+    }
+
+    @Test
+    public void gameStartsOnMainMenuScreen() {
+        var gameRunner = GameRunner.create();
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
     }
 }

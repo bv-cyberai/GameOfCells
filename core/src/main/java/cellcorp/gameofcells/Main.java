@@ -17,19 +17,17 @@ package cellcorp.gameofcells;
 import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.screens.GameOfCellsScreen;
+import cellcorp.gameofcells.screens.MainMenuScreen;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.providers.DefaultInputProvider;
 import cellcorp.gameofcells.providers.InputProvider;
-import cellcorp.gameofcells.screens.GamePlayScreen;
 
 public class Main implements ApplicationListener {
     // These configuration values are referenced in `cellcorp.gameofcells.lwjgl3.Lwjgl3Launcher`
@@ -122,7 +120,7 @@ public class Main implements ApplicationListener {
         assetManager.load("rubik.fnt", BitmapFont.class);
         assetManager.load("rubik1.png", Texture.class);
         assetManager.load("rubik2.png", Texture.class);
-        assetManager.load(AssetFileNames.START_SCREEN_BACKGROUND, Texture.class);
+        assetManager.load(AssetFileNames.START_BACKGROUND, Texture.class);
         assetManager.load(AssetFileNames.GAME_BACKGROUND, Texture.class);
         assetManager.load(AssetFileNames.SHOP_BACKGROUND, Texture.class);
         assetManager.load(AssetFileNames.CELL, Texture.class);
@@ -131,7 +129,8 @@ public class Main implements ApplicationListener {
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new GamePlayScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
+        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
+//        setScreen(new GamePlayScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
     }
 
     @Override

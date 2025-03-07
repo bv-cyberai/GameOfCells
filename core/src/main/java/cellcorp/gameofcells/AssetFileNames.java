@@ -6,9 +6,9 @@ package cellcorp.gameofcells;
  */
 public class AssetFileNames {
     /**
-     * The file name for the start background.
+     * The file name for the main menu screen background.
      */
-    public static String START_SCREEN_BACKGROUND = "startBackground.png";
+    public static String START_BACKGROUND = "startBackground.png";
 
     /**
      * The file name for the game background.

@@ -37,6 +37,9 @@ import cellcorp.gameofcells.objects.HUD;
  * First screen of the application. Displayed after the application is created.
  */
 public class GamePlayScreen implements GameOfCellsScreen {
+    public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
+    public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
+
     private Main game;
 
     /// Loads assets during game creation,
@@ -54,13 +57,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     // For rendering text
     protected SpriteBatch batch;  // Define the batch for drawing text
-
-    private static final String MESSAGE_START = "Press Enter to Start";  // Message for the start screen
-    private static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
-    private static final String MESSAGE_SHOP = "Press S to access the shop screen.";
-
-    private boolean gameStarted = false;  // Flag to indicate if the game has started
-    private boolean startScreen = true;  // Flag to indicate if the start screen is being displayed
 
     //Objects for rendering the game
     private final Cell cell;
@@ -174,11 +170,26 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        // Check for key input
-        if (!gameStarted && inputProvider.isKeyPressed(Input.Keys.ENTER)) {
-            gameStarted = true;
-            startScreen = false;
+        // Move to `ShopScreen` when 's' is pressed.
+        if (inputProvider.isKeyPressed(Input.Keys.S)) {
+            game.setScreen(new ShopScreen(
+                    game,
+                    inputProvider,
+                    graphicsProvider,
+                    assetManager,
+                    camera,
+                    viewport,
+                    this
+            ));
         }
+
+        cell.move(
+                deltaTimeSeconds,
+                inputProvider.isKeyPressed(Input.Keys.LEFT),    // Check if the left key is pressed
+                inputProvider.isKeyPressed(Input.Keys.RIGHT),   // Check if the right key is pressed
+                inputProvider.isKeyPressed(Input.Keys.UP),    // Check if the up key is pressed
+                inputProvider.isKeyPressed(Input.Keys.DOWN)   // Check if the down key is pressed
+        );
     }
 
     /**
@@ -188,32 +199,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        // Future update logic can do here
-        if (gameStarted) {
-            // Any updates for the game state after it starts
-
-            // Move the cell based on input
-            cell.move(
-                    deltaTimeSeconds,
-                    inputProvider.isKeyPressed(Input.Keys.LEFT),    // Check if the left key is pressed
-                    inputProvider.isKeyPressed(Input.Keys.RIGHT),   // Check if the right key is pressed
-                    inputProvider.isKeyPressed(Input.Keys.UP),    // Check if the up key is pressed
-                    inputProvider.isKeyPressed(Input.Keys.DOWN)   // Check if the down key is pressed
-            );
-
-            if (inputProvider.isKeyPressed(Input.Keys.S)) {
-                game.setScreen(new ShopScreen(
-                        game,
-                        inputProvider,
-                        graphicsProvider,
-                        assetManager,
-                        camera,
-                        viewport,
-                        this
-                ));
-            }
-        }
-
         hud.update(deltaTimeSeconds);
     }
 
@@ -222,7 +207,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        var startBackground = assetManager.get(AssetFileNames.START_SCREEN_BACKGROUND, Texture.class);
+        var startBackground = assetManager.get(AssetFileNames.START_BACKGROUND, Texture.class);
         var gameBackground = assetManager.get(AssetFileNames.GAME_BACKGROUND, Texture.class);
 
         // Set up font
@@ -236,33 +221,26 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Draw the screen
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
+        // I don't know what `viewport.apply(...)` does but when it was omitted
+        // the HTML version was displaying way in the bottom-left and getting cut off.
         viewport.apply(true);
         camera.update();    // Update the camera
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();  // Start the batch for drawing 2d element
 
-        if (!gameStarted) {
-            // Display the start screen
-            batch.draw(startBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the start background
+        // Draw the gameplay screen
+        batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
 
-            // Draw the actual text in white
-            font.setColor(Color.WHITE);  // white for text
-            font.draw(batch, MESSAGE_START, 100, 100);  // Regular position
-        } else {
-            // Draw the gameplay screen
-            batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
+        // Draw the text in white
+        font.setColor(Color.WHITE);  // white for text
+        font.draw(batch, MESSAGE_GAME, 100, 100);  // Regular position
+        font.draw(batch, MESSAGE_SHOP, 102, 75);
 
-            // Draw the text in white
-            font.setColor(Color.WHITE);  // white for text
-            font.draw(batch, MESSAGE_GAME, 100, 100);  // Regular position
-            font.draw(batch, MESSAGE_SHOP, 102, 75);
-
-            // You can start rendering other game objects (like the cell) here
-            glucoseManager.draw(batch); // draws glucose beneath the cell.
-            hud.draw(batch); // Draw hud
-            cell.draw(batch);
-        }
+        // You can start rendering other game objects (like the cell) here
+        glucoseManager.draw(batch); // draws glucose beneath the cell.
+        hud.draw(batch); // Draw hud
+        cell.draw(batch);
 
         batch.end();    // End the batch
     }
@@ -273,7 +251,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @return The message being displayed.
      */
     public String getMessage() {
-        return gameStarted ? MESSAGE_GAME : MESSAGE_START;
+        return MESSAGE_GAME;
     }
 
     /**

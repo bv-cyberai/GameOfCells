@@ -21,27 +21,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /// Tests for [GamePlayScreen]
 public class TestGamePlayScreen {
-
-    // Test that the game starts at the start screen.
-    // This test creates a new GamePlayScreen instance and checks that the message is correct.
-    @Test
-    public void gameStartsAtStartScreen() {
-        // Create a new GamePlayScreen instance with mock dependencies.
-        var inputProvider = new FakeInputProvider();
-        var graphicsProvider = new FakeGraphicsProvider();
-        var game = Mockito.mock(Main.class);
-        var assetManager = Mockito.mock(AssetManager.class);
-        var camera = Mockito.mock(OrthographicCamera.class);
-        var viewport = Mockito.mock(FitViewport.class);
-        var screen = new GamePlayScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport);
-
-        // Check that the game initially starts at the start screen with the correct message.
-        assertEquals("Press Enter to Start", screen.getMessage(), "Expected start message");
-    }
 
     // deprecating test
     // @Test

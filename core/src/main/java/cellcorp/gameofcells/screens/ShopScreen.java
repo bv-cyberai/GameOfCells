@@ -170,6 +170,8 @@ public class ShopScreen implements GameOfCellsScreen {
 
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
+        // I don't know what `viewport.apply(...)` does but when it was omitted
+        // the HTML version was displaying way in the bottom-left and getting cut off.
         viewport.apply();
         camera.update();    // Update the camera
         batch.setProjectionMatrix(camera.combined);
