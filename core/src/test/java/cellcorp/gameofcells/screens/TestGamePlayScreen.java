@@ -32,7 +32,7 @@ public class TestGamePlayScreen {
     // This test creates a new GamePlayScreen instance and checks that the message is correct.
     @Test
     public void gameStartsAtStartScreen() {
-        // Create a new GamePlayScreen instance with mock dependencies. 
+        // Create a new GamePlayScreen instance with mock dependencies.
         var inputProvider = new FakeInputProvider();
         var game = Mockito.mock(Main.class);
         var assetManager = Mockito.mock(AssetManager.class);

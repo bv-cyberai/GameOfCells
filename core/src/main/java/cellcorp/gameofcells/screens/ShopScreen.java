@@ -16,49 +16,24 @@ package cellcorp.gameofcells.screens;
 * @assignment GameOfCells
 */
 
-import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.inputproviders.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.inputproviders.InputProvider;
-import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.objects.GlucoseManager;
-
-/**
-* GamePlay Screen
-*
-* Contains the main gameplay loop.
-*
-* @author Brendon Vinyard / vineyabn207
-* @author Andrew Sennoga-Kimuli / sennogat106
-* @author Mark Murphy / murphyml207
-* @author Tim Davey / daveytj206
-*
-* @date 03/05/2025
-* @course CIS 405
-* @assignment GameOfCells
-*/
-
 
 /**
  * First screen of the application. Displayed after the application is created.
  */
-public class GamePlayScreen implements Screen {
+public class ShopScreen implements Screen {
     private Main game;
-
-
-    /// Loads assets during game creation,
-    /// then provides loaded assets to draw code, using [AssetManager#get(String)]
-    private final AssetManager assetManager;
 
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
@@ -68,25 +43,24 @@ public class GamePlayScreen implements Screen {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
+    // Keeps track of the initial screen prior to transition
+    private Screen previousScreen;
+
     // For rendering text
     protected SpriteBatch batch;  // Define the batch for drawing text
     private BitmapFont font;  // Define the font for text
 
     private static final String MESSAGE_START = "Press Enter to Start";  // Message for the start screen
     private static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
-    private static final String MESSAGE_SHOP = "Press S to access the shop screen.";
 
-    private boolean gameStarted = false;  // Flag to indicate if the game has started
-    private boolean startScreen = true;  // Flag to indicate if the start screen is being displayed
-
-    //Objects for rendering the game
-    private Cell cell;
-    private GlucoseManager glucoseManager;
+    private boolean gameStarted = true;  // Flag to indicate if the game has started
+    private boolean startScreen = false;  // Flag to indicate if the start screen is being displayed
 
     // Background textures
     private Texture startBackground;
     protected Texture gameBackground;
     protected Texture shopBackground;
+
 
     /**
      * Constructs the GamePlayScreen.
@@ -94,14 +68,14 @@ public class GamePlayScreen implements Screen {
      * @param inputProvider Handles user input.
      * @param camera The camera for rendering.
      * @param viewport The viewport for screen rendering scaling.
+     * @param previousScreen The current screen gameplayscreen
      */
-    public GamePlayScreen(Main game, AssetManager assetManager, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
-        this.assetManager = assetManager;
+    public ShopScreen(Main game, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport, Screen previousScreen) {
         this.game = game;
         this.inputProvider = inputProvider;
-
         this.camera = camera;
         this.viewport = viewport;
+        this.previousScreen = previousScreen;
     }
 
     /**
@@ -119,18 +93,13 @@ public class GamePlayScreen implements Screen {
         batch = new SpriteBatch();  // Initialize the batch
 
         // Load background textures
-        startBackground = new Texture("startBackground.png");
-        gameBackground = new Texture("gameBackground.png");
+
         shopBackground = new Texture("shopBackground.jpg");
-
-        cell = new Cell(assetManager); // Initialize cell
-        glucoseManager = new GlucoseManager(assetManager);
-
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
     /// LibGDX combines these into a single method call, but we separate them out into public methods,
-    /// to let us write tests where we call only [GamePlayScreen#handleInput] and [GamePlayScreen#update]
+    /// to let us write tests where we call only [ShopScreen#handleInput] and [ShopScreen#update]
     @Override
     public void render(float delta) {
         handleInput();
@@ -182,12 +151,7 @@ public class GamePlayScreen implements Screen {
     public void dispose() {
         // Destroy screen's assets here.
         font.dispose();  // Dispose of the font
-        cell.dispose(); // dispose cell
-        glucoseManager.dispose();
         batch.dispose();  // Dispose of the batch
-
-        //need to handle actually disposing but for now meh
-        // glucose.dispose();
 
         // Dispose of background textures
         startBackground.dispose();
@@ -213,9 +177,8 @@ public class GamePlayScreen implements Screen {
     public void update(float deltaTime) {
         // Future update logic can do here
         if (gameStarted) {
-            // Any updates for the game state after it starts
-            if (inputProvider.isKeyPressed(Input.Keys.S)) {
-                game.setScreen(new ShopScreen(game, inputProvider, camera, viewport, this));
+            if (inputProvider.isKeyPressed(Input.Keys.E)) {
+                game.setScreen(previousScreen);
             }
         }
     }
@@ -228,31 +191,20 @@ public class GamePlayScreen implements Screen {
 
         camera.update();    // Update the camera
 
-        batch.begin();  // Start the batch for drawing 2d element
+        batch.begin();  // Start the batch for drawing 2d elements
 
-        if (!gameStarted) {
-            // Display the start screen
-            batch.draw(startBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the start background
-
-            // Draw the actual text in white
-            font.setColor(Color.WHITE);  // white for text
-            font.draw(batch, MESSAGE_START, 100, 100);  // Regular position
-        } else {
-            // Draw the gameplay screen
-            batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
+            // Draw the shop screen
+            batch.draw(shopBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
 
             // Draw the text in white
             font.setColor(Color.WHITE);  // white for text
-            font.draw(batch, MESSAGE_GAME, 100, 100);  // Regular position
-            font.draw(batch, MESSAGE_SHOP, 102, 75);
-
-            glucoseManager.draw(batch); // draws glucose beneath the cell.
+            font.draw(batch, "Welcome to the Shop Screen", 100, 100);  // Regular position
+            font.draw(batch, "Press E to exit", 102, 70);
             // You can start rendering other game objects (like the cell) here
-            cell.draw(batch);
-        }
 
         batch.end();    // End the batch
     }
+
 
     /**
      * Get the message being displayed.
@@ -275,6 +227,6 @@ public class GamePlayScreen implements Screen {
      * @return The game background texture.
      */
     public Texture getGameBackground() {
-        return gameBackground;
+        return shopBackground;
     }
 }

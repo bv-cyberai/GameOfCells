@@ -46,7 +46,7 @@ public class Cell {
         assert (cellTexture != null);
         batch.draw(cellTexture, cellPositionX, cellPositionY, cellWidth, cellHeight);
     }
-    
+
     /**
      * Get Cell Position X
      * @return cellPositionX
