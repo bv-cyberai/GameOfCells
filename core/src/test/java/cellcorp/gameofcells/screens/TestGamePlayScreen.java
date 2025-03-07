@@ -11,16 +11,16 @@ package cellcorp.gameofcells.screens;
  * @assignment GameOfCells
  */
 
-import cellcorp.gameofcells.FakeInputProvider;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.Gdx;
-import cellcorp.gameofcells.Main;
-import com.badlogic.gdx.Input;
+import cellcorp.gameofcells.inputproviders.FakeInputProvider;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
 import org.junit.jupiter.api.Test;
+import cellcorp.gameofcells.Main;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Gdx;
 import org.mockito.Mockito;
-
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,9 +35,10 @@ public class TestGamePlayScreen {
         // Create a new GamePlayScreen instance with mock dependencies. 
         var inputProvider = new FakeInputProvider();
         var game = Mockito.mock(Main.class);
+        var assetManager = Mockito.mock(AssetManager.class);
         var camera = Mockito.mock(OrthographicCamera.class);
         var viewport = Mockito.mock(FitViewport.class);
-        var screen = new GamePlayScreen(game, inputProvider, camera, viewport);
+        var screen = new GamePlayScreen(game, assetManager, inputProvider, camera, viewport);
 
         // Check that the game initially starts at the start screen with the correct message.
         assertEquals("Press Enter to Start", screen.getMessage(), "Expected start message");
@@ -50,14 +51,15 @@ public class TestGamePlayScreen {
     public void pressingEnterStartsGame() {
         // Create a new GamePlayScreen, giving it our input provider to use, instead of the default one.
         var inputProvider = new FakeInputProvider();
-        // `GamePlayScreen` expects a game, camera, and viewport.
+        // `GamePlayScreen` expects a game, assetManager, camera, and viewport.
         // I claim that none of these should affect the outcome of this test,
         // so I use Mockito to create fake versions of each, which return nothing.
         // For more information, see the class testing book or ask Mark.
         var game = Mockito.mock(Main.class);
+        var assetManager = Mockito.mock(AssetManager.class);
         var camera = Mockito.mock(OrthographicCamera.class);
         var viewport = Mockito.mock(FitViewport.class);
-        var screen = new GamePlayScreen(game, inputProvider, camera, viewport);
+        var screen = new GamePlayScreen(game, assetManager, inputProvider, camera, viewport);
 
         // Initially, check that the start screen message is shown.
         assertTrue(screen.getMessage().equals("Press Enter to Start"), "Expected start message");

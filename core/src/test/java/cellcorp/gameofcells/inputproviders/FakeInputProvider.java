@@ -1,4 +1,4 @@
-package cellcorp.gameofcells;
+package cellcorp.gameofcells.inputproviders;
 
 /*
  * @author Brendon Vinyard / vineyabn207
@@ -12,6 +12,8 @@ package cellcorp.gameofcells;
  */
 
 import java.util.Set;
+
+import cellcorp.gameofcells.inputproviders.InputProvider;
 
 /// Fake [InputProvider] for use in tests.
 ///

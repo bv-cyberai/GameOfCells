@@ -14,7 +14,7 @@ A game used to teach students about cells and cell functions.
 
 # Pull Request Reviewer Roster
 When your PR is ready for review, ping the next person in the list to review:
-- Brenon
+- Brendon
 - Tim
 - Andrew
 - Mark
@@ -164,3 +164,13 @@ Access the following URL via a web browser:
 ### Test
 Testing is performed via JUnit tests on each build.
 
+
+## Asset list
+
+### List of assets/licenses:
+
+
+### Creative Commons:
+Glucose: - Still Undecided.
+- https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png
+- https://openclipart.org/detail/75313/glossy-balls

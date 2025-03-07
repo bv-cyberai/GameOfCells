@@ -20,21 +20,44 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.InputProvider;
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.inputproviders.InputProvider;
 import cellcorp.gameofcells.objects.Cell;
+import cellcorp.gameofcells.objects.GlucoseManager;
+
+/**
+* GamePlay Screen
+*
+* Contains the main gameplay loop.
+*
+* @author Brendon Vinyard / vineyabn207
+* @author Andrew Sennoga-Kimuli / sennogat106
+* @author Mark Murphy / murphyml207
+* @author Tim Davey / daveytj206
+*
+* @date 03/05/2025
+* @course CIS 405
+* @assignment GameOfCells
+*/
+
 
 /**
  * First screen of the application. Displayed after the application is created.
  */
 public class GamePlayScreen implements Screen {
     private Main game;
+
+
+    /// Loads assets during game creation,
+    /// then provides loaded assets to draw code, using [AssetManager#get(String)]
+    private final AssetManager assetManager;
 
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
@@ -56,6 +79,7 @@ public class GamePlayScreen implements Screen {
 
     //Objects for rendering the game
     private Cell cell;
+    private GlucoseManager glucoseManager;
 
     // Background textures
     private Texture startBackground;
@@ -68,9 +92,11 @@ public class GamePlayScreen implements Screen {
      * @param camera The camera for rendering.
      * @param viewport The viewport for screen rendering scaling.
      */
-    public GamePlayScreen(Main game, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
+    public GamePlayScreen(Main game, AssetManager assetManager, InputProvider inputProvider, OrthographicCamera camera, FitViewport viewport) {
+        this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
+
         this.camera = camera;
         this.viewport = viewport;
     }
@@ -88,11 +114,14 @@ public class GamePlayScreen implements Screen {
         font.setColor(Color.BLACK);
 
         batch = new SpriteBatch();  // Initialize the batch
-        cell = new Cell(); // Initialize cell
 
         // Load background textures
         startBackground = new Texture("startBackground.png");
         gameBackground = new Texture("gameBackground.png");
+
+        cell = new Cell(assetManager); // Initialize cell
+        glucoseManager = new GlucoseManager(assetManager);
+
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
@@ -150,7 +179,11 @@ public class GamePlayScreen implements Screen {
         // Destroy screen's assets here.
         font.dispose();  // Dispose of the font
         cell.dispose(); // dispose cell
+        glucoseManager.dispose();
         batch.dispose();  // Dispose of the batch
+        
+        //need to handle actually disposing but for now meh
+        // glucose.dispose();
 
         // Dispose of background textures
         startBackground.dispose();
@@ -187,7 +220,7 @@ public class GamePlayScreen implements Screen {
 
         camera.update();    // Update the camera
 
-        batch.begin();  // Start the batch for drawing 2d elements
+        batch.begin();  // Start the batch for drawing 2d element
         
         if (!gameStarted) {
             // Display the start screen
@@ -204,6 +237,7 @@ public class GamePlayScreen implements Screen {
             font.setColor(Color.WHITE);  // white for text
             font.draw(batch, MESSAGE_GAME, 100, 100);  // Regular position
             
+            glucoseManager.draw(batch); // draws glucose beneath the cell.
             // You can start rendering other game objects (like the cell) here
             cell.draw(batch);
         }

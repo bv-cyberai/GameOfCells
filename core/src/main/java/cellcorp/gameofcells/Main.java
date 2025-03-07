@@ -17,10 +17,13 @@ package cellcorp.gameofcells;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import cellcorp.gameofcells.inputproviders.DefaultInputProvider;
+import cellcorp.gameofcells.inputproviders.InputProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
 public class Main extends Game {
@@ -28,6 +31,10 @@ public class Main extends Game {
     // reference.
     // WORLD_WIDTH = 1200
     // WORLD_HEIGHT = 800
+
+    /// Loads assets during game creation,
+    /// then provides loaded assets to draw code, using [AssetManager#get(String)]
+    private final AssetManager assetManager;
 
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
@@ -38,14 +45,16 @@ public class Main extends Game {
     private OrthographicCamera camera;
     private FitViewport viewport;
 
-    /// Create a game instance with the default LibGDX input provider.
+    /// Create a game instance with default providers.
     public Main() {
-        this(new DefaultInputProvider());
+        this(new AssetManager(), new DefaultInputProvider());
     }
 
     /// Create a game instance.
+    /// @param assetManager Loads assets. Use `mock(AssetManager.class)` in test code.
     /// @param inputProvider Input provider. Use FakeInputProvider in test code.
-    public Main(InputProvider inputProvider) {
+    public Main(AssetManager assetManager, InputProvider inputProvider) {
+        this.assetManager = assetManager;
         this.inputProvider = inputProvider;
     }
 
@@ -56,33 +65,21 @@ public class Main extends Game {
 
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
+        // Load up the assets, blocking until they're loaded.
+        // The asset manager expects the asset's file name,
+        // and the class of the asset to load.
+        assetManager.load("Cell.png", Texture.class);
+        assetManager.load("glucose2.png", Texture.class);
+        assetManager.finishLoading();
+
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new GamePlayScreen(this, inputProvider, camera, viewport));
-    }
-    
-    /**
-     * Get Camera
-     * @return camera
-     */
-    public OrthographicCamera getCamera() {
-        return camera;
-    }
-
-    /**
-     * Get Viewport
-     * @return viewport
-     */
-    public FitViewport getViewport() {
-        return viewport;
+        setScreen(new GamePlayScreen(this, assetManager, inputProvider, camera, viewport));
     }
 
     @Override
-    public void render() {
-        super.render();
-    }
-    
-    @Override
-    public void dispose() {
+    public void dispose () {
         super.dispose();
+        assetManager.dispose();
     }
+
 }
