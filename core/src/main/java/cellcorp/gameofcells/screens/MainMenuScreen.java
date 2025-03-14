@@ -1,9 +1,5 @@
 package cellcorp.gameofcells.screens;
 
-import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +9,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+
+import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * The screen for the main menu.
