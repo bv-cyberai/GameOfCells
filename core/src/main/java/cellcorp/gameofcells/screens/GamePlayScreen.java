@@ -1,22 +1,23 @@
 package cellcorp.gameofcells.screens;
 
-import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
+import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * GamePlay Screen
@@ -57,6 +58,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     // For rendering text
     protected SpriteBatch batch;  // Define the batch for drawing text
+    protected ShapeRenderer shape;
 
     //Objects for rendering the game
     private final Cell cell;
@@ -88,8 +90,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         this.cell = new Cell(assetManager);
         this.glucoseManager = new GlucoseManager(assetManager);
-        this.hud = new HUD(assetManager);
+        
         this.batch = graphicsProvider.createSpriteBatch();
+        this.shape = graphicsProvider.createShapeRenderer();
+
+        this.hud = new HUD(assetManager, shape);
     }
 
     /**
@@ -199,7 +204,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        hud.update(deltaTimeSeconds);
+        hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
     }
 
     /**

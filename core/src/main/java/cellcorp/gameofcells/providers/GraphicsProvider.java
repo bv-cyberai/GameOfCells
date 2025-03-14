@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.providers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Provides information from `Gdx.graphics`, which is needed by game code.
@@ -20,4 +21,6 @@ public interface GraphicsProvider {
      * @return A newly-constructed {@link SpriteBatch}
      */
     SpriteBatch createSpriteBatch();
+
+    ShapeRenderer createShapeRenderer();
 }

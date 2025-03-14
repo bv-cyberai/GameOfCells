@@ -1,9 +1,10 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import cellcorp.gameofcells.AssetFileNames;
 /**
 * Cell Class
 *
@@ -27,6 +28,9 @@ public class Cell {
     float cellHeight;
     private final float cellSpeed = 200f;   // Speed of the cell
 
+    private int cellHealth;
+    private int cellATP;
+
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
 
@@ -34,6 +38,9 @@ public class Cell {
         cellPositionY = 300;
         cellWidth = 200;
         cellHeight = 200;
+
+        cellHealth = 50;
+        cellATP = 0;
     }
 
     /**
@@ -95,6 +102,14 @@ public class Cell {
      */
     public float getCellHeight() {
         return cellHeight;
+    }
+
+    public int getCellHealth() {
+        return cellHealth;
+    }
+
+    public int getCellATP() {
+        return cellATP;
     }
 
     /**
