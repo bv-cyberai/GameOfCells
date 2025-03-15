@@ -3,7 +3,10 @@ package cellcorp.gameofcells.objects;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import cellcorp.gameofcells.Main;
 
 /**
  * Hud Class
@@ -25,6 +28,10 @@ public class HUD {
     // private ShapeRenderer shape;
 
     private BitmapFont font;
+    private BitmapFont barFont;
+    private GlyphLayout healthLayout;
+    private GlyphLayout ATPLayout;
+
     private Float timer;
     private int displayTime;
 
@@ -45,7 +52,7 @@ public class HUD {
      * 
      * This font cant be changed if you have other preferences.
      */
-    public HUD(AssetManager assetManager,int maxHealth, int maxATP) {
+    public HUD(AssetManager assetManager, int maxHealth, int maxATP) {
         this.assetManager = assetManager;
 
         timer = 0f;
@@ -53,14 +60,15 @@ public class HUD {
         this.maxHealth = maxHealth;
         this.maxATP = maxATP;
 
-        if (assetManager != null) { 
+        healthLayout = new GlyphLayout();
+        ATPLayout = new GlyphLayout();
+        
+
+        if (assetManager != null) {
             assetManager.load("rubik.fnt", BitmapFont.class);
             assetManager.load("rubik1.png", Texture.class);
             assetManager.load("rubik2.png", Texture.class);
             assetManager.finishLoading();
-
-            // font = assetManager.get("rubik.fnt", BitmapFont.class);
-            // font.getData().setScale(0.25f);
         }
     }
 
@@ -74,11 +82,6 @@ public class HUD {
     public void draw(SpriteBatch batch) {
 
         // figure out how to load once.
-        // assetManager.load("rubik.fnt", BitmapFont.class);
-        // assetManager.load("rubik1.png", Texture.class); // Texture for font characters
-        // assetManager.load("rubik2.png", Texture.class); // Texture for font characters
-        // assert (font != null);
-        // batch.begin();
         font = assetManager.get("rubik.fnt", BitmapFont.class);
         font.getData().setScale(0.25f); // Set the scale of the font
 
@@ -86,6 +89,25 @@ public class HUD {
         font.draw(batch, atpString, 10, 770);
         font.draw(batch, timerString, 10, 750);
 
+
+
+    }
+
+    public void drawBarText(SpriteBatch batch) {
+        barFont = assetManager.get("rubik.fnt", BitmapFont.class);
+        barFont.getData().setScale(.20f);
+
+        healthLayout.setText(barFont, "HEALTH");
+        ATPLayout.setText(barFont, "ATP");
+
+        float healthTextWidth = healthLayout.width;
+        float healthTextHeight = healthLayout.height;
+
+        float ATPTextWidth = ATPLayout.width;
+        float ATPTextHeight = ATPLayout.height;
+
+        barFont.draw(batch, "HEALTH", (Main.WORLD_WIDTH - healthTextWidth) / 2, 788);
+        barFont.draw(batch, "ATP", (Main.WORLD_WIDTH - ATPTextWidth) / 2, 758);
     }
 
     /**

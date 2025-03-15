@@ -34,7 +34,6 @@ import cellcorp.gameofcells.providers.InputProvider;
  * @assignment GameOfCells
  */
 
-
 /**
  * First screen of the application. Displayed after the application is created.
  */
@@ -58,15 +57,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final FitViewport viewport;
 
     // For rendering text
-    protected SpriteBatch batch;  // Define the batch for drawing text
+    protected SpriteBatch batch; // Define the batch for drawing text
     protected ShapeRenderer shape;
 
-    //Objects for rendering the game
+    // Objects for rendering the game
     private final Cell cell;
     private final GlucoseManager glucoseManager;
     private final HUD hud;
     private final EnergyBars energyBars;
-    // private final EnergyBars ATPBar;
 
     /**
      * Constructs the GamePlayScreen.
@@ -81,8 +79,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
             InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
             AssetManager assetManager,
             OrthographicCamera camera,
-            FitViewport viewport
-    ) {
+            FitViewport viewport) {
         this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
@@ -93,14 +90,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         this.cell = new Cell(assetManager);
         this.glucoseManager = new GlucoseManager(assetManager);
-        
+
         this.batch = graphicsProvider.createSpriteBatch();
         this.shape = graphicsProvider.createShapeRenderer();
 
         this.hud = new HUD(assetManager, cell.getMaxHealth(), cell.getMaxATP());
-        // this.healthBar = new EnergyBars(EnergyBars.Type.HEALTH);
-        // this.ATPBar = new EnergyBars(EnergyBars.Type.ATP);
-        energyBars = new EnergyBars(cell.getMaxHealth(),cell.getMaxATP());
+        energyBars = new EnergyBars(assetManager, cell.getMaxHealth(), cell.getMaxATP());
     }
 
     /**
@@ -113,9 +108,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // it should not crash test code.
     }
 
-    /// Move the game state forward a tick, handling input, performing updates, and rendering.
-    /// LibGDX combines these into a single method call, but we separate them out into public methods,
-    /// to let us write tests where we call only [GamePlayScreen#handleInput] and [GamePlayScreen#update]
+    /// Move the game state forward a tick, handling input, performing updates, and
+    /// rendering.
+    /// LibGDX combines these into a single method call, but we separate them out
+    /// into public methods,
+    /// to let us write tests where we call only [GamePlayScreen#handleInput] and
+    /// [GamePlayScreen#update]
     @Override
     public void render(float deltaTimeSeconds) {
         handleInput(deltaTimeSeconds);
@@ -132,8 +130,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true);  // Update the viewport
-        camera.viewportWidth = width;   // Update the camera viewport width
+        viewport.update(width, height, true); // Update the viewport
+        camera.viewportWidth = width; // Update the camera viewport width
         camera.viewportHeight = height; // Update the camera viewport height
     }
 
@@ -170,14 +168,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
         cell.dispose(); // dispose cell
         glucoseManager.dispose();
         hud.dispose();
-        batch.dispose();  // Dispose of the batch
-
-        //need to handle actually disposing but for now meh
-        // glucose.dispose();
+        energyBars.dispose();
+        batch.dispose(); // Dispose of the batch
     }
 
     /**
-     * Handle input from the user and transitions to the GamePlayScreen when Enter is pressed.
+     * Handle input from the user and transitions to the GamePlayScreen when Enter
+     * is pressed.
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
@@ -190,16 +187,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     assetManager,
                     camera,
                     viewport,
-                    this
-            ));
+                    this));
         }
 
         cell.move(
                 deltaTimeSeconds,
-                inputProvider.isKeyPressed(Input.Keys.LEFT),    // Check if the left key is pressed
-                inputProvider.isKeyPressed(Input.Keys.RIGHT),   // Check if the right key is pressed
-                inputProvider.isKeyPressed(Input.Keys.UP),    // Check if the up key is pressed
-                inputProvider.isKeyPressed(Input.Keys.DOWN)   // Check if the down key is pressed
+                inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
+                inputProvider.isKeyPressed(Input.Keys.RIGHT), // Check if the right key is pressed
+                inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
+                inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
     }
 
@@ -212,7 +208,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void update(float deltaTimeSeconds) {
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
         energyBars.update(cell.getCellHealth(), cell.getCellATP());
-        // EnergyBars.update(cell.getCellHealth(), cell.getCellATP());
     }
 
     /**
@@ -226,28 +221,29 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Set up font
         var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
 
-        font.getData().setScale(2);  // Set the font size
+        font.getData().setScale(2); // Set the font size
 
         // Set the font color to white
         font.setColor(Color.BLACK);
 
         // Draw the screen
-        ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
+        ScreenUtils.clear(0, 0, 0, 1); // Clear the screen with a black background
 
         // I don't know what `viewport.apply(...)` does but when it was omitted
         // the HTML version was displaying way in the bottom-left and getting cut off.
         viewport.apply(true);
-        camera.update();    // Update the camera
+        camera.update(); // Update the camera
         batch.setProjectionMatrix(camera.combined);
 
-        batch.begin();  // Start the batch for drawing 2d element
+        batch.begin(); // Start the batch for drawing 2d element
 
         // Draw the gameplay screen
-        batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
+        batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight()); // Draw the game
+                                                                                               // background
 
         // Draw the text in white
-        font.setColor(Color.WHITE);  // white for text
-        font.draw(batch, MESSAGE_GAME, 100, 100);  // Regular position
+        font.setColor(Color.WHITE); // white for text
+        font.draw(batch, MESSAGE_GAME, 100, 100); // Regular position
         font.draw(batch, MESSAGE_SHOP, 102, 75);
 
         // You can start rendering other game objects (like the cell) here
@@ -255,13 +251,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
         hud.draw(batch); // Draw hud
         cell.draw(batch);
 
-        batch.end();    // End the batch
+        batch.end(); // End the batch
 
-        //Uses shape renderer must be drawn outside of batch.
-        // healthBar.draw();
-        // ATPBar.draw();
+        // Uses shape renderer must be drawn outside of batch.
         energyBars.draw();
-        
+
+        batch.begin();
+        hud.drawBarText(batch);
+        batch.end();
 
     }
 
