@@ -14,9 +14,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
+import cellcorp.gameofcells.objects.EnergyBars;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
-import cellcorp.gameofcells.objects.HUDBar;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -65,8 +65,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Cell cell;
     private final GlucoseManager glucoseManager;
     private final HUD hud;
-    private final HUDBar healthBar;
-    private final HUDBar ATPBar;
+    private final EnergyBars energyBars;
+    // private final EnergyBars ATPBar;
 
     /**
      * Constructs the GamePlayScreen.
@@ -97,9 +97,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.shape = graphicsProvider.createShapeRenderer();
 
-        this.hud = new HUD(assetManager, shape);
-        this.healthBar = new HUDBar(HUDBar.Type.HEALTH);
-        this.ATPBar = new HUDBar(HUDBar.Type.ATP);
+        this.hud = new HUD(assetManager, cell.getMaxHealth(), cell.getMaxATP());
+        // this.healthBar = new EnergyBars(EnergyBars.Type.HEALTH);
+        // this.ATPBar = new EnergyBars(EnergyBars.Type.ATP);
+        energyBars = new EnergyBars(cell.getMaxHealth(),cell.getMaxATP());
     }
 
     /**
@@ -210,7 +211,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
-        HUDBar.update(cell.getCellHealth(), cell.getCellATP());
+        energyBars.update(cell.getCellHealth(), cell.getCellATP());
+        // EnergyBars.update(cell.getCellHealth(), cell.getCellATP());
     }
 
     /**
@@ -255,8 +257,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         batch.end();    // End the batch
 
-        healthBar.draw();
-        ATPBar.draw();
+        //Uses shape renderer must be drawn outside of batch.
+        // healthBar.draw();
+        // ATPBar.draw();
+        energyBars.draw();
+        
 
     }
 

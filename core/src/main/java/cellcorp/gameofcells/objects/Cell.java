@@ -30,6 +30,8 @@ public class Cell {
 
     private int cellHealth;
     private int cellATP;
+    private int maxHealth;
+    private int maxATP;
 
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -39,8 +41,10 @@ public class Cell {
         cellWidth = 200;
         cellHeight = 200;
 
-        cellHealth = 50;
+        cellHealth = 100;
         cellATP = 0;
+        maxHealth = 100;
+        maxATP = 100;
     }
 
     /**
@@ -112,11 +116,21 @@ public class Cell {
         return cellATP;
     }
 
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public int getMaxATP() {
+        return maxATP;
+    }
+
+
     /**
      * Dispose
      */
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
     }
+
 
 }

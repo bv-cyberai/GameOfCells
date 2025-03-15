@@ -4,7 +4,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Hud Class
@@ -22,18 +21,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  */
 public class HUD {
 
-    private AssetManager assetManager;
-    private ShapeRenderer shape;
-    // private HUDBar healthBar;
+    private final AssetManager assetManager;
+    // private ShapeRenderer shape;
 
     private BitmapFont font;
     private Float timer;
     private int displayTime;
 
-    // private int cellHealth;
-    // private int cellATP;
-    // private int maxHealth;
-    // private int maxATP;
+    private final int maxHealth;
+    private final int maxATP;
 
     private String timerString;
     private String atpString;
@@ -49,22 +45,13 @@ public class HUD {
      * 
      * This font cant be changed if you have other preferences.
      */
-    public HUD(AssetManager assetManager, ShapeRenderer shape) {
+    public HUD(AssetManager assetManager,int maxHealth, int maxATP) {
         this.assetManager = assetManager;
-        // healthBar = new HUDBar();
 
         timer = 0f;
         displayTime = 0;
-
-        // int values that should be updated in update.
-        // cellHealth = 100;
-        // cellATP = 0;
-
-
-        // cellHealth = 0; // should be set by update
-        // cellATP = 100; // should be set by update 
-        // maxHealth = 100;
-        // maxATP = 99; // This hurts should just be 100, but alpha is 99.
+        this.maxHealth = maxHealth;
+        this.maxATP = maxATP;
 
         if (assetManager != null) { 
             assetManager.load("rubik.fnt", BitmapFont.class);
@@ -98,22 +85,6 @@ public class HUD {
         font.draw(batch, cellHealthString, 10, 790);
         font.draw(batch, atpString, 10, 770);
         font.draw(batch, timerString, 10, 750);
-        // batch.end();
-        // healthBar.draw(batch);
-
-        // if (shape == null) {
-        //     System.out.println("NULLSHAPERENDER");
-        //     shape = new ShapeRenderer();
-        // }
-        // shape.begin(ShapeRenderer.ShapeType.Line);
-        // shape.setColor(Color.RED);
-        // shape.rect(400, 770, 400, 25);
-        // shape.end();
-
-        // shape.begin(ShapeRenderer.ShapeType.Filled);
-        // shape.setColor(Color.RED);
-        // shape.rect(400, 770, 400/2, 25);
-        // shape.end();
 
     }
 
@@ -130,14 +101,9 @@ public class HUD {
 
         roundTime();
         timerString = "Timer: " + displayTime;
-        // grab health - waiting cell class function.
-        cellHealthString = "HEALTH: " + cellHealth + "/100";
-        // grab ATP - waiting cell class function
+        cellHealthString = "HEALTH: " + cellHealth + "/" + maxHealth;
         atpString = "ATP: " + cellATP;
 
-        // healthBar.update(cellHealth, cellATP);
-        // this.cellHealth = cellHealth;
-        // this.cellATP = cellATP;
     }
 
     /**
