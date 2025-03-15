@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,16 +24,16 @@ public class HUD {
 
     private AssetManager assetManager;
     private ShapeRenderer shape;
-    private HUDBar healthBar;
+    // private HUDBar healthBar;
 
     private BitmapFont font;
     private Float timer;
     private int displayTime;
 
-    private int cellHealth;
-    private int cellATP;
-    private int maxHealth;
-    private int maxATP;
+    // private int cellHealth;
+    // private int cellATP;
+    // private int maxHealth;
+    // private int maxATP;
 
     private String timerString;
     private String atpString;
@@ -52,7 +51,7 @@ public class HUD {
      */
     public HUD(AssetManager assetManager, ShapeRenderer shape) {
         this.assetManager = assetManager;
-        healthBar = new HUDBar();
+        // healthBar = new HUDBar();
 
         timer = 0f;
         displayTime = 0;
@@ -62,10 +61,10 @@ public class HUD {
         // cellATP = 0;
 
 
-        cellHealth = 0; // should be set by update
-        cellATP = 100; // should be set by update 
-        maxHealth = 100;
-        maxATP = 99; // This hurts should just be 100, but alpha is 99.
+        // cellHealth = 0; // should be set by update
+        // cellATP = 100; // should be set by update 
+        // maxHealth = 100;
+        // maxATP = 99; // This hurts should just be 100, but alpha is 99.
 
         if (assetManager != null) { 
             assetManager.load("rubik.fnt", BitmapFont.class);
@@ -92,27 +91,29 @@ public class HUD {
         // assetManager.load("rubik1.png", Texture.class); // Texture for font characters
         // assetManager.load("rubik2.png", Texture.class); // Texture for font characters
         // assert (font != null);
+        // batch.begin();
         font = assetManager.get("rubik.fnt", BitmapFont.class);
         font.getData().setScale(0.25f); // Set the scale of the font
 
         font.draw(batch, cellHealthString, 10, 790);
         font.draw(batch, atpString, 10, 770);
         font.draw(batch, timerString, 10, 750);
-
+        // batch.end();
         // healthBar.draw(batch);
 
-        if (shape == null) { 
-            shape = new ShapeRenderer();
-        }
-        shape.begin(ShapeRenderer.ShapeType.Line);
-        shape.setColor(Color.RED);
-        shape.rect(400, 770, 400, 25);
-        shape.end();
+        // if (shape == null) {
+        //     System.out.println("NULLSHAPERENDER");
+        //     shape = new ShapeRenderer();
+        // }
+        // shape.begin(ShapeRenderer.ShapeType.Line);
+        // shape.setColor(Color.RED);
+        // shape.rect(400, 770, 400, 25);
+        // shape.end();
 
-        shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.setColor(Color.RED);
-        shape.rect(400, 770, 400/2, 25);
-        shape.end();
+        // shape.begin(ShapeRenderer.ShapeType.Filled);
+        // shape.setColor(Color.RED);
+        // shape.rect(400, 770, 400/2, 25);
+        // shape.end();
 
     }
 
@@ -135,8 +136,8 @@ public class HUD {
         atpString = "ATP: " + cellATP;
 
         // healthBar.update(cellHealth, cellATP);
-        this.cellHealth = cellHealth;
-        this.cellATP = cellATP;
+        // this.cellHealth = cellHealth;
+        // this.cellATP = cellATP;
     }
 
     /**
