@@ -4,8 +4,10 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+
+import cellcorp.gameofcells.Main;
 
 /**
  * Energy Bar Class
@@ -14,7 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * bars.
  * 
  * NOTE: This is a separate from HUD due to the need for
- * shaperender to be called outside of a sprite batch.
+ * shaperenderer to be called outside of a sprite batch.
  * 
  * @author Brendon Vinyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
@@ -28,10 +30,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class EnergyBars {
 
     private AssetManager assetManager;
+    private FitViewport viewport;
 
     private ShapeRenderer shape;
-
-    // private SpriteBatch batch;
     private BitmapFont barFont;
 
     private int cellHealth;
@@ -40,18 +41,31 @@ public class EnergyBars {
     private final int maxATP;
     private final int barSize;
 
+    private float healthBarX;
+    private float healthBarY;
+    private float ATPBarX;
+    private float ATPBarY;
+
     private float healthPercentage;
     private float ATPPercentage;
 
-
-
     public EnergyBars(AssetManager assetManager, int maxHealth, int maxATP) {
         this.assetManager = assetManager;
-        cellHealth = 0; // will be set by update
-        cellATP = 100; // will be set by update
         this.maxHealth = maxHealth;
         this.maxATP = maxATP;
+
+        cellHealth = 0; // will be set by update
+        cellATP = 100; // will be set by update
         barSize = 400;
+        
+        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+        healthBarY = Main.viewport.getWorldHeight() - 30;
+
+        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+        ATPBarY = Main.viewport.getWorldHeight() - 60;
+
+        System.out.println("CONSTRUCTOR_EB:" + " HX: " + healthBarX + " HY: " + healthBarY
+        + " AX: " + ATPBarX + " AY: " + ATPBarY);
 
         if (assetManager != null) {
             assetManager.load("rubik.fnt", BitmapFont.class);
@@ -61,7 +75,13 @@ public class EnergyBars {
         }
 
     }
-
+    /**
+     * Draw
+     * 
+     * Draws the health bars to the screen.
+     * Note: This does not include the text, this handled by the HUD
+     * Class.
+     */
     public void draw() {
         if (shape == null) {
             shape = new ShapeRenderer();
@@ -69,42 +89,30 @@ public class EnergyBars {
         // Draw Health Bar
         shape.begin(ShapeRenderer.ShapeType.Line);
         shape.setColor(Color.RED);
-        shape.rect(400, 770, barSize, 25);
+        shape.rect(healthBarX, healthBarY, barSize, 25);
         shape.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.setColor(Color.RED);
-        shape.rect(400, 770, healthPercentage, 25);
+        shape.rect(healthBarX, healthBarY, healthPercentage, 25);
         shape.end();
         // Draw ATP Bar
         shape.begin(ShapeRenderer.ShapeType.Line);
         shape.setColor(Color.YELLOW);
-        shape.rect(400, 740, barSize, 25);
+        shape.rect(ATPBarX, ATPBarY, barSize, 25);
         shape.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.setColor(Color.YELLOW);
-        shape.rect(400, 740, ATPPercentage, 25);
+        shape.rect(ATPBarX, ATPBarY, ATPPercentage, 25);
         shape.end();
-
-        // drawText();
-    }
-
-    public void drawText(SpriteBatch batch){
-        if (barFont == null) {
-            barFont = assetManager.get("rubik.fnt", BitmapFont.class);
-            barFont.getData().setScale(5f); // set the scale of the barFont.
-        }
-        // batch.begin();
-        barFont.draw(batch, "HEALTH", 500, 770);
-        barFont.draw(batch, "ATP", 500, 740);
-        // batch.end();
     }
 
     /**
      * Update
      * 
-     * Updates current cell health and ATP values.
+     * Updates current cell health and ATP values for displaying via
+     * the Energy Bars.
      * 
      * @param updatedCellHealth - The new cell health.
      * @param updatedCellATP    - The new ATP amount.
@@ -117,7 +125,7 @@ public class EnergyBars {
     }
 
     /**
-     * Cell Health Getter
+     * Cell Health Getter (TEST METHOD)
      * 
      * @return Cell Health
      */
@@ -126,7 +134,7 @@ public class EnergyBars {
     }
 
     /**
-     * ATP Getter
+     * ATP Getter (TEST METHOD)
      * 
      * @return ATP amount
      */
@@ -161,13 +169,23 @@ public class EnergyBars {
         return barSize;
     }
 
+    public void resize() {
+        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+        healthBarY = Main.viewport.getWorldHeight() - 30;
+
+        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+        ATPBarY = Main.viewport.getWorldHeight() - 60;
+
+        System.out.println("RESIZE_EB:" + " HX: " + healthBarX + " HY: " + healthBarY
+        + " AX: " + ATPBarX + " AY: " + ATPBarY);
+    }
+
     /**
      * Dispose
      */
     public void dispose() {
         shape.dispose();
         barFont.dispose();
-        // batch.dispose();
     }
 
 }

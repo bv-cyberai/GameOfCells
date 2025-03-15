@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.providers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import cellcorp.gameofcells.Main;
 
@@ -23,8 +22,4 @@ public class FakeGraphicsProvider implements GraphicsProvider {
         return null;
     }
 
-    @Override
-    public ShapeRenderer createShapeRenderer() {
-        return null;
-    }
 }

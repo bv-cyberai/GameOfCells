@@ -25,19 +25,36 @@ import cellcorp.gameofcells.Main;
 public class HUD {
 
     private final AssetManager assetManager;
-    // private ShapeRenderer shape;
 
+    // fonts
     private BitmapFont font;
     private BitmapFont barFont;
+
+    // glyph
     private GlyphLayout healthLayout;
     private GlyphLayout ATPLayout;
 
+    // Energy Bar Values for storing and calculating position of text.
+    private final float healthBarY;
+    private final float healthBarHeight;
+    private final float ATPBarY;
+    private final float ATPBarHeight;
+    private float healthTextWidth;
+    private float healthTextHeight;
+    private float ATPTextWidth;
+    private float ATPTextHeight;
+    private float healthTextY;
+    private float ATPTextY;
+
+    // Timer Values
     private Float timer;
     private int displayTime;
 
+    // Cell Values
     private final int maxHealth;
-    private final int maxATP;
+    private final int maxATP; // placeholder will likely be needed.
 
+    // HUD Strings
     private String timerString;
     private String atpString;
     private String cellHealthString;
@@ -53,16 +70,23 @@ public class HUD {
      * This font cant be changed if you have other preferences.
      */
     public HUD(AssetManager assetManager, int maxHealth, int maxATP) {
-        this.assetManager = assetManager;
 
-        timer = 0f;
-        displayTime = 0;
+        this.assetManager = assetManager;
         this.maxHealth = maxHealth;
         this.maxATP = maxATP;
 
+        timer = 0f;
+        displayTime = 0;
+
         healthLayout = new GlyphLayout();
         ATPLayout = new GlyphLayout();
-        
+
+        // For now these are hardcoded/pulled form the EnergyBar Class.
+        // Don't see a huge need to not do that.
+        healthBarY = 770;
+        healthBarHeight = 25;
+        ATPBarY = 740;
+        ATPBarHeight = 25;
 
         if (assetManager != null) {
             assetManager.load("rubik.fnt", BitmapFont.class);
@@ -80,41 +104,55 @@ public class HUD {
      * @param batch - The game spritebatch.
      */
     public void draw(SpriteBatch batch) {
-
-        // figure out how to load once.
-        font = assetManager.get("rubik.fnt", BitmapFont.class);
-        font.getData().setScale(0.25f); // Set the scale of the font
-
+        if (font == null) {
+            font = assetManager.get("rubik.fnt", BitmapFont.class);
+            font.getData().setScale(0.25f); // Set the scale of the font
+        }
         font.draw(batch, cellHealthString, 10, 790);
         font.draw(batch, atpString, 10, 770);
         font.draw(batch, timerString, 10, 750);
-
-
-
     }
 
+    /**
+     * Draw EnergyBarText
+     * 
+     * This draws "Health" and "ATP" over the energy bars.
+     * 
+     * NOTE: This is separated due HUD utilizing Spritebatch, and
+     * Energybars using ShapeRenderer. Additionally it felt correct to keep
+     * text rendering within the HUD class.
+     * 
+     * @param batch - The Game SpriteBatch
+     */
     public void drawBarText(SpriteBatch batch) {
-        barFont = assetManager.get("rubik.fnt", BitmapFont.class);
-        barFont.getData().setScale(.20f);
+        if (barFont == null) {
+            // setup font
+            barFont = assetManager.get("rubik.fnt", BitmapFont.class);
+            barFont.getData().setScale(.20f);
 
-        healthLayout.setText(barFont, "HEALTH");
-        ATPLayout.setText(barFont, "ATP");
+            // setup glyphs
+            healthLayout.setText(barFont, "HEALTH");
+            ATPLayout.setText(barFont, "ATP");
 
-        float healthTextWidth = healthLayout.width;
-        float healthTextHeight = healthLayout.height;
+            // setup position
+            healthTextWidth = healthLayout.width;
+            healthTextHeight = healthLayout.height;
 
-        float ATPTextWidth = ATPLayout.width;
-        float ATPTextHeight = ATPLayout.height;
+            ATPTextWidth = ATPLayout.width;
+            ATPTextHeight = ATPLayout.height;
 
-        barFont.draw(batch, "HEALTH", (Main.WORLD_WIDTH - healthTextWidth) / 2, 788);
-        barFont.draw(batch, "ATP", (Main.WORLD_WIDTH - ATPTextWidth) / 2, 758);
+            healthTextY = healthBarY + (healthBarHeight / 2) + (healthTextHeight / 2);
+            ATPTextY = ATPBarY + (ATPBarHeight / 2) + (ATPTextHeight / 2);
+        }
+
+        barFont.draw(batch, "HEALTH", (Main.WORLD_WIDTH - healthTextWidth) / 2, healthTextY);
+        barFont.draw(batch, "ATP", (Main.WORLD_WIDTH - ATPTextWidth) / 2, ATPTextY);
     }
 
     /**
      * Updater
      * 
-     * Updates time, and will need health and ATP to be passed into
-     * to display these values as well.
+     * Updates time, and associated cell attributes (Health/ATP) for the HUD.
      * 
      * @param delta - time since last render.
      */

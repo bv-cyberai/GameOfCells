@@ -92,7 +92,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.glucoseManager = new GlucoseManager(assetManager);
 
         this.batch = graphicsProvider.createSpriteBatch();
-        this.shape = graphicsProvider.createShapeRenderer();
 
         this.hud = new HUD(assetManager, cell.getMaxHealth(), cell.getMaxATP());
         energyBars = new EnergyBars(assetManager, cell.getMaxHealth(), cell.getMaxATP());
@@ -133,6 +132,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         viewport.update(width, height, true); // Update the viewport
         camera.viewportWidth = width; // Update the camera viewport width
         camera.viewportHeight = height; // Update the camera viewport height
+        energyBars.resize();
     }
 
     /**
@@ -250,12 +250,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         glucoseManager.draw(batch); // draws glucose beneath the cell.
         hud.draw(batch); // Draw hud
         cell.draw(batch);
-
         batch.end(); // End the batch
 
         // Uses shape renderer must be drawn outside of batch.
         energyBars.draw();
-
+        // Draw text over energy bars.
         batch.begin();
         hud.drawBarText(batch);
         batch.end();
