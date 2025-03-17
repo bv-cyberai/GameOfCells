@@ -18,4 +18,5 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     public SpriteBatch createSpriteBatch() {
         return new SpriteBatch();
     }
+
 }

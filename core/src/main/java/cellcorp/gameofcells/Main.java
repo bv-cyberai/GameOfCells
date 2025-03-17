@@ -14,10 +14,6 @@ package cellcorp.gameofcells;
  * @assignment GameOfCells
  */
 
-import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
-import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.screens.GameOfCellsScreen;
-import cellcorp.gameofcells.screens.MainMenuScreen;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -26,8 +22,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
 import cellcorp.gameofcells.providers.DefaultInputProvider;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import cellcorp.gameofcells.screens.GameOfCellsScreen;
+import cellcorp.gameofcells.screens.MainMenuScreen;
 
 public class Main implements ApplicationListener {
     // These configuration values are referenced in `cellcorp.gameofcells.lwjgl3.Lwjgl3Launcher`
@@ -61,7 +61,7 @@ public class Main implements ApplicationListener {
     // Camera/Viewport - These can be shared by screens/don't need to be Fit
     // viewport but its not a bad choice per se.
     private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    public static FitViewport viewport;
 
     /**
      * Constructs a new `Main`.
@@ -195,4 +195,5 @@ public class Main implements ApplicationListener {
     public GraphicsProvider getGraphicsProvider() {
         return this.graphicsProvider;
     }
+
 }

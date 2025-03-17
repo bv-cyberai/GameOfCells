@@ -1,7 +1,8 @@
 package cellcorp.gameofcells.providers;
 
-import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import cellcorp.gameofcells.Main;
 
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
@@ -20,4 +21,5 @@ public class FakeGraphicsProvider implements GraphicsProvider {
         // so this might even be safe.
         return null;
     }
+
 }

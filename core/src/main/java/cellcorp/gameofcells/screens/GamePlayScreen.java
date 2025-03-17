@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
+import cellcorp.gameofcells.objects.EnergyBars;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.GraphicsProvider;
@@ -61,6 +62,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Cell cell;
     private final GlucoseManager glucoseManager;
     private final HUD hud;
+    private final EnergyBars energyBars;
 
     /**
      * Constructs the GamePlayScreen.
@@ -86,8 +88,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         this.cell = new Cell(assetManager);
         this.glucoseManager = new GlucoseManager(assetManager);
-        this.hud = new HUD(assetManager);
+
         this.batch = graphicsProvider.createSpriteBatch();
+
+        this.hud = new HUD(assetManager, cell.getMaxHealth(), cell.getMaxATP());
+        energyBars = new EnergyBars(assetManager, cell.getMaxHealth(), cell.getMaxATP());
     }
 
     /**
@@ -125,6 +130,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         viewport.update(width, height, true); // Update the viewport
         camera.viewportWidth = width; // Update the camera viewport width
         camera.viewportHeight = height; // Update the camera viewport height
+        energyBars.resize();
     }
 
     /**
@@ -160,10 +166,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         cell.dispose(); // dispose cell
         glucoseManager.dispose();
         hud.dispose();
+        energyBars.dispose();
         batch.dispose(); // Dispose of the batch
-
-        // need to handle actually disposing but for now meh
-        // glucose.dispose();
     }
 
     /**
@@ -204,7 +208,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        hud.update(deltaTimeSeconds);
+        hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
+        energyBars.update(cell.getCellHealth(), cell.getCellATP());
     }
 
     /**
@@ -247,8 +252,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
         glucoseManager.draw(batch); // draws glucose beneath the cell.
         hud.draw(batch); // Draw hud
         cell.draw(batch);
-
         batch.end(); // End the batch
+
+        // Uses shape renderer must be drawn outside of batch.
+        energyBars.draw();
+        // Draw text over energy bars.
+        batch.begin();
+        hud.drawBarText(batch);
+        batch.end();
+
     }
 
     /**
