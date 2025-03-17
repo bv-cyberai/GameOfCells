@@ -57,15 +57,12 @@ public class EnergyBars {
         cellHealth = 0; // will be set by update
         cellATP = 100; // will be set by update
         barSize = 400;
-        
-        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+
+        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
         healthBarY = Main.viewport.getWorldHeight() - 30;
 
-        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
         ATPBarY = Main.viewport.getWorldHeight() - 60;
-
-        System.out.println("CONSTRUCTOR_EB:" + " HX: " + healthBarX + " HY: " + healthBarY
-        + " AX: " + ATPBarX + " AY: " + ATPBarY);
 
         if (assetManager != null) {
             assetManager.load("rubik.fnt", BitmapFont.class);
@@ -75,6 +72,7 @@ public class EnergyBars {
         }
 
     }
+
     /**
      * Draw
      * 
@@ -170,14 +168,11 @@ public class EnergyBars {
     }
 
     public void resize() {
-        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
         healthBarY = Main.viewport.getWorldHeight() - 30;
 
-        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize /2);
+        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
         ATPBarY = Main.viewport.getWorldHeight() - 60;
-
-        System.out.println("RESIZE_EB:" + " HX: " + healthBarX + " HY: " + healthBarY
-        + " AX: " + ATPBarX + " AY: " + ATPBarY);
     }
 
     /**
