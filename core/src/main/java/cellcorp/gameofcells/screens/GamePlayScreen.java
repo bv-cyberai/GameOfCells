@@ -183,6 +183,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
             ));
         }
 
+        if (inputProvider.isKeyPressed(Input.Keys.I)) {
+            game.setScreen(new PopupInfoScreen(
+                    inputProvider, assetManager,
+                    graphicsProvider, game,
+                    camera,
+                    viewport,this
+            ));
+        }
+
         cell.move(
                 deltaTimeSeconds,
                 inputProvider.isKeyPressed(Input.Keys.LEFT),    // Check if the left key is pressed
