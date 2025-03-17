@@ -30,11 +30,11 @@ import cellcorp.gameofcells.screens.GameOfCellsScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 
 public class Main implements ApplicationListener {
-    // These configuration values are referenced in `cellcorp.gameofcells.lwjgl3.Lwjgl3Launcher`
-    // Changing them will change the default size of the game window in Java.
-    public static int WORLD_WIDTH = 1200;
-    public static int WORLD_HEIGHT = 800;
 
+    /** Width of the screen in _world units_ */
+    public static final int SCREEN_WIDTH_WORLD = 1920;
+    /** Height of the screen in _world units_ */
+    public static final int SCREEN_HEIGHT_WORLD = 1080;
     /**
      * The currently-shown screen.
      */
@@ -78,8 +78,8 @@ public class Main implements ApplicationListener {
         // Gdx.graphics is not instantiated until `create()`.
         // Just use the configuration constants here.
         var viewport = new FitViewport(
-            WORLD_WIDTH,
-            WORLD_HEIGHT,
+            SCREEN_WIDTH_WORLD,
+            SCREEN_HEIGHT_WORLD,
             camera
         );
         return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);

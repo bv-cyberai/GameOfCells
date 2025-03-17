@@ -32,7 +32,6 @@ public class EnergyBars {
     private AssetManager assetManager;
     private FitViewport viewport;
 
-    private ShapeRenderer shape;
     private BitmapFont barFont;
 
     private int cellHealth;
@@ -80,10 +79,7 @@ public class EnergyBars {
      * Note: This does not include the text, this handled by the HUD
      * Class.
      */
-    public void draw() {
-        if (shape == null) {
-            shape = new ShapeRenderer();
-        }
+    public void draw(ShapeRenderer shape) {
         // Draw Health Bar
         shape.begin(ShapeRenderer.ShapeType.Line);
         shape.setColor(Color.RED);
@@ -179,7 +175,6 @@ public class EnergyBars {
      * Dispose
      */
     public void dispose() {
-        shape.dispose();
         barFont.dispose();
     }
 

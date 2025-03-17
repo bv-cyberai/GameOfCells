@@ -4,9 +4,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -55,8 +55,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final OrthographicCamera camera;
     private final FitViewport viewport;
 
-    // For rendering text
-    protected SpriteBatch batch; // Define the batch for drawing text
+    private final ShapeRenderer shapeRenderer;
+    private final SpriteBatch batch;
 
     // Objects for rendering the game
     private final Cell cell;
@@ -89,6 +89,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.cell = new Cell(assetManager);
         this.glucoseManager = new GlucoseManager(assetManager);
 
+        this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
 
         this.hud = new HUD(assetManager, cell.getMaxHealth(), cell.getMaxATP());
@@ -128,6 +129,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
         viewport.update(width, height, true); // Update the viewport
+
         camera.viewportWidth = width; // Update the camera viewport width
         camera.viewportHeight = height; // Update the camera viewport height
         energyBars.resize();
@@ -217,9 +219,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        var startBackground = assetManager.get(AssetFileNames.START_BACKGROUND, Texture.class);
-        var gameBackground = assetManager.get(AssetFileNames.GAME_BACKGROUND, Texture.class);
-
         // Set up font
         var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
 
@@ -233,15 +232,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         // I don't know what `viewport.apply(...)` does but when it was omitted
         // the HTML version was displaying way in the bottom-left and getting cut off.
-        viewport.apply(true);
-        camera.update(); // Update the camera
+        centerCameraOnCell();
+        camera.update();
+        viewport.apply();
+        shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
+        // ==== SpriteBatch ====
         batch.begin(); // Start the batch for drawing 2d element
-
-        // Draw the gameplay screen
-        batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight()); // Draw the game
-                                                                                               // background
 
         // Draw the text in white
         font.setColor(Color.WHITE); // white for text
@@ -254,13 +252,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
         cell.draw(batch);
         batch.end(); // End the batch
 
+        // ==== ShapeRenderer ====
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        drawBackground(shapeRenderer);
+        shapeRenderer.end();
+
         // Uses shape renderer must be drawn outside of batch.
-        energyBars.draw();
+        energyBars.draw(shapeRenderer);
+
+        // ==== SpriteBatch round 2 ====
         // Draw text over energy bars.
         batch.begin();
         hud.drawBarText(batch);
         batch.end();
-
     }
 
     /**
@@ -286,5 +290,40 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public GlucoseManager getGlucoseManager() {
         return glucoseManager;
+    }
+
+    /**
+     * Draw grid lines on the background
+     */
+    void drawBackground(ShapeRenderer renderer) {
+        var distanceBetweenGridLines = 100f;
+        int rows = (int) Math.ceil(Main.SCREEN_HEIGHT_WORLD / distanceBetweenGridLines);
+        int cols = (int) Math.ceil(Main.SCREEN_WIDTH_WORLD / distanceBetweenGridLines);
+
+        float rowWidth = Main.SCREEN_WIDTH_WORLD + 2f;
+        float rowHeight = Main.SCREEN_HEIGHT_WORLD / 500f;
+        float colWidth = Main.SCREEN_WIDTH_WORLD / 500f;
+        float colHeight = Main.SCREEN_HEIGHT_WORLD + 2f;
+
+        float xMin = camera.position.x - (float) Main.SCREEN_WIDTH_WORLD / 2 - 1;
+        float yMin = camera.position.y - (float) Main.SCREEN_HEIGHT_WORLD / 2 - 1;
+
+        float yStart = yMin - yMin % distanceBetweenGridLines;
+        for (int row = 0; row < rows; row++) {
+            float yOffset = row * distanceBetweenGridLines;
+            float y = yStart + yOffset;
+            renderer.rect(xMin, y, rowWidth, rowHeight);
+        }
+
+        float xStart = xMin - xMin % distanceBetweenGridLines;
+        for (int col = 0; col < cols; col++) {
+            float xOffset = col * distanceBetweenGridLines;
+            float x = xStart + xOffset;
+            renderer.rect(x, yMin, colWidth, colHeight);
+        }
+    }
+
+    void centerCameraOnCell() {
+        camera.position.set(cell.getCellPositionX(), cell.getCellPositionY(), 0);
     }
 }

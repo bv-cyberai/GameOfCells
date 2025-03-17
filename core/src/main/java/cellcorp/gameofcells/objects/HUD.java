@@ -145,8 +145,8 @@ public class HUD {
             ATPTextY = ATPBarY + (ATPBarHeight / 2) + (ATPTextHeight / 2);
         }
 
-        barFont.draw(batch, "HEALTH", (Main.WORLD_WIDTH - healthTextWidth) / 2, healthTextY);
-        barFont.draw(batch, "ATP", (Main.WORLD_WIDTH - ATPTextWidth) / 2, ATPTextY);
+        barFont.draw(batch, "HEALTH", (Main.SCREEN_WIDTH_WORLD - healthTextWidth) / 2, healthTextY);
+        barFont.draw(batch, "ATP", (Main.SCREEN_HEIGHT_WORLD - ATPTextWidth) / 2, ATPTextY);
     }
 
     /**

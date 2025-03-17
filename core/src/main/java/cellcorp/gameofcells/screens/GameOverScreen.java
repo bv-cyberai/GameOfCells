@@ -120,7 +120,7 @@ public class GameOverScreen implements GameOfCellsScreen {
     public void draw() {
         ScreenUtils.clear(Color.BLACK);
 
-        viewport.apply(true);
+        viewport.apply();
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
 
@@ -136,8 +136,8 @@ public class GameOverScreen implements GameOfCellsScreen {
         layout.setText(font, gameOverString);
         textWidth = layout.width;
         textHeight = layout.height;
-        xResetCenter = (Main.WORLD_WIDTH - textWidth) / 2;
-        yCenter = (Main.WORLD_HEIGHT + textHeight) / 2;
+        xResetCenter = (Main.SCREEN_WIDTH_WORLD - textWidth) / 2;
+        yCenter = (Main.SCREEN_HEIGHT_WORLD + textHeight) / 2;
 
         spriteBatch.begin();
         font.draw(spriteBatch, gameOverString, xResetCenter, yCenter);
