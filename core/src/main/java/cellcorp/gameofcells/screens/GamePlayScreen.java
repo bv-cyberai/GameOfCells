@@ -188,7 +188,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     inputProvider, assetManager,
                     graphicsProvider, game,
                     camera,
-                    viewport,this
+                    viewport,this,PopupInfoScreen.Type.longTest
             ));
         }
 

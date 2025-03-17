@@ -4,10 +4,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -41,8 +43,18 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private float xResetCenter = 0;
     private float yCenter = 0;
 
+    public enum Type {glucose, danger, other,longTest};
+
+    private String message;
+    private float messageWidth;
+    private float messageHeight;
+    private float messageY;
+    private float messageX;
+
+    private Type type;
+
     public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
-            Main game, OrthographicCamera camera, FitViewport viewport, GameOfCellsScreen previousScreen) {
+            Main game, OrthographicCamera camera, FitViewport viewport, GameOfCellsScreen previousScreen, Type type) {
 
         this.game = game;
 
@@ -55,8 +67,23 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
         this.previousScreen = previousScreen;
+        this.type = type;
 
         layout = new GlyphLayout();
+
+        message = "";
+        messageHeight = 0;
+        messageWidth = 0;
+        messageX = 0;
+        messageY = 0;
+
+        if (assetManager != null) {
+            assetManager.load("rubik.fnt", BitmapFont.class);
+            assetManager.load("rubik1.png", Texture.class);
+            assetManager.load("rubik2.png", Texture.class);
+            assetManager.finishLoading();
+        }
+        setMessage();
     }
 
     @Override
@@ -76,10 +103,33 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         if (shape == null) {
             shape = new ShapeRenderer();
         }
+
+        if (font == null) {
+            font = assetManager.get("rubik.fnt", BitmapFont.class);
+            font.getData().setScale(0.25f); // Set the scale of the font
+            CharSequence cs = message;
+            layout.setText(font, cs,0,cs.length()-1, Color.WHITE, 200f, Align.left, true,null);
+
+            messageWidth = layout.width;
+            messageHeight = layout.height;
+            System.out.println("MW: " + messageWidth + " MH: " + messageHeight);
+            messageX = (viewport.getWorldWidth() - messageWidth)/2;
+            messageY = (viewport.getWorldHeight() /2) - (messageHeight /2);
+            System.out.println("MY: " + messageY + " MX: " + messageX);
+
+
+        }
+
+
+
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.setColor(Color.GREEN);
-        shape.rect(viewport.getWorldWidth()/2,viewport.getWorldHeight() /2,500,500);
+        shape.setColor(Color.SLATE);
+        shape.rect((viewport.getWorldWidth()/2)-250,(viewport.getWorldHeight() /2) - 250 ,500,500);
         shape.end();
+
+        spriteBatch.begin();
+        font.draw(spriteBatch, message, messageX, messageY);
+        spriteBatch.end();
 
         handleInput(delta);
     }
@@ -117,7 +167,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyPressed(Input.Keys.I)) {
+        if (inputProvider.isKeyPressed(Input.Keys.ESCAPE)) {
             game.setScreen(previousScreen);
         }
     }
@@ -132,6 +182,26 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     public void draw() {
         // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'draw'");
+    }
+
+    private void setMessage() {
+        switch (type) {
+            case glucose:
+                message = "You've found glucose!";
+                break;
+            case danger:
+                message = "You're in danger, cell is being damaged";
+                break;
+            case other:
+                message = "other";
+                break;
+            case longTest:
+                message = "This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.";
+                break;
+            default:
+                break;
+            
+        }
     }
 
 }
