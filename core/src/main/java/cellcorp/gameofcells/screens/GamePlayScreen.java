@@ -315,8 +315,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         var distanceBetweenGridLines = 100f;
-        int rows = (int) Math.ceil(VIEW_RECT_HEIGHT / distanceBetweenGridLines);
-        int cols = (int) Math.ceil(VIEW_RECT_WIDTH / distanceBetweenGridLines);
+        int rows = (int) Math.ceil(VIEW_RECT_HEIGHT / distanceBetweenGridLines) + 1;
+        int cols = (int) Math.ceil(VIEW_RECT_WIDTH / distanceBetweenGridLines) + 1;
 
         float rowWidth = VIEW_RECT_WIDTH + 2f;
         float rowHeight = VIEW_RECT_HEIGHT / 500f;
