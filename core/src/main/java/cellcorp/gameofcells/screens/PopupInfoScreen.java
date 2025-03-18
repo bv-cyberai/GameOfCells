@@ -32,10 +32,13 @@ import cellcorp.gameofcells.providers.InputProvider;
  */
 
 public class PopupInfoScreen implements GameOfCellsScreen {
-    //Types
-    public enum Type {glucose, danger, other,longTest};
+    // Types
+    public enum Type {
+        glucose, danger, other, longTest
+    };
+
     private final Type type;
-    
+
     // game
     private final Main game;
     private GameOfCellsScreen previousScreen;
@@ -63,33 +66,45 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private float padding;
     private final float popUpSize;
 
-
-
+    /**
+     * Popup Screen Constructor 
+     * 
+     * Creates a new popup with the given type. 
+     * 
+     * @param inputProvider - The input provider
+     * @param assetManager - The Asset manager
+     * @param graphicsProvider - The graphics provider
+     * @param game - The game instance
+     * @param camera - The game camera
+     * @param viewport - The game viewport
+     * @param previousScreen - The previous screen
+     * @param type - The type of popup to create -- See type enum.
+     */
     public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
             Main game, OrthographicCamera camera, FitViewport viewport, GameOfCellsScreen previousScreen, Type type) {
 
         this.type = type;
-        
+
         // Game
         this.game = game;
         this.previousScreen = previousScreen;
-        //Providers
+        // Providers
         this.inputProvider = inputProvider;
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
-        
+
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
-        //Font/Message
+        // Font/Message
         layout = new GlyphLayout();
 
         message = "";
         messageX = 0;
         messageY = 0;
 
-        padding = -10; // negative padding shifts y down, and x left. 
+        padding = -10; // negative padding shifts y down, and x left.
         popUpSize = 500; // Pop up is currently an n by n square.
 
         // Load Font
@@ -110,7 +125,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(Color.NAVY);
+
+        // ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // purple
+        ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f)); //blue
 
         viewport.apply(true);
         camera.update();
@@ -125,19 +142,24 @@ public class PopupInfoScreen implements GameOfCellsScreen {
             font.getData().setScale(0.25f); // Set the scale of the font
 
             CharSequence cs = message;
-            layout.setText(font, cs,0,cs.length(), Color.WHITE, (popUpSize + padding), Align.center, true,null);
+            layout.setText(font, cs, 0, cs.length(), Color.WHITE, (popUpSize + padding), Align.center, true, null);
 
-            messageX = ((viewport.getWorldWidth() / 2))- (popUpSize/2) - (padding +5);
-            messageY = (viewport.getWorldHeight() /2) + (popUpSize/2) + padding ;
+            //Align the message to the top center of the popup.
+            messageX = ((viewport.getWorldWidth() / 2)) - (popUpSize / 2) - (padding + 5);
+            messageY = (viewport.getWorldHeight() / 2) + (popUpSize / 2) + padding;
         }
 
-        //Draw Square Popup
+        // Draw Square Popup
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.setColor(Color.SLATE);
-        shape.rect((viewport.getWorldWidth()/2)-(popUpSize/2),(viewport.getWorldHeight() /2) - (popUpSize/2) ,popUpSize,popUpSize);
+
+        // shape.setColor(new Color(.424f, .553f, .573f, 1.0f)); // blue
+        shape.setColor(new Color(.157f, .115f, .181f, 1.0f)); // purple
+
+        shape.rect((viewport.getWorldWidth() / 2) - (popUpSize / 2), (viewport.getWorldHeight() / 2) - (popUpSize / 2),
+                popUpSize, popUpSize);
         shape.end();
 
-        //Draw message via layout.
+        // Draw message via layout.
         spriteBatch.begin();
         font.draw(spriteBatch, layout, messageX, messageY);
         spriteBatch.end();
@@ -148,12 +170,12 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     /**
      * Message Setter
      * 
-     * Will set the message of the popup based on the given type of the popup. 
+     * Will set the message of the popup based on the given type of the popup.
      */
     private void setMessage() {
         switch (type) {
             case glucose:
-                message = "You've found glucose!";
+                message = "You've found glucose!" +"\n" + "Press escape to exit!";
                 break;
             case danger:
                 message = "You're in danger, cell is being damaged";
@@ -166,10 +188,16 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 break;
             default:
                 break;
-            
+
         }
     }
 
+    /**
+     * Resize
+     * 
+     * @param width - the new width
+     * @param height - the new height
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true); // Update the viewport
@@ -177,30 +205,48 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         camera.viewportHeight = height; // Update the camera viewport height
     }
 
+    /**
+     * pause
+     */
     @Override
     public void pause() {
         // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'pause'");
     }
 
+    /**
+     * resume
+     */
     @Override
     public void resume() {
         // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'resume'");
     }
 
+    /**
+     * hide
+     */
     @Override
     public void hide() {
         // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'hide'");
     }
 
+    /**
+     * Dispose
+     */
     @Override
     public void dispose() {
-        // // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'dispose'");
+        shape.dispose();
+        font.dispose();
+        spriteBatch.dispose();
     }
 
+    /**
+     * Handle Input
+     * 
+     * Exits the popup screen.
+     */ 
     @Override
     public void handleInput(float deltaTimeSeconds) {
         if (inputProvider.isKeyPressed(Input.Keys.ESCAPE)) {
@@ -208,18 +254,22 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Update
+     */
     @Override
     public void update(float deltaTimeSeconds) {
         // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
+    /**
+     * Draw
+     */
     @Override
     public void draw() {
         // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'draw'");
     }
-
-
 
 }

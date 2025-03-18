@@ -228,7 +228,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         font.setColor(Color.BLACK);
 
         // Draw the screen
-        ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
+        // ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f));  // Clear the screen with a purple
+        ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f));  // Clear the screen with a blue
 
         // I don't know what `viewport.apply(...)` does but when it was omitted
         // the HTML version was displaying way in the bottom-left and getting cut off.
@@ -239,7 +240,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.begin();  // Start the batch for drawing 2d element
 
         // Draw the gameplay screen
-        batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
+        // batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
 
         // Draw the text in white
         font.setColor(Color.WHITE);  // white for text
