@@ -62,20 +62,20 @@ public class TestHUD {
         EnergyBars energyBars = new EnergyBars(fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
 
         energyBars.update(50, 50);
-        assertEquals(.50 * energyBars.getBarSize(), energyBars.getHealthPercentage());
-        assertEquals(.50 * energyBars.getBarSize(), energyBars.getATPPercentage());
+        assertEquals(.50 * EnergyBars.BAR_SIZE, energyBars.getHealthPercentage());
+        assertEquals(.50 * EnergyBars.BAR_SIZE, energyBars.getATPPercentage());
 
         energyBars.update(25, 75);
-        assertEquals(.25 * energyBars.getBarSize(), energyBars.getHealthPercentage());
-        assertEquals(.75 * energyBars.getBarSize(), energyBars.getATPPercentage());
+        assertEquals(.25 * EnergyBars.BAR_SIZE, energyBars.getHealthPercentage());
+        assertEquals(.75 * EnergyBars.BAR_SIZE, energyBars.getATPPercentage());
 
         energyBars.update(100, 100);
-        assertEquals(1 * energyBars.getBarSize(), energyBars.getHealthPercentage());
-        assertEquals(1 * energyBars.getBarSize(), energyBars.getATPPercentage());
+        assertEquals(EnergyBars.BAR_SIZE, energyBars.getHealthPercentage());
+        assertEquals(EnergyBars.BAR_SIZE, energyBars.getATPPercentage());
 
         energyBars.update(0, 0);
-        assertEquals(0 * energyBars.getBarSize(), energyBars.getHealthPercentage());
-        assertEquals(0 * energyBars.getBarSize(), energyBars.getATPPercentage());
+        assertEquals(0, energyBars.getHealthPercentage());
+        assertEquals(0, energyBars.getATPPercentage());
 
     }
 

@@ -36,7 +36,7 @@ public class EnergyBars {
     private int cellATP;
     private final int maxHealth;
     private final int maxATP;
-    private static final int BAR_SIZE = 400;
+    public static final int BAR_SIZE = 400;
 
     private static final float HEALTH_BAR_X = ((float) HUD.VIEW_RECT_WIDTH / 2) - ((float) BAR_SIZE / 2);
     private static final float HEALTH_BAR_Y = (float) HUD.VIEW_RECT_HEIGHT - 30;

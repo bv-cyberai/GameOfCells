@@ -55,12 +55,11 @@ public class TestMain {
 
     @Test
     public void gameCreatedWithCorrectScreenDimensions() {
-        // Games should be created with screen dimensions matching the world dimensions.
-        // This is subject to change.
+        // Games should be created with screen dimensions matching the default screen dimensions
         var gameRunner = GameRunner.create();
 
-        assertEquals(Main.VIEW_RECT_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
-        assertEquals(Main.VIEW_RECT_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
+        assertEquals(Main.DEFAULT_SCREEN_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
+        assertEquals(Main.DEFAULT_SCREEN_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
     }
 
     @Test

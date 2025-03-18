@@ -12,12 +12,12 @@ import org.mockito.Mockito;
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
     public int getWidth() {
-        return Main.VIEW_RECT_WIDTH;
+        return Main.DEFAULT_SCREEN_WIDTH;
     }
 
     @Override
     public int getHeight() {
-        return Main.VIEW_RECT_HEIGHT;
+        return Main.DEFAULT_SCREEN_HEIGHT;
     }
 
     @Override
