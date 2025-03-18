@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.objects.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
@@ -19,6 +20,8 @@ import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+
+import java.util.ArrayList;
 
 /**
  * GamePlay Screen
@@ -277,13 +280,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
-        energyBars.update(cell.getCellHealth(), cell.getCellATP());
+        handleCollisions();
+    }
+
+    private void handleCollisions() {
+        var glucoseToRemove = new ArrayList<Glucose>();
         for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
-            if(cell.getcellCircle().overlaps(getGlucoseManager().getGlucoseArray().get(i).getCircle())) {
-                getGlucoseManager().getGlucoseArray().remove(i);
-                cell.addCellATP(i);
+            var glucose = getGlucoseManager().getGlucoseArray().get(i);
+            if(cell.getcellCircle().overlaps(glucose.getCircle())) {
+                glucoseToRemove.add(glucose);
+                cell.addCellATP(Glucose.ATP_PER_GLUCOSE);
             }
         }
+
+        getGlucoseManager().getGlucoseArray().removeAll(glucoseToRemove);
     }
 
     /**
@@ -396,5 +406,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public HUD getHud() {
         return hud;
+    }
+
+    /**
+     * For test use only.
+     */
+    public Cell getCell() {
+        return this.cell;
     }
 }

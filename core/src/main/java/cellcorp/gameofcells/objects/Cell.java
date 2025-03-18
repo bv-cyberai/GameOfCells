@@ -44,14 +44,12 @@ public class Cell {
 
         cellPositionX = 500;
         cellPositionY = 300;
-        cellWidth = 200;
-        cellHeight = 200;
         cellHealth = 100;
         cellATP = 30; // starting value in alpha.
         maxHealth = 100;
         maxATP = 100; // Alpha is actually 99, but thats painful.
         cellCircle = new Circle();
-        cellCircle.set(cellPositionX + 100, cellPositionY + 80, cellWidth/2);
+        cellCircle.set(cellPositionX + 100, cellPositionY + 80, WIDTH/2);
     }
 
     /**
@@ -72,7 +70,7 @@ public class Cell {
             cellPositionY += cellSpeed * deltaTime;
         if (moveDown)
             cellPositionY -= cellSpeed * deltaTime;
-        cellCircle.set(cellPositionX + 100, cellPositionY + 80, cellWidth/2); // adjusts the cells hitbox with the sprite
+        cellCircle.set(cellPositionX + 100, cellPositionY + 80, WIDTH/2); // adjusts the cells hitbox with the sprite
     }
 
     /**

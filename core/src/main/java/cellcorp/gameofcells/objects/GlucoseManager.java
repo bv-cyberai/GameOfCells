@@ -29,7 +29,7 @@ public class GlucoseManager {
     private final int MAX_GLUCOSE;
     // The radius of the glucose circle, and also the height/width of a glucose
     // texture.
-    private final float RADIUS;
+    public static final float RADIUS = 30;
 
     private ArrayList<Glucose> glucoseArray;
     private Random rand;
@@ -38,7 +38,6 @@ public class GlucoseManager {
         this.assetManager = assetManager;
         MAX_GLUCOSE = 10; // likely the wrong max
         // may also need to track current glucose.
-        RADIUS = 30; // likely the wrong size
         rand = new Random();
         glucoseArray = new ArrayList<>();
         fillGlucoseArray();

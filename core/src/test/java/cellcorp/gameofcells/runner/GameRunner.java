@@ -3,6 +3,7 @@ package cellcorp.gameofcells.runner;
 import cellcorp.gameofcells.providers.FakeGraphicsProvider;
 import cellcorp.gameofcells.providers.FakeInputProvider;
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;

@@ -1,10 +1,15 @@
 package cellcorp.gameofcells;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import cellcorp.gameofcells.objects.Glucose;
+import cellcorp.gameofcells.objects.GlucoseManager;
+import com.badlogic.gdx.assets.AssetManager;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.Input;
@@ -14,6 +19,7 @@ import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 import cellcorp.gameofcells.screens.ShopScreen;
+import org.mockito.Mockito;
 
 public class TestMain {
 
@@ -138,6 +144,40 @@ public class TestMain {
         var screen = (GamePlayScreen) gameRunner.game.getScreen();
         String time = screen.getHud().getTimerString();
         assertEquals("Timer: 2", time);
+    }
 
+    @Test
+    public void cellCollidesWithMultipleGlucoseRemovesAll() {
+        // Create a game. Move to gameplay screen.
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        var screen = gameRunner.game.getScreen();
+        assert screen instanceof  GamePlayScreen;
+        var gamePlayScreen = (GamePlayScreen) screen;
+        gameRunner.step();
+
+        // Spawn multiple glucose on top of the cell
+        var cell = gamePlayScreen.getCell();
+        var startATP = cell.getCellATP();
+        var gameGlucose = gamePlayScreen.getGlucoseManager().getGlucoseArray();
+
+        var addedGlucose = new ArrayList<Glucose>();
+        for (int i = 0; i < 10; i++) {
+            addedGlucose.add(new Glucose(
+                    Mockito.mock(AssetManager.class),
+                    cell.getCellPositionX() + 100,
+                    cell.getCellPositionY() + 80,
+                    GlucoseManager.RADIUS
+            ));
+        }
+        gameGlucose.addAll(addedGlucose);
+
+        gameRunner.step();
+        // Assert that all the glucose have been removed, and that the cell ATP has increased 10 times.
+        for (var glucose : addedGlucose) {
+            assert !gameGlucose.contains(glucose);
+        }
+        assertEquals(startATP + 10 * Glucose.ATP_PER_GLUCOSE, cell.getCellATP());
     }
 }
