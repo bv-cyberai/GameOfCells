@@ -58,27 +58,27 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private BitmapFont font;
     // used to center text.
     private final GlyphLayout layout;
+    private final float popUpSize;
 
     // Message and properties.
     private String message;
     private float messageY;
     private float messageX;
     private float padding;
-    private final float popUpSize;
 
     /**
-     * Popup Screen Constructor 
+     * Popup Screen Constructor
      * 
-     * Creates a new popup with the given type. 
+     * Creates a new popup with the given type.
      * 
-     * @param inputProvider - The input provider
-     * @param assetManager - The Asset manager
+     * @param inputProvider    - The input provider
+     * @param assetManager     - The Asset manager
      * @param graphicsProvider - The graphics provider
-     * @param game - The game instance
-     * @param camera - The game camera
-     * @param viewport - The game viewport
-     * @param previousScreen - The previous screen
-     * @param type - The type of popup to create -- See type enum.
+     * @param game             - The game instance
+     * @param camera           - The game camera
+     * @param viewport         - The game viewport
+     * @param previousScreen   - The previous screen
+     * @param type             - The type of popup to create -- See type enum.
      */
     public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
             Main game, OrthographicCamera camera, FitViewport viewport, GameOfCellsScreen previousScreen, Type type) {
@@ -104,7 +104,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         messageX = 0;
         messageY = 0;
 
-        padding = -10; // negative padding shifts y down, and x left.
+        padding = -10; // negative padding shifts y down, and x left. Should not need to be changed.
         popUpSize = 500; // Pop up is currently an n by n square.
 
         // Load Font
@@ -127,7 +127,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     public void render(float delta) {
 
         // ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // purple
-        ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f)); //blue
+        ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f)); // blue
 
         viewport.apply(true);
         camera.update();
@@ -144,7 +144,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
             CharSequence cs = message;
             layout.setText(font, cs, 0, cs.length(), Color.WHITE, (popUpSize + padding), Align.center, true, null);
 
-            //Align the message to the top center of the popup.
+            // Align the message to the top center of the popup.
             messageX = ((viewport.getWorldWidth() / 2)) - (popUpSize / 2) - (padding + 5);
             messageY = (viewport.getWorldHeight() / 2) + (popUpSize / 2) + padding;
         }
@@ -175,7 +175,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private void setMessage() {
         switch (type) {
             case glucose:
-                message = "You've found glucose!" +"\n" + "Press escape to exit!";
+                message = "You've found glucose!" + "\n" + "Press escape to exit!";
                 break;
             case danger:
                 message = "You're in danger, cell is being damaged";
@@ -195,7 +195,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     /**
      * Resize
      * 
-     * @param width - the new width
+     * @param width  - the new width
      * @param height - the new height
      */
     @Override
@@ -245,8 +245,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     /**
      * Handle Input
      * 
-     * Exits the popup screen.
-     */ 
+     * Exits the popup screen on escape
+     */
     @Override
     public void handleInput(float deltaTimeSeconds) {
         if (inputProvider.isKeyPressed(Input.Keys.ESCAPE)) {

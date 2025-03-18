@@ -279,4 +279,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public GlucoseManager getGlucoseManager() {
         return glucoseManager;
     }
+
+    public HUD getHud() {
+        return hud;
+    }
 }

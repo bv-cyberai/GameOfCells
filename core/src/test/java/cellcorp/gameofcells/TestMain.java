@@ -1,15 +1,18 @@
 package cellcorp.gameofcells;
 
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.junit.jupiter.api.Test;
+
+import com.badlogic.gdx.Input;
+
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 import cellcorp.gameofcells.screens.ShopScreen;
-import com.badlogic.gdx.Input;
-import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMain {
 
@@ -37,9 +40,11 @@ public class TestMain {
         // Test that the game ran the expected number of ticks.
         assertEquals(1 + GameRunner.TICKS_PER_SECOND * 2, gameRunner.getTicksElapsed());
         // Test that there are still glucose on the screen.
-        // `Main.screen`, `GamePlayScreen.glucoseManager`, and `GlucoseManager.glucoseArray`
-        //   are _not_ final in their respective classes, so we should set them again,
-        //   to make sure we're not using an old reference that's been replaced in the actual game.
+        // `Main.screen`, `GamePlayScreen.glucoseManager`, and
+        // `GlucoseManager.glucoseArray`
+        // are _not_ final in their respective classes, so we should set them again,
+        // to make sure we're not using an old reference that's been replaced in the
+        // actual game.
         screen = gameRunner.game.getScreen();
         assertInstanceOf(GamePlayScreen.class, screen);
         gamePlayScreen = (GamePlayScreen) screen;
@@ -76,5 +81,25 @@ public class TestMain {
     public void gameStartsOnMainMenuScreen() {
         var gameRunner = GameRunner.create();
         assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
+    }
+
+    @Test
+    public void timerCorrectAfterScreenSwitch() {
+        var gameRunner = GameRunner.create();
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.runForSeconds(2);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.step();
+        gameRunner.runForSeconds(2);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
+        gameRunner.step();
+        var screen = (GamePlayScreen) gameRunner.game.getScreen();
+        String time = screen.getHud().getTimerString();
+        assertEquals("Timer: 2", time);
+
     }
 }
