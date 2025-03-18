@@ -14,12 +14,25 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * The screen for the main menu.
  * When the game starts this screen is loaded first.
  */
 public class MainMenuScreen implements GameOfCellsScreen {
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
+    /**
+     * Width of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1200;
+    /**
+     * Height of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 800;
 
     /**
      * The instructional message displayed on the main menu
@@ -31,24 +44,20 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     private final Main game;
     private final AssetManager assetManager;
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    private final Viewport viewport;
     private final SpriteBatch spriteBatch;
 
     public MainMenuScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             Main game,
-            AssetManager assetManager,
-            OrthographicCamera camera,
-            FitViewport viewport
+            AssetManager assetManager
     ) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.game = game;
         this.assetManager = assetManager;
-        this.camera = camera;
-        this.viewport = viewport;
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
     }
 
@@ -98,9 +107,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager,
-                    camera,
-                    viewport
+                    assetManager
             ));
         }
     }
@@ -123,8 +130,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // I don't know what `viewport.apply(...)` does but when it was omitted
         // the HTML version was displaying way in the bottom-left and getting cut off.
         viewport.apply(true);
-        camera.update();
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         spriteBatch.begin();
         // Display the start background

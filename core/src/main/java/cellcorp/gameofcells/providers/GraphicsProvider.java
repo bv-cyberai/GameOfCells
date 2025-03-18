@@ -39,7 +39,7 @@ public interface GraphicsProvider {
      *                      Equivalent to the questionably-named {@link Camera} `worldHeight`
      * @return A newly-constructed {@link FitViewport}
      */
-    FitViewport createViewport(float viewRectWidth, float viewRectHeight);
+    FitViewport createFitViewport(float viewRectWidth, float viewRectHeight);
 
     /**
      * Create a viewport with the given camera. Equivalent to calling `new FitViewport(camera)`,
@@ -52,7 +52,7 @@ public interface GraphicsProvider {
      *                      Equivalent to the questionably-named {@link Camera} `worldHeight`
      * @return A newly-constructed {@link Viewport}
      */
-    FitViewport createViewport(float viewRectWidth, float viewRectHeight, Camera camera);
+    FitViewport createFitViewport(float viewRectWidth, float viewRectHeight, Camera camera);
 
     /**
      * Create a shape renderer. Equivalent to calling `new ShapeRenderer()`,

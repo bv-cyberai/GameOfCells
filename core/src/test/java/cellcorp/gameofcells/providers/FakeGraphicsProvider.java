@@ -26,12 +26,12 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
-    public FitViewport createViewport(float viewRectWidth, float viewRectHeight) {
+    public FitViewport createFitViewport(float viewRectWidth, float viewRectHeight) {
         return Mockito.mock(FitViewport.class);
     }
 
     @Override
-    public FitViewport createViewport(float viewRectWidth, float viewRectHeight, Camera camera) {
+    public FitViewport createFitViewport(float viewRectWidth, float viewRectHeight, Camera camera) {
         return Mockito.mock(FitViewport.class);
     }
 

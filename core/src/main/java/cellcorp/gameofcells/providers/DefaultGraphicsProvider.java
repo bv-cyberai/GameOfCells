@@ -24,12 +24,12 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
-    public FitViewport createViewport(float viewRectWidth, float viewRectHeight) {
+    public FitViewport createFitViewport(float viewRectWidth, float viewRectHeight) {
         return new FitViewport(viewRectWidth, viewRectHeight);
     }
 
     @Override
-    public FitViewport createViewport(float viewRectWidth, float viewRectHeight, Camera camera) {
+    public FitViewport createFitViewport(float viewRectWidth, float viewRectHeight, Camera camera) {
         return new FitViewport(viewRectWidth, viewRectHeight, camera);
     }
 

@@ -2,7 +2,6 @@ package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -27,7 +26,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * @assignment GameOfCells
  */
 public class HUD {
-    // Mark set these to the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
     // Change as is most convenient.
     /**
      * Width of the HUD view rectangle.
@@ -106,7 +105,7 @@ public class HUD {
         this.maxHealth = maxHealth;
         this.maxATP = maxATP;
 
-        this.viewport = graphicsProvider.createViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
 
@@ -198,8 +197,8 @@ public class HUD {
         }
 
         batch.begin();
-        barFont.draw(batch, "HEALTH", (Main.VIEW_RECT_WIDTH - healthTextWidth) / 2, healthTextY);
-        barFont.draw(batch, "ATP", (Main.VIEW_RECT_HEIGHT - ATPTextWidth) / 2, ATPTextY);
+        barFont.draw(batch, "HEALTH", (VIEW_RECT_WIDTH - healthTextWidth) / 2, healthTextY);
+        barFont.draw(batch, "ATP", (VIEW_RECT_WIDTH - ATPTextWidth) / 2, ATPTextY);
         batch.end();
     }
 

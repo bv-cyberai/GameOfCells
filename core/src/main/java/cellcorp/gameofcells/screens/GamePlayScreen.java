@@ -2,6 +2,7 @@ package cellcorp.gameofcells.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,6 +18,7 @@ import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * GamePlay Screen
@@ -36,6 +38,17 @@ import cellcorp.gameofcells.providers.InputProvider;
  * First screen of the application. Displayed after the application is created.
  */
 public class GamePlayScreen implements GameOfCellsScreen {
+    /**
+     * Width of the view rectangle
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1920;
+    /**
+     * Width of the view rectangle
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 1080;
+
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
 
@@ -50,8 +63,50 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
 
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    // ==== The Camera / Viewport Regime ====
+    //  (Mark is 95% sure the following is correct, from research and review of the classes' code):
+    // The LibGDX 2d (= orthographic) `Camera` is responsible for:
+    // - Holding a "view rectangle":
+    //      A rectangle defined in world units, which is the region of the world that is drawn.
+    //      Stored in the camera as a center-point `position`
+    //          and a pair `viewportWidth, viewportHeight`
+    //      The names `viewportWidth` and `viewportHeight` are historical, and somewhat misleading.
+    //      https://stackoverflow.com/questions/40059360/difference-between-viewport-and-camera-in-libgdx
+    // - Providing a `projectionMatrix` to `SpriteBatch` and `ShapeRenderer`
+    //      If the view rectangle is `(0, 0) .. (1000, 1000)`,
+    //      the `SpriteBatch` can draw anywhere in that range, and it will be drawn to screen.
+    //
+    // The LibGDX `Viewport` (_not_ the same as OpenGL viewport) is responsible for:
+    // - Storing a `worldWidth` and `worldHeight`
+    //      These are also questionably-named. They represent the same thing as the camera's view rectangle.
+    //      When `viewport.apply()` is called in each `draw()` call,
+    //          the viewport updates the width and height of the camera's view rectangle
+    //          to match these values.
+    // - Fitting the camera's view rectangle to whatever the actual screen size is
+    //      To do this, it uses the `screenX, screenY, screenWidth, screenHeight` fields,
+    //      which are updated by calling `viewport.update()`
+    //
+    // Takeaways:
+    // - We shouldn't use `viewport.setWorldWidth()` or `viewport.setWorldHeight()`,
+    //      unless we want to change the _size_ of the camera's view rectangle.
+    //      We usually don't want to do that.
+    // - Because `viewport.worldWidth` overrides `camera.viewportWidth` every time `viewport.apply()` is called,
+    //      if we _do_ want to change it, we should always call `viewport.setWorld____()`,
+    //      instead of changing it directly
+    // - To move the position of the camera's view rectangle,
+    //      we should call `camera.position.set(...)`
+    // - For drawing HUD and menu screens, we can use a separate (viewport, camera) pair from the game screen.
+    //      If we construct the viewport with a certain width and height (say 1920, 1080)
+    //      and never change _that viewport_'s `worldWidth` / `worldHeight`,
+    //      we can just draw GUI elements in the range `(0, 0) .. (1920, 1080)`
+    //      and it will work no matter what we resize the screen to.
+    // - Every class that owns a viewport should call `viewport.apply()`
+    //      at the start of their draw method.
+    //      Classes that aren't screens should take in the caller's viewport, and re-apply it after.
+    // - Classes with a fixed camera position (like HUD and menus)
+    //      should call `camera.apply(centerCamera = true)`. Others should leave it false.
+    private final Camera camera;
+    private final Viewport viewport;
 
     private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
@@ -72,16 +127,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public GamePlayScreen(
             InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
-            AssetManager assetManager,
-            OrthographicCamera camera,
-            FitViewport viewport) {
+            AssetManager assetManager) {
         this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
 
-        this.camera = camera;
-        this.viewport = viewport;
+        this.camera = graphicsProvider.createCamera();
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
         this.cell = new Cell(assetManager);
         this.glucoseManager = new GlucoseManager(assetManager);
@@ -178,13 +231,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     assetManager,
-                    camera,
-                    viewport,
                     this));
         }
 
         if (inputProvider.isKeyPressed(Input.Keys.G)) {
-            game.setScreen(new GameOverScreen(inputProvider, assetManager, graphicsProvider, game, camera, viewport));
+            game.setScreen(new GameOverScreen(inputProvider, assetManager, graphicsProvider, game));
         }
 
         cell.move(
@@ -264,16 +315,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         var distanceBetweenGridLines = 100f;
-        int rows = (int) Math.ceil(Main.VIEW_RECT_HEIGHT / distanceBetweenGridLines);
-        int cols = (int) Math.ceil(Main.VIEW_RECT_WIDTH / distanceBetweenGridLines);
+        int rows = (int) Math.ceil(VIEW_RECT_HEIGHT / distanceBetweenGridLines);
+        int cols = (int) Math.ceil(VIEW_RECT_WIDTH / distanceBetweenGridLines);
 
-        float rowWidth = Main.VIEW_RECT_WIDTH + 2f;
-        float rowHeight = Main.VIEW_RECT_HEIGHT / 500f;
-        float colWidth = Main.VIEW_RECT_WIDTH / 500f;
-        float colHeight = Main.VIEW_RECT_HEIGHT + 2f;
+        float rowWidth = VIEW_RECT_WIDTH + 2f;
+        float rowHeight = VIEW_RECT_HEIGHT / 500f;
+        float colWidth = VIEW_RECT_WIDTH / 500f;
+        float colHeight = VIEW_RECT_HEIGHT + 2f;
 
-        float xMin = camera.position.x - (float) Main.VIEW_RECT_WIDTH / 2 - 1;
-        float yMin = camera.position.y - (float) Main.VIEW_RECT_HEIGHT / 2 - 1;
+        float xMin = camera.position.x - (float) VIEW_RECT_WIDTH / 2 - 1;
+        float yMin = camera.position.y - (float) VIEW_RECT_HEIGHT / 2 - 1;
 
         float yStart = yMin - yMin % distanceBetweenGridLines;
         for (int row = 0; row < rows; row++) {

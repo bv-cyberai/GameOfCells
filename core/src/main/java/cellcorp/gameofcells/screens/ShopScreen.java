@@ -22,36 +22,46 @@ import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 
 /**
  * First screen of the application. Displayed after the application is created.
  */
 public class ShopScreen implements GameOfCellsScreen {
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
+    /**
+     * Width of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1200;
+    /**
+     * Height of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 800;
+
     private Main game;
 
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
-    private final GraphicsProvider graphicsProvider;
 
     private final AssetManager assetManager;
 
     // Camera/Viewport
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    private final Viewport viewport;
 
     // Keeps track of the initial screen prior to transition
     private final GameOfCellsScreen previousScreen;
 
     // For rendering text
-    private SpriteBatch batch;  // Define the batch for drawing text
+    private final SpriteBatch batch;  // Define the batch for drawing text
 
     /**
      * Constructs the GamePlayScreen.
@@ -67,17 +77,15 @@ public class ShopScreen implements GameOfCellsScreen {
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             AssetManager assetManager,
-            OrthographicCamera camera,
-            FitViewport viewport,
             GameOfCellsScreen previousScreen
     ) {
         this.game = game;
         this.inputProvider = inputProvider;
-        this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
-        this.camera = camera;
-        this.viewport = viewport;
         this.previousScreen = previousScreen;
+
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        this.batch = graphicsProvider.createSpriteBatch();
     }
 
     /**
@@ -85,7 +93,6 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
-        this.batch = graphicsProvider.createSpriteBatch();
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
@@ -106,10 +113,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true);  // Update the viewport
-        camera.viewportWidth = width;   // Update the camera viewport width
-        camera.viewportHeight = height; // Update the camera viewport height
+        viewport.update(width, height);
     }
 
     /**
@@ -170,11 +174,8 @@ public class ShopScreen implements GameOfCellsScreen {
 
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
-        // I don't know what `viewport.apply(...)` does but when it was omitted
-        // the HTML version was displaying way in the bottom-left and getting cut off.
-        viewport.apply();
-        camera.update();    // Update the camera
-        batch.setProjectionMatrix(camera.combined);
+        viewport.apply(true);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();  // Start the batch for drawing 2d elements
 
