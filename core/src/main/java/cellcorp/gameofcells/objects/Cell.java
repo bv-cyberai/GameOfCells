@@ -3,6 +3,7 @@ package cellcorp.gameofcells.objects;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
 
 import cellcorp.gameofcells.AssetFileNames;
 
@@ -35,21 +36,26 @@ public class Cell {
     private int cellATP;
     private int maxHealth;
     private int maxATP;
+    private Circle cellCircle;
+
 
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
 
-        cellPositionX = 0;
-        cellPositionY = 0;
-
+        cellPositionX = 500;
+        cellPositionY = 300;
+        cellWidth = 200;
+        cellHeight = 200;
         cellHealth = 100;
         cellATP = 30; // starting value in alpha.
         maxHealth = 100;
         maxATP = 100; // Alpha is actually 99, but thats painful.
+        cellCircle = new Circle();
+        cellCircle.set(500, 300, cellWidth/2);
     }
 
     /**
-     * Moves the cell based on input direction
+     * Moves the cell based on input direction as well as its collision circle
      * 
      * @param deltaTime - The time passed since the last frame
      * @param moveLeft  - If the cell should move left
@@ -66,6 +72,7 @@ public class Cell {
             cellPositionY += cellSpeed * deltaTime;
         if (moveDown)
             cellPositionY -= cellSpeed * deltaTime;
+        cellCircle.set(cellPositionX, cellPositionY, cellWidth/2);
     }
 
     /**
