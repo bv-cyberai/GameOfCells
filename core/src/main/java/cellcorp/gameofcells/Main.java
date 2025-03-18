@@ -31,10 +31,16 @@ import cellcorp.gameofcells.screens.MainMenuScreen;
 
 public class Main implements ApplicationListener {
 
-    /** Width of the screen in _world units_ */
-    public static final int SCREEN_WIDTH_WORLD = 1920;
-    /** Height of the screen in _world units_ */
-    public static final int SCREEN_HEIGHT_WORLD = 1080;
+    /**
+     * Width of the view rectangle
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1920;
+    /**
+     * Width of the view rectangle
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 1080;
     /**
      * The currently-shown screen.
      */
@@ -58,8 +64,49 @@ public class Main implements ApplicationListener {
      */
     private final GraphicsProvider graphicsProvider;
 
-    // Camera/Viewport - These can be shared by screens/don't need to be Fit
-    // viewport but its not a bad choice per se.
+
+    // ==== The Camera / Viewport Regime ====
+    //  (Mark is 95% sure the following is correct, from research and review of the classes' code):
+    // The LibGDX 2d (= orthographic) `Camera` is responsible for:
+    // - Holding a "view rectangle":
+    //      A rectangle defined in world units, which is the region of the world that is drawn.
+    //      Stored in the camera as a center-point `position`
+    //          and a pair `viewportWidth, viewportHeight`
+    //      The names `viewportWidth` and `viewportHeight` are historical, and somewhat misleading.
+    //      https://stackoverflow.com/questions/40059360/difference-between-viewport-and-camera-in-libgdx
+    // - Providing a `projectionMatrix` to `SpriteBatch` and `ShapeRenderer`
+    //      If the view rectangle is `(0, 0) .. (1000, 1000)`,
+    //      the `SpriteBatch` can draw anywhere in that range, and it will be drawn to screen.
+    //
+    // The LibGDX `Viewport` (_not_ the same as OpenGL viewport) is responsible for:
+    // - Storing a `worldWidth` and `worldHeight`
+    //      These are also questionably-named. They represent the same thing as the camera's view rectangle.
+    //      When `viewport.apply()` is called in each `draw()` call,
+    //          the viewport updates the width and height of the camera's view rectangle
+    //          to match these values.
+    // - Fitting the camera's view rectangle to whatever the actual screen size is
+    //      To do this, it uses the `screenX, screenY, screenWidth, screenHeight` fields,
+    //      which are updated by calling `viewport.update()`
+    //
+    // Takeaways:
+    // - We shouldn't use `viewport.setWorldWidth()` or `viewport.setWorldHeight()`,
+    //      unless we want to change the _size_ of the camera's view rectangle.
+    //      We usually don't want to do that.
+    // - Because `viewport.worldWidth` overrides `camera.viewportWidth` every time `viewport.apply()` is called,
+    //      if we _do_ want to change it, we should always call `viewport.setWorld____()`,
+    //      instead of changing it directly
+    // - To move the position of the camera's view rectangle,
+    //      we should call `camera.position.set(...)`
+    // - For drawing HUD and menu screens, we can use a separate (viewport, camera) pair from the game screen.
+    //      If we construct the viewport with a certain width and height (say 1920, 1080)
+    //      and never change _that viewport_'s `worldWidth` / `worldHeight`,
+    //      we can just draw GUI elements in the range `(0, 0) .. (1920, 1080)`
+    //      and it will work no matter what we resize the screen to.
+    // - Every class that owns a viewport should call `viewport.apply()`
+    //      at the start of their draw method.
+    //      Classes that aren't screens should take in the caller's viewport, and re-apply it after.
+    // - Classes with a fixed camera position (like HUD and menus)
+    //      should call `camera.apply(centerCamera = true)`. Others should leave it false.
     private final OrthographicCamera camera;
     public static FitViewport viewport;
 
@@ -74,15 +121,7 @@ public class Main implements ApplicationListener {
         var inputProvider = new DefaultInputProvider();
         var graphicsProvider = new DefaultGraphicsProvider();
         var assetManager = new AssetManager();
-        var camera = new OrthographicCamera();
-        // Gdx.graphics is not instantiated until `create()`.
-        // Just use the configuration constants here.
-        var viewport = new FitViewport(
-            SCREEN_WIDTH_WORLD,
-            SCREEN_HEIGHT_WORLD,
-            camera
-        );
-        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);
+        return new Main(inputProvider, graphicsProvider, assetManager);
     }
 
     /**
@@ -96,15 +135,14 @@ public class Main implements ApplicationListener {
      */
     public Main(InputProvider inputProvider,
                 GraphicsProvider graphicsProvider,
-                AssetManager assetManager,
-                OrthographicCamera camera,
-                FitViewport viewport
+                AssetManager assetManager
     ) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
-        this.camera = camera;
-        this.viewport = viewport;
+
+        this.camera = graphicsProvider.createCamera();
+        this.viewport = graphicsProvider.createViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
     }
 
     @Override

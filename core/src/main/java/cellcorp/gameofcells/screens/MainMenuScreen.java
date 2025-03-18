@@ -68,8 +68,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
         viewport.update(width, height, true);  // Update the viewport
-        camera.viewportWidth = width;   // Update the camera viewport width
-        camera.viewportHeight = height; // Update the camera viewport height
     }
 
     @Override

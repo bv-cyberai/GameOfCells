@@ -136,8 +136,8 @@ public class GameOverScreen implements GameOfCellsScreen {
         layout.setText(font, gameOverString);
         textWidth = layout.width;
         textHeight = layout.height;
-        xResetCenter = (Main.SCREEN_WIDTH_WORLD - textWidth) / 2;
-        yCenter = (Main.SCREEN_HEIGHT_WORLD + textHeight) / 2;
+        xResetCenter = (Main.VIEW_RECT_WIDTH - textWidth) / 2;
+        yCenter = (Main.VIEW_RECT_HEIGHT + textHeight) / 2;
 
         spriteBatch.begin();
         font.draw(spriteBatch, gameOverString, xResetCenter, yCenter);

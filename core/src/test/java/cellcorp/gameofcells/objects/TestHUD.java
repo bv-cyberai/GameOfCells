@@ -1,6 +1,8 @@
 package cellcorp.gameofcells.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import cellcorp.gameofcells.providers.FakeGraphicsProvider;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -22,10 +24,11 @@ public class TestHUD {
      */
     @Test
     public void testHUDUpdate() {
+        var fakeGraphicsProvider = new FakeGraphicsProvider();
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var spyCell = Mockito.spy(new Cell(fakeAssetManager));
 
-        HUD hud = new HUD(fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
+        HUD hud = new HUD(fakeGraphicsProvider, fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
         hud.update(1f, spyCell.getCellHealth(), spyCell.getCellATP()); // simulate 1 second has passed
 
         assertEquals("Timer: 1", hud.getTimerString());

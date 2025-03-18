@@ -1,19 +1,38 @@
 package cellcorp.gameofcells.providers;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import org.mockito.Mockito;
 
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
     public int getWidth() {
-        return Main.WORLD_WIDTH;
+        return Main.VIEW_RECT_WIDTH;
     }
 
     @Override
     public int getHeight() {
-        return Main.WORLD_HEIGHT;
+        return Main.VIEW_RECT_HEIGHT;
+    }
+
+    @Override
+    public OrthographicCamera createCamera() {
+        return Mockito.mock(OrthographicCamera.class);
+    }
+
+    @Override
+    public FitViewport createViewport(float viewRectWidth, float viewRectHeight) {
+        return Mockito.mock(FitViewport.class);
+    }
+
+    @Override
+    public FitViewport createViewport(float viewRectWidth, float viewRectHeight, Camera camera) {
+        return Mockito.mock(FitViewport.class);
     }
 
     @Override

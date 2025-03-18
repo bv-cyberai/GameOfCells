@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.objects.EnergyBars;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.GraphicsProvider;
@@ -40,7 +39,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
 
-    private Main game;
+    private final Main game;
 
     /// Loads assets during game creation,
     /// then provides loaded assets to draw code, using [AssetManager#get(String)]
@@ -51,7 +50,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
 
-    // Camera/Viewport
     private final OrthographicCamera camera;
     private final FitViewport viewport;
 
@@ -62,7 +60,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Cell cell;
     private final GlucoseManager glucoseManager;
     private final HUD hud;
-    private final EnergyBars energyBars;
 
     /**
      * Constructs the GamePlayScreen.
@@ -92,8 +89,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
 
-        this.hud = new HUD(assetManager, cell.getMaxHealth(), cell.getMaxATP());
-        energyBars = new EnergyBars(assetManager, cell.getMaxHealth(), cell.getMaxATP());
+        this.hud = new HUD( graphicsProvider, assetManager, cell.getMaxHealth(), cell.getMaxATP());
     }
 
     /**
@@ -120,19 +116,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Resize the screen.
+     * Called when screen size changes.
+     * Tells the viewport that the screen size has been changed.
      *
-     * @param width  The new width of the screen.
-     * @param height The new height of the screen.
+     * @param screenWidth  The new width of the screen in pixels.
+     * @param screenHeight The new height of the screen in pixels.
      */
     @Override
-    public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true); // Update the viewport
-
-        camera.viewportWidth = width; // Update the camera viewport width
-        camera.viewportHeight = height; // Update the camera viewport height
-        energyBars.resize();
+    public void resize(int screenWidth, int screenHeight) {
+        // Update the viewport with the new screen size.
+        viewport.update(screenWidth, screenHeight);
+        hud.resize(screenWidth, screenHeight);
     }
 
     /**
@@ -168,7 +162,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         cell.dispose(); // dispose cell
         glucoseManager.dispose();
         hud.dispose();
-        energyBars.dispose();
         batch.dispose(); // Dispose of the batch
     }
 
@@ -211,7 +204,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
-        energyBars.update(cell.getCellHealth(), cell.getCellATP());
     }
 
     /**
@@ -219,52 +211,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        // Set up font
         var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-
         font.getData().setScale(2); // Set the font size
 
-        // Set the font color to white
-        font.setColor(Color.BLACK);
-
-        // Draw the screen
-        ScreenUtils.clear(0, 0, 0, 1); // Clear the screen with a black background
-
-        // I don't know what `viewport.apply(...)` does but when it was omitted
-        // the HTML version was displaying way in the bottom-left and getting cut off.
         centerCameraOnCell();
-        camera.update();
-        viewport.apply();
+        viewport.apply(true);
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
-        // ==== SpriteBatch ====
-        batch.begin(); // Start the batch for drawing 2d element
-
-        // Draw the text in white
-        font.setColor(Color.WHITE); // white for text
-        font.draw(batch, MESSAGE_GAME, 100, 100); // Regular position
-        font.draw(batch, MESSAGE_SHOP, 102, 75);
-
-        // You can start rendering other game objects (like the cell) here
-        glucoseManager.draw(batch); // draws glucose beneath the cell.
-        hud.draw(batch); // Draw hud
-        cell.draw(batch);
-        batch.end(); // End the batch
-
-        // ==== ShapeRenderer ====
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        drawBackground(shapeRenderer);
-        shapeRenderer.end();
-
-        // Uses shape renderer must be drawn outside of batch.
-        energyBars.draw(shapeRenderer);
-
-        // ==== SpriteBatch round 2 ====
-        // Draw text over energy bars.
-        batch.begin();
-        hud.drawBarText(batch);
-        batch.end();
+        // TODO -- remove
+        ScreenUtils.clear(Color.BLACK);
+//        drawBackground(shapeRenderer);
+//        drawGameObjects(batch);
+        hud.draw(viewport);
     }
 
     /**
@@ -293,37 +252,51 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Draw grid lines on the background
+     * Center's the camera's view rectangle on the cell.
      */
-    void drawBackground(ShapeRenderer renderer) {
+    private void centerCameraOnCell() {
+        camera.position.set(cell.getCellPositionX(), cell.getCellPositionY(), 0);
+    }
+
+    /**
+     * Draw a background with grid lines.
+     */
+    private void drawBackground(ShapeRenderer shapeRenderer) {
+        ScreenUtils.clear(Color.BLACK);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         var distanceBetweenGridLines = 100f;
-        int rows = (int) Math.ceil(Main.SCREEN_HEIGHT_WORLD / distanceBetweenGridLines);
-        int cols = (int) Math.ceil(Main.SCREEN_WIDTH_WORLD / distanceBetweenGridLines);
+        int rows = (int) Math.ceil(Main.VIEW_RECT_HEIGHT / distanceBetweenGridLines);
+        int cols = (int) Math.ceil(Main.VIEW_RECT_WIDTH / distanceBetweenGridLines);
 
-        float rowWidth = Main.SCREEN_WIDTH_WORLD + 2f;
-        float rowHeight = Main.SCREEN_HEIGHT_WORLD / 500f;
-        float colWidth = Main.SCREEN_WIDTH_WORLD / 500f;
-        float colHeight = Main.SCREEN_HEIGHT_WORLD + 2f;
+        float rowWidth = Main.VIEW_RECT_WIDTH + 2f;
+        float rowHeight = Main.VIEW_RECT_HEIGHT / 500f;
+        float colWidth = Main.VIEW_RECT_WIDTH / 500f;
+        float colHeight = Main.VIEW_RECT_HEIGHT + 2f;
 
-        float xMin = camera.position.x - (float) Main.SCREEN_WIDTH_WORLD / 2 - 1;
-        float yMin = camera.position.y - (float) Main.SCREEN_HEIGHT_WORLD / 2 - 1;
+        float xMin = camera.position.x - (float) Main.VIEW_RECT_WIDTH / 2 - 1;
+        float yMin = camera.position.y - (float) Main.VIEW_RECT_HEIGHT / 2 - 1;
 
         float yStart = yMin - yMin % distanceBetweenGridLines;
         for (int row = 0; row < rows; row++) {
             float yOffset = row * distanceBetweenGridLines;
             float y = yStart + yOffset;
-            renderer.rect(xMin, y, rowWidth, rowHeight);
+            shapeRenderer.rect(xMin, y, rowWidth, rowHeight);
         }
 
         float xStart = xMin - xMin % distanceBetweenGridLines;
         for (int col = 0; col < cols; col++) {
             float xOffset = col * distanceBetweenGridLines;
             float x = xStart + xOffset;
-            renderer.rect(x, yMin, colWidth, colHeight);
+            shapeRenderer.rect(x, yMin, colWidth, colHeight);
         }
+        shapeRenderer.end();
     }
 
-    void centerCameraOnCell() {
-        camera.position.set(cell.getCellPositionX(), cell.getCellPositionY(), 0);
+    private void drawGameObjects(SpriteBatch batch) {
+        batch.begin();
+        glucoseManager.draw(batch);
+        cell.draw(batch);
+        batch.end();
     }
 }

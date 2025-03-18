@@ -59,8 +59,8 @@ public class TestMain {
         // This is subject to change.
         var gameRunner = GameRunner.create();
 
-        assertEquals(Main.WORLD_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
-        assertEquals(Main.WORLD_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
+        assertEquals(Main.VIEW_RECT_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
+        assertEquals(Main.VIEW_RECT_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
     }
 
     @Test
