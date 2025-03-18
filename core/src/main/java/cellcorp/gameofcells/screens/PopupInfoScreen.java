@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.Main;
@@ -108,14 +107,15 @@ public class PopupInfoScreen implements GameOfCellsScreen {
             font = assetManager.get("rubik.fnt", BitmapFont.class);
             font.getData().setScale(0.25f); // Set the scale of the font
             CharSequence cs = message;
-            layout.setText(font, cs,0,cs.length()-1, Color.WHITE, 200f, Align.left, true,null);
+            layout.setText(font, cs,0,cs.length(), Color.WHITE, viewport.getWorldWidth()*0.8f, Align.center, true,null);
 
-            messageWidth = layout.width;
-            messageHeight = layout.height;
+            messageWidth = layout.width * font.getScaleX(); // actually scale the width
+            messageHeight = layout.height * font.getScaleY(); //actually scale height
             System.out.println("MW: " + messageWidth + " MH: " + messageHeight);
             messageX = (viewport.getWorldWidth() - messageWidth)/2;
-            messageY = (viewport.getWorldHeight() /2) - (messageHeight /2);
+            messageY = (viewport.getWorldHeight() + messageHeight) /2 - font.getLineHeight() / 2;
             System.out.println("MY: " + messageY + " MX: " + messageX);
+            System.out.println(viewport.getWorldWidth());
 
 
         }
@@ -196,7 +196,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 message = "other";
                 break;
             case longTest:
-                message = "This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.";
+                // message = "This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.";
+
+                message = "This an essay, it will be a really long message, it will be a really long message, how will it scale.";
                 break;
             default:
                 break;
