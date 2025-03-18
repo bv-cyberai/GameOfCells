@@ -33,12 +33,12 @@ public class HUD {
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    private static final int VIEW_RECT_WIDTH = 1200;
+    public static final int VIEW_RECT_WIDTH = 1200;
     /**
      * Height of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    private static final int VIEW_RECT_HEIGHT = 800;
+    public static final int VIEW_RECT_HEIGHT = 800;
 
 
     private final AssetManager assetManager;
@@ -236,7 +236,6 @@ public class HUD {
      */
     public void resize(int screenWidth, int screenHeight) {
         viewport.update(screenWidth, screenHeight);
-        energyBars.resize();
     }
 
     /**

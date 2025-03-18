@@ -130,8 +130,6 @@ public class Main implements ApplicationListener {
      * @param inputProvider    Input provider. Use FakeInputProvider in test code.
      * @param graphicsProvider Graphics provider. Use FakeGraphicsProvider in test code.
      * @param assetManager     Loads assets. Use `mock(AssetManager.class)` in test code.
-     * @param camera           The camera. Use `mock(OrthographicCamera.class)` in test code.
-     * @param viewport         The viewport. Use `mock(FitViewport.class)` in test code.
      */
     public Main(InputProvider inputProvider,
                 GraphicsProvider graphicsProvider,
@@ -168,7 +166,6 @@ public class Main implements ApplicationListener {
 
         // May need to set to gameScreenManager at somepoint.
         setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
-//        setScreen(new GamePlayScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
     }
 
     @Override

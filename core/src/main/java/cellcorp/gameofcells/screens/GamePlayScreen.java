@@ -215,14 +215,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         font.getData().setScale(2); // Set the font size
 
         centerCameraOnCell();
-        viewport.apply(true);
+        viewport.apply();
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
-        // TODO -- remove
-        ScreenUtils.clear(Color.BLACK);
-//        drawBackground(shapeRenderer);
-//        drawGameObjects(batch);
+        drawBackground(shapeRenderer);
+        drawGameObjects(batch);
         hud.draw(viewport);
     }
 
