@@ -10,14 +10,32 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
-public class PopupInfoScreen implements GameOfCellsScreen {
+/**
+ * PopupInfoScreen
+ * 
+ * Provides the ability to create a popup with informational text.
+ *
+ * @author Brendon Vinyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 
+public class PopupInfoScreen implements GameOfCellsScreen {
+    //Types
+    public enum Type {glucose, danger, other,longTest};
+    private final Type type;
+    
     // game
     private final Main game;
     private GameOfCellsScreen previousScreen;
@@ -36,51 +54,45 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     // Font and Font Properties
     private BitmapFont font;
     // used to center text.
-    private GlyphLayout layout;
-    private float textWidth;
-    private float textHeight;
-    private float xResetCenter = 0;
-    private float yCenter = 0;
+    private final GlyphLayout layout;
 
-    public enum Type {glucose, danger, other,longTest};
-
+    // Message and properties.
     private String message;
-    private float messageWidth;
-    private float messageHeight;
     private float messageY;
     private float messageX;
     private float padding;
-    private float popUpSize;
+    private final float popUpSize;
 
-    private Type type;
+
 
     public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
             Main game, OrthographicCamera camera, FitViewport viewport, GameOfCellsScreen previousScreen, Type type) {
 
+        this.type = type;
+        
+        // Game
         this.game = game;
-
+        this.previousScreen = previousScreen;
+        //Providers
         this.inputProvider = inputProvider;
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
-
+        
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
-        this.previousScreen = previousScreen;
-        this.type = type;
-
+        //Font/Message
         layout = new GlyphLayout();
 
         message = "";
-        messageHeight = 0;
-        messageWidth = 0;
         messageX = 0;
         messageY = 0;
 
-        padding = -10;
-        popUpSize = 500;
+        padding = -10; // negative padding shifts y down, and x left. 
+        popUpSize = 500; // Pop up is currently an n by n square.
 
+        // Load Font
         if (assetManager != null) {
             assetManager.load("rubik.fnt", BitmapFont.class);
             assetManager.load("rubik1.png", Texture.class);
@@ -98,7 +110,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     @Override
     public void render(float delta) {
-        // ScreenUtils.clear(Color.BLACK);
+        ScreenUtils.clear(Color.NAVY);
 
         viewport.apply(true);
         camera.update();
@@ -111,38 +123,51 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         if (font == null) {
             font = assetManager.get("rubik.fnt", BitmapFont.class);
             font.getData().setScale(0.25f); // Set the scale of the font
+
             CharSequence cs = message;
             layout.setText(font, cs,0,cs.length(), Color.WHITE, (popUpSize + padding), Align.center, true,null);
 
-            // messageWidth = layout.width * font.getScaleX(); // actually scale the width
-            // messageHeight = layout.height * font.getScaleY(); //actually scale height
-            // System.out.println("MW: " + messageWidth + " MH: " + messageHeight + " LW: " + layout.width + " LH: " + layout.height);
-            // messageX = ((viewport.getWorldWidth() - messageWidth)/2) -210;
-
-            //box is 500 so subtract by 250
             messageX = ((viewport.getWorldWidth() / 2))- (popUpSize/2) - (padding +5);
-            // messageX = ((viewport.getWorldWidth() / 2))-  (layout.width / 2);
-            // messageY = (viewport.getWorldHeight() /2) + (layout.height/2) + 70 ;
             messageY = (viewport.getWorldHeight() /2) + (popUpSize/2) + padding ;
-            System.out.println("MY: " + messageY + " MX: " + messageX);
-            System.out.println(layout.toString());
-            System.out.println(viewport.getWorldWidth());
-
-
         }
 
-
-
+        //Draw Square Popup
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.setColor(Color.SLATE);
         shape.rect((viewport.getWorldWidth()/2)-(popUpSize/2),(viewport.getWorldHeight() /2) - (popUpSize/2) ,popUpSize,popUpSize);
         shape.end();
 
+        //Draw message via layout.
         spriteBatch.begin();
         font.draw(spriteBatch, layout, messageX, messageY);
         spriteBatch.end();
 
         handleInput(delta);
+    }
+
+    /**
+     * Message Setter
+     * 
+     * Will set the message of the popup based on the given type of the popup. 
+     */
+    private void setMessage() {
+        switch (type) {
+            case glucose:
+                message = "You've found glucose!";
+                break;
+            case danger:
+                message = "You're in danger, cell is being damaged";
+                break;
+            case other:
+                message = "other";
+                break;
+            case longTest:
+                message = "This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.";
+                break;
+            default:
+                break;
+            
+        }
     }
 
     @Override
@@ -195,27 +220,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         // throw new UnsupportedOperationException("Unimplemented method 'draw'");
     }
 
-    private void setMessage() {
-        switch (type) {
-            case glucose:
-                message = "You've found glucose!";
-                break;
-            case danger:
-                message = "You're in danger, cell is being damaged";
-                break;
-            case other:
-                message = "other";
-                break;
-            case longTest:
-                message = "This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.";
-                padding = -10;
 
-                // message = "This an essay, it will be a really long message, it will be a really long message, how will it scale.";
-                break;
-            default:
-                break;
-            
-        }
-    }
 
 }
