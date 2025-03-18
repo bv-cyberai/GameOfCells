@@ -107,14 +107,18 @@ public class PopupInfoScreen implements GameOfCellsScreen {
             font = assetManager.get("rubik.fnt", BitmapFont.class);
             font.getData().setScale(0.25f); // Set the scale of the font
             CharSequence cs = message;
-            layout.setText(font, cs,0,cs.length(), Color.WHITE, viewport.getWorldWidth()*0.8f, Align.center, true,null);
+            layout.setText(font, cs,0,cs.length(), Color.WHITE, 490, Align.center, true,null);
 
             messageWidth = layout.width * font.getScaleX(); // actually scale the width
             messageHeight = layout.height * font.getScaleY(); //actually scale height
-            System.out.println("MW: " + messageWidth + " MH: " + messageHeight);
-            messageX = (viewport.getWorldWidth() - messageWidth)/2;
-            messageY = (viewport.getWorldHeight() + messageHeight) /2 - font.getLineHeight() / 2;
+            System.out.println("MW: " + messageWidth + " MH: " + messageHeight + " LW: " + layout.width + " LH: " + layout.height);
+            // messageX = ((viewport.getWorldWidth() - messageWidth)/2) -210;
+
+            //box is 500 so subtract by 250
+            messageX = ((viewport.getWorldWidth() / 2))- (layout.width / 2);
+            messageY = (viewport.getWorldHeight() /2) + (layout.height) - 15;
             System.out.println("MY: " + messageY + " MX: " + messageX);
+            System.out.println(layout.toString());
             System.out.println(viewport.getWorldWidth());
 
 
@@ -128,7 +132,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         shape.end();
 
         spriteBatch.begin();
-        font.draw(spriteBatch, message, messageX, messageY);
+        font.draw(spriteBatch, layout, messageX, messageY);
         spriteBatch.end();
 
         handleInput(delta);
@@ -196,9 +200,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 message = "other";
                 break;
             case longTest:
-                // message = "This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.";
+                message = "This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.This an essay, it will be a really long message, it will be a really long message, how will it scale. Does it stay within the bounds of the box or does it look awful. Only Time will Tell.";
 
-                message = "This an essay, it will be a really long message, it will be a really long message, how will it scale.";
+                // message = "This an essay, it will be a really long message, it will be a really long message, how will it scale.";
                 break;
             default:
                 break;
