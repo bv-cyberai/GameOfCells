@@ -130,7 +130,6 @@ public class Main implements ApplicationListener {
 
         // May need to set to gameScreenManager at somepoint.
         setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
-//        setScreen(new GamePlayScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
     }
 
     @Override
