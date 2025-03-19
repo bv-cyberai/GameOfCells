@@ -66,6 +66,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private float messageX;
     private float padding;
 
+    private boolean print;
+
     /**
      * Popup Screen Constructor
      * 
@@ -96,7 +98,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
-
+        
+        print = true;
         // Font/Message
         layout = new GlyphLayout();
 
@@ -105,7 +108,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         messageY = 0;
 
         padding = -10; // negative padding shifts y down, and x left. Should not need to be changed.
-        popUpSize = 500; // Pop up is currently an n by n square.
+        // popUpSize = 500; // Pop up is currently an n by n square.
+        popUpSize = Math.min(viewport.getWorldWidth(), viewport.getWorldHeight()) * .5f;
 
         // Load Font
         if (assetManager != null) {
@@ -155,8 +159,23 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         shape.setColor(new Color(.424f, .553f, .573f, 1.0f)); // blue
         // shape.setColor(new Color(.157f, .115f, .181f, 1.0f)); // purple
 
-        shape.rect((viewport.getWorldWidth() / 2) - (popUpSize / 2), (viewport.getWorldHeight() / 2) - (popUpSize / 2),
-                popUpSize, popUpSize);
+        // shape.rect((
+        //     viewport.getWorldWidth() / 2) - ((viewport.getWorldWidth() * .416f )/ 2), 
+        //     (viewport.getWorldHeight() / 2) - ((viewport.getWorldHeight() * .625f) / 2),
+        //     popUpSize, 
+        //     popUpSize);
+
+        shape.rect((
+            viewport.getWorldWidth() / 2) - (popUpSize  / 2), 
+            (viewport.getWorldHeight() / 2) - (popUpSize / 2),
+            popUpSize, 
+            popUpSize);
+
+        if(print) {
+            System.out.println("VPWIDTH: " + ((viewport.getWorldWidth() / 2) - (popUpSize  / 2)));
+            System.out.println("VPHEIGHT: " + ((viewport.getWorldHeight() / 2) - (popUpSize / 2)));
+            print = false;
+        }
         shape.end();
 
         // Draw message via layout.
@@ -203,7 +222,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         viewport.update(width, height, true); // Update the viewport
         camera.viewportWidth = width; // Update the camera viewport width
         camera.viewportHeight = height; // Update the camera viewport height
-        popUpSize = Math.min(viewport.getWorldWidth(), viewport.getWorldHeight()) * 0.5f;
+        popUpSize = Math.min(viewport.getWorldWidth(), viewport.getWorldHeight()) * .5f;
+        // System.out.println("POPUPSIZERESIZE: " + popUpSize);
+        print = true;
     }
 
     /**
