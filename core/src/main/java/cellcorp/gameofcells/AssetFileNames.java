@@ -36,4 +36,9 @@ public class AssetFileNames {
      * but won't crash test code.
      */
     public static String DEFAULT_FONT = "com/badlogic/gdx/utils/lsans-15.fnt";
+
+    /**
+     * The file name for our background particle texture.
+     */
+    public static String WHITE_PIXEL = "white_pixel.png";
 }
