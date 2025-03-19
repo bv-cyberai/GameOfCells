@@ -39,6 +39,11 @@ public class AttractScreen implements GameOfCellsScreen {
     private float animationTime = 0f; // Track time for simulation
     private boolean isSimulationRunning = true;
 
+    // Humanistic movement variables
+    private float targetX, targetY; // Target position for the cell
+    private float cellSpeed = 100f; // Speed of the cell
+    private Random random; // For randomizing movement
+
     public AttractScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -54,20 +59,25 @@ public class AttractScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+        this.random = new Random();
 
         // Initialize game objects
         this.cell = new Cell(assetManager);
 
         // Initialize glucose objects
         this.glucoseList = new ArrayList<>();
-        glucoseList.add(new Glucose(assetManager, 200, 300, 50)); // Glucose 1
-        glucoseList.add(new Glucose(assetManager, 300, 600, 50)); // Glucose 2
-        glucoseList.add(new Glucose(assetManager, 350, 450, 50)); // Glucose 3
-        glucoseList.add(new Glucose(assetManager, 500, 500, 50)); // Glucose 4
-        glucoseList.add(new Glucose(assetManager, 600, 200, 50)); // Glucose 5
-        glucoseList.add(new Glucose(assetManager, 700, 400, 50)); // Glucose 6
-        glucoseList.add(new Glucose(assetManager, 900, 350, 50)); // Glucose 7
-        glucoseList.add(new Glucose(assetManager, 950, 550, 50)); // Glucose 8
+        glucoseList.add(new Glucose(assetManager, 200, 300, 20)); // Glucose 1
+        glucoseList.add(new Glucose(assetManager, 300, 600, 20)); // Glucose 2
+        glucoseList.add(new Glucose(assetManager, 350, 450, 20)); // Glucose 3
+        glucoseList.add(new Glucose(assetManager, 500, 500, 20)); // Glucose 4
+        glucoseList.add(new Glucose(assetManager, 600, 200, 20)); // Glucose 5
+        glucoseList.add(new Glucose(assetManager, 700, 400, 20)); // Glucose 6
+        glucoseList.add(new Glucose(assetManager, 900, 350, 20)); // Glucose 7
+        glucoseList.add(new Glucose(assetManager, 950, 550, 20)); // Glucose 8
+
+        // Set initial target position for the cell
+        targetX = random.nextFloat() * viewport.getWorldWidth();
+        targetY = random.nextFloat() * viewport.getWorldHeight();
     }
 
     @Override
@@ -125,17 +135,40 @@ public class AttractScreen implements GameOfCellsScreen {
             // Update the simulation
             animationTime += deltaTimeSeconds;
 
-            // Simulate cell movement in a circular pattern
-            float centerX = viewport.getWorldWidth() / 2;
-            float centerY = viewport.getWorldHeight() / 2;
-            float radius = 200; // Radius of the circular path
+            // Humanistic movement logic
+            float cellX = cell.getCellPositionX();
+            float cellY = cell.getCellPositionY();
 
-            // Calculate the new position of the cell
-            float newX = centerX + (float) Math.cos(animationTime) * radius;
-            float newY = centerY + (float) Math.sin(animationTime) * radius;
+            // Calculate direction to target
+            float dx = targetX - cellX;
+            float dy = targetY - cellY;
+            float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-            // Update the cell position
-            cell.moveTo(newX, newY);
+            // Normalize direction
+            if (distance > 0) {
+                dx /= distance;
+                dy /= distance;
+            }
+
+            // Move the cell towards the target
+            cellX += dx * cellSpeed * deltaTimeSeconds;
+            cellY += dy * cellSpeed * deltaTimeSeconds;
+
+
+            // Update cell position
+            cell.moveTo(cellX, cellY);
+
+            // Check if the cell has reached the target
+            if (distance < 10) { // Close enough to the target
+                // Set a new random target
+                targetX = random.nextFloat() * viewport.getWorldWidth();
+                targetY = random.nextFloat() * viewport.getWorldHeight();
+
+                // Randomize speed occasionally
+                if (random.nextFloat() < 0.1) { // 10% chance to change speed
+                    cellSpeed = 50 + random.nextFloat() * 150; // Random speed between 50 and 200
+                }
+            }
         }
     }
 
@@ -149,8 +182,7 @@ public class AttractScreen implements GameOfCellsScreen {
 
         spriteBatch.begin();
 
-        // Draw your animation or gameplay preview here
-        // Example: Draw a moving texture
+        // Draw game objects
         cell.draw(spriteBatch);
         for (Glucose glucose : glucoseList) {
             glucose.draw(spriteBatch);

@@ -40,8 +40,8 @@ public class Cell {
 
         cellPositionX = 500;
         cellPositionY = 300;
-        cellWidth = 200;
-        cellHeight = 200;
+        cellWidth = 100;
+        cellHeight = 100;
 
         cellHealth = 100;
         cellATP = 30; // starting value in alpha.
@@ -79,7 +79,7 @@ public class Cell {
         this.cellPositionX = x;
         this.cellPositionY = y;
     }
-    
+
     /**
      * Draw
      * 
