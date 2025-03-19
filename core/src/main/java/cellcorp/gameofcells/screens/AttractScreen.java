@@ -54,6 +54,7 @@ public class AttractScreen implements GameOfCellsScreen {
 
     // White pixel texture for drawing particles
     private Texture whitePixelTexture;
+    
 
     public AttractScreen(
             InputProvider inputProvider,

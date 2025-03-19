@@ -10,6 +10,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
@@ -24,7 +28,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * The instructional message displayed on the main menu
      */
-    private static final String INSTRUCTIONS = "Press Enter to Start";
+    private static final String[] MENU_OPTIONS = {"Start Game", "Settings", "Exit"};
+    private int selectedOption = 0; // Index of the currently selected option
+
     private static final float INACTIVITY_TIMEOUT = 5f; // 5 seconds of inactivity
 
     private final InputProvider inputProvider;
@@ -53,6 +59,18 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+        this.random = new Random();
+
+        // Initialize the background particles
+        this.backgroundParticles = new ArrayList<>();
+        for (int i = 0; i < NUM_PARTICLES; i++) {
+            backgroundParticles.add(new Particle(
+                    random.nextFloat() * viewport.getWorldWidth(),
+                    random.nextFloat() * viewport.getWorldHeight(),
+                    random.nextFloat() * 2 + 1, // Random size between 1 and 3
+                    random.nextFloat() * 0.5f + 0.1f // Random speed between 0.1 and 0.6
+            ));
+        }
     }
 
     @Override
@@ -97,16 +115,44 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        // Move to `GamePlayScreen` when 'enter' is pressed.
+        // Navigate menu options with arrow keys
+        if (inputProvider.isKeyPressed(Input.Keys.UP)) {
+            selectedOption = (selectedOption - 1 + MENU_OPTIONS.length) % MENU_OPTIONS.length;
+        }
+        if (inputProvider.isKeyPressed(Input.Keys.DOWN)) {
+            selectedOption = (selectedOption + 1) % MENU_OPTIONS.length;
+        }
+
+        // Confirm selection with Enter key
         if (inputProvider.isKeyPressed(Input.Keys.ENTER)) {
-            game.setScreen(new GamePlayScreen(
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager,
-                    camera,
-                    viewport
-            ));
+            switch (selectedOption) {
+                case 0:
+                    // Start the game
+                    game.setScreen(new GamePlayScreen(
+                            inputProvider,
+                            graphicsProvider,
+                            game,
+                            assetManager,
+                            camera,
+                            viewport
+                    ));
+                    break;
+                case 1: // Settings
+                    // Open the settings screen
+                    game.setScreen(new SettingsScreen(
+                            inputProvider,
+                            graphicsProvider,
+                            game,
+                            assetManager,
+                            camera,
+                            viewport
+                    ));
+                    break;
+                case 2:
+                    // Exit the game
+                    Gdx.app.exit();
+                    break;
+            }
         }
 
         // Reset the inactivity timer if any key is pressed
@@ -131,30 +177,48 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     viewport
             ));
         }
+
+        // Update the background particles
+        for (Particle particle : backgroundParticles) {
+            particle.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
+        }
     }
 
     @Override
     public void draw() {
-        var startBackground = assetManager.get(AssetFileNames.START_BACKGROUND, Texture.class);
+        // Clear the screen with a gradient background
+        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
 
-        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-        font.getData().setScale(2);  // Set the font size
-
-        // Draw the screen
-        ScreenUtils.clear(Color.BLACK);  // Clear the screen with a black background
-
-        // I don't know what `viewport.apply(...)` does but when it was omitted
-        // the HTML version was displaying way in the bottom-left and getting cut off.
         viewport.apply(true);
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
 
+        // Draw the background particles
         spriteBatch.begin();
-        // Display the start background
-        spriteBatch.draw(startBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        for (Particle particle : backgroundParticles) {
+            particle.draw(spriteBatch);
+        }
+        spriteBatch.end();
 
-        font.draw(spriteBatch, INSTRUCTIONS, 100, 100);
+        // Draw the instructional message
+        spriteBatch.begin();
+        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
+        font.getData().setScale(2); // Set the font size
 
+        float menuX = viewport.getWorldWidth() / 2 - 100; // Center the menu
+        float menuY = viewport.getWorldHeight() / 2 + 50; // Start position for the menu
+
+        for (int i = 0; i < MENU_OPTIONS.length; i++) {
+            // Highlight the selected option
+            if (i == selectedOption) {
+                font.setColor(Color.YELLOW); // Yellow for selected option
+            } else {
+                font.setColor(Color.WHITE); // Default color
+            }
+            // Draw the menu option
+            font.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50);
+        }
+        
         spriteBatch.end();
     }
 }
