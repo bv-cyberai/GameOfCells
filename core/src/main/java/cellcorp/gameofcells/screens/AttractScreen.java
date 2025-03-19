@@ -3,17 +3,23 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
-import cellcorp.gameofcells.AssetFileNames;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
+
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.objects.Cell;
+import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.providers.InputProvider;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 
 public class AttractScreen implements GameOfCellsScreen {
 
@@ -27,9 +33,9 @@ public class AttractScreen implements GameOfCellsScreen {
 
     // Game objects
     private Cell cell;
-    private Glucose glucose;
-
-    // Add variables to simulate gameplay or animation
+    private List<Glucose> glucoseList;
+    
+    // Simulation state
     private float animationTime = 0f; // Track time for simulation
     private boolean isSimulationRunning = true;
 
@@ -51,7 +57,17 @@ public class AttractScreen implements GameOfCellsScreen {
 
         // Initialize game objects
         this.cell = new Cell(assetManager);
-        this.glucose = new Glucose(assetManager, 400, 300, 50); // Example position and radisus
+
+        // Initialize glucose objects
+        this.glucoseList = new ArrayList<>();
+        glucoseList.add(new Glucose(assetManager, 200, 300, 50)); // Glucose 1
+        glucoseList.add(new Glucose(assetManager, 300, 600, 50)); // Glucose 2
+        glucoseList.add(new Glucose(assetManager, 350, 450, 50)); // Glucose 3
+        glucoseList.add(new Glucose(assetManager, 500, 500, 50)); // Glucose 4
+        glucoseList.add(new Glucose(assetManager, 600, 200, 50)); // Glucose 5
+        glucoseList.add(new Glucose(assetManager, 700, 400, 50)); // Glucose 6
+        glucoseList.add(new Glucose(assetManager, 900, 350, 50)); // Glucose 7
+        glucoseList.add(new Glucose(assetManager, 950, 550, 50)); // Glucose 8
     }
 
     @Override
@@ -90,7 +106,9 @@ public class AttractScreen implements GameOfCellsScreen {
     public void dispose() {
         spriteBatch.dispose();
         cell.dispose();
-        glucose.dispose();
+        for (Glucose glucose : glucoseList) {
+            glucose.dispose();
+        }
     }
 
     @Override
@@ -107,12 +125,17 @@ public class AttractScreen implements GameOfCellsScreen {
             // Update the simulation
             animationTime += deltaTimeSeconds;
 
-            // Simulate gameplay logic here
-            float moveX = (float) Math.sin(animationTime) * 100;
-            float moveY = (float) Math.cos(animationTime) * 100;
-            
-            // Example: Update positions of cells, glucose, or other entities
-            cell.move(deltaTimeSeconds, moveX < 0, moveX > 0, moveY > 0, moveY < 0);
+            // Simulate cell movement in a circular pattern
+            float centerX = viewport.getWorldWidth() / 2;
+            float centerY = viewport.getWorldHeight() / 2;
+            float radius = 200; // Radius of the circular path
+
+            // Calculate the new position of the cell
+            float newX = centerX + (float) Math.cos(animationTime) * radius;
+            float newY = centerY + (float) Math.sin(animationTime) * radius;
+
+            // Update the cell position
+            cell.moveTo(newX, newY);
         }
     }
 
@@ -128,10 +151,10 @@ public class AttractScreen implements GameOfCellsScreen {
 
         // Draw your animation or gameplay preview here
         // Example: Draw a moving texture
-        Texture animationTexture = assetManager.get(AssetFileNames.START_BACKGROUND, Texture.class);
-        float x = (float) Math.sin(animationTime) * 100 + viewport.getWorldWidth() / 2 - animationTexture.getWidth() / 2;
-        float y = viewport.getWorldHeight() / 2 - animationTexture.getHeight() / 2;
-        spriteBatch.draw(animationTexture, x, y);
+        cell.draw(spriteBatch);
+        for (Glucose glucose : glucoseList) {
+            glucose.draw(spriteBatch);
+        }
 
         spriteBatch.end();
     }

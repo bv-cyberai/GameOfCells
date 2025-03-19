@@ -70,6 +70,17 @@ public class Cell {
     }
 
     /**
+     * Moves the cell to a specific position
+     * 
+     * @param x - The new X position
+     * @param y - The new Y position
+     */
+    public void moveTo(float x, float y) {
+        this.cellPositionX = x;
+        this.cellPositionY = y;
+    }
+    
+    /**
      * Draw
      * 
      * @param batch - The passed spritebatch.

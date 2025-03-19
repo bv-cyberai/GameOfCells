@@ -25,7 +25,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
      * The instructional message displayed on the main menu
      */
     private static final String INSTRUCTIONS = "Press Enter to Start";
-    private static final float INACTIVITY_TIMEOUT = 10f; // 10 seconds of inactivity
+    private static final float INACTIVITY_TIMEOUT = 5f; // 5 seconds of inactivity
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
