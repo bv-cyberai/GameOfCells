@@ -44,6 +44,9 @@ public class AttractScreen implements GameOfCellsScreen {
     private float cellSpeed = 100f; // Speed of the cell
     private Random random; // For randomizing movement
 
+    // Number of glucose objects to generate
+    private static final int NUM_GLUCOSE = 10; // Adjust this number as needed
+
     public AttractScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -64,16 +67,14 @@ public class AttractScreen implements GameOfCellsScreen {
         // Initialize game objects
         this.cell = new Cell(assetManager);
 
-        // Initialize glucose objects
+        // Initialize glucose objects randomly
         this.glucoseList = new ArrayList<>();
-        glucoseList.add(new Glucose(assetManager, 200, 300, 20)); // Glucose 1
-        glucoseList.add(new Glucose(assetManager, 300, 600, 20)); // Glucose 2
-        glucoseList.add(new Glucose(assetManager, 350, 450, 20)); // Glucose 3
-        glucoseList.add(new Glucose(assetManager, 500, 500, 20)); // Glucose 4
-        glucoseList.add(new Glucose(assetManager, 600, 200, 20)); // Glucose 5
-        glucoseList.add(new Glucose(assetManager, 700, 400, 20)); // Glucose 6
-        glucoseList.add(new Glucose(assetManager, 900, 350, 20)); // Glucose 7
-        glucoseList.add(new Glucose(assetManager, 950, 550, 20)); // Glucose 8
+        for (int i = 0; i < NUM_GLUCOSE; i++) {
+            float x = random.nextFloat() * viewport.getWorldWidth(); // Random x position
+            float y = random.nextFloat() * viewport.getWorldHeight(); // Random y position
+            float radius = 20; // Smaller radius for glucose
+            glucoseList.add(new Glucose(assetManager, x, y, radius));
+        }
 
         // Set initial target position for the cell
         targetX = random.nextFloat() * viewport.getWorldWidth();
