@@ -25,6 +25,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
      * The instructional message displayed on the main menu
      */
     private static final String INSTRUCTIONS = "Press Enter to Start";
+    private static final float INACTIVITY_TIMEOUT = 10f; // 10 seconds of inactivity
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -34,6 +35,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final OrthographicCamera camera;
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
+
+    private float inactivityTimer = 0f;
 
     public MainMenuScreen(
             InputProvider inputProvider,
@@ -105,11 +108,29 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     viewport
             ));
         }
+
+        // Reset the inactivity timer if any key is pressed
+        if (inputProvider.isKeyPressed(Input.Keys.ANY_KEY)) {
+            inactivityTimer = 0f;
+        }
     }
 
     @Override
     public void update(float deltaTimeSeconds) {
+        // Update the inactivity timer
+        inactivityTimer += deltaTimeSeconds;
 
+        // Transition to the attract screen if the inactivity timer exceeds the timeout
+        if (inactivityTimer >= INACTIVITY_TIMEOUT) {
+            game.setScreen(new AttractScreen(
+                    inputProvider,
+                    graphicsProvider,
+                    game,
+                    assetManager,
+                    camera,
+                    viewport
+            ));
+        }
     }
 
     @Override
