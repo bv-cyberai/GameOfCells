@@ -183,12 +183,28 @@ public class GamePlayScreen implements GameOfCellsScreen {
             ));
         }
 
-        if (inputProvider.isKeyPressed(Input.Keys.I)) {
+        if (inputProvider.isKeyPressed(Input.Keys.G)) {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
                     graphicsProvider, game,
                     camera,
                     viewport,this,PopupInfoScreen.Type.glucose
+            ));
+        }
+        if (inputProvider.isKeyPressed(Input.Keys.D)) {
+            game.setScreen(new PopupInfoScreen(
+                    inputProvider, assetManager,
+                    graphicsProvider, game,
+                    camera,
+                    viewport,this,PopupInfoScreen.Type.danger
+            ));
+        }
+        if (inputProvider.isKeyPressed(Input.Keys.L)) {
+            game.setScreen(new PopupInfoScreen(
+                    inputProvider, assetManager,
+                    graphicsProvider, game,
+                    camera,
+                    viewport,this,PopupInfoScreen.Type.longTest
             ));
         }
 
@@ -228,8 +244,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         font.setColor(Color.BLACK);
 
         // Draw the screen
-        // ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f));  // Clear the screen with a purple
-        ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f));  // Clear the screen with a blue
+        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f));  // Clear the screen with a purple
+        // ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f));  // Clear the screen with a blue
 
         // I don't know what `viewport.apply(...)` does but when it was omitted
         // the HTML version was displaying way in the bottom-left and getting cut off.

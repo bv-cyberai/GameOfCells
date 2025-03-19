@@ -58,7 +58,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private BitmapFont font;
     // used to center text.
     private final GlyphLayout layout;
-    private final float popUpSize;
+    private float popUpSize;
 
     // Message and properties.
     private String message;
@@ -126,8 +126,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     @Override
     public void render(float delta) {
 
-        // ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // purple
-        ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f)); // blue
+        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // purple
+        // ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f)); // blue
 
         viewport.apply(true);
         camera.update();
@@ -152,8 +152,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         // Draw Square Popup
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
-        // shape.setColor(new Color(.424f, .553f, .573f, 1.0f)); // blue
-        shape.setColor(new Color(.157f, .115f, .181f, 1.0f)); // purple
+        shape.setColor(new Color(.424f, .553f, .573f, 1.0f)); // blue
+        // shape.setColor(new Color(.157f, .115f, .181f, 1.0f)); // purple
 
         shape.rect((viewport.getWorldWidth() / 2) - (popUpSize / 2), (viewport.getWorldHeight() / 2) - (popUpSize / 2),
                 popUpSize, popUpSize);
@@ -175,10 +175,10 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private void setMessage() {
         switch (type) {
             case glucose:
-                message = "You've found glucose!" + "\n" + "Press escape to exit!";
+                message = "You've collected glucose!" + "\n" + "\n" + "Cells convert glucose into ATP for energy." + "\n" +"\n" + "Press 'C' to continue!";
                 break;
             case danger:
-                message = "You're in danger, cell is being damaged";
+                message = "You're in danger!" + "\n\n"+"Gradient color 'X' damages cell health" +"\n\n" + "Press 'C' to continue!";
                 break;
             case other:
                 message = "other";
@@ -203,6 +203,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         viewport.update(width, height, true); // Update the viewport
         camera.viewportWidth = width; // Update the camera viewport width
         camera.viewportHeight = height; // Update the camera viewport height
+        popUpSize = Math.min(viewport.getWorldWidth(), viewport.getWorldHeight()) * 0.5f;
     }
 
     /**
@@ -249,7 +250,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyPressed(Input.Keys.ESCAPE)) {
+        if (inputProvider.isKeyPressed(Input.Keys.C)) {
             game.setScreen(previousScreen);
         }
     }
