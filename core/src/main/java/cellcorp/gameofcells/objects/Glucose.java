@@ -79,6 +79,10 @@ public class Glucose {
         return boundCircle.y;
     }
 
+    public Circle getCircle() {
+        return boundCircle;
+    }
+
     /**
      * Radius Getter
      * 

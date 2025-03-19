@@ -277,6 +277,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
+        energyBars.update(cell.getCellHealth(), cell.getCellATP());
+        for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
+            if(cell.getcellCircle().overlaps(getGlucoseManager().getGlucoseArray().get(i).getCircle())) {
+                getGlucoseManager().getGlucoseArray().remove(i);
+                cell.addCellATP(i);
+            }
+        }
     }
 
     /**
@@ -384,7 +391,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Hud Getter (Testing method)
-     * 
+     *
      * @return The Screen Hud.
      */
     public HUD getHud() {

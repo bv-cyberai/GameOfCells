@@ -51,7 +51,7 @@ public class Cell {
         maxHealth = 100;
         maxATP = 100; // Alpha is actually 99, but thats painful.
         cellCircle = new Circle();
-        cellCircle.set(500, 300, cellWidth/2);
+        cellCircle.set(cellPositionX + 100, cellPositionY + 80, cellWidth/2);
     }
 
     /**
@@ -72,7 +72,7 @@ public class Cell {
             cellPositionY += cellSpeed * deltaTime;
         if (moveDown)
             cellPositionY -= cellSpeed * deltaTime;
-        cellCircle.set(cellPositionX, cellPositionY, cellWidth/2);
+        cellCircle.set(cellPositionX + 100, cellPositionY + 80, cellWidth/2); // adjusts the cells hitbox with the sprite
     }
 
     /**
@@ -154,5 +154,29 @@ public class Cell {
      */
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
+    }
+    /**
+     *
+     *
+     */
+    public Circle getcellCircle() {
+        return cellCircle;
+    }
+    /**
+     * Adds ATP
+     *
+     * increases ATP for glucose collection
+     */
+    public void addCellATP(int increaseAmount) {
+        cellATP = cellATP + increaseAmount;
+    }
+    /**
+     * Adds ATP
+     *
+     * decreases ATP
+     */
+    public void removeCellATP(int decreaseAmount) {
+        cellATP = cellATP - decreaseAmount;
+
     }
 }
