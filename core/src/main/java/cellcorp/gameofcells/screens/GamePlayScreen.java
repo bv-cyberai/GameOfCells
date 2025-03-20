@@ -129,6 +129,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final GlucoseManager glucoseManager;
     private final HUD hud;
 
+    // Part of game state.
+    // Closing the shop and re-opening makes a new one,
+    // so if these are in the shop, they won't persist.
+    // We'll fix it next week as part of unifying game state.
+    public boolean sizeUpgradePurchased = false;
+    public boolean hasMitochondria = false; // Whether the player has evolved into a mitochondria
+
     /**
      * Constructs the GamePlayScreen.
      *
@@ -242,11 +249,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     assetManager,
-                    this));
+                    this,
+                    cell));
         }
 
         if (inputProvider.isKeyPressed(Input.Keys.G)) {
             game.setScreen(new GameOverScreen(inputProvider, assetManager, graphicsProvider, game));
+        }
+
+        if (inputProvider.isKeyPressed(Input.Keys.A)) {
+            cell.addCellATP(20);
         }
 
         // Will eventually be triggered by cell state

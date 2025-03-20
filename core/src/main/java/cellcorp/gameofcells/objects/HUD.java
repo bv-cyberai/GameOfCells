@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -201,6 +202,11 @@ public class HUD {
         barFont.draw(batch, "ATP", (VIEW_RECT_WIDTH - ATPTextWidth) / 2, ATPTextY);
         batch.end();
     }
+
+//    public void drawUpgradeMessage(SpriteBatch batch) {
+//        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+//        if ()
+//    }
 
     /**
      * Updater

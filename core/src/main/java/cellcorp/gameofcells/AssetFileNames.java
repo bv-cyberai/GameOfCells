@@ -41,4 +41,9 @@ public class AssetFileNames {
      * The file name for the mitochondria texture.
      */
     public static String MITOCHONDRIA_ICON = "mitochondria.png";
+
+    /**
+     * The file name of the font used in the HUD
+     */
+    public static String HUD_FONT = "rubik.fnt";
 }

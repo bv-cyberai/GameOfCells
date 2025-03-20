@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 
 import cellcorp.gameofcells.AssetFileNames;
+import com.badlogic.gdx.math.Circle;
 
 /**
  * Cell Class
@@ -27,11 +28,9 @@ import cellcorp.gameofcells.AssetFileNames;
 public class Cell {
     private final AssetManager assetManager;
 
-    private static final float WIDTH = 200;
-    private static final float HEIGHT = 200;
-
-    private float cellPositionX;
-    private float cellPositionY;
+    float cellPositionX;
+    float cellPositionY;
+    float cellDiameter;
     private final float cellSpeed = 200f; // Speed of the cell
 
     private int cellHealth;
@@ -41,17 +40,21 @@ public class Cell {
     private Circle cellCircle;
 
 
+    private Circle collisionCircle = null;
+
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
 
         cellPositionX = 500;
         cellPositionY = 300;
+        cellDiameter = 200;
+
         cellHealth = 100;
-        cellATP = 30; // starting value in alpha.
+        cellATP = 30;
         maxHealth = 100;
         maxATP = 100; // Alpha is actually 99, but thats painful.
         cellCircle = new Circle();
-        cellCircle.set(cellPositionX, cellPositionY, WIDTH/2);
+        cellCircle.set(cellPositionX, cellPositionY, cellDiameter/2);
     }
 
     /**
@@ -81,20 +84,18 @@ public class Cell {
      * @param batch - The passed spritebatch.
      */
     public void draw(SpriteBatch batch) {
-
         // Draw cell centered around its position.
-        float topLeftX = cellPositionX - (WIDTH / 2);
-        float topLeftY = cellPositionY - (HEIGHT / 2);
+
+        float bottomLeftX = cellPositionX - (cellDiameter / 2);
+        float bottomLeftY = cellPositionY - (cellDiameter / 2);
 
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
-
         batch.begin();
-        // x, y are the _top-left_ of the drawn sprite
-        batch.draw(cellTexture, topLeftX, topLeftY, WIDTH, HEIGHT);
+        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellDiameter, cellDiameter);
         batch.end();
     }
 
@@ -114,6 +115,15 @@ public class Cell {
      */
     public float getCellPositionY() {
         return cellPositionY;
+    }
+
+    /**
+     * Get Cell Diameter
+     *
+     * @return cellDiameter
+     */
+    public float getCellDiameter() {
+        return cellDiameter;
     }
 
     /**
@@ -171,22 +181,25 @@ public class Cell {
      * increases ATP for glucose collection
      */
     public void addCellATP(int increaseAmount) {
-        cellATP = cellATP + increaseAmount;
+        cellATP = Math.min(cellATP + increaseAmount, maxATP);
     }
     /**
      * Adds ATP
-     *
      * decreases ATP
      */
     public void removeCellATP(int decreaseAmount) {
-        cellATP = cellATP - decreaseAmount;
+        cellATP = Math.max(cellATP - decreaseAmount, 0);
+    }
 
+    public void increaseCellDiameter(float diameterIncrease) {
+        this.cellDiameter += diameterIncrease;
+        updateCollisionCircle();
     }
 
     /**
      * Calculate the cell collision circle based on the cell's radius and position.
      */
     private void updateCollisionCircle() {
-        this.cellCircle = new Circle(cellPositionX, cellPositionY, WIDTH / 2);
+        this.cellCircle = new Circle(cellPositionX, cellPositionY, cellDiameter / 2);
     }
 }
