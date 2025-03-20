@@ -236,7 +236,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Move to `ShopScreen` when 's' is pressed.
-        if (inputProvider.isKeyPressed(Input.Keys.S)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.S)) {
             game.setScreen(new ShopScreen(
                     game,
                     inputProvider,
@@ -265,10 +265,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
         cell.move(
                 deltaTimeSeconds,
-                inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
-                inputProvider.isKeyPressed(Input.Keys.RIGHT), // Check if the right key is pressed
-                inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
-                inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.LEFT), // Check if the left key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.RIGHT), // Check if the right key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.UP), // Check if the up key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
     }
 

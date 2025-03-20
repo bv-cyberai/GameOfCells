@@ -36,4 +36,9 @@ public class AssetFileNames {
      * but won't crash test code.
      */
     public static String DEFAULT_FONT = "com/badlogic/gdx/utils/lsans-15.fnt";
+
+    /**
+     * The file name for the mitochondria texture.
+     */
+    public static String MITOCHONDRIA_ICON = "mitochondria.png";
 }

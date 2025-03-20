@@ -2,15 +2,19 @@ package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -66,6 +70,9 @@ public class ShopScreen implements GameOfCellsScreen {
     // Shop state
     private boolean hasMitochondria = false; // Whether the player has evolved into a mitochondria
     private int evolutionCost = 40; // The cost to evolve into a mitochondria
+
+    // Animation variables
+    private float animationTimer = 0f; // Timer for animations
 
     /**
      * Constructs the GamePlayScreen.
@@ -170,6 +177,7 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         // Update shop logic (check if player has enough energy to evolve)
+        animationTimer += deltaTimeSeconds;
     }
 
 
@@ -177,12 +185,11 @@ public class ShopScreen implements GameOfCellsScreen {
     public void draw() {
         var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
         var shopBackground = assetManager.get(AssetFileNames.SHOP_BACKGROUND, Texture.class);
+        var mitochondriaIcon = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
 
         // Set up font
         font.getData().setScale(1.5f);  // Set the font size
-
-        // Set the font color to white
-        font.setColor(Color.WHITE);
+        font.setColor(Color.WHITE); // Default font color
 
         ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
 
@@ -195,17 +202,35 @@ public class ShopScreen implements GameOfCellsScreen {
         batch.draw(shopBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
 
         // Draw shop title
-        font.draw(batch, "Cell Evolution Shop", viewport.getWorldWidth() / 2 - 200, viewport.getWorldHeight() - 50);
+        font.draw(batch, "Cell Evolution Shop", viewport.getWorldWidth() / 2 - 120, viewport.getWorldHeight() - 50);
 
-        // Draw mitochondria evolution option
-        float optionY = viewport.getWorldHeight() / 2 + 50;
-        if (!hasMitochondria) {
-            font.draw(batch, "Evolve into a Mitochondria", 100, optionY);
-            font.draw(batch, "Cost: " + evolutionCost + " ATP", 100, optionY - 30);
-            font.draw(batch, "Press M to evolve", 100, optionY - 60);
-        } else {
-            font.draw(batch, "You are already a Mitochondria", 100, optionY);
-        }
+        // Draw mitochondria evolution card
+        float cardX = viewport.getWorldWidth() / 2 - 150;
+        float cardY = viewport.getWorldHeight() / 2;
+        float cardWidth = 300;
+        float cardHeight = 200;
+
+        // Card background
+        batch.setColor(0.2f, 0.2f, 0.2f, 0.8f); // Semi-transparent dark background
+        batch.draw(shopBackground, cardX, cardY, cardWidth, cardHeight); // Reuse shop background for card
+        batch.setColor(Color.WHITE); // Reset color
+
+        // Card border (glow efect)
+        float glowIntensity = MathUtils.sin(animationTimer * 5f) * 0.2f + 0.8f; // Pulsating glow
+
+        batch.setColor(0.5f, 1f, 0.5f, glowIntensity); // Green glow
+        batch.draw(shopBackground, cardX - 5, cardY - 5, cardWidth + 10, cardHeight + 10); // Glow effect
+
+        batch.setColor(Color.WHITE); // Reset color
+
+        // Mitochondria icon (floating animation)
+        float iconY = cardY + 100 + MathUtils.sin(animationTimer * 2f) * 10f; // Floating effect
+        batch.draw(mitochondriaIcon, cardX + 100, iconY, 100, 100); // Draw mitochondria icon
+
+        // Upgrade description
+        font.draw(batch, "Mitochondria Evolution", cardX + 20, cardY + 150);
+        font.draw(batch, "Cost: " + evolutionCost + " Energy", cardX + 20, cardY + 120);
+        font.draw(batch, "Press M to evolve", cardX + 20, cardY + 90);
 
         // Draw exit instructions
         font.draw(batch, "Press E to exit", viewport.getWorldWidth() / 2 - 80, 50);
