@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * GameOver Screen
@@ -29,6 +30,19 @@ import cellcorp.gameofcells.providers.InputProvider;
  * @assignment GameOfCells
  */
 public class GameOverScreen implements GameOfCellsScreen {
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
+    /**
+     * Width of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1200;
+    /**
+     * Height of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 800;
+
     // game
     private final Main game;
 
@@ -38,8 +52,7 @@ public class GameOverScreen implements GameOfCellsScreen {
     private final GraphicsProvider graphicsProvider;
 
     // Batch/Camera
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    private final Viewport viewport;
     private final SpriteBatch spriteBatch;
 
     // Font and Font Properties
@@ -62,11 +75,9 @@ public class GameOverScreen implements GameOfCellsScreen {
      * @param assetManager     - The asset manager.
      * @param graphicsProvider - The graphics provider.
      * @param game             - The game.
-     * @param camera           - The camera.
-     * @param viewport         -The viewport.
      */
     public GameOverScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
-            Main game, OrthographicCamera camera, FitViewport viewport) {
+            Main game) {
 
         this.game = game;
 
@@ -74,8 +85,7 @@ public class GameOverScreen implements GameOfCellsScreen {
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
 
-        this.camera = camera;
-        this.viewport = viewport;
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
         layout = new GlyphLayout();
@@ -98,9 +108,7 @@ public class GameOverScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager,
-                    camera,
-                    viewport));
+                    assetManager));
         }
     }
 
@@ -121,8 +129,7 @@ public class GameOverScreen implements GameOfCellsScreen {
         ScreenUtils.clear(Color.BLACK);
 
         viewport.apply(true);
-        camera.update();
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         // figure out how to load once.
         assetManager.load("rubik.fnt", BitmapFont.class);
@@ -136,8 +143,8 @@ public class GameOverScreen implements GameOfCellsScreen {
         layout.setText(font, gameOverString);
         textWidth = layout.width;
         textHeight = layout.height;
-        xResetCenter = (Main.WORLD_WIDTH - textWidth) / 2;
-        yCenter = (Main.WORLD_HEIGHT + textHeight) / 2;
+        xResetCenter = (VIEW_RECT_WIDTH - textWidth) / 2;
+        yCenter = (VIEW_RECT_HEIGHT + textHeight) / 2;
 
         spriteBatch.begin();
         font.draw(spriteBatch, gameOverString, xResetCenter, yCenter);
@@ -167,9 +174,7 @@ public class GameOverScreen implements GameOfCellsScreen {
      */
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true); // Update the viewport
-        camera.viewportWidth = width; // Update the camera viewport width
-        camera.viewportHeight = height; // Update the camera viewport height
+        viewport.update(width, height); // Update the viewport
     }
 
     /**

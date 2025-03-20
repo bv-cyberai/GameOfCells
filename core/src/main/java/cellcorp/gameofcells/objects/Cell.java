@@ -24,10 +24,11 @@ import cellcorp.gameofcells.AssetFileNames;
 public class Cell {
     private final AssetManager assetManager;
 
-    float cellPositionX;
-    float cellPositionY;
-    float cellWidth;
-    float cellHeight;
+    private static final float WIDTH = 200;
+    private static final float HEIGHT = 200;
+
+    private float cellPositionX;
+    private float cellPositionY;
     private final float cellSpeed = 200f; // Speed of the cell
 
     private int cellHealth;
@@ -38,10 +39,8 @@ public class Cell {
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
 
-        cellPositionX = 500;
-        cellPositionY = 300;
-        cellWidth = 200;
-        cellHeight = 200;
+        cellPositionX = 0;
+        cellPositionY = 0;
 
         cellHealth = 100;
         cellATP = 30; // starting value in alpha.
@@ -75,12 +74,18 @@ public class Cell {
      * @param batch - The passed spritebatch.
      */
     public void draw(SpriteBatch batch) {
+        // Draw cell centered around its position.
+        float topLeftX = cellPositionX - (WIDTH / 2);
+        float topLeftY = cellPositionY - (HEIGHT / 2);
+
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
-        batch.draw(cellTexture, cellPositionX, cellPositionY, cellWidth, cellHeight);
+
+        // x, y are the _top-left_ of the drawn sprite
+        batch.draw(cellTexture, topLeftX, topLeftY, WIDTH, HEIGHT);
     }
 
     /**
@@ -99,24 +104,6 @@ public class Cell {
      */
     public float getCellPositionY() {
         return cellPositionY;
-    }
-
-    /**
-     * Get Cell Width
-     * 
-     * @return cellWidth
-     */
-    public float getCellWidth() {
-        return cellWidth;
-    }
-
-    /**
-     * Get Cell Height
-     * 
-     * @return cellHeight
-     */
-    public float getCellHeight() {
-        return cellHeight;
     }
 
     /**
@@ -161,5 +148,4 @@ public class Cell {
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
     }
-
 }

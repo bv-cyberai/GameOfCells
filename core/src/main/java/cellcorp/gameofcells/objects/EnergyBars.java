@@ -5,46 +5,43 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.Main;
 
 /**
  * Energy Bar Class
- *
+ * <p>
  * Provides a way to update and display health and ATP
  * bars.
- * 
+ * <p>
  * NOTE: This is a separate from HUD due to the need for
  * shaperenderer to be called outside of a sprite batch.
- * 
+ *
  * @author Brendon Vinyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
- *
  * @date 03/15/2025
  * @course CIS 405
  * @assignment GameOfCells
  */
 public class EnergyBars {
 
-    private AssetManager assetManager;
-    private FitViewport viewport;
+    // Since HUD uses its own viewport with an unchanging position,
+    // we can use constant world coordinates to describe our draw locations.
 
-    private ShapeRenderer shape;
-    private BitmapFont barFont;
+    private AssetManager assetManager;
 
     private int cellHealth;
     private int cellATP;
     private final int maxHealth;
     private final int maxATP;
-    private final int barSize;
+    public static final int BAR_SIZE = 400;
 
-    private float healthBarX;
-    private float healthBarY;
-    private float ATPBarX;
-    private float ATPBarY;
+    private static final float HEALTH_BAR_X = ((float) HUD.VIEW_RECT_WIDTH / 2) - ((float) BAR_SIZE / 2);
+    private static final float HEALTH_BAR_Y = (float) HUD.VIEW_RECT_HEIGHT - 30;
+    private static final float ATP_BAR_X = HEALTH_BAR_X;
+    private static final float ATP_BAR_Y = (float) HUD.VIEW_RECT_HEIGHT - 60;
 
     private float healthPercentage;
     private float ATPPercentage;
@@ -56,13 +53,6 @@ public class EnergyBars {
 
         cellHealth = 0; // will be set by update
         cellATP = 100; // will be set by update
-        barSize = 400;
-
-        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
-        healthBarY = Main.viewport.getWorldHeight() - 30;
-
-        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
-        ATPBarY = Main.viewport.getWorldHeight() - 60;
 
         if (assetManager != null) {
             assetManager.load("rubik.fnt", BitmapFont.class);
@@ -75,56 +65,53 @@ public class EnergyBars {
 
     /**
      * Draw
-     * 
+     * <p>
      * Draws the health bars to the screen.
      * Note: This does not include the text, this handled by the HUD
      * Class.
      */
-    public void draw() {
-        if (shape == null) {
-            shape = new ShapeRenderer();
-        }
+    public void draw(ShapeRenderer shape) {
         // Draw Health Bar
         shape.begin(ShapeRenderer.ShapeType.Line);
         shape.setColor(Color.RED);
-        shape.rect(healthBarX, healthBarY, barSize, 25);
+        shape.rect(HEALTH_BAR_X, HEALTH_BAR_Y, BAR_SIZE, 25);
         shape.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.setColor(Color.RED);
-        shape.rect(healthBarX, healthBarY, healthPercentage, 25);
+        shape.rect(HEALTH_BAR_X, HEALTH_BAR_Y, healthPercentage, 25);
         shape.end();
         // Draw ATP Bar
         shape.begin(ShapeRenderer.ShapeType.Line);
         shape.setColor(Color.YELLOW);
-        shape.rect(ATPBarX, ATPBarY, barSize, 25);
+        shape.rect(ATP_BAR_X, ATP_BAR_Y, BAR_SIZE, 25);
         shape.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.setColor(Color.YELLOW);
-        shape.rect(ATPBarX, ATPBarY, ATPPercentage, 25);
+        shape.rect(ATP_BAR_X, ATP_BAR_Y, ATPPercentage, 25);
         shape.end();
     }
 
     /**
      * Update
-     * 
+     * <p>
      * Updates current cell health and ATP values for displaying via
      * the Energy Bars.
-     * 
+     *
      * @param updatedCellHealth - The new cell health.
      * @param updatedCellATP    - The new ATP amount.
      */
     public void update(int updatedCellHealth, int updatedCellATP) {
         cellHealth = updatedCellHealth;
         cellATP = updatedCellATP;
-        healthPercentage = ((float) cellHealth / maxHealth) * barSize;
-        ATPPercentage = ((float) cellATP / maxATP) * barSize;
+        healthPercentage = ((float) cellHealth / maxHealth) * BAR_SIZE;
+        ATPPercentage = ((float) cellATP / maxATP) * BAR_SIZE;
     }
 
     /**
      * Cell Health Getter (TEST METHOD)
-     * 
+     *
      * @return Cell Health
      */
     public int getCellHealth() {
@@ -133,7 +120,7 @@ public class EnergyBars {
 
     /**
      * ATP Getter (TEST METHOD)
-     * 
+     *
      * @return ATP amount
      */
     public int getCellATP() {
@@ -142,7 +129,7 @@ public class EnergyBars {
 
     /**
      * HealthPercentage Getter (TEST METHOD)
-     * 
+     *
      * @return health percentage as a pixel value
      */
     public float getHealthPercentage() {
@@ -151,36 +138,10 @@ public class EnergyBars {
 
     /**
      * ATP Percentage Getter (TEST METHOD)
-     * 
+     *
      * @return ATP percentage as a pixel value.
      */
     public float getATPPercentage() {
         return ATPPercentage;
     }
-
-    /**
-     * Bar Size Getter(TEST METHOD)
-     * 
-     * @return The barsize.
-     */
-    public int getBarSize() {
-        return barSize;
-    }
-
-    public void resize() {
-        healthBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
-        healthBarY = Main.viewport.getWorldHeight() - 30;
-
-        ATPBarX = (Main.viewport.getWorldWidth() / 2) - (barSize / 2);
-        ATPBarY = Main.viewport.getWorldHeight() - 60;
-    }
-
-    /**
-     * Dispose
-     */
-    public void dispose() {
-        shape.dispose();
-        barFont.dispose();
-    }
-
 }

@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -7,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import cellcorp.gameofcells.Main;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Hud Class
@@ -23,8 +26,35 @@ import cellcorp.gameofcells.Main;
  * @assignment GameOfCells
  */
 public class HUD {
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
+    /**
+     * Width of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1200;
+    /**
+     * Height of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 800;
+
 
     private final AssetManager assetManager;
+
+    // HUD gets its own viewport (with its own internal camera)
+    // It's position is never moved, so draw calls should always
+    //      take values in the range:
+    //      `(0, 0) .. (VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)`
+    // See Main for more information.
+    private final Viewport viewport;
+    // To avoid having to reset the projection matrices after each draw call,
+    // let's give HUD its own sprite batch and shape renderer.
+    // Draw calls will be less efficient (I think?), but it shouldn't matter much.
+    private final SpriteBatch batch;
+    private final ShapeRenderer shapeRenderer;
+
+    private final EnergyBars energyBars;
 
     // fonts
     private BitmapFont font;
@@ -69,11 +99,17 @@ public class HUD {
      * 
      * This font cant be changed if you have other preferences.
      */
-    public HUD(AssetManager assetManager, int maxHealth, int maxATP) {
+    public HUD(GraphicsProvider graphicsProvider, AssetManager assetManager, int maxHealth, int maxATP) {
 
         this.assetManager = assetManager;
         this.maxHealth = maxHealth;
         this.maxATP = maxATP;
+
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        this.batch = graphicsProvider.createSpriteBatch();
+        this.shapeRenderer = graphicsProvider.createShapeRenderer();
+
+        this.energyBars = new EnergyBars(assetManager, maxHealth, maxATP);
 
         timer = 0f;
         displayTime = 0;
@@ -98,12 +134,22 @@ public class HUD {
 
     /**
      * Draw
-     * 
-     * Draw the hud
-     * 
-     * @param batch - The game spritebatch.
+     * Draw the hud. Re-applies caller's viewport after drawing.
      */
-    public void draw(SpriteBatch batch) {
+    public void draw(Viewport callerViewport) {
+        viewport.apply(true);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+
+        drawHudText(batch);
+        drawEnergyBars(shapeRenderer);
+        drawBarText(batch);
+
+        callerViewport.apply();
+    }
+
+    private void drawHudText(SpriteBatch batch) {
+        batch.begin();
         if (font == null) {
             font = assetManager.get("rubik.fnt", BitmapFont.class);
             font.getData().setScale(0.25f); // Set the scale of the font
@@ -111,6 +157,11 @@ public class HUD {
         font.draw(batch, cellHealthString, 10, 790);
         font.draw(batch, atpString, 10, 770);
         font.draw(batch, timerString, 10, 750);
+        batch.end();
+    }
+
+    private void drawEnergyBars(ShapeRenderer shapeRenderer) {
+        energyBars.draw(shapeRenderer);
     }
 
     /**
@@ -145,8 +196,10 @@ public class HUD {
             ATPTextY = ATPBarY + (ATPBarHeight / 2) + (ATPTextHeight / 2);
         }
 
-        barFont.draw(batch, "HEALTH", (Main.WORLD_WIDTH - healthTextWidth) / 2, healthTextY);
-        barFont.draw(batch, "ATP", (Main.WORLD_WIDTH - ATPTextWidth) / 2, ATPTextY);
+        batch.begin();
+        barFont.draw(batch, "HEALTH", (VIEW_RECT_WIDTH - healthTextWidth) / 2, healthTextY);
+        barFont.draw(batch, "ATP", (VIEW_RECT_WIDTH - ATPTextWidth) / 2, ATPTextY);
+        batch.end();
     }
 
     /**
@@ -164,6 +217,7 @@ public class HUD {
         cellHealthString = "HEALTH: " + cellHealth + "/" + maxHealth;
         atpString = "ATP: " + cellATP;
 
+        energyBars.update(cellHealth, cellATP);
     }
 
     /**
@@ -174,6 +228,13 @@ public class HUD {
     private void roundTime() {
         int timeRounded = (int) (timer * 10);
         displayTime = timeRounded / 10;
+    }
+
+    /**
+     * Resize the HUD in response to a screen resize.
+     */
+    public void resize(int screenWidth, int screenHeight) {
+        viewport.update(screenWidth, screenHeight);
     }
 
     /**

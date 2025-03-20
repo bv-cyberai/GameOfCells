@@ -55,12 +55,11 @@ public class TestMain {
 
     @Test
     public void gameCreatedWithCorrectScreenDimensions() {
-        // Games should be created with screen dimensions matching the world dimensions.
-        // This is subject to change.
+        // Games should be created with screen dimensions matching the default screen dimensions
         var gameRunner = GameRunner.create();
 
-        assertEquals(Main.WORLD_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
-        assertEquals(Main.WORLD_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
+        assertEquals(Main.DEFAULT_SCREEN_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
+        assertEquals(Main.DEFAULT_SCREEN_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
     }
 
     @Test
@@ -120,5 +119,25 @@ public class TestMain {
     public void gameStartsOnMainMenuScreen() {
         var gameRunner = GameRunner.create();
         assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
+    }
+
+    @Test
+    public void timerCorrectAfterScreenSwitch() {
+        var gameRunner = GameRunner.create();
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.runForSeconds(2);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.step();
+        gameRunner.runForSeconds(2);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
+        gameRunner.step();
+        var screen = (GamePlayScreen) gameRunner.game.getScreen();
+        String time = screen.getHud().getTimerString();
+        assertEquals("Timer: 2", time);
+
     }
 }
