@@ -1,7 +1,5 @@
 package cellcorp.gameofcells.providers;
 
-import com.badlogic.gdx.Input;
-
 /// Provides input information, just like calling `Gdx.input` does.
 ///
 ///  But tests can give game objects a different version, so they can say what keys are held down,
