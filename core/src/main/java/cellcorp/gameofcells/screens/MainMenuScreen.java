@@ -68,7 +68,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     @Override
     public void show() {
-
     }
 
     @Override
@@ -110,15 +109,15 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Navigate menu options with arrow keys
-        if (inputProvider.isKeyPressed(Input.Keys.UP)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.UP)) {
             selectedOption = (selectedOption - 1 + MENU_OPTIONS.length) % MENU_OPTIONS.length;
         }
-        if (inputProvider.isKeyPressed(Input.Keys.DOWN)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN)) {
             selectedOption = (selectedOption + 1) % MENU_OPTIONS.length;
         }
 
         // Confirm selection with Enter key
-        if (inputProvider.isKeyPressed(Input.Keys.ENTER)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
             switch (selectedOption) {
                 case 0:
                     // Start the game
@@ -150,7 +149,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         }
 
         // Reset the inactivity timer if any key is pressed
-        if (inputProvider.isKeyPressed(Input.Keys.ANY_KEY)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             inactivityTimer = 0f;
         }
     }

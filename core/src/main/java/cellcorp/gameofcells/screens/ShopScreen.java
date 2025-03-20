@@ -147,7 +147,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyPressed(Input.Keys.E)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
             game.setScreen(previousScreen);
         }
     }

@@ -23,7 +23,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 public class SettingsScreen implements GameOfCellsScreen {
 
     // Settings options
-    private static final String[] SETTINGS_OPTIONS = {"Volume", "Controls", "Game Info & Controls", "Back"};
+    private static final String[] SETTINGS_OPTIONS = {"Game Info & Controls", "Back"};
     private int selectedOption = 0; // Index of the currently selected option
 
     private final InputProvider inputProvider;
@@ -92,23 +92,17 @@ public class SettingsScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Navigate settings options with arrow keys
-        if (inputProvider.isKeyPressed(Input.Keys.UP)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.UP)) {
             selectedOption = (selectedOption - 1 + SETTINGS_OPTIONS.length) % SETTINGS_OPTIONS.length;
         }
-        if (inputProvider.isKeyPressed(Input.Keys.DOWN)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN)) {
             selectedOption = (selectedOption + 1) % SETTINGS_OPTIONS.length;
         }
 
         // Confirm selection with Enter key
-        if (inputProvider.isKeyPressed(Input.Keys.ENTER)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
             switch (selectedOption) {
-                case 0: // Volume
-                    // TODO: Implement volume adjustment logic
-                    break;
-                case 1: // Controls
-                    // TODO: Implement controls customization logic
-                    break;
-                case 2: // Game Info & Controls
+                case 0: // Game Info & Controls
                     game.setScreen(new GameInfoControlsScreen(
                             inputProvider,
                             graphicsProvider,
@@ -118,7 +112,7 @@ public class SettingsScreen implements GameOfCellsScreen {
                             viewport
                     ));
                     break;
-                case 3: // Back
+                case 1: // Back
                     game.setScreen(new MainMenuScreen(
                             inputProvider,
                             graphicsProvider,

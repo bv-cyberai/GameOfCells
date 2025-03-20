@@ -87,7 +87,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Return to the settings screen if any key is pressed
-        if (inputProvider.isKeyPressed(Input.Keys.ESCAPE)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.setScreen(new SettingsScreen(
                     inputProvider,
                     graphicsProvider,
@@ -135,7 +135,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         font.draw(spriteBatch, "Escape - Pause/Return to Menu", startX, startY - 210);
 
         // Press any key to return
-        font.draw(spriteBatch, "Press Escape key to return...", startX, startY - 270);
+        font.draw(spriteBatch, "Press any key to return...", startX, startY - 270);
 
         spriteBatch.end();
     }

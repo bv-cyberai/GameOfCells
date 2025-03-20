@@ -134,7 +134,7 @@ public class AttractScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Return to the main menu if any key is pressed or the screen is touched
-        if (inputProvider.isKeyPressed(Input.Keys.ANY_KEY)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.setScreen(new MainMenuScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport));
         }
     }

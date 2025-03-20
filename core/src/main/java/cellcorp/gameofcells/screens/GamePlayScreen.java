@@ -177,7 +177,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Move to `ShopScreen` when 's' is pressed.
-        if (inputProvider.isKeyPressed(Input.Keys.S)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.S)) {
             game.setScreen(new ShopScreen(
                     game,
                     inputProvider,
@@ -188,7 +188,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     this));
         }
 
-        if (inputProvider.isKeyPressed(Input.Keys.G)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
             game.setScreen(new GameOverScreen(inputProvider, assetManager, graphicsProvider, game, camera, viewport));
         }
 
