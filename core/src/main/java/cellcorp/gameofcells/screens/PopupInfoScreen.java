@@ -44,7 +44,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
-    // Types - Add to this has new pop-ups are desired.
+    // Types - Add to this as new pop-ups are desired.
     public enum Type {
         glucose, danger
     };
@@ -252,6 +252,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
             font = assetManager.get("rubik.fnt", BitmapFont.class);
             font.getData().setScale(0.25f); // Set the scale of the font
 
+            //wrap and align text.
             CharSequence cs = message;
             layout.setText(font, cs, 0, cs.length(), Color.WHITE, (popUpSize + padding), Align.center, true, null);
 

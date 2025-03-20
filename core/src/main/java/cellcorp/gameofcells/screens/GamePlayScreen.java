@@ -182,7 +182,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     this
             ));
         }
-
+        
+        //Will eventually be triggered by cell state
         if (inputProvider.isKeyPressed(Input.Keys.G)) {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
@@ -191,20 +192,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     viewport,this,PopupInfoScreen.Type.glucose
             ));
         }
-        if (inputProvider.isKeyPressed(Input.Keys.D)) {
+        //Will eventually be triggered by cell state
+        if (inputProvider.isKeyPressed(Input.Keys.H)) {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
                     graphicsProvider, game,
                     camera,
                     viewport,this,PopupInfoScreen.Type.danger
-            ));
-        }
-        if (inputProvider.isKeyPressed(Input.Keys.L)) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    camera,
-                    viewport,this,PopupInfoScreen.Type.longTest
             ));
         }
 
