@@ -395,8 +395,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private void drawGameObjects(SpriteBatch batch) {
         batch.begin();
         glucoseManager.draw(batch);
-        cell.draw(batch);
         batch.end();
+        cell.draw(batch);
     }
 
     /**

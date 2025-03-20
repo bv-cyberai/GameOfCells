@@ -1,8 +1,10 @@
 package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 
 import cellcorp.gameofcells.AssetFileNames;
@@ -49,7 +51,7 @@ public class Cell {
         maxHealth = 100;
         maxATP = 100; // Alpha is actually 99, but thats painful.
         cellCircle = new Circle();
-        cellCircle.set(cellPositionX + 100, cellPositionY + 80, WIDTH/2);
+        cellCircle.set(cellPositionX, cellPositionY, WIDTH/2);
     }
 
     /**
@@ -70,7 +72,7 @@ public class Cell {
             cellPositionY += cellSpeed * deltaTime;
         if (moveDown)
             cellPositionY -= cellSpeed * deltaTime;
-        cellCircle.set(cellPositionX + 100, cellPositionY + 80, WIDTH/2); // adjusts the cells hitbox with the sprite
+        updateCollisionCircle();
     }
 
     /**
@@ -79,6 +81,7 @@ public class Cell {
      * @param batch - The passed spritebatch.
      */
     public void draw(SpriteBatch batch) {
+
         // Draw cell centered around its position.
         float topLeftX = cellPositionX - (WIDTH / 2);
         float topLeftY = cellPositionY - (HEIGHT / 2);
@@ -89,8 +92,10 @@ public class Cell {
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
 
+        batch.begin();
         // x, y are the _top-left_ of the drawn sprite
         batch.draw(cellTexture, topLeftX, topLeftY, WIDTH, HEIGHT);
+        batch.end();
     }
 
     /**
@@ -176,5 +181,12 @@ public class Cell {
     public void removeCellATP(int decreaseAmount) {
         cellATP = cellATP - decreaseAmount;
 
+    }
+
+    /**
+     * Calculate the cell collision circle based on the cell's radius and position.
+     */
+    private void updateCollisionCircle() {
+        this.cellCircle = new Circle(cellPositionX, cellPositionY, WIDTH / 2);
     }
 }
