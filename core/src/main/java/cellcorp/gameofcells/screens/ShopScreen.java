@@ -69,7 +69,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     // Shop state
     private boolean hasMitochondria = false; // Whether the player has evolved into a mitochondria
-    private int evolutionCost = 40; // The cost to evolve into a mitochondria
+    private int evolutionCost = 30; // The cost to evolve into a mitochondria
 
     // Animation variables
     private float animationTimer = 0f; // Timer for animations
