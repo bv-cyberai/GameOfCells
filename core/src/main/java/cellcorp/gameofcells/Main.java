@@ -109,6 +109,7 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.CELL, Texture.class);
         assetManager.load(AssetFileNames.GLUCOSE, Texture.class);
         assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
+        assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.
