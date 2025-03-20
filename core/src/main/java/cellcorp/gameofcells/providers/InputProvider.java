@@ -13,4 +13,5 @@ public interface InputProvider {
     ///
     /// @param key The key code as found in [Input.Keys].
     boolean isKeyPressed(int key);
+    boolean isKeyJustPressed(int key);
 }
