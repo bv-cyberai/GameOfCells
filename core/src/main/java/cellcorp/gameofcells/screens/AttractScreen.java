@@ -19,6 +19,7 @@ import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.objects.Glucose;
+import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 
@@ -48,13 +49,7 @@ public class AttractScreen implements GameOfCellsScreen {
     // Number of glucose objects to generate
     private static final int NUM_GLUCOSE = 10; // Adjust this number as needed
 
-    // Background particles
-    private List<Particle> backgroundParticles;
-    private static final int NUM_PARTICLES = 100; // Number of background particles
-
-    // White pixel texture for drawing particles
-    private Texture whitePixelTexture;
-    
+    private Particles particles;
 
     public AttractScreen(
             InputProvider inputProvider,
@@ -73,8 +68,8 @@ public class AttractScreen implements GameOfCellsScreen {
         this.spriteBatch = graphicsProvider.createSpriteBatch();
         this.random = new Random();
 
-        // Initialize white pixel texture
-        this.whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL); 
+        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
+        this.particles = new Particles(whitePixelTexture);
 
         // Initialize game objects
         this.cell = new Cell(assetManager);
@@ -86,18 +81,6 @@ public class AttractScreen implements GameOfCellsScreen {
             float y = random.nextFloat() * viewport.getWorldHeight(); // Random y position
             float radius = 20; // Smaller radius for glucose
             glucoseList.add(new Glucose(assetManager, x, y, radius));
-        }
-
-        // Initialize background particles
-        this.backgroundParticles = new ArrayList<>();
-        for (int i = 0; i < NUM_PARTICLES; i++) {
-            backgroundParticles.add(new Particle(
-                    random.nextFloat() * viewport.getWorldWidth(), 
-                    random.nextFloat() * viewport.getWorldHeight(), 
-                    random.nextFloat() * 2 + 1, // Random size between 1 and 3
-                    random.nextFloat() * 0.5f + 0.1f, // Random speed between 0.1 and 0.6
-                    whitePixelTexture // Pass the white pixel texture to the particle
-                ));
         }
 
         // Set initial target position for the cell
@@ -144,7 +127,7 @@ public class AttractScreen implements GameOfCellsScreen {
         for (Glucose glucose : glucoseList) {
             glucose.dispose();
         }
-        whitePixelTexture.dispose();
+        particles.dispose();
         // Dispose of any resources used by the attract screen
     }
 
@@ -162,9 +145,7 @@ public class AttractScreen implements GameOfCellsScreen {
             // Update the simulation
             animationTime += deltaTimeSeconds;
 
-            for (Particle particle : backgroundParticles) {
-                particle.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
-            }
+            particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
 
             // Humanistic movement logic
             float cellX = cell.getCellPositionX();
@@ -212,12 +193,7 @@ public class AttractScreen implements GameOfCellsScreen {
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
 
-        // Draw background particles
-        spriteBatch.begin();
-        for (Particle particle : backgroundParticles) {
-            particle.draw(spriteBatch);
-        }
-        spriteBatch.end();
+        particles.draw(spriteBatch);
         
         // Draw game objects
         spriteBatch.begin();
@@ -228,32 +204,4 @@ public class AttractScreen implements GameOfCellsScreen {
         spriteBatch.end();
     }
 
-    // Inner class for background particles
-    private static class Particle {
-        private float x, y; // Position
-        private float size; // Size of the particle
-        private float speed; // Speed of the particle
-        private Texture texture; // Texture for the particle
-
-        public Particle(float x, float y, float size, float speed, Texture texture) {
-            this.x = x;
-            this.y = y;
-            this.size = size;
-            this.speed = speed;
-            this.texture = texture;
-        }
-
-        public void update(float deltaTimeSeconds, float worldWidth, float worldHeight) {
-            y -= speed; // Move the particle downward
-            if (y < 0) { // Reset the particle if it goes off the screen
-                y = worldHeight;
-                x = (float) Math.random() * worldWidth;
-            }
-        }
-
-        public void draw(SpriteBatch spriteBatch) {
-            spriteBatch.setColor(0.5f, 0.5f, 0.8f, 0.5f); // Light blue with transparency
-            spriteBatch.draw(texture, x, y, size, size); // Draw the particle
-        }
-    }
 }

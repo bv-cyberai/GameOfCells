@@ -29,7 +29,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private static final String[] MENU_OPTIONS = {"Start Game", "Settings", "Exit"};
     private int selectedOption = 0; // Index of the currently selected option
 
-    private static final float INACTIVITY_TIMEOUT = 5f; // 5 seconds of inactivity
+    private static final float INACTIVITY_TIMEOUT = 10f; // 5 seconds of inactivity
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
