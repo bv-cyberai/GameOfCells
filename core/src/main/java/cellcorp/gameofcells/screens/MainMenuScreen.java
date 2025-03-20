@@ -102,7 +102,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Move to `GamePlayScreen` when 'enter' is pressed.
-        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+        if (inputProvider.isKeyPressed(Input.Keys.ENTER)) {
             game.setScreen(new GamePlayScreen(
                     inputProvider,
                     graphicsProvider,

@@ -72,7 +72,7 @@ public class TestMain {
     public void canMoveToShopScreen() {
         var gameRunner = GameRunner.create();
 
-        // Press space to move to game screen
+        // Press enter to move to game screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
 

@@ -162,12 +162,12 @@ public class ShopScreen implements GameOfCellsScreen {
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
+        if (inputProvider.isKeyPressed(Input.Keys.E)) {
             game.setScreen(previousScreen);
         }
 
         // Evolve into a mitochondria when 'M' is pressed
-        if (inputProvider.isKeyJustPressed(Input.Keys.M) && !hasMitochondria) {
+        if (inputProvider.isKeyPressed(Input.Keys.M) && !hasMitochondria) {
             // Deduct cost and evolve
             hasMitochondria = true;
             // TODO: Deduct evolutionCost from player's energy

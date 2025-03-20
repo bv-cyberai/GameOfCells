@@ -103,7 +103,7 @@ public class GameOverScreen implements GameOfCellsScreen {
     public void handleInput(float deltaTimeSeconds) {
         // This perhaps should be the main menu screen, but is most likely up to the
         // client.
-        if (inputProvider.isKeyJustPressed(Input.Keys.R)) {
+        if (inputProvider.isKeyPressed(Input.Keys.R)) {
             game.setScreen(new GamePlayScreen(
                     inputProvider,
                     graphicsProvider,

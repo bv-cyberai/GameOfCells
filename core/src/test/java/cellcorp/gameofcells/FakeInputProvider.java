@@ -14,8 +14,6 @@ package cellcorp.gameofcells;
 import cellcorp.gameofcells.providers.InputProvider;
 
 import java.util.Set;
-import java.util.HashMap;
-import java.util.Map;
 
 /// Fake [InputProvider] for use in tests.
 ///
@@ -23,10 +21,6 @@ import java.util.Map;
 /// to the game object under test, call [#setHeldDownKeys],
 /// then call the method(s) under test.
 public class FakeInputProvider implements InputProvider {
-    /// Map of key codes to whether they are pressed.
-    private final Map<Integer, Boolean> keyStates = new HashMap<>();
-    private final Map<Integer, Boolean> previousKeyStates = new HashMap<>();
-
     /// Set of keys which are currently held down, according to our test.
     private Set<Integer> heldDown = Set.of();
 
@@ -52,20 +46,7 @@ public class FakeInputProvider implements InputProvider {
         this.heldDown = heldDown;
     }
 
-    @Override
     public boolean isKeyPressed(int key) {
-        return keyStates.getOrDefault(key, false);
-    }
-
-    @Override
-    public boolean isKeyJustPressed(int key) {
-        boolean isPressed = keyStates.getOrDefault(key, false);
-        boolean wasPressed = previousKeyStates.getOrDefault(key, false);
-
-        /// Update the previous state
-        previousKeyStates.put(key, isPressed);
-
-        /// Return true if the key is pressed now, but wasn't pressed before.
-        return isPressed && !wasPressed;
+        return heldDown.contains(key);
     }
 }
