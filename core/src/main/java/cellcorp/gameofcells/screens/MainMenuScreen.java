@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -9,10 +10,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -59,18 +56,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
-        this.random = new Random();
-
-        // Initialize the background particles
-        this.backgroundParticles = new ArrayList<>();
-        for (int i = 0; i < NUM_PARTICLES; i++) {
-            backgroundParticles.add(new Particle(
-                    random.nextFloat() * viewport.getWorldWidth(),
-                    random.nextFloat() * viewport.getWorldHeight(),
-                    random.nextFloat() * 2 + 1, // Random size between 1 and 3
-                    random.nextFloat() * 0.5f + 0.1f // Random speed between 0.1 and 0.6
-            ));
-        }
     }
 
     @Override
@@ -177,11 +162,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     viewport
             ));
         }
-
-        // Update the background particles
-        for (Particle particle : backgroundParticles) {
-            particle.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
-        }
     }
 
     @Override
@@ -192,13 +172,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
         viewport.apply(true);
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
-
-        // Draw the background particles
-        spriteBatch.begin();
-        for (Particle particle : backgroundParticles) {
-            particle.draw(spriteBatch);
-        }
-        spriteBatch.end();
 
         // Draw the instructional message
         spriteBatch.begin();
@@ -218,7 +191,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             // Draw the menu option
             font.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50);
         }
-        
+
         spriteBatch.end();
     }
 }
