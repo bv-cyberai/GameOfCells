@@ -106,7 +106,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         this.graphicsProvider = graphicsProvider;
 
         this.camera = camera;
-        this.viewport = viewport;
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
         // Font/Message
