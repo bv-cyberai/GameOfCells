@@ -17,6 +17,7 @@ package cellcorp.gameofcells;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,8 +31,12 @@ import cellcorp.gameofcells.screens.GameOfCellsScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 
 public class Main implements ApplicationListener {
-    public static final int DEFAULT_SCREEN_WIDTH = 1920;
-    public static final int DEFAULT_SCREEN_HEIGHT = 1080;
+    public static final int DEFAULT_SCREEN_WIDTH = 1280;
+    public static final int DEFAULT_SCREEN_HEIGHT = 800;
+
+    public static final Color PURPLE = new Color(.157f, .115f, .181f, 1f);
+    public static final Color TEAL = new Color(.424f, .553f, .573f, 1f);
+
 
     /**
      * The currently-shown screen.

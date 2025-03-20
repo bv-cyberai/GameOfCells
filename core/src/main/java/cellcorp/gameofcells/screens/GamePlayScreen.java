@@ -1,9 +1,11 @@
 package cellcorp.gameofcells.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -122,8 +124,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param inputProvider    Provides user input information.
      * @param graphicsProvider Provide graphics information.
      * @param game             The main game instance.
-     * @param camera           The camera for rendering.
-     * @param viewport         The viewport for screen rendering scaling.
      */
     public GamePlayScreen(
             InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
@@ -311,8 +311,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Draw a background with grid lines.
      */
     private void drawBackground(ShapeRenderer shapeRenderer) {
-        ScreenUtils.clear(Color.BLACK);
+        // It makes ShapeRenderer alpha work. Don't ask. I hate libgdx.
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
+        ScreenUtils.clear(Main.PURPLE);
+        var callerColor = shapeRenderer.getColor();
+
+        shapeRenderer.setColor(1, 1, 1, 0.5f);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         var distanceBetweenGridLines = 100f;
         int rows = (int) Math.ceil(VIEW_RECT_HEIGHT / distanceBetweenGridLines) + 1;
@@ -340,6 +346,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
             shapeRenderer.rect(x, yMin, colWidth, colHeight);
         }
         shapeRenderer.end();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND); // Idk.
+        shapeRenderer.setColor(callerColor);
     }
 
     private void drawGameObjects(SpriteBatch batch) {

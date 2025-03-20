@@ -75,8 +75,6 @@ public class GameOverScreen implements GameOfCellsScreen {
      * @param assetManager     - The asset manager.
      * @param graphicsProvider - The graphics provider.
      * @param game             - The game.
-     * @param camera           - The camera.
-     * @param viewport         -The viewport.
      */
     public GameOverScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
             Main game) {
@@ -130,7 +128,7 @@ public class GameOverScreen implements GameOfCellsScreen {
     public void draw() {
         ScreenUtils.clear(Color.BLACK);
 
-        viewport.apply();
+        viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         // figure out how to load once.
