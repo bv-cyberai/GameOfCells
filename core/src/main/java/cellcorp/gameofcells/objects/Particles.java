@@ -23,7 +23,8 @@ public class Particles {
                     random.nextFloat() * 1200, // Random x position (adjust to your screen width)
                     random.nextFloat() * 800,  // Random y position (adjust to your screen height)
                     random.nextFloat() * 2 + 1, // Random size between 1 and 3
-                    random.nextFloat() * 0.5f + 0.1f // Random speed between 0.1 and 0.6
+                    random.nextFloat() * 0.5f + 0.1f, // Random speed between 0.1 and 0.6
+                    whitePixelTexture // Pass the white pixel texture to the particle
             ));
         }
     }
@@ -51,12 +52,14 @@ public class Particles {
         private float x, y;
         private final float size;
         private final float speed;
+        private final Texture texture;
 
-        public Particle(float x, float y, float size, float speed) {
+        public Particle(float x, float y, float size, float speed, Texture texture) {
             this.x = x;
             this.y = y;
             this.size = size;
             this.speed = speed;
+            this.texture = texture;
         }
 
         public void update(float delta, float worldWidth, float worldHeight) {
@@ -69,7 +72,7 @@ public class Particles {
 
         public void draw(SpriteBatch batch) {
             batch.setColor(0.5f, 0.5f, 0.8f, 0.5f); // Light blue with transparency
-            batch.draw(whitePixelTexture, x, y, size, size); // Draw the particle
+            batch.draw(texture, x, y, size, size); // Draw the particle
         }
     }
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -34,6 +35,8 @@ public class SettingsScreen implements GameOfCellsScreen {
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
 
+    private Particles particles;
+
     public SettingsScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -49,6 +52,9 @@ public class SettingsScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+
+        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
+        particles = new Particles(whitePixelTexture);
     }
 
     @Override
@@ -80,6 +86,7 @@ public class SettingsScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         spriteBatch.dispose();
+        particles.dispose();
     }
 
     @Override
@@ -127,6 +134,7 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     @Override
     public void update(float deltaTimeSeconds) {
+        particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
     @Override
@@ -137,6 +145,9 @@ public class SettingsScreen implements GameOfCellsScreen {
         viewport.apply(true);
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
+
+        // Draw particles
+        particles.draw(spriteBatch);
 
         // Draw the settings menu
         spriteBatch.begin();

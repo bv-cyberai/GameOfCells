@@ -3,6 +3,7 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -28,6 +30,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
 
+    private Particles particles;
+
     public GameInfoControlsScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -43,6 +47,9 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+
+        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
+        particles = new Particles(whitePixelTexture);
     }
 
     @Override
@@ -74,6 +81,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         spriteBatch.dispose();
+        particles.dispose();
     }
 
     @Override
@@ -93,6 +101,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     @Override
     public void update(float deltaTimeSeconds) {
+        particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
     @Override
@@ -103,6 +112,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         viewport.apply(true);
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
+
+        particles.draw(spriteBatch);
 
         // Draw game info and controls
         spriteBatch.begin();
@@ -124,7 +135,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         font.draw(spriteBatch, "Escape - Pause/Return to Menu", startX, startY - 210);
 
         // Press any key to return
-        font.draw(spriteBatch, "Press any key to return...", startX, startY - 270);
+        font.draw(spriteBatch, "Press Escape key to return...", startX, startY - 270);
 
         spriteBatch.end();
     }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -41,6 +42,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     private float inactivityTimer = 0f;
 
+    // Particles system
+    private Particles particles;
+
     public MainMenuScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -56,6 +60,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = viewport;
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+
+        // Load white pixel texture and initialize particles
+        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
+        this.particles = new Particles(whitePixelTexture);
     }
 
     @Override
@@ -96,6 +104,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         this.spriteBatch.dispose();
+        this.particles.dispose();
     }
 
     @Override
@@ -162,6 +171,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     viewport
             ));
         }
+
+        // Update the particles system
+        particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());    
     }
 
     @Override
@@ -172,6 +184,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
         viewport.apply(true);
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
+
+        // Draw the particles system
+        particles.draw(spriteBatch);
 
         // Draw the instructional message
         spriteBatch.begin();
