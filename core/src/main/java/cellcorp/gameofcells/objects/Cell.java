@@ -1,72 +1,96 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import cellcorp.gameofcells.AssetFileNames;
+
 /**
-* Cell Class
-*
-* Includes the data for the primary cell the player
-* Controls in the game
-* @author Brendon Vineyard / vineyabn207
-* @author Andrew Sennoga-Kimuli / sennogat106
-* @author Mark Murphy / murphyml207
-* @author Tim Davey / daveytj206
-*
-* @date 02/18/2025
-* @course CIS 405
-* @assignment GameOfCells
-*/
+ * Cell Class
+ *
+ * Includes the data for the primary cell the player
+ * Controls in the game
+ * 
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ *
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 public class Cell {
     private final AssetManager assetManager;
 
-    float cellPositionX;
-    float cellPositionY;
-    float cellWidth;
-    float cellHeight;
-    private final float cellSpeed = 200f;   // Speed of the cell
+    private static final float WIDTH = 200;
+    private static final float HEIGHT = 200;
+
+    private float cellPositionX;
+    private float cellPositionY;
+    private final float cellSpeed = 200f; // Speed of the cell
+
+    private int cellHealth;
+    private int cellATP;
+    private int maxHealth;
+    private int maxATP;
 
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
 
-        cellPositionX = 500;
-        cellPositionY = 300;
-        cellWidth = 200;
-        cellHeight = 200;
+        cellPositionX = 0;
+        cellPositionY = 0;
+
+        cellHealth = 100;
+        cellATP = 30; // starting value in alpha.
+        maxHealth = 100;
+        maxATP = 100; // Alpha is actually 99, but thats painful.
     }
 
     /**
      * Moves the cell based on input direction
      * 
      * @param deltaTime - The time passed since the last frame
-     * @param moveLeft - If the cell should move left
+     * @param moveLeft  - If the cell should move left
      * @param moveRight - If the cell should move right
-     * @param moveUp - If the cell should move up
-     * @param moveDown - If the cell should move down
+     * @param moveUp    - If the cell should move up
+     * @param moveDown  - If the cell should move down
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
-        if (moveLeft) cellPositionX -= cellSpeed * deltaTime;
-        if (moveRight) cellPositionX += cellSpeed * deltaTime;
-        if (moveUp) cellPositionY += cellSpeed * deltaTime;
-        if (moveDown) cellPositionY -= cellSpeed * deltaTime;
+        if (moveLeft)
+            cellPositionX -= cellSpeed * deltaTime;
+        if (moveRight)
+            cellPositionX += cellSpeed * deltaTime;
+        if (moveUp)
+            cellPositionY += cellSpeed * deltaTime;
+        if (moveDown)
+            cellPositionY -= cellSpeed * deltaTime;
     }
 
     /**
      * Draw
+     * 
      * @param batch - The passed spritebatch.
      */
     public void draw(SpriteBatch batch) {
+        // Draw cell centered around its position.
+        float topLeftX = cellPositionX - (WIDTH / 2);
+        float topLeftY = cellPositionY - (HEIGHT / 2);
+
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
-        batch.draw(cellTexture, cellPositionX, cellPositionY, cellWidth, cellHeight);
+
+        // x, y are the _top-left_ of the drawn sprite
+        batch.draw(cellTexture, topLeftX, topLeftY, WIDTH, HEIGHT);
     }
 
     /**
      * Get Cell Position X
+     * 
      * @return cellPositionX
      */
     public float getCellPositionX() {
@@ -75,6 +99,7 @@ public class Cell {
 
     /**
      * Get Cell Position Y
+     * 
      * @return cellPositionY
      */
     public float getCellPositionY() {
@@ -82,19 +107,39 @@ public class Cell {
     }
 
     /**
-     * Get Cell Width
-     * @return cellWidth
+     * Health Getter
+     * 
+     * @return CellHealth
      */
-    public float getCellWidth() {
-        return cellWidth;
+    public int getCellHealth() {
+        return cellHealth;
     }
 
     /**
-     * Get Cell Height
-     * @return cellHeight
+     * ATP Getter
+     * 
+     * @return ATP
      */
-    public float getCellHeight() {
-        return cellHeight;
+    public int getCellATP() {
+        return cellATP;
+    }
+
+    /**
+     * Max Health Getter
+     * 
+     * @return Cell Max Health
+     */
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    /**
+     * MAX ATP Getter
+     * 
+     * @return Cell Max ATP
+     */
+    public int getMaxATP() {
+        return maxATP;
     }
 
     /**
@@ -103,5 +148,4 @@ public class Cell {
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
     }
-
 }

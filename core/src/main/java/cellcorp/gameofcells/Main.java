@@ -14,26 +14,27 @@ package cellcorp.gameofcells;
  * @assignment GameOfCells
  */
 
-import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
-import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.screens.GameOfCellsScreen;
-import cellcorp.gameofcells.screens.MainMenuScreen;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
 import cellcorp.gameofcells.providers.DefaultInputProvider;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import cellcorp.gameofcells.screens.GameOfCellsScreen;
+import cellcorp.gameofcells.screens.MainMenuScreen;
 
 public class Main implements ApplicationListener {
-    // These configuration values are referenced in `cellcorp.gameofcells.lwjgl3.Lwjgl3Launcher`
-    // Changing them will change the default size of the game window in Java.
-    public static int WORLD_WIDTH = 1200;
-    public static int WORLD_HEIGHT = 800;
+    public static final int DEFAULT_SCREEN_WIDTH = 1280;
+    public static final int DEFAULT_SCREEN_HEIGHT = 800;
+
+    public static final Color PURPLE = new Color(.157f, .115f, .181f, 1f);
+    public static final Color TEAL = new Color(.424f, .553f, .573f, 1f);
+
 
     /**
      * The currently-shown screen.
@@ -58,10 +59,7 @@ public class Main implements ApplicationListener {
      */
     private final GraphicsProvider graphicsProvider;
 
-    // Camera/Viewport - These can be shared by screens/don't need to be Fit
-    // viewport but its not a bad choice per se.
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+
 
     /**
      * Constructs a new `Main`.
@@ -74,15 +72,7 @@ public class Main implements ApplicationListener {
         var inputProvider = new DefaultInputProvider();
         var graphicsProvider = new DefaultGraphicsProvider();
         var assetManager = new AssetManager();
-        var camera = new OrthographicCamera();
-        // Gdx.graphics is not instantiated until `create()`.
-        // Just use the configuration constants here.
-        var viewport = new FitViewport(
-            WORLD_WIDTH,
-            WORLD_HEIGHT,
-            camera
-        );
-        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);
+        return new Main(inputProvider, graphicsProvider, assetManager);
     }
 
     /**
@@ -91,28 +81,21 @@ public class Main implements ApplicationListener {
      * @param inputProvider    Input provider. Use FakeInputProvider in test code.
      * @param graphicsProvider Graphics provider. Use FakeGraphicsProvider in test code.
      * @param assetManager     Loads assets. Use `mock(AssetManager.class)` in test code.
-     * @param camera           The camera. Use `mock(OrthographicCamera.class)` in test code.
-     * @param viewport         The viewport. Use `mock(FitViewport.class)` in test code.
      */
     public Main(InputProvider inputProvider,
                 GraphicsProvider graphicsProvider,
-                AssetManager assetManager,
-                OrthographicCamera camera,
-                FitViewport viewport
+                AssetManager assetManager
     ) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
-        this.camera = camera;
-        this.viewport = viewport;
+
     }
 
     @Override
     public void create() {
         // This method should be "test-safe".
         // When run with properly-faked providers, it should not crash test code.
-
-        camera.setToOrtho(false, graphicsProvider.getWidth(), graphicsProvider.getHeight());
 
         // Load up the assets, blocking until they're loaded.
         // The asset manager expects the asset's file name,
@@ -129,7 +112,7 @@ public class Main implements ApplicationListener {
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
+        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager));
     }
 
     @Override
@@ -194,4 +177,5 @@ public class Main implements ApplicationListener {
     public GraphicsProvider getGraphicsProvider() {
         return this.graphicsProvider;
     }
+
 }

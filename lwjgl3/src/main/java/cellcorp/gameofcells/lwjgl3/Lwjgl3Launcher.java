@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.lwjgl3;
 
+import cellcorp.gameofcells.screens.MainMenuScreen;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import cellcorp.gameofcells.Main;
@@ -35,7 +36,7 @@ public class Lwjgl3Launcher {
         //// hardware.
         //// You may also need to configure GPU drivers to fully disable Vsync; this can
         //// cause screen tearing.
-        configuration.setWindowedMode(Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        configuration.setWindowedMode(Main.DEFAULT_SCREEN_WIDTH, Main.DEFAULT_SCREEN_HEIGHT);
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return configuration;

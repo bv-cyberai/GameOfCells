@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.Input;
 
 import cellcorp.gameofcells.runner.GameRunner;
+import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 import cellcorp.gameofcells.screens.ShopScreen;
@@ -54,12 +55,11 @@ public class TestMain {
 
     @Test
     public void gameCreatedWithCorrectScreenDimensions() {
-        // Games should be created with screen dimensions matching the world dimensions.
-        // This is subject to change.
+        // Games should be created with screen dimensions matching the default screen dimensions
         var gameRunner = GameRunner.create();
 
-        assertEquals(Main.WORLD_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
-        assertEquals(Main.WORLD_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
+        assertEquals(Main.DEFAULT_SCREEN_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
+        assertEquals(Main.DEFAULT_SCREEN_HEIGHT, gameRunner.game.getGraphicsProvider().getHeight());
     }
 
     @Test
@@ -75,6 +75,44 @@ public class TestMain {
         gameRunner.step();
 
         assertInstanceOf(ShopScreen.class, gameRunner.game.getScreen());
+    }
+
+    @Test
+    // This will need to be changed eventually to account for g -> game over screen
+    // likely being removed.
+    public void canMoveToGameOverScreen() {
+        var gameRunner = GameRunner.create();
+
+        // Press space to move to game screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Press 'G' to move to shop screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
+        gameRunner.step();
+
+        assertInstanceOf(GameOverScreen.class, gameRunner.game.getScreen());
+    }
+
+    @Test
+
+    public void canMoveToGamePlayScreenFromGameOver() {
+        var gameRunner = GameRunner.create();
+
+        // Press space to move to game screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Press 'G' to move to shop screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
+        gameRunner.step();
+
+        // Press 'R' to move to start new game may need to be changed if client prefers
+        // it switch to main menu screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.R));
+        gameRunner.step();
+
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
     }
 
     @Test

@@ -3,7 +3,6 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -61,7 +60,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private final GraphicsProvider graphicsProvider;
 
     // Batch/Camera
-    private final OrthographicCamera camera;
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
     private ShapeRenderer shape;
@@ -87,13 +85,12 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      * @param assetManager     - The Asset manager
      * @param graphicsProvider - The graphics provider
      * @param game             - The game instance
-     * @param camera           - The game camera
      * @param viewport         - The game viewport
      * @param previousScreen   - The previous screen
      * @param type             - The type of popup to create -- See type enum.
      */
     public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
-            Main game, OrthographicCamera camera, FitViewport viewport, GameOfCellsScreen previousScreen, Type type) {
+            Main game, GameOfCellsScreen previousScreen, Type type) {
 
         this.type = type;
 
@@ -105,7 +102,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
 
-        this.camera = camera;
+
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
@@ -170,9 +167,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true); // Update the viewport
-        camera.viewportWidth = width; // Update the camera viewport width
-        camera.viewportHeight = height; // Update the camera viewport height
+        viewport.update(width, height); // Update the viewport
+
     }
 
     /**
@@ -241,8 +237,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // purple
 
         viewport.apply(true);
-        camera.update();
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         if (shape == null) {
             shape = new ShapeRenderer();
@@ -260,7 +255,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
             messageX = ((viewport.getWorldWidth() / 2)) - (popUpSize / 2) - (padding + 5);
             messageY = (viewport.getWorldHeight() / 2) + (popUpSize / 2) + padding;
         }
-        shape.setProjectionMatrix(camera.combined);
+        shape.setProjectionMatrix(viewport.getCamera().combined);
         // Draw Square Popup
         shape.begin(ShapeRenderer.ShapeType.Filled);
 

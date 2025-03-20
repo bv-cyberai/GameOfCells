@@ -12,8 +12,8 @@ package cellcorp.gameofcells.screens;
  */
 
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.providers.FakeGraphicsProvider;
-import cellcorp.gameofcells.providers.FakeInputProvider;
+// import cellcorp.gameofcells.providers.FakeGraphicsProvider;
+// import cellcorp.gameofcells.providers.FakeInputProvider;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;

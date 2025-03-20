@@ -1,14 +1,16 @@
 package cellcorp.gameofcells.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -32,15 +34,25 @@ import cellcorp.gameofcells.providers.InputProvider;
  * @assignment GameOfCells
  */
 
-
 /**
  * First screen of the application. Displayed after the application is created.
  */
 public class GamePlayScreen implements GameOfCellsScreen {
+    /**
+     * Width of the view rectangle
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1920;
+    /**
+     * Width of the view rectangle
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 1080;
+
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
 
-    private Main game;
+    private final Main game;
 
     /// Loads assets during game creation,
     /// then provides loaded assets to draw code, using [AssetManager#get(String)]
@@ -51,14 +63,65 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
 
-    // Camera/Viewport
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    // ==== The Camera / Viewport Regime ====
+    // (Mark is 95% sure the following is correct, from research and review of the
+    // classes' code):
+    // The LibGDX 2d (= orthographic) `Camera` is responsible for:
+    // - Holding a "view rectangle":
+    // A rectangle defined in world units, which is the region of the world that is
+    // drawn.
+    // Stored in the camera as a center-point `position`
+    // and a pair `viewportWidth, viewportHeight`
+    // The names `viewportWidth` and `viewportHeight` are historical, and somewhat
+    // misleading.
+    // https://stackoverflow.com/questions/40059360/difference-between-viewport-and-camera-in-libgdx
+    // - Providing a `projectionMatrix` to `SpriteBatch` and `ShapeRenderer`
+    // If the view rectangle is `(0, 0) .. (1000, 1000)`,
+    // the `SpriteBatch` can draw anywhere in that range, and it will be drawn to
+    // screen.
+    //
+    // The LibGDX `Viewport` (_not_ the same as OpenGL viewport) is responsible for:
+    // - Storing a `worldWidth` and `worldHeight`
+    // These are also questionably-named. They represent the same thing as the
+    // camera's view rectangle.
+    // When `viewport.apply()` is called in each `draw()` call,
+    // the viewport updates the width and height of the camera's view rectangle
+    // to match these values.
+    // - Fitting the camera's view rectangle to whatever the actual screen size is
+    // To do this, it uses the `screenX, screenY, screenWidth, screenHeight` fields,
+    // which are updated by calling `viewport.update()`
+    //
+    // Takeaways:
+    // - We shouldn't use `viewport.setWorldWidth()` or `viewport.setWorldHeight()`,
+    // unless we want to change the _size_ of the camera's view rectangle.
+    // We usually don't want to do that.
+    // - Because `viewport.worldWidth` overrides `camera.viewportWidth` every time
+    // `viewport.apply()` is called,
+    // if we _do_ want to change it, we should always call
+    // `viewport.setWorld____()`,
+    // instead of changing it directly
+    // - To move the position of the camera's view rectangle,
+    // we should call `camera.position.set(...)`
+    // - For drawing HUD and menu screens, we can use a separate (viewport, camera)
+    // pair from the game screen.
+    // If we construct the viewport with a certain width and height (say 1920, 1080)
+    // and never change _that viewport_'s `worldWidth` / `worldHeight`,
+    // we can just draw GUI elements in the range `(0, 0) .. (1920, 1080)`
+    // and it will work no matter what we resize the screen to.
+    // - Every class that owns a viewport should call `viewport.apply()`
+    // at the start of their draw method.
+    // Classes that aren't screens should take in the caller's viewport, and
+    // re-apply it after.
+    // - Classes with a fixed camera position (like HUD and menus)
+    // should call `camera.apply(centerCamera = true)`. Others should leave it
+    // false.
+    private final Camera camera;
+    private final Viewport viewport;
 
-    // For rendering text
-    protected SpriteBatch batch;  // Define the batch for drawing text
+    private final ShapeRenderer shapeRenderer;
+    private final SpriteBatch batch;
 
-    //Objects for rendering the game
+    // Objects for rendering the game
     private final Cell cell;
     private final GlucoseManager glucoseManager;
     private final HUD hud;
@@ -69,27 +132,25 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param inputProvider    Provides user input information.
      * @param graphicsProvider Provide graphics information.
      * @param game             The main game instance.
-     * @param camera           The camera for rendering.
-     * @param viewport         The viewport for screen rendering scaling.
      */
     public GamePlayScreen(
             InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
-            AssetManager assetManager,
-            OrthographicCamera camera,
-            FitViewport viewport
-    ) {
+            AssetManager assetManager) {
         this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
 
-        this.camera = camera;
-        this.viewport = viewport;
+        this.camera = graphicsProvider.createCamera();
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
         this.cell = new Cell(assetManager);
         this.glucoseManager = new GlucoseManager(assetManager);
-        this.hud = new HUD(assetManager);
+
+        this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
+
+        this.hud = new HUD(graphicsProvider, assetManager, cell.getMaxHealth(), cell.getMaxATP());
     }
 
     /**
@@ -102,9 +163,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // it should not crash test code.
     }
 
-    /// Move the game state forward a tick, handling input, performing updates, and rendering.
-    /// LibGDX combines these into a single method call, but we separate them out into public methods,
-    /// to let us write tests where we call only [GamePlayScreen#handleInput] and [GamePlayScreen#update]
+    /// Move the game state forward a tick, handling input, performing updates, and
+    /// rendering.
+    /// LibGDX combines these into a single method call, but we separate them out
+    /// into public methods,
+    /// to let us write tests where we call only [GamePlayScreen#handleInput] and
+    /// [GamePlayScreen#update]
     @Override
     public void render(float deltaTimeSeconds) {
         handleInput(deltaTimeSeconds);
@@ -113,17 +177,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Resize the screen.
+     * Called when screen size changes.
+     * Tells the viewport that the screen size has been changed.
      *
-     * @param width  The new width of the screen.
-     * @param height The new height of the screen.
+     * @param screenWidth  The new width of the screen in pixels.
+     * @param screenHeight The new height of the screen in pixels.
      */
     @Override
-    public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true);  // Update the viewport
-        camera.viewportWidth = width;   // Update the camera viewport width
-        camera.viewportHeight = height; // Update the camera viewport height
+    public void resize(int screenWidth, int screenHeight) {
+        // Update the viewport with the new screen size.
+        viewport.update(screenWidth, screenHeight);
+        hud.resize(screenWidth, screenHeight);
     }
 
     /**
@@ -159,14 +223,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         cell.dispose(); // dispose cell
         glucoseManager.dispose();
         hud.dispose();
-        batch.dispose();  // Dispose of the batch
-
-        //need to handle actually disposing but for now meh
-        // glucose.dispose();
+        batch.dispose(); // Dispose of the batch
     }
 
     /**
-     * Handle input from the user and transitions to the GamePlayScreen when Enter is pressed.
+     * Handle input from the user and transitions to the GamePlayScreen when Enter
+     * is pressed.
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
@@ -177,37 +239,33 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     assetManager,
-                    camera,
-                    viewport,
-                    this
-            ));
-        }
-        
-        //Will eventually be triggered by cell state
-        if (inputProvider.isKeyPressed(Input.Keys.G)) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    camera,
-                    viewport,this,PopupInfoScreen.Type.glucose
-            ));
-        }
-        //Will eventually be triggered by cell state
-        if (inputProvider.isKeyPressed(Input.Keys.H)) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    camera,
-                    viewport,this,PopupInfoScreen.Type.danger
-            ));
+                    this));
         }
 
+        if (inputProvider.isKeyPressed(Input.Keys.G)) {
+            game.setScreen(new GameOverScreen(inputProvider, assetManager, graphicsProvider, game));
+        }
+
+        // Will eventually be triggered by cell state
+        if (inputProvider.isKeyPressed(Input.Keys.T)) {
+            game.setScreen(new PopupInfoScreen(
+                    inputProvider, assetManager,
+                    graphicsProvider, game,
+                    this, PopupInfoScreen.Type.glucose));
+        }
+        // Will eventually be triggered by cell state
+        if (inputProvider.isKeyPressed(Input.Keys.Y)) {
+            game.setScreen(new PopupInfoScreen(
+                    inputProvider, assetManager,
+                    graphicsProvider, game,
+                    this, PopupInfoScreen.Type.danger));
+        }
         cell.move(
                 deltaTimeSeconds,
-                inputProvider.isKeyPressed(Input.Keys.LEFT),    // Check if the left key is pressed
-                inputProvider.isKeyPressed(Input.Keys.RIGHT),   // Check if the right key is pressed
-                inputProvider.isKeyPressed(Input.Keys.UP),    // Check if the up key is pressed
-                inputProvider.isKeyPressed(Input.Keys.DOWN)   // Check if the down key is pressed
+                inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
+                inputProvider.isKeyPressed(Input.Keys.RIGHT), // Check if the right key is pressed
+                inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
+                inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
     }
 
@@ -218,7 +276,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        hud.update(deltaTimeSeconds);
+        hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
     }
 
     /**
@@ -226,43 +284,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        var startBackground = assetManager.get(AssetFileNames.START_BACKGROUND, Texture.class);
-        var gameBackground = assetManager.get(AssetFileNames.GAME_BACKGROUND, Texture.class);
-
-        // Set up font
         var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
+        font.getData().setScale(2); // Set the font size
 
-        font.getData().setScale(2);  // Set the font size
+        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // Clear the screen with a purple
 
-        // Set the font color to white
-        font.setColor(Color.BLACK);
-
-        // Draw the screen
-        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f));  // Clear the screen with a purple
-        // ScreenUtils.clear(new Color(.424f, .553f, .573f, 1.0f));  // Clear the screen with a blue
-
-        // I don't know what `viewport.apply(...)` does but when it was omitted
-        // the HTML version was displaying way in the bottom-left and getting cut off.
-        viewport.apply(true);
-        camera.update();    // Update the camera
+        centerCameraOnCell();
+        viewport.apply();
+        shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
-        batch.begin();  // Start the batch for drawing 2d element
-
-        // Draw the gameplay screen
-        // batch.draw(gameBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
-
-        // Draw the text in white
-        font.setColor(Color.WHITE);  // white for text
-        font.draw(batch, MESSAGE_GAME, 100, 100);  // Regular position
-        font.draw(batch, MESSAGE_SHOP, 102, 75);
-
-        // You can start rendering other game objects (like the cell) here
-        glucoseManager.draw(batch); // draws glucose beneath the cell.
-        hud.draw(batch); // Draw hud
-        cell.draw(batch);
-
-        batch.end();    // End the batch
+        drawBackground(shapeRenderer);
+        drawGameObjects(batch);
+        hud.draw(viewport);
     }
 
     /**
@@ -290,6 +324,69 @@ public class GamePlayScreen implements GameOfCellsScreen {
         return glucoseManager;
     }
 
+    /**
+     * Center's the camera's view rectangle on the cell.
+     */
+    private void centerCameraOnCell() {
+        camera.position.set(cell.getCellPositionX(), cell.getCellPositionY(), 0);
+    }
+
+    /**
+     * Draw a background with grid lines.
+     */
+    private void drawBackground(ShapeRenderer shapeRenderer) {
+        // It makes ShapeRenderer alpha work. Don't ask. I hate libgdx.
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        ScreenUtils.clear(Main.PURPLE);
+        var callerColor = shapeRenderer.getColor();
+
+        shapeRenderer.setColor(1, 1, 1, 0.5f);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        var distanceBetweenGridLines = 100f;
+        int rows = (int) Math.ceil(VIEW_RECT_HEIGHT / distanceBetweenGridLines) + 1;
+        int cols = (int) Math.ceil(VIEW_RECT_WIDTH / distanceBetweenGridLines) + 1;
+
+        float rowWidth = VIEW_RECT_WIDTH + 2f;
+        float rowHeight = VIEW_RECT_HEIGHT / 500f;
+        float colWidth = VIEW_RECT_WIDTH / 500f;
+        float colHeight = VIEW_RECT_HEIGHT + 2f;
+
+        float xMin = camera.position.x - (float) VIEW_RECT_WIDTH / 2 - 1;
+        float yMin = camera.position.y - (float) VIEW_RECT_HEIGHT / 2 - 1;
+
+        float yStart = yMin - yMin % distanceBetweenGridLines;
+        for (int row = 0; row < rows; row++) {
+            float yOffset = row * distanceBetweenGridLines;
+            float y = yStart + yOffset;
+            shapeRenderer.rect(xMin, y, rowWidth, rowHeight);
+        }
+
+        float xStart = xMin - xMin % distanceBetweenGridLines;
+        for (int col = 0; col < cols; col++) {
+            float xOffset = col * distanceBetweenGridLines;
+            float x = xStart + xOffset;
+            shapeRenderer.rect(x, yMin, colWidth, colHeight);
+        }
+        shapeRenderer.end();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND); // Idk.
+        shapeRenderer.setColor(callerColor);
+    }
+
+    private void drawGameObjects(SpriteBatch batch) {
+        batch.begin();
+        glucoseManager.draw(batch);
+        cell.draw(batch);
+        batch.end();
+    }
+
+    /**
+     * Hud Getter (Testing method)
+     * 
+     * @return The Screen Hud.
+     */
     public HUD getHud() {
         return hud;
     }
