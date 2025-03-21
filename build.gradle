@@ -1,13 +1,12 @@
 buildscript {
   repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-//    maven { url 'https://s01.oss.sonatype.org' }
+    maven { url 'https://s01.oss.sonatype.org' }
     gradlePluginPortal()
     mavenLocal()
     google()
-//    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-//    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
 
@@ -61,13 +60,12 @@ subprojects {
   ext.appName = 'GameOfCells'
   repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-//    maven { url 'https://s01.oss.sonatype.org' }
+    maven { url 'https://s01.oss.sonatype.org' }
     // You may want to remove the following line if you have errors downloading dependencies.
     mavenLocal()
-//    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-//    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-//    maven { url 'https://jitpack.io' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://jitpack.io' }
   }
 }
 
