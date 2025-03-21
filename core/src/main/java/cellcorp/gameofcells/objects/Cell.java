@@ -39,6 +39,7 @@ public class Cell {
     private int maxATP;
     private Circle cellCircle;
 
+    private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
 
     private Circle collisionCircle = null;
 
@@ -209,5 +210,19 @@ public class Cell {
      */
     private void updateCollisionCircle() {
         this.cellCircle = new Circle(cellPositionX, cellPositionY, cellDiameter / 2);
+    }
+
+    /**
+     * Check if the glucose popup has been shown
+     */
+    public boolean hasShownGlucosePopup() {
+        return hasShownGlucosePopup;
+    }
+
+    /**
+     * Set the glucose popup as shown
+     */
+    public void setHasShownGlucosePopup(boolean hasShownGlucosePopup) {
+        this.hasShownGlucosePopup = hasShownGlucosePopup;
     }
 }
