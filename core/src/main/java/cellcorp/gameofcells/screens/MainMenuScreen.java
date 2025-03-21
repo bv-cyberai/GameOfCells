@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,7 +46,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
-    private final OrthographicCamera camera;
+    private final Camera camera;
 
     private final Main game;
     private final AssetManager assetManager;
@@ -63,7 +63,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
-            OrthographicCamera camera,
+            Camera camera,
             Viewport viewport
     ) {
         this.inputProvider = inputProvider;
@@ -136,9 +136,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             inputProvider,
                             graphicsProvider,
                             game,
-                            assetManager,
-                            camera,
-                            viewport
+                            assetManager
                     ));
                     break;
                 case 1: // Settings
@@ -176,9 +174,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager,
-                    camera,
-                    viewport
+                    assetManager
             ));
         }
 

@@ -104,9 +104,7 @@ public class Cell {
         // and the class of the asset to load.
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
-        batch.begin();
         batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellDiameter, cellDiameter);
-        batch.end();
     }
 
     /**

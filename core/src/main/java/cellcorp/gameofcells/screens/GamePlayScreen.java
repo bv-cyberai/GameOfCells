@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.AssetFileNames;
@@ -120,8 +119,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // - Classes with a fixed camera position (like HUD and menus)
     // should call `camera.apply(centerCamera = true)`. Others should leave it
     // false.
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    private final Camera camera;
+    private final Viewport viewport;
 
     private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
@@ -149,9 +148,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
             InputProvider inputProvider, 
             GraphicsProvider graphicsProvider, 
             Main game,
-            AssetManager assetManager,
-            OrthographicCamera camera,
-            FitViewport viewport) {
+            AssetManager assetManager) {
 
         this.assetManager = assetManager;
         this.game = game;
@@ -256,8 +253,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     assetManager,
-                    camera,
-                    viewport,
                     this, // Pass the current screen to the shop screen
                     cell
             ));
@@ -268,9 +263,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 inputProvider, 
                 assetManager, 
                 graphicsProvider, 
-                game,
-                camera,
-                viewport));
+                game
+            ));
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
@@ -293,10 +287,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
         cell.move(
                 deltaTimeSeconds,
-                inputProvider.isKeyJustPressed(Input.Keys.LEFT), // Check if the left key is pressed
-                inputProvider.isKeyJustPressed(Input.Keys.RIGHT), // Check if the right key is pressed
-                inputProvider.isKeyJustPressed(Input.Keys.UP), // Check if the up key is pressed
-                inputProvider.isKeyJustPressed(Input.Keys.DOWN) // Check if the down key is pressed
+                inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
+                inputProvider.isKeyPressed(Input.Keys.RIGHT), // Check if the right key is pressed
+                inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
+                inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
     }
 
@@ -423,8 +417,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private void drawGameObjects(SpriteBatch batch) {
         batch.begin();
         glucoseManager.draw(batch);
-        batch.end();
         cell.draw(batch);
+        batch.end();
     }
 
     /**

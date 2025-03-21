@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +31,7 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     private final Main game;
     private final AssetManager assetManager;
-    private final OrthographicCamera camera;
+    private final Camera camera;
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
 
@@ -42,7 +42,7 @@ public class SettingsScreen implements GameOfCellsScreen {
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
-            OrthographicCamera camera,
+            Camera camera,
             FitViewport viewport
     ) {
         this.inputProvider = inputProvider;

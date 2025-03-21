@@ -15,8 +15,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import static cellcorp.gameofcells.screens.ShopScreen.CanPurchaseResultType.*;
 
@@ -103,8 +101,8 @@ public class ShopScreen implements GameOfCellsScreen {
     private final AssetManager assetManager;
 
     // Camera/Viewport
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    private final Viewport viewport;
+
 
     // Keeps track of the initial screen prior to transition
     private final GameOfCellsScreen previousScreen;
@@ -127,10 +125,7 @@ public class ShopScreen implements GameOfCellsScreen {
      *
      * @param game           The main game instance.
      * @param inputProvider  Handles user input.
-     * @param graphicsProvider Handles graphics rendering.
      * @param assetManager   Manages game assets.
-     * @param camera         The camera for rendering.
-     * @param viewport       The viewport for screen rendering scaling.
      * @param previousScreen The current screen gameplayscreen
      * @param cell           The cell object
      */
@@ -139,8 +134,6 @@ public class ShopScreen implements GameOfCellsScreen {
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             AssetManager assetManager,
-            OrthographicCamera camera,
-            FitViewport viewport,
             GamePlayScreen previousScreen,
             Cell cell // Required to get game state out of cell
     ) {
@@ -148,13 +141,12 @@ public class ShopScreen implements GameOfCellsScreen {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
-        this.camera = camera;
-        this.viewport = viewport;
         this.previousScreen = previousScreen;
         this.cell = cell;
 
         this.gamePlayScreen = previousScreen;
 
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
     }
 
@@ -184,8 +176,6 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        camera.viewportWidth = width; // Set the camera's viewport width
-        camera.viewportHeight = height; // Set the camera's viewport height
     }
 
     /**

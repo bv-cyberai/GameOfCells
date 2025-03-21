@@ -3,13 +3,15 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -29,9 +31,20 @@ public class AttractScreen implements GameOfCellsScreen {
     private final GraphicsProvider graphicsProvider;
     private final Main game;
     private final AssetManager assetManager;
-    private final OrthographicCamera camera;
-    private final FitViewport viewport;
+    private final Camera camera;
+    private final Viewport viewport;
     private final SpriteBatch spriteBatch;
+
+    /**
+     * Width of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1200;
+    /**
+     * Height of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 800;
 
     // Game objects
     private Cell cell;
@@ -55,16 +68,16 @@ public class AttractScreen implements GameOfCellsScreen {
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             Main game,
-            AssetManager assetManager,
-            OrthographicCamera camera,
-            FitViewport viewport
+            AssetManager assetManager
     ) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.game = game;
         this.assetManager = assetManager;
-        this.camera = camera;
-        this.viewport = viewport;
+
+        this.camera = graphicsProvider.createCamera();
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
+
         this.spriteBatch = graphicsProvider.createSpriteBatch();
         this.random = new Random();
 
@@ -134,7 +147,7 @@ public class AttractScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Return to the main menu if any key is pressed or the screen is touched
-        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY) && !inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
             game.setScreen(new MainMenuScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport));
         }
     }
