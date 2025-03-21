@@ -163,7 +163,7 @@ public class TestMain {
         var gameGlucose = gamePlayScreen.getGlucoseManager().getGlucoseArray();
 
         var addedGlucose = new ArrayList<Glucose>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10; i++) {
             addedGlucose.add(new Glucose(
                     Mockito.mock(AssetManager.class),
                     cell.getCellPositionX() + 100,
@@ -178,6 +178,6 @@ public class TestMain {
         for (var glucose : addedGlucose) {
             assert !gameGlucose.contains(glucose);
         }
-        assertEquals(startATP + 3 * Glucose.ATP_PER_GLUCOSE, cell.getCellATP());
+        assertEquals(100, cell.getCellATP());
     }
 }

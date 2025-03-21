@@ -60,7 +60,22 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * @param requiredUpgrade Set only if type == PREVIOUS_UPGRADE_REQUIRED. Null otherwise.
      */
-    private record CanPurchaseResult(CanPurchaseResultType type, String requiredUpgrade) {
+    private class CanPurchaseResult {
+        private CanPurchaseResultType type;
+        private String requiredUpgrade;
+
+        public CanPurchaseResult(CanPurchaseResultType type, String requiredUpgrade) {
+            this.type = type;
+            this.requiredUpgrade = requiredUpgrade;
+        }
+
+        public CanPurchaseResultType type() {
+            return type;
+        }
+
+        public String getRequiredUpgrade() {
+            return requiredUpgrade;
+        }
     }
 
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
