@@ -1,9 +1,7 @@
 package cellcorp.gameofcells.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
@@ -35,6 +33,9 @@ public class SettingsScreen implements GameOfCellsScreen {
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
 
+    private BitmapFont whiteFont;
+    private BitmapFont yellowFont;
+
     private Particles particles;
 
     public SettingsScreen(
@@ -55,6 +56,17 @@ public class SettingsScreen implements GameOfCellsScreen {
 
         Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
         particles = new Particles(whitePixelTexture);
+
+        if (assetManager != null) {
+            assetManager.load("rubik.fnt", BitmapFont.class);
+            assetManager.load("rubik1.png", Texture.class);
+            assetManager.load("rubik2.png", Texture.class);
+            assetManager.finishLoading();
+            assetManager.load("rubik_yellow.fnt", BitmapFont.class);
+            assetManager.load("rubik_yellow1.png", Texture.class);
+            assetManager.load("rubik_yellow2.png", Texture.class);
+            assetManager.finishLoading();
+        }
     }
 
     @Override
@@ -134,7 +146,14 @@ public class SettingsScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear the screen with a gradient background
-        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
+        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark blue background
+
+        if (whiteFont == null || yellowFont == null) {
+            whiteFont = assetManager.get("rubik.fnt", BitmapFont.class);
+            whiteFont.getData().setScale(0.25f); // Set the scale of the font
+            yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
+            yellowFont.getData().setScale(0.25f); // Set the scale of the font
+        }
 
         viewport.apply(true);
         camera.update();
@@ -154,13 +173,14 @@ public class SettingsScreen implements GameOfCellsScreen {
         for (int i = 0; i < SETTINGS_OPTIONS.length; i++) {
             // Highlight the selected option
             if (i == selectedOption) {
-                font.setColor(Color.YELLOW); // Highlight color
+                yellowFont.draw(spriteBatch, SETTINGS_OPTIONS[i], menuX, menuY - i * 50);
+                // font.setColor(Color.YELLOW); // Highlight color
             } else {
-                font.setColor(Color.WHITE); // Default color
+                whiteFont.draw(spriteBatch, SETTINGS_OPTIONS[i], menuX, menuY - i * 50);
             }
 
             // Draw the settings option
-            font.draw(spriteBatch, SETTINGS_OPTIONS[i], menuX, menuY - i * 50);
+            // font.draw(spriteBatch, SETTINGS_OPTIONS[i], menuX, menuY - i * 50);
         }
 
         spriteBatch.end();

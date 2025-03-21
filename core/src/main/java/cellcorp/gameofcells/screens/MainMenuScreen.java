@@ -3,20 +3,19 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * The screen for the main menu.
@@ -53,6 +52,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
 
+    private BitmapFont whiteFont;
+    private BitmapFont yellowFont;
+
     private float inactivityTimer = 0f;
 
     // Particles system
@@ -77,6 +79,17 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Load white pixel texture and initialize particles
         Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
         this.particles = new Particles(whitePixelTexture);
+
+        if (assetManager != null) {
+            assetManager.load("rubik.fnt", BitmapFont.class);
+            assetManager.load("rubik1.png", Texture.class);
+            assetManager.load("rubik2.png", Texture.class);
+            assetManager.finishLoading();
+            assetManager.load("rubik_yellow.fnt", BitmapFont.class);
+            assetManager.load("rubik_yellow1.png", Texture.class);
+            assetManager.load("rubik_yellow2.png", Texture.class);
+            assetManager.finishLoading();
+        }
     }
 
     @Override
@@ -185,7 +198,14 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear the screen with a gradient background
-        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
+        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark purple background
+
+        if (whiteFont == null || yellowFont == null) {
+            whiteFont = assetManager.get("rubik.fnt", BitmapFont.class);
+            whiteFont.getData().setScale(0.25f); // Set the scale of the font
+            yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
+            yellowFont.getData().setScale(0.25f); // Set the scale of the font
+        }
 
         viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
@@ -195,8 +215,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
         // Draw the instructional message
         spriteBatch.begin();
-        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-        font.getData().setScale(2); // Set the font size
+        // var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
+        // font.getData().setScale(2); // Set the font size
 
         float menuX = viewport.getWorldWidth() / 2 - 100; // Center the menu
         float menuY = viewport.getWorldHeight() / 2 + 50; // Start position for the menu
@@ -204,12 +224,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
         for (int i = 0; i < MENU_OPTIONS.length; i++) {
             // Highlight the selected option
             if (i == selectedOption) {
-                font.setColor(Color.YELLOW); // Yellow for selected option
+                yellowFont.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50); // Yellow for selected option
             } else {
-                font.setColor(Color.WHITE); // Default color
+                whiteFont.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50); // Default color
             }
             // Draw the menu option
-            font.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50);
+            // font.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50);
         }
 
         spriteBatch.end();

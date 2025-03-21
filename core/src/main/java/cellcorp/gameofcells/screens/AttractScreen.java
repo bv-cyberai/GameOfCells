@@ -1,29 +1,24 @@
 package cellcorp.gameofcells.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.Viewport;
+
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 
 public class AttractScreen implements GameOfCellsScreen {
 
@@ -200,7 +195,7 @@ public class AttractScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear the screen with a gradient background
-        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
+        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark purple background
 
         viewport.apply(true);
         camera.update();

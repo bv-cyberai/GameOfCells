@@ -18,9 +18,9 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
@@ -131,6 +131,9 @@ public class Main implements ApplicationListener {
         assetManager.load("rubik.fnt", BitmapFont.class);
         assetManager.load("rubik1.png", Texture.class);
         assetManager.load("rubik2.png", Texture.class);
+        assetManager.load("rubik_yellow.fnt", BitmapFont.class);
+        assetManager.load("rubik_yellow1.png", Texture.class);
+        assetManager.load("rubik_yellow2.png", Texture.class);
         assetManager.load(AssetFileNames.START_BACKGROUND, Texture.class);
         assetManager.load(AssetFileNames.GAME_BACKGROUND, Texture.class);
         assetManager.load(AssetFileNames.SHOP_BACKGROUND, Texture.class);

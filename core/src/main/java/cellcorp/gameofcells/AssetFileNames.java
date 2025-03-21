@@ -46,6 +46,13 @@ public class AssetFileNames {
      * The file name of the font used in the HUD
      */
     public static String HUD_FONT = "rubik.fnt";
+
+
+    /**
+     * The file name of the font used in the HUD.
+     * This is needed due to the way bitmap fonts work.
+     */
+    public static String HUD_FONT_YELLOW = "rubik_yellow.fnt";
     
     /**
      * The file name for our background particle texture.

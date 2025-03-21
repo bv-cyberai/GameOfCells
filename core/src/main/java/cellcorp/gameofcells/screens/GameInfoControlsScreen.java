@@ -2,16 +2,15 @@ package cellcorp.gameofcells.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
@@ -107,7 +106,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear the screen with a gradient background
-        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
+        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark blue background
 
         viewport.apply(true);
         camera.update();
