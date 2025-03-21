@@ -47,8 +47,17 @@ public class FakeInputProvider implements InputProvider {
     ///
     /// @param heldDown The set of keys.
     ///                                                 Gdx represents these as ints, but use `Input.Keys.SOME_KEY_NAME` to name them.
-    public void setHeldDownKeys(Set<Integer> heldDown) {
-        this.heldDown = heldDown;
+    public void setHeldDownKeys(Set<Integer> keys) {
+        for (Integer key : keys) {
+            if (!heldDown.contains(key)) {
+                justPressedKeys.add(key);
+            }
+        }
+
+        justPressedKeys.retainAll(keys);
+
+        // Update the heldDown set
+        this.heldDown = keys;
     }
 
     @Override
