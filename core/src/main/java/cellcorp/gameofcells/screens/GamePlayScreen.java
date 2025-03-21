@@ -159,7 +159,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
         this.cell = new Cell(assetManager);
-        this.glucoseManager = new GlucoseManager(assetManager);
+        this.glucoseManager = new GlucoseManager(assetManager, cell.getCellPositionX(), cell.getCellPositionY());
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
