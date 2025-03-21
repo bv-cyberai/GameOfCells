@@ -5,7 +5,9 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.badlogic.gdx.Input;
 
@@ -67,7 +69,7 @@ public class TestMain {
     public void canMoveToShopScreen() {
         var gameRunner = GameRunner.create();
 
-        // Press space to move to game screen
+        // Press enter to move to game screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
 

@@ -62,7 +62,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
         // Load white pixel texture and initialize particles
-        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
+        Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
         this.particles = new Particles(whitePixelTexture);
     }
 
