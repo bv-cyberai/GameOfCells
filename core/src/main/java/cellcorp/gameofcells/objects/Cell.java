@@ -45,10 +45,6 @@ public class Cell {
 
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
-
-        // cellPositionX = 500;
-        // cellPositionY = 300;
-        // cellDiameter = 200;
         cellHealth = 100;
         maxHealth = 100;
         
@@ -56,7 +52,6 @@ public class Cell {
         maxATP = 100; // Alpha is actually 99, but thats painful.
         
         cellCircle = new Circle(new Vector2(500,300),100);
-        // cellCircle.set(cellPositionX, cellPositionY, cellDiameter/2);
     }
 
     /**
@@ -203,17 +198,13 @@ public class Cell {
         cellATP = Math.max(cellATP - decreaseAmount, 0);
     }
 
+    /**
+     * Increase the cell diameter
+     * 
+     * @param diameterIncrease - The amount to increase the cell by. 
+     */
     public void increaseCellDiameter(float diameterIncrease) {
-        // this.cellDiameter += diameterIncrease;
-        // updateCollisionCircle();
-        cellCircle.radius += diameterIncrease;
+        cellCircle.radius += diameterIncrease/2;
     }
 
-    /**
-     * Calculate the cell collision circle based on the cell's radius and position.
-     */
-    // private void updateCollisionCircle() {
-    //     this.cellCircle.set();
-    //     this.cellCircle = new Circle(cellPositionX, cellPositionY, cellDiameter / 2);
-    // }
 }

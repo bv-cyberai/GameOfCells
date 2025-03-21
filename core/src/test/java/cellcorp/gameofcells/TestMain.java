@@ -62,7 +62,8 @@ public class TestMain {
 
     @Test
     public void gameCreatedWithCorrectScreenDimensions() {
-        // Games should be created with screen dimensions matching the default screen dimensions
+        // Games should be created with screen dimensions matching the default screen
+        // dimensions
         var gameRunner = GameRunner.create();
 
         assertEquals(Main.DEFAULT_SCREEN_WIDTH, gameRunner.game.getGraphicsProvider().getWidth());
@@ -154,7 +155,7 @@ public class TestMain {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
         var screen = gameRunner.game.getScreen();
-        assert screen instanceof  GamePlayScreen;
+        assert screen instanceof GamePlayScreen;
         var gamePlayScreen = (GamePlayScreen) screen;
         gameRunner.step();
 
@@ -169,13 +170,13 @@ public class TestMain {
                     Mockito.mock(AssetManager.class),
                     cell.getCellPositionX() + 100,
                     cell.getCellPositionY() + 80,
-                    GlucoseManager.RADIUS
-            ));
+                    GlucoseManager.RADIUS));
         }
         gameGlucose.addAll(addedGlucose);
 
         gameRunner.step();
-        // Assert that all the glucose have been removed, and that the cell ATP has increased 10 times.
+        // Assert that all the glucose have been removed, and that the cell ATP has
+        // increased 10 times.
         for (var glucose : addedGlucose) {
             assert !gameGlucose.contains(glucose);
         }
