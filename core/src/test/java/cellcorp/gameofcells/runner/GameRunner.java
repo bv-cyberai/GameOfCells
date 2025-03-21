@@ -32,7 +32,9 @@ public class GameRunner {
         var inputProvider = new FakeInputProvider();
         var graphicsProvider = new FakeGraphicsProvider();
         var assetManager = Mockito.mock(AssetManager.class);
-        var game = new Main(inputProvider, graphicsProvider, assetManager);
+        var camera = Mockito.mock(OrthographicCamera.class);
+        var viewport = Mockito.mock(FitViewport.class);
+        var game = new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);
         game.create();
         return new GameRunner(game, inputProvider);
     }

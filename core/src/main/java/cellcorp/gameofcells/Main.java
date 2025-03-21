@@ -20,6 +20,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
 import cellcorp.gameofcells.providers.DefaultInputProvider;
@@ -59,6 +61,16 @@ public class Main implements ApplicationListener {
      */
     private final GraphicsProvider graphicsProvider;
 
+    /**
+     * The camera used to render the game.
+     */
+    private final OrthographicCamera camera;
+
+    /**
+     * The viewport used to render the game.
+     */
+    private final FitViewport viewport;
+
 
 
     /**
@@ -72,7 +84,16 @@ public class Main implements ApplicationListener {
         var inputProvider = new DefaultInputProvider();
         var graphicsProvider = new DefaultGraphicsProvider();
         var assetManager = new AssetManager();
-        return new Main(inputProvider, graphicsProvider, assetManager);
+        var camera = new OrthographicCamera();
+        // Gdx.graphics is not instantiated until `create()`.
+        // Just use the configuration constants here.
+        var viewport = new FitViewport(
+            DEFAULT_SCREEN_WIDTH, 
+            DEFAULT_SCREEN_HEIGHT, 
+            camera
+        );
+
+        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);
     }
 
     /**
@@ -81,21 +102,28 @@ public class Main implements ApplicationListener {
      * @param inputProvider    Input provider. Use FakeInputProvider in test code.
      * @param graphicsProvider Graphics provider. Use FakeGraphicsProvider in test code.
      * @param assetManager     Loads assets. Use `mock(AssetManager.class)` in test code.
+     * @param camera           The camera. Use `mock(OrthographicCamera.class)` in test code.
+     * @param viewport         The viewport. Use `mock(FitViewport.class)` in test code.
      */
     public Main(InputProvider inputProvider,
                 GraphicsProvider graphicsProvider,
-                AssetManager assetManager
+                AssetManager assetManager,
+                OrthographicCamera camera,
+                FitViewport viewport
     ) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
-
+        this.camera = camera;
+        this.viewport = viewport;
     }
 
     @Override
     public void create() {
         // This method should be "test-safe".
         // When run with properly-faked providers, it should not crash test code.
+
+        camera.setToOrtho(false, graphicsProvider.getWidth(), graphicsProvider.getHeight());
 
         // Load up the assets, blocking until they're loaded.
         // The asset manager expects the asset's file name,
@@ -110,10 +138,11 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.GLUCOSE, Texture.class);
         assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
+        assetManager.load(AssetFileNames.WHITE_PIXEL, Texture.class);
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager));
+        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
     }
 
     @Override
@@ -144,7 +173,6 @@ public class Main implements ApplicationListener {
     }
 
     public void setScreen(GameOfCellsScreen screen) {
-        assert screen != null;
         if (this.screen != null) this.screen.hide();
 
         this.screen = screen;
@@ -178,5 +206,4 @@ public class Main implements ApplicationListener {
     public GraphicsProvider getGraphicsProvider() {
         return this.graphicsProvider;
     }
-
 }

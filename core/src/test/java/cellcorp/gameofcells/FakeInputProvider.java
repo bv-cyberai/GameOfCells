@@ -13,6 +13,7 @@ package cellcorp.gameofcells;
 
 import cellcorp.gameofcells.providers.InputProvider;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /// Fake [InputProvider] for use in tests.
@@ -21,6 +22,10 @@ import java.util.Set;
 /// to the game object under test, call [#setHeldDownKeys],
 /// then call the method(s) under test.
 public class FakeInputProvider implements InputProvider {
+
+    /// Set of keys which were just pressed, according to our test.
+    private final Set<Integer> justPressedKeys = new HashSet<>();
+
     /// Set of keys which are currently held down, according to our test.
     private Set<Integer> heldDown = Set.of();
 
@@ -42,11 +47,27 @@ public class FakeInputProvider implements InputProvider {
     ///
     /// @param heldDown The set of keys.
     ///                                                 Gdx represents these as ints, but use `Input.Keys.SOME_KEY_NAME` to name them.
-    public void setHeldDownKeys(Set<Integer> heldDown) {
-        this.heldDown = heldDown;
+    public void setHeldDownKeys(Set<Integer> keys) {
+        for (Integer key : keys) {
+            if (!heldDown.contains(key)) {
+                justPressedKeys.add(key);
+            }
+        }
+
+        justPressedKeys.retainAll(keys);
+
+        // Update the heldDown set
+        this.heldDown = keys;
     }
 
     public boolean isKeyPressed(int key) {
         return heldDown.contains(key);
+    }
+
+    @Override
+    public boolean isKeyJustPressed(int key) {
+        boolean wasJustPressed = justPressedKeys.contains(key);
+        justPressedKeys.remove(key); // Remove the key from the set, so it's not just pressed next time
+        return wasJustPressed;
     }
 }

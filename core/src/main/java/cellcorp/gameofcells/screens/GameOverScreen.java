@@ -50,9 +50,10 @@ public class GameOverScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
-
+    
     // Batch/Camera
-    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
 
     // Font and Font Properties
@@ -75,9 +76,15 @@ public class GameOverScreen implements GameOfCellsScreen {
      * @param assetManager     - The asset manager.
      * @param graphicsProvider - The graphics provider.
      * @param game             - The game.
+     * @param camera           - The camera.
+     * @param viewport         - The viewport.
      */
-    public GameOverScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
-            Main game) {
+    public GameOverScreen(InputProvider inputProvider, 
+                            AssetManager assetManager, 
+                            GraphicsProvider graphicsProvider,
+                            Main game,
+                            OrthographicCamera camera,
+                            FitViewport viewport) {
 
         this.game = game;
 
@@ -85,6 +92,7 @@ public class GameOverScreen implements GameOfCellsScreen {
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
 
+        this.camera = camera;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
@@ -103,12 +111,14 @@ public class GameOverScreen implements GameOfCellsScreen {
     public void handleInput(float deltaTimeSeconds) {
         // This perhaps should be the main menu screen, but is most likely up to the
         // client.
-        if (inputProvider.isKeyPressed(Input.Keys.R)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.R)) {
             game.setScreen(new GamePlayScreen(
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager));
+                    assetManager,
+                    camera,
+                    viewport));
         }
     }
 

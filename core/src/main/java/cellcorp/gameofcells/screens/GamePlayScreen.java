@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -118,8 +120,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // - Classes with a fixed camera position (like HUD and menus)
     // should call `camera.apply(centerCamera = true)`. Others should leave it
     // false.
-    private final Camera camera;
-    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
 
     private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
@@ -144,8 +146,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param game             The main game instance.
      */
     public GamePlayScreen(
-            InputProvider inputProvider, GraphicsProvider graphicsProvider, Main game,
-            AssetManager assetManager) {
+            InputProvider inputProvider, 
+            GraphicsProvider graphicsProvider, 
+            Main game,
+            AssetManager assetManager,
+            OrthographicCamera camera,
+            FitViewport viewport) {
+
         this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
@@ -243,33 +250,42 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Move to `ShopScreen` when 's' is pressed.
-        if (inputProvider.isKeyPressed(Input.Keys.S)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.S)) {
             game.setScreen(new ShopScreen(
                     game,
                     inputProvider,
                     graphicsProvider,
                     assetManager,
-                    this,
-                    cell));
+                    camera,
+                    viewport,
+                    this, // Pass the current screen to the shop screen
+                    cell
+            ));
         }
 
-        if (inputProvider.isKeyPressed(Input.Keys.G)) {
-            game.setScreen(new GameOverScreen(inputProvider, assetManager, graphicsProvider, game));
+        if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
+            game.setScreen(new GameOverScreen(
+                inputProvider, 
+                assetManager, 
+                graphicsProvider, 
+                game,
+                camera,
+                viewport));
         }
 
-        if (inputProvider.isKeyPressed(Input.Keys.A)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
             cell.addCellATP(20);
         }
 
         // Will eventually be triggered by cell state
-        if (inputProvider.isKeyPressed(Input.Keys.T)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.T)) {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
                     graphicsProvider, game,
                     this, PopupInfoScreen.Type.glucose));
         }
         // Will eventually be triggered by cell state
-        if (inputProvider.isKeyPressed(Input.Keys.Y)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
                     graphicsProvider, game,
@@ -277,10 +293,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
         cell.move(
                 deltaTimeSeconds,
-                inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
-                inputProvider.isKeyPressed(Input.Keys.RIGHT), // Check if the right key is pressed
-                inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
-                inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.LEFT), // Check if the left key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.RIGHT), // Check if the right key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.UP), // Check if the up key is pressed
+                inputProvider.isKeyJustPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
     }
 

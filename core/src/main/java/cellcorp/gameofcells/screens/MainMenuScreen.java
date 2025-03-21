@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -37,33 +39,48 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * The instructional message displayed on the main menu
      */
-    private static final String INSTRUCTIONS = "Press Enter to Start";
+    private static final String[] MENU_OPTIONS = {"Start Game", "Settings", "Exit"};
+    private int selectedOption = 0; // Index of the currently selected option
+
+    private static final float INACTIVITY_TIMEOUT = 10f; // 5 seconds of inactivity
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
+    private final OrthographicCamera camera;
 
     private final Main game;
     private final AssetManager assetManager;
-    private final Viewport viewport;
+    private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
+
+    private float inactivityTimer = 0f;
+
+    // Particles system
+    private Particles particles;
 
     public MainMenuScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             Main game,
-            AssetManager assetManager
+            AssetManager assetManager,
+            OrthographicCamera camera,
+            Viewport viewport
     ) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.game = game;
         this.assetManager = assetManager;
+        this.camera = camera;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+
+        // Load white pixel texture and initialize particles
+        Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
+        this.particles = new Particles(whitePixelTexture);
     }
 
     @Override
     public void show() {
-
     }
 
     @Override
@@ -97,46 +114,107 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         this.spriteBatch.dispose();
+        this.particles.dispose();
     }
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        // Move to `GamePlayScreen` when 'enter' is pressed.
-        if (inputProvider.isKeyPressed(Input.Keys.ENTER)) {
-            game.setScreen(new GamePlayScreen(
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager
-            ));
+        // Navigate menu options with arrow keys
+        if (inputProvider.isKeyJustPressed(Input.Keys.UP)) {
+            selectedOption = (selectedOption - 1 + MENU_OPTIONS.length) % MENU_OPTIONS.length;
+        }
+        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN)) {
+            selectedOption = (selectedOption + 1) % MENU_OPTIONS.length;
+        }
+
+        // Confirm selection with Enter key
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+            switch (selectedOption) {
+                case 0:
+                    // Start the game
+                    game.setScreen(new GamePlayScreen(
+                            inputProvider,
+                            graphicsProvider,
+                            game,
+                            assetManager,
+                            camera,
+                            viewport
+                    ));
+                    break;
+                case 1: // Settings
+                    // Open the settings screen
+                    game.setScreen(new SettingsScreen(
+                            inputProvider,
+                            graphicsProvider,
+                            game,
+                            assetManager,
+                            camera,
+                            viewport
+                    ));
+                    break;
+                case 2:
+                    // Exit the game
+                    Gdx.app.exit();
+                    break;
+            }
+        }
+
+        // Reset the inactivity timer if any key is pressed
+        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+            inactivityTimer = 0f;
         }
     }
 
     @Override
     public void update(float deltaTimeSeconds) {
+        // Update the inactivity timer
+        inactivityTimer += deltaTimeSeconds;
 
+        // Transition to the attract screen if the inactivity timer exceeds the timeout
+        if (inactivityTimer >= INACTIVITY_TIMEOUT) {
+            game.setScreen(new AttractScreen(
+                    inputProvider,
+                    graphicsProvider,
+                    game,
+                    assetManager,
+                    camera,
+                    viewport
+            ));
+        }
+
+        // Update the particles system
+        particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());    
     }
 
     @Override
     public void draw() {
-        var startBackground = assetManager.get(AssetFileNames.START_BACKGROUND, Texture.class);
+        // Clear the screen with a gradient background
+        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
 
-        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-        font.getData().setScale(2);  // Set the font size
-
-        // Draw the screen
-        ScreenUtils.clear(Color.BLACK);  // Clear the screen with a black background
-
-        // I don't know what `viewport.apply(...)` does but when it was omitted
-        // the HTML version was displaying way in the bottom-left and getting cut off.
         viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
-        spriteBatch.begin();
-        // Display the start background
-        spriteBatch.draw(startBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        // Draw the particles system
+        particles.draw(spriteBatch);
 
-        font.draw(spriteBatch, INSTRUCTIONS, 100, 100);
+        // Draw the instructional message
+        spriteBatch.begin();
+        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
+        font.getData().setScale(2); // Set the font size
+
+        float menuX = viewport.getWorldWidth() / 2 - 100; // Center the menu
+        float menuY = viewport.getWorldHeight() / 2 + 50; // Start position for the menu
+
+        for (int i = 0; i < MENU_OPTIONS.length; i++) {
+            // Highlight the selected option
+            if (i == selectedOption) {
+                font.setColor(Color.YELLOW); // Yellow for selected option
+            } else {
+                font.setColor(Color.WHITE); // Default color
+            }
+            // Draw the menu option
+            font.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50);
+        }
 
         spriteBatch.end();
     }

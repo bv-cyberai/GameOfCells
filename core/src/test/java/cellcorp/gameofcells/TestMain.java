@@ -6,14 +6,15 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 
 import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.objects.GlucoseManager;
-import com.badlogic.gdx.assets.AssetManager;
-import org.junit.jupiter.api.Test;
-
-import com.badlogic.gdx.Input;
-
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;

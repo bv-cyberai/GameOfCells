@@ -48,7 +48,6 @@ public class Cell {
         cellPositionX = 500;
         cellPositionY = 300;
         cellDiameter = 200;
-
         cellHealth = 100;
         cellATP = 30;
         maxHealth = 100;
@@ -76,6 +75,17 @@ public class Cell {
         if (moveDown)
             cellPositionY -= cellSpeed * deltaTime;
         updateCollisionCircle();
+    }
+
+    /**
+     * Moves the cell to a specific position
+     * 
+     * @param x - The new X position
+     * @param y - The new Y position
+     */
+    public void moveTo(float x, float y) {
+        this.cellPositionX = x;
+        this.cellPositionY = y;
     }
 
     /**

@@ -15,6 +15,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import static cellcorp.gameofcells.screens.ShopScreen.CanPurchaseResultType.*;
 
@@ -96,13 +98,16 @@ public class ShopScreen implements GameOfCellsScreen {
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
+    private final GraphicsProvider graphicsProvider;
 
     private final AssetManager assetManager;
 
     // Camera/Viewport
-    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
 
     // Keeps track of the initial screen prior to transition
+    private final GameOfCellsScreen previousScreen;
     private final GamePlayScreen gamePlayScreen;
 
     // For rendering text
@@ -122,25 +127,34 @@ public class ShopScreen implements GameOfCellsScreen {
      *
      * @param game           The main game instance.
      * @param inputProvider  Handles user input.
+     * @param graphicsProvider Handles graphics rendering.
+     * @param assetManager   Manages game assets.
      * @param camera         The camera for rendering.
      * @param viewport       The viewport for screen rendering scaling.
      * @param previousScreen The current screen gameplayscreen
+     * @param cell           The cell object
      */
     public ShopScreen(
             Main game,
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             AssetManager assetManager,
+            OrthographicCamera camera,
+            FitViewport viewport,
             GamePlayScreen previousScreen,
             Cell cell // Required to get game state out of cell
     ) {
         this.game = game;
         this.inputProvider = inputProvider;
+        this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
-        this.gamePlayScreen = previousScreen;
+        this.camera = camera;
+        this.viewport = viewport;
+        this.previousScreen = previousScreen;
         this.cell = cell;
 
-        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        this.gamePlayScreen = previousScreen;
+
         this.batch = graphicsProvider.createSpriteBatch();
     }
 
@@ -170,6 +184,8 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        camera.viewportWidth = width; // Set the camera's viewport width
+        camera.viewportHeight = height; // Set the camera's viewport height
     }
 
     /**
@@ -207,18 +223,18 @@ public class ShopScreen implements GameOfCellsScreen {
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyPressed(Input.Keys.E)) {
-            game.setScreen(gamePlayScreen);
+        if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
+            game.setScreen(previousScreen);
         }
 
-        if (canPurchaseSizeUpgrade().type == CAN_PURCHASE && inputProvider.isKeyPressed(Input.Keys.U)) {
+        if (canPurchaseSizeUpgrade().type == CAN_PURCHASE && inputProvider.isKeyJustPressed(Input.Keys.U)) {
             gamePlayScreen.sizeUpgradePurchased = true;
             cell.removeCellATP(SIZE_UPGRADE_COST);
             cell.increaseCellDiameter(SIZE_UPGRADE_DIAMETER_INCREASE);
         }
 
         // Evolve into a mitochondria when 'M' is pressed
-        if (canPurchaseMitochondriaUpgrade().type == CAN_PURCHASE && inputProvider.isKeyPressed(Input.Keys.M)) {
+        if (canPurchaseMitochondriaUpgrade().type == CAN_PURCHASE && inputProvider.isKeyJustPressed(Input.Keys.M)) {
             // Deduct cost and evolve
             gamePlayScreen.hasMitochondria = true;
             cell.removeCellATP(MITOCHONDRIA_UPGRADE_COST);
