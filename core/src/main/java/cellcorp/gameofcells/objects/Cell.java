@@ -40,6 +40,7 @@ public class Cell {
     private Circle cellCircle;
 
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
+    private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
 
     private Circle collisionCircle = null;
 
@@ -106,6 +107,18 @@ public class Cell {
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
         batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellDiameter, cellDiameter);
+
+        // Draw mitochondria if the upgrade is purchased
+        if (hasMitochondria) {
+            var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
+            assert (mitochondriaTexture != null);
+
+            // Draw mitochondria inside the cell
+            float mitochondriaSize = cellDiameter * 0.5f; // Mitochondria size relative to cell
+            float mitochondriaX = cellPositionX - (mitochondriaSize / 2);
+            float mitochondriaY = cellPositionY - (mitochondriaSize / 2);
+            batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
+        }
     }
 
     /**
@@ -224,5 +237,19 @@ public class Cell {
      */
     public void setHasShownGlucosePopup(boolean hasShownGlucosePopup) {
         this.hasShownGlucosePopup = hasShownGlucosePopup;
+    }
+
+    /**
+     * Check if the cell has the mitochondria upgrade
+     */
+    public boolean hasMitochondria() {
+        return hasMitochondria;
+    }
+
+    /**
+     * Set whether the cell has the mitochondria upgrade
+     */
+    public void setHasMitochondria(boolean hasMitochondria) {
+        this.hasMitochondria = hasMitochondria;
     }
 }

@@ -135,8 +135,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // so if these are in the shop, they won't persist.
     // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
-    public boolean hasMitochondria = false; // Whether the player has evolved into a mitochondria
-
+    public boolean hasMitochondria = false;
+    
     /**
      * Constructs the GamePlayScreen.
      *
