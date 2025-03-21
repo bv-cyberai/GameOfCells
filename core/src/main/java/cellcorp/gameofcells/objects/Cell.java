@@ -114,9 +114,9 @@ public class Cell {
             assert (mitochondriaTexture != null);
 
             // Draw mitochondria inside the cell
-            float mitochondriaSize = cellDiameter * 0.5f; // Mitochondria size relative to cell
-            float mitochondriaX = cellPositionX - (mitochondriaSize / 2);
-            float mitochondriaY = cellPositionY - (mitochondriaSize / 2);
+            float mitochondriaSize = cellDiameter * 0.2f; // Make mitochondria smaller (30% of cell size)
+            float mitochondriaX = cellPositionX - (cellDiameter / 4); // Position in the bottom-left of the cell
+            float mitochondriaY = cellPositionY - (cellDiameter / 4); // Position in the bottom-left of the cell
             batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
         }
     }
