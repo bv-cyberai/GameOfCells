@@ -39,6 +39,8 @@ public class Cell {
     private int maxATP;
     private Circle cellCircle;
 
+    private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
+    private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
 
     private Circle collisionCircle = null;
 
@@ -105,6 +107,18 @@ public class Cell {
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
         batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellDiameter, cellDiameter);
+
+        // Draw mitochondria if the upgrade is purchased
+        if (hasMitochondria) {
+            var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
+            assert (mitochondriaTexture != null);
+
+            // Draw mitochondria inside the cell
+            float mitochondriaSize = cellDiameter * 0.2f; // Make mitochondria smaller (30% of cell size)
+            float mitochondriaX = cellPositionX - (cellDiameter / 4); // Position in the bottom-left of the cell
+            float mitochondriaY = cellPositionY - (cellDiameter / 4); // Position in the bottom-left of the cell
+            batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
+        }
     }
 
     /**
@@ -209,5 +223,33 @@ public class Cell {
      */
     private void updateCollisionCircle() {
         this.cellCircle = new Circle(cellPositionX, cellPositionY, cellDiameter / 2);
+    }
+
+    /**
+     * Check if the glucose popup has been shown
+     */
+    public boolean hasShownGlucosePopup() {
+        return hasShownGlucosePopup;
+    }
+
+    /**
+     * Set the glucose popup as shown
+     */
+    public void setHasShownGlucosePopup(boolean hasShownGlucosePopup) {
+        this.hasShownGlucosePopup = hasShownGlucosePopup;
+    }
+
+    /**
+     * Check if the cell has the mitochondria upgrade
+     */
+    public boolean hasMitochondria() {
+        return hasMitochondria;
+    }
+
+    /**
+     * Set whether the cell has the mitochondria upgrade
+     */
+    public void setHasMitochondria(boolean hasMitochondria) {
+        this.hasMitochondria = hasMitochondria;
     }
 }

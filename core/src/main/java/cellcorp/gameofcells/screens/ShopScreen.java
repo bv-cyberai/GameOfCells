@@ -227,6 +227,7 @@ public class ShopScreen implements GameOfCellsScreen {
         if (canPurchaseMitochondriaUpgrade().type == CAN_PURCHASE && inputProvider.isKeyJustPressed(Input.Keys.M)) {
             // Deduct cost and evolve
             gamePlayScreen.hasMitochondria = true;
+            cell.setHasMitochondria(true); // Update the cell to reflect the mitochondria upgrade
             cell.removeCellATP(MITOCHONDRIA_UPGRADE_COST);
         }
     }

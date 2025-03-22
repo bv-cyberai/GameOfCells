@@ -135,8 +135,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // so if these are in the shop, they won't persist.
     // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
-    public boolean hasMitochondria = false; // Whether the player has evolved into a mitochondria
-
+    public boolean hasMitochondria = false;
+    
     /**
      * Constructs the GamePlayScreen.
      *
@@ -159,7 +159,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
         this.cell = new Cell(assetManager);
-        this.glucoseManager = new GlucoseManager(assetManager);
+        this.glucoseManager = new GlucoseManager(assetManager, cell.getCellPositionX(), cell.getCellPositionY());
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
@@ -175,7 +175,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // This method should be "test-safe".
         // When run, if the game has been constructed with properly-mocked providers,
         // it should not crash test code.
-    }
+        }
 
     /// Move the game state forward a tick, handling input, performing updates, and
     /// rendering.
@@ -270,14 +270,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
             cell.addCellATP(20);
         }
-
-        // Will eventually be triggered by cell state
-        if (inputProvider.isKeyJustPressed(Input.Keys.T)) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    this, PopupInfoScreen.Type.glucose));
-        }
+        
         // Will eventually be triggered by cell state
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             game.setScreen(new PopupInfoScreen(
@@ -312,6 +305,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
             if(cell.getcellCircle().overlaps(glucose.getCircle())) {
                 glucoseToRemove.add(glucose);
                 cell.addCellATP(Glucose.ATP_PER_GLUCOSE);
+
+                // Show the popup on the first glucose collision
+                if (!cell.hasShownGlucosePopup()) {
+                    game.setScreen(new PopupInfoScreen(
+                            inputProvider, assetManager,
+                            graphicsProvider, game,
+                            this, PopupInfoScreen.Type.glucose));
+                    cell.setHasShownGlucosePopup(true); // Mark the popup as shown
+                }
             }
         }
 

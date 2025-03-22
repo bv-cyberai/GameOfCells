@@ -25,17 +25,23 @@ public class GlucoseManager {
     // WORLD_WIDTH = 1200
     // WORLD_HEIGHT = 800
 
-    private final AssetManager assetManager;
-    private final int MAX_GLUCOSE;
     // The radius of the glucose circle, and also the height/width of a glucose
     // texture.
     public static final float RADIUS = 30;
+    public static final float MIN_SPAWN_DISTANCE = 200f; // Minimum distance from the cell's initial position
+
+    private final AssetManager assetManager;
+    private final int MAX_GLUCOSE;
+    private final float cellX, cellY; // Store the cell's position
+    
 
     private ArrayList<Glucose> glucoseArray;
     private Random rand;
 
-    public GlucoseManager(AssetManager assetManager) {
+    public GlucoseManager(AssetManager assetManager, float cellX, float cellY) {
         this.assetManager = assetManager;
+        this.cellX = cellX;
+        this.cellY = cellY;
         MAX_GLUCOSE = 10; // likely the wrong max
         // may also need to track current glucose.
         rand = new Random();
@@ -50,7 +56,7 @@ public class GlucoseManager {
      *
      * @return float[xCoordinate,yCoordinate]
      */
-    private float[] getRandomCoordinate() {
+    private float[] getRandomCoordinate(float cellX, float cellY) {
         // Duplicate coordinates may occur ~ 1 in 1,000,000 generations
         // Overlap still occurs, These might both just be best handled
         // pushing them apart via collision detection
@@ -62,8 +68,17 @@ public class GlucoseManager {
 
         // subtract by radius int to avoid off screen
         // hardcoded values may not work well when camera moves.
-        int genX = rand.nextInt(1200 - radiusInt);
-        int genY = rand.nextInt(800 - radiusInt);
+        int genX, genY;
+        float distance;
+
+        do {
+            genX = rand.nextInt(1200 - radiusInt );
+            genY = rand.nextInt(800 - radiusInt);
+
+            // Calculate distance between generated coordinates and the cell's initial position
+
+            distance = (float) Math.sqrt(Math.pow(genX - cellX, 2) + Math.pow(genY - cellY, 2));
+        } while (distance < MIN_SPAWN_DISTANCE); // Regenerate if too close to the cell
 
         coordinateArray[0] = genX;
         coordinateArray[1] = genY;
@@ -80,7 +95,7 @@ public class GlucoseManager {
      */
     private void fillGlucoseArray() {
         for (int i = 0; i < MAX_GLUCOSE; i++) {
-            float[] generatedCoordinates = getRandomCoordinate();
+            float[] generatedCoordinates = getRandomCoordinate(cellX, cellY);
             glucoseArray.add(new Glucose(assetManager, generatedCoordinates[0], generatedCoordinates[1], RADIUS));
         }
     }
