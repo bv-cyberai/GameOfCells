@@ -5,7 +5,7 @@ import cellcorp.gameofcells.screens.ShopScreen;
 /**
  * Based class for all upgrades
  */
-public class Upgrade {
+public abstract class Upgrade {
     protected String name;
     protected int cost;
     protected String description;
@@ -44,6 +44,7 @@ public class Upgrade {
     /**
      * Check if the previous upgrade is purchased.
      */
+    protected abstract boolean isPreviousUpgradePurchased(ShopScreen shopScreen);
 
     // Getters
     public String getName() {
