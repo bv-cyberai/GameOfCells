@@ -9,15 +9,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -67,6 +71,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     // For rendering text
     private final SpriteBatch batch;  // Define the batch for drawing text
+    private final ShapeRenderer shapeRenderer;  // For drawing custom backgrounds
 
     private static final float SHOP_TEXT_SIZE = 0.3f;
     private static final float UPGRADE_NAME_TEXT_SIZE = 0.2f;
@@ -119,6 +124,8 @@ public class ShopScreen implements GameOfCellsScreen {
 
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
+        this.shapeRenderer = graphicsProvider.createShapeRenderer(); // Initialize the shape renderer for custom backgrounds
+
         this.stage = new Stage(viewport, batch);
 
          // Initialize upgrades
@@ -153,7 +160,7 @@ public class ShopScreen implements GameOfCellsScreen {
         for (Upgrade upgrade : upgrades) {
             Table card = createUpgradeCard(upgrade);
             upgradeCards.add(card);
-            upgradeTable.add(card).padRight(10);
+            upgradeTable.add(card).pad(10);
         }
 
         mainTable.add(upgradeTable).expand().fill().pad(20).row();
@@ -173,10 +180,17 @@ public class ShopScreen implements GameOfCellsScreen {
 
     private Table createUpgradeCard(Upgrade upgrade) {
         Table card = new Table();
-        card.setBackground(new TextureRegionDrawable(
-            assetManager.get(
-                AssetFileNames.SHOP_BACKGROUND,
-                Texture.class)));
+
+        // Remove the shop background and replace with a custom background
+        // card.setBackground(new TextureRegionDrawable(
+        //    assetManager.get(
+        //        AssetFileNames.SHOP_BACKGROUND,
+        //        Texture.class)));
+
+        // Set custom background for Mitochondria upgrade
+        if (upgrade instanceof MitochondriaUpgrade) {
+            card.setBackground(new TextureRegionDrawable(createMitochondriaBackgroundTexture()));
+        }
         
         // Upgrade name
         Label nameLabel = new Label(upgrade.getName(),
@@ -198,6 +212,7 @@ public class ShopScreen implements GameOfCellsScreen {
             BitmapFont.class), Color.WHITE));
         descriptionLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
         descriptionLabel.setWrap(true);
+        descriptionLabel.setAlignment(Align.center); // Center the text
         card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH).padTop(5).row();
 
         // Purchase button
@@ -236,14 +251,44 @@ public class ShopScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Draw the background for the mitochondria upgrade.
+     */
+    private Texture createMitochondriaBackgroundTexture() {
+        // Create a texture for the mitochondria upgrade background
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
+        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        // Draw the mitochondria background
+        pixmap.setColor(0.1f, 0.4f, 0.8f, 0.5f); // Blue energy
+        for (int i = 0; i < 50; i++) {
+            float x = MathUtils.random(0, width);
+            float y = MathUtils.random(0, height);
+            float size = MathUtils.random(10, 30);
+            pixmap.fillCircle((int) x, (int) y, (int) size);
+        }
+
+        // Draw thepixmap to the texture
+        texture.draw(pixmap, 0, 0);
+        pixmap.dispose();
+
+        return texture;
+    }
+
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
     /// LibGDX combines these into a single method call, but we separate them out into public methods,
     /// to let us write tests where we call only [ShopScreen#handleInput] and [ShopScreen#update]
     @Override
     public void render(float delta) {
-        handleInput(delta);
-        update(delta);
-        draw();
+        // Clear the screen
+        ScreenUtils.clear(0, 0, 0, 1);
+
+        // Draw the state (UI elements)
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
@@ -268,15 +313,22 @@ public class ShopScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Update the screen.
+     *
+     * @param deltaTimeSeconds The time since the last frame in seconds.
+     */
     @Override
     public void update(float deltaTimeSeconds) {
         stage.act(deltaTimeSeconds);
     }
 
+    /**
+     * Draw the screen.
+     */
     @Override
     public void draw() {
-        ScreenUtils.clear(0, 0, 0, 1);
-        stage.draw();
+        // This method is no longer needed as rendering is handled in `render`.
     }
 
     /**
@@ -322,6 +374,7 @@ public class ShopScreen implements GameOfCellsScreen {
         // Destroy screen's assets here.
         batch.dispose();  // Dispose of the batch
         stage.dispose();
+        shapeRenderer.dispose();
     }
 
     /**
