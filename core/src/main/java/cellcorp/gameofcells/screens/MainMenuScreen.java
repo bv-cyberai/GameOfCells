@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -54,6 +55,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     private BitmapFont whiteFont;
     private BitmapFont yellowFont;
+    private GlyphLayout layout;
 
     private float inactivityTimer = 0f;
 
@@ -90,6 +92,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             assetManager.load("rubik_yellow2.png", Texture.class);
             assetManager.finishLoading();
         }
+        layout = new GlyphLayout();
     }
 
     @Override
@@ -205,6 +208,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             whiteFont.getData().setScale(0.375f); // Set the scale of the font
             yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
             yellowFont.getData().setScale(0.375f); // Set the scale of the font
+            layout.setText(whiteFont, MENU_OPTIONS[0]);
         }
 
         viewport.apply(true);
@@ -215,8 +219,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
         // Draw the instructional message
         spriteBatch.begin();
-        float menuX = viewport.getWorldWidth() / 2 - 100; // Center the menu
-        float menuY = viewport.getWorldHeight() / 2 + 50; // Start position for the menu
+        float menuX = (viewport.getWorldWidth() - layout.width) / 2; // Center the menu
+        float menuY = ((viewport.getWorldHeight()) / 2)+50 + layout.height; // Start position for the menu
 
         for (int i = 0; i < MENU_OPTIONS.length; i++) {
             // Highlight the selected option

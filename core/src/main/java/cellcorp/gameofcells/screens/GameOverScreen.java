@@ -3,17 +3,16 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * GameOver Screen
@@ -75,11 +74,10 @@ public class GameOverScreen implements GameOfCellsScreen {
      * @param graphicsProvider - The graphics provider.
      * @param game             - The game.
      */
-    public GameOverScreen(InputProvider inputProvider, 
-                            AssetManager assetManager, 
-                            GraphicsProvider graphicsProvider,
-                            Main game
-                            ) {
+    public GameOverScreen(InputProvider inputProvider,
+            AssetManager assetManager,
+            GraphicsProvider graphicsProvider,
+            Main game) {
 
         this.game = game;
 
@@ -110,8 +108,7 @@ public class GameOverScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager
-                    ));
+                    assetManager));
         }
     }
 
@@ -129,7 +126,7 @@ public class GameOverScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        ScreenUtils.clear(Color.BLACK);
+        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f));
 
         viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);

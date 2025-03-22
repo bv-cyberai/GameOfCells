@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -47,6 +48,7 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     private BitmapFont whiteFont;
     private BitmapFont yellowFont;
+    private GlyphLayout layout;
 
     private Particles particles;
 
@@ -78,6 +80,11 @@ public class SettingsScreen implements GameOfCellsScreen {
             assetManager.load("rubik_yellow2.png", Texture.class);
             assetManager.finishLoading();
         }
+
+
+        layout = new GlyphLayout();
+
+
     }
 
     @Override
@@ -163,6 +170,9 @@ public class SettingsScreen implements GameOfCellsScreen {
             whiteFont.getData().setScale(0.375f); // Set the scale of the font
             yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
             yellowFont.getData().setScale(0.375f); // Set the scale of the font
+
+            //used to get the width of the longest option for centering.
+            layout.setText(whiteFont, SETTINGS_OPTIONS[0]);
         }
 
         viewport.apply(true);
@@ -177,8 +187,8 @@ public class SettingsScreen implements GameOfCellsScreen {
         var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
         font.getData().setScale(2); // Set the font size
 
-        float menuX = viewport.getWorldWidth() / 2 - 100; // Center the menu
-        float menuY = viewport.getWorldHeight() / 2 + 50; // Start position for the menu
+        float menuX = (viewport.getWorldWidth() - layout.width) / 2; // Center the menu
+        float menuY = ((viewport.getWorldHeight()) / 2 )+ 50 + layout.height; // Start position for the menu
 
         for (int i = 0; i < SETTINGS_OPTIONS.length; i++) {
             // Highlight the selected option
