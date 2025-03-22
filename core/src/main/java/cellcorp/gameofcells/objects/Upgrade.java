@@ -6,11 +6,11 @@ import cellcorp.gameofcells.screens.ShopScreen;
  * Based class for all upgrades
  */
 public class Upgrade {
-    private String name;
-    private int cost;
-    private String description;
-    private int requiredATP;
-    private int requiredSize;
+    protected String name;
+    protected int cost;
+    protected String description;
+    protected int requiredATP;
+    protected int requiredSize;
 
     public Upgrade(String name,
             int cost,
@@ -35,6 +35,15 @@ public class Upgrade {
         // Check if previous upgrade is purchased
         return isPreviousUpgradePurchased(shopScreen);
     }
+
+    /**
+     * Apply the upgrade's perks to the cell.
+     */
+    public abstract void applyUpgrade(Cell cell);
+
+    /**
+     * Check if the previous upgrade is purchased.
+     */
 
     // Getters
     public String getName() {
