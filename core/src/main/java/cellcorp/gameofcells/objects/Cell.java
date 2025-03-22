@@ -40,6 +40,9 @@ public class Cell {
 
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
+    private float proteinSynthesisMultiplier = 1.0f;
+    private float movementSpeedMultiplier = 1.0f;
+    private boolean canSplit = false;
 
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
@@ -47,7 +50,7 @@ public class Cell {
         this.configProvider = configProvider;
         setUserConfigOrDefault();
 
-        
+
         cellCircle = new Circle(new Vector2(0, 0),100);
     }
 
@@ -294,5 +297,29 @@ public class Cell {
         } else {
             this.cellHealth -= damage;
         }
+    }
+
+    public float getProteinSynthesisMultiplier() {
+        return proteinSynthesisMultiplier;
+    }
+
+    public void setProteinSynthesisMultiplier(float proteinSynthesisMultiplier) {
+        this.proteinSynthesisMultiplier = proteinSynthesisMultiplier;
+    }
+
+    public float getMovementSpeedMultiplier() {
+        return movementSpeedMultiplier;
+    }
+
+    public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
+        this.movementSpeedMultiplier = movementSpeedMultiplier;
+    }
+
+    public boolean canSplit() {
+        return canSplit;
+    }
+
+    public void setCanSplit(boolean canSplit) {
+        this.canSplit = canSplit;
     }
 }

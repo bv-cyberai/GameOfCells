@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.objects.*;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.objects.Cell;
@@ -12,11 +13,20 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import com.badlogic.gdx.math.MathUtils;
+
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import static cellcorp.gameofcells.screens.ShopScreen.CanPurchaseResultType.*;
+// Scene_2d UI implemenation. I believe this is the minimum of what we need (adjust if needed)
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Shop Screen
@@ -37,46 +47,31 @@ import static cellcorp.gameofcells.screens.ShopScreen.CanPurchaseResultType.*;
  * First screen of the application. Displayed after the application is created.
  */
 public class ShopScreen implements GameOfCellsScreen {
+    private final Stage stage;  
+    private final List<Upgrade> upgrades;
+    private final Cell cell;
+    private final Main game; 
+    /// Gets information about inputs, like held-down keys.
+    /// Use this instead of `Gdx.input`, to avoid crashing tests.
+    private final InputProvider inputProvider;
+    private final GraphicsProvider graphicsProvider;
+    private final AssetManager assetManager;
+
+    // Camera/Viewport
+    private final Viewport viewport;
+
+    // Keeps track of the initial screen prior to transition
+    private final GameOfCellsScreen previousScreen;
+
+    // For rendering text
+    private final SpriteBatch batch;  // Define the batch for drawing text
+
     private static final float SHOP_TEXT_SIZE = 0.3f;
     private static final float UPGRADE_NAME_TEXT_SIZE = 0.2f;
     private static final float UPGRADE_INFO_TEXT_SIZE = 0.15f;
 
     private final static float UPGRADE_CARD_WIDTH = 300;
     private final static float UPGRADE_CARD_HEIGHT = 200;
-
-    private static final String SIZE_UPGRADE_NAME = "Size upgrade";
-    private static final int SIZE_UPGRADE_COST = 40;
-    private static final int SIZE_UPGRADE_DIAMETER_INCREASE = 100;
-
-    private static final int MITOCHONDRIA_UPGRADE_COST = 50;
-
-    protected enum CanPurchaseResultType {
-        CAN_PURCHASE,
-        ALREADY_PURCHASED,
-        PREVIOUS_UPGRADE_REQUIRED,
-        NOT_ENOUGH_ATP;
-    }
-
-    /**
-     * @param requiredUpgrade Set only if type == PREVIOUS_UPGRADE_REQUIRED. Null otherwise.
-     */
-    private class CanPurchaseResult {
-        private CanPurchaseResultType type;
-        private String requiredUpgrade;
-
-        public CanPurchaseResult(CanPurchaseResultType type, String requiredUpgrade) {
-            this.type = type;
-            this.requiredUpgrade = requiredUpgrade;
-        }
-
-        public CanPurchaseResultType type() {
-            return type;
-        }
-
-        public String getRequiredUpgrade() {
-            return requiredUpgrade;
-        }
-    }
 
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
     // Change as is most convenient.
@@ -90,35 +85,6 @@ public class ShopScreen implements GameOfCellsScreen {
      * (the rectangular region of the world which the camera will display)
      */
     public static final int VIEW_RECT_HEIGHT = 800;
-
-    private Main game;
-
-    /// Gets information about inputs, like held-down keys.
-    /// Use this instead of `Gdx.input`, to avoid crashing tests.
-    private final InputProvider inputProvider;
-    private final GraphicsProvider graphicsProvider;
-
-    private final AssetManager assetManager;
-
-    // Camera/Viewport
-    private final Viewport viewport;
-
-
-    // Keeps track of the initial screen prior to transition
-    private final GameOfCellsScreen previousScreen;
-    private final GamePlayScreen gamePlayScreen;
-
-    // For rendering text
-    private final SpriteBatch batch;  // Define the batch for drawing text
-
-    private final Cell cell;
-
-
-    // Shop state
-    private int evolutionCost = 30; // The cost to evolve into a mitochondria
-
-    // Animation variables
-    private float animationTimer = 0f; // Timer for animations
 
     /**
      * Constructs the GamePlayScreen.
@@ -144,17 +110,75 @@ public class ShopScreen implements GameOfCellsScreen {
         this.previousScreen = previousScreen;
         this.cell = cell;
 
-        this.gamePlayScreen = previousScreen;
-
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
+        this.stage = new Stage(viewport, batch);
+
+         // Initialize upgrades
+         upgrades = new ArrayList<>();
+         upgrades.add(new MitochondriaUpgrade());
+         upgrades.add(new RibosomeUpgrade());
+         upgrades.add(new FlagellaUpgrade());
+         upgrades.add(new NucleusUpgrade());
+
+         // Create UI
+         createUI();
     }
 
-    /**
-     * Show the screen.
-     */
-    @Override
-    public void show() {
+    private void createUI() {
+        Table table = new Table();
+        table.setFillParent(true);
+
+        for (Upgrade upgrade : upgrades) {
+            table.add(createUpgradeCard(upgrade)).pad(10);
+        }
+
+        stage.addActor(table);
+    }
+
+    private Table createUpgradeCard(Upgrade upgrade) {
+        Table card = new Table();
+        card.setBackground(new TextureRegionDrawable(
+            assetManager.get(
+                AssetFileNames.SHOP_BACKGROUND, 
+                Texture.class)));
+        
+        // Upgrade name
+        Label nameLabel = new Label(upgrade.getName(), 
+            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, 
+            BitmapFont.class), Color.WHITE));
+        nameLabel.setFontScale(UPGRADE_NAME_TEXT_SIZE);
+        card.add(nameLabel).padTop(10).row();
+
+        // Upgrade cost
+        Label costLabel = new Label("Cost: " + upgrade.getCost() + "ATP", 
+            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
+            BitmapFont.class), Color.WHITE));
+        costLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
+        card.add(costLabel).padTop(5).row();
+
+        // Upgrade description
+        Label descriptionLabel = new Label(upgrade.getDescription(), 
+            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
+            BitmapFont.class), Color.WHITE));
+        descriptionLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
+        descriptionLabel.setWrap(true);
+        card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH).padTop(5).row();
+
+        // Purchase button
+        TextButton purchaseButton = new TextButton("Purchase", 
+            new TextButton.TextButtonStyle(null, null, null, 
+            assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class)));
+        purchaseButton.setDisabled(!upgrade.canPurchase(cell, this));
+        purchaseButton.addListener(event -> {
+            if (upgrade.canPurchase(cell, this)) {
+                upgrade.applyUpgrade(cell);
+            }
+            return false;
+        });
+        card.add(purchaseButton).padTop(10).row();
+
+        return card;
     }
 
     /// Move the game state forward a tick, handling input, performing updates, and rendering.
@@ -165,6 +189,24 @@ public class ShopScreen implements GameOfCellsScreen {
         handleInput(delta);
         update(delta);
         draw();
+    }
+
+    @Override
+    public void handleInput(float deltaTimeSeconds) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
+            game.setScreen(previousScreen);
+        }
+    }
+
+    @Override
+    public void update(float deltaTimeSeconds) {
+        stage.act(deltaTimeSeconds);
+    }
+
+    @Override
+    public void draw() {
+        ScreenUtils.clear(0, 0, 0, 1);
+        stage.draw();
     }
 
     /**
@@ -209,156 +251,7 @@ public class ShopScreen implements GameOfCellsScreen {
     public void dispose() {
         // Destroy screen's assets here.
         batch.dispose();  // Dispose of the batch
-    }
-
-    @Override
-    public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(previousScreen);
-        }
-
-        if (canPurchaseSizeUpgrade().type == CAN_PURCHASE && inputProvider.isKeyJustPressed(Input.Keys.U)) {
-            gamePlayScreen.sizeUpgradePurchased = true;
-            cell.removeCellATP(SIZE_UPGRADE_COST);
-            cell.increaseCellDiameter(SIZE_UPGRADE_DIAMETER_INCREASE);
-        }
-
-        // Evolve into a mitochondria when 'M' is pressed
-        if (canPurchaseMitochondriaUpgrade().type == CAN_PURCHASE && inputProvider.isKeyJustPressed(Input.Keys.M)) {
-            // Deduct cost and evolve
-            gamePlayScreen.hasMitochondria = true;
-            cell.setHasMitochondria(true); // Update the cell to reflect the mitochondria upgrade
-            cell.removeCellATP(MITOCHONDRIA_UPGRADE_COST);
-        }
-    }
-
-    @Override
-    public void update(float deltaTimeSeconds) {
-        // Update shop logic (check if player has enough energy to evolve)
-        animationTimer += deltaTimeSeconds;
-    }
-
-
-    @Override
-    public void draw() {
-        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-        var shopBackground = assetManager.get(AssetFileNames.SHOP_BACKGROUND, Texture.class);
-        var mitochondriaIcon = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
-
-        // Set up font
-        var callerFontScaleX = font.getScaleX();
-        var callerFontScaleY = font.getScaleY();
-        font.getData().setScale(SHOP_TEXT_SIZE);  // Set the font size
-        font.setColor(Color.WHITE); // Default font color
-
-        ScreenUtils.clear(0, 0, 0, 1);  // Clear the screen with a black background
-
-        viewport.apply(true);
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-
-        batch.begin();  // Start the batch for drawing 2d elements
-
-        // Draw the shop screen
-        batch.draw(shopBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());  // Draw the game background
-
-        // Draw shop title
-        font.draw(batch, "Cell Evolution Shop", viewport.getWorldWidth() / 2 - 120, viewport.getWorldHeight() - 50);
-        batch.end();
-
-        drawSizeUpgrade();
-
-        batch.begin();
-        // Draw mitochondria evolution card
-        float cardX = viewport.getWorldWidth() / 2 - 150;
-        float cardY = viewport.getWorldHeight() / 2 - 150;
-
-        // Card background
-        batch.setColor(0.2f, 0.2f, 0.2f, 0.8f); // Semi-transparent dark background
-        batch.draw(shopBackground, cardX, cardY, UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT); // Reuse shop background for card
-        batch.setColor(Color.WHITE); // Reset color
-
-        // Card border (glow efect)
-        var canPurchase = canPurchaseMitochondriaUpgrade();
-        if (canPurchase.type == CAN_PURCHASE) {
-            float glowIntensity = MathUtils.sin(animationTimer * 3f) * 0.5f + 0.8f; // Pulsating glow
-
-            batch.setColor(0.5f, 1f, 0.5f, glowIntensity); // Green glow
-            batch.draw(shopBackground, cardX - 5, cardY - 5, UPGRADE_CARD_WIDTH + 10, UPGRADE_CARD_HEIGHT + 10); // Glow effect
-
-            batch.setColor(Color.WHITE); // Reset color
-        } else {
-            batch.setColor(1f, 1f, 1f, 0.4f);
-        }
-
-        // Mitochondria icon (floating animation)
-        float iconY = cardY + 100 + MathUtils.sin(animationTimer * 2f) * 10f; // Floating effect
-        batch.draw(mitochondriaIcon, cardX + 100, iconY, 100, 100); // Draw mitochondria icon
-
-        font.getData().setScale(UPGRADE_NAME_TEXT_SIZE);
-        font.draw(batch, "Mitochondria Evolution", cardX + 20, cardY + 150);
-
-        font.draw(batch, "Cost: " + evolutionCost + " Energy", cardX + 20, cardY + 120);
-
-        font.getData().setScale(UPGRADE_INFO_TEXT_SIZE);
-        if (canPurchase.type == CAN_PURCHASE) {
-            font.draw(batch, "Press M to evolve", cardX + 20, cardY + 90);
-        } else if (canPurchase.type == NOT_ENOUGH_ATP) {
-            font.draw(batch, "Not enough ATP", cardX + 20, cardY + 90);
-        } else if (canPurchase.type == PREVIOUS_UPGRADE_REQUIRED) {
-            font.draw(batch, "Purchase " + canPurchase.requiredUpgrade + " first", cardX + 20, cardY + 90);
-        }
-        batch.setColor(Color.WHITE);
-
-        // Draw exit instructions
-        font.getData().setScale(SHOP_TEXT_SIZE);
-        font.draw(batch, "Press E to exit", viewport.getWorldWidth() / 2 - 80, 50);
-
-        // End drawing
-        font.getData().setScale(callerFontScaleX, callerFontScaleY);
-        batch.end();
-    }
-
-    private void drawSizeUpgrade() {
-        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-        var shopBackground = assetManager.get(AssetFileNames.SHOP_BACKGROUND, Texture.class);
-        float cardX = viewport.getWorldWidth() / 2 - 150;
-        float cardY = viewport.getWorldHeight() / 2 + 100;
-
-        batch.begin();
-
-        // ==== Background ====
-
-        batch.setColor(0.2f, 0.2f, 0.2f, 0.8f); // Semi-transparent dark background
-        batch.draw(shopBackground, cardX, cardY, UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT); // Reuse shop background for card
-        batch.setColor(Color.WHITE); // Reset color
-
-        var canPurchase = canPurchaseSizeUpgrade();
-        if (canPurchase.type == CAN_PURCHASE) {
-            float glowIntensity = MathUtils.sin(animationTimer * 3f) * 0.5f + 0.8f; // Pulsating glow
-
-            batch.setColor(0.5f, 1f, 0.5f, glowIntensity); // Green glow
-            batch.draw(shopBackground, cardX - 5, cardY - 5, UPGRADE_CARD_WIDTH + 10, UPGRADE_CARD_HEIGHT + 10); // Glow effect
-            batch.setColor(Color.WHITE);
-        } else {
-            // TODO -- This isn't working. It's getting called and changing the color,
-            //  but the transparency doesn't affect the text. Even though it does in other places.
-            batch.setColor(1f, 1f, 1f, 0.4f);
-        }
-
-        font.getData().setScale(UPGRADE_NAME_TEXT_SIZE);
-        font.draw(batch, "Size Upgrade", cardX + 20, cardY + 150);
-
-        font.getData().setScale(UPGRADE_INFO_TEXT_SIZE);
-        font.draw(batch, "Cost: " + SIZE_UPGRADE_COST + " Energy", cardX + 20, cardY + 120);
-
-        if (canPurchase.type == CAN_PURCHASE) {
-            font.draw(batch, "Press U to evolve", cardX + 20, cardY + 90);
-        } else if (canPurchase.type == NOT_ENOUGH_ATP) {
-            font.draw(batch, "Not enough ATP", cardX + 20, cardY + 90);
-        }
-        batch.end();
-
-        batch.setColor(Color.WHITE);
+        stage.dispose();
     }
 
     /**
@@ -370,23 +263,15 @@ public class ShopScreen implements GameOfCellsScreen {
         return batch;
     }
 
-    private CanPurchaseResult canPurchaseSizeUpgrade() {
-        if (gamePlayScreen.sizeUpgradePurchased) return new CanPurchaseResult(ALREADY_PURCHASED, null); else if (cell.getCellATP() <= SIZE_UPGRADE_COST) {
-            return new CanPurchaseResult(NOT_ENOUGH_ATP, null);
-        } else {
-            return new CanPurchaseResult(CAN_PURCHASE, null);
-        }
+    public boolean hasMitochondria() {
+        return cell.hasMitochondria();
     }
 
-    private CanPurchaseResult canPurchaseMitochondriaUpgrade() {
-        if (gamePlayScreen.hasMitochondria) {
-            return new CanPurchaseResult(ALREADY_PURCHASED, null);
-        } else if (!gamePlayScreen.sizeUpgradePurchased) {
-            return new CanPurchaseResult(PREVIOUS_UPGRADE_REQUIRED, SIZE_UPGRADE_NAME);
-        } else if (cell.getCellATP() <= MITOCHONDRIA_UPGRADE_COST) {
-            return new CanPurchaseResult(NOT_ENOUGH_ATP, null);
-        } else {
-            return new CanPurchaseResult(CAN_PURCHASE, null);
-        }
+    public boolean hasRibosome() {
+        return cell.getProteinSynthesisMultiplier() > 1.0f;
+    }
+
+    public boolean hasFlagella() {
+        return cell.getMovementSpeedMultiplier() > 1.0f;
     }
 }

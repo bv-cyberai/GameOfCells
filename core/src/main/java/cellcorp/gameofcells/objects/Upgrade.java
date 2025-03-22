@@ -12,10 +12,10 @@ public class Upgrade {
     private int requiredATP;
     private int requiredSize;
 
-    public Upgrade(String name, 
+    public Upgrade(String name,
             int cost,
-            String description, 
-            int requiredATP, 
+            String description,
+            int requiredATP,
             int requiredSize) {
                 this.name = name;
                 this.cost = cost;
