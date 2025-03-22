@@ -81,9 +81,7 @@ public class SettingsScreen implements GameOfCellsScreen {
             assetManager.finishLoading();
         }
 
-
         layout = new GlyphLayout();
-
 
     }
 
@@ -100,7 +98,8 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height,true);    }
+        viewport.update(width, height, true);
+    }
 
     @Override
     public void pause() {
@@ -171,7 +170,7 @@ public class SettingsScreen implements GameOfCellsScreen {
             yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
             yellowFont.getData().setScale(0.375f); // Set the scale of the font
 
-            //used to get the width of the longest option for centering.
+            // used to get the width of the longest option for centering.
             layout.setText(whiteFont, SETTINGS_OPTIONS[0]);
         }
 
@@ -188,13 +187,12 @@ public class SettingsScreen implements GameOfCellsScreen {
         font.getData().setScale(2); // Set the font size
 
         float menuX = (viewport.getWorldWidth() - layout.width) / 2; // Center the menu
-        float menuY = ((viewport.getWorldHeight()) / 2 )+ 50 + layout.height; // Start position for the menu
+        float menuY = ((viewport.getWorldHeight()) / 2) + 50 + layout.height; // Start position for the menu
 
         for (int i = 0; i < SETTINGS_OPTIONS.length; i++) {
             // Highlight the selected option
             if (i == selectedOption) {
                 yellowFont.draw(spriteBatch, SETTINGS_OPTIONS[i], menuX, menuY - i * 50);
-                // font.setColor(Color.YELLOW); // Highlight color
             } else {
                 whiteFont.draw(spriteBatch, SETTINGS_OPTIONS[i], menuX, menuY - i * 50);
             }

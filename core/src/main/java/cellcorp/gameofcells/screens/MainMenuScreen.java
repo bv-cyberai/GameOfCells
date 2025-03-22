@@ -39,7 +39,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * The instructional message displayed on the main menu
      */
-    private static final String[] MENU_OPTIONS = {"Start Game", "Settings", "Exit"};
+    private static final String[] MENU_OPTIONS = { "Start Game", "Settings", "Exit" };
     private int selectedOption = 0; // Index of the currently selected option
 
     private static final float INACTIVITY_TIMEOUT = 10f; // 5 seconds of inactivity
@@ -68,8 +68,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             Main game,
             AssetManager assetManager,
             Camera camera,
-            Viewport viewport
-    ) {
+            Viewport viewport) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.game = game;
@@ -109,7 +108,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true);  // Update the viewport
+        viewport.update(width, height, true); // Update the viewport
     }
 
     @Override
@@ -152,8 +151,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             inputProvider,
                             graphicsProvider,
                             game,
-                            assetManager
-                    ));
+                            assetManager));
                     break;
                 case 1: // Settings
                     // Open the settings screen
@@ -163,8 +161,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             game,
                             assetManager,
                             camera,
-                            viewport
-                    ));
+                            viewport));
                     break;
                 case 2:
                     // Exit the game
@@ -190,12 +187,11 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager
-            ));
+                    assetManager));
         }
 
         // Update the particles system
-        particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());    
+        particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
     @Override
@@ -220,7 +216,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Draw the instructional message
         spriteBatch.begin();
         float menuX = (viewport.getWorldWidth() - layout.width) / 2; // Center the menu
-        float menuY = ((viewport.getWorldHeight()) / 2)+50 + layout.height; // Start position for the menu
+        float menuY = ((viewport.getWorldHeight()) / 2) + 50 + layout.height; // Start position for the menu
 
         for (int i = 0; i < MENU_OPTIONS.length; i++) {
             // Highlight the selected option
