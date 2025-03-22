@@ -245,7 +245,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         if (font == null) {
             font = assetManager.get("rubik.fnt", BitmapFont.class);
-            font.getData().setScale(0.25f); // Set the scale of the font
+            font.getData().setScale(0.375f); // Set the scale of the font
 
             //wrap and align text.
             CharSequence cs = message;

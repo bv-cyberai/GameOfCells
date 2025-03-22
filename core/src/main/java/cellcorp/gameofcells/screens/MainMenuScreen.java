@@ -202,9 +202,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
         if (whiteFont == null || yellowFont == null) {
             whiteFont = assetManager.get("rubik.fnt", BitmapFont.class);
-            whiteFont.getData().setScale(0.25f); // Set the scale of the font
+            whiteFont.getData().setScale(0.375f); // Set the scale of the font
             yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
-            yellowFont.getData().setScale(0.25f); // Set the scale of the font
+            yellowFont.getData().setScale(0.375f); // Set the scale of the font
         }
 
         viewport.apply(true);
@@ -215,9 +215,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
         // Draw the instructional message
         spriteBatch.begin();
-        // var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-        // font.getData().setScale(2); // Set the font size
-
         float menuX = viewport.getWorldWidth() / 2 - 100; // Center the menu
         float menuY = viewport.getWorldHeight() / 2 + 50; // Start position for the menu
 
@@ -228,8 +225,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
             } else {
                 whiteFont.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50); // Default color
             }
-            // Draw the menu option
-            // font.draw(spriteBatch, MENU_OPTIONS[i], menuX, menuY - i * 50);
         }
 
         spriteBatch.end();

@@ -3,9 +3,12 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -19,6 +22,16 @@ import cellcorp.gameofcells.providers.InputProvider;
  * The screen for displaying game info and controls.
  */
 public class GameInfoControlsScreen implements GameOfCellsScreen {
+    /**
+     * Width of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1200;
+    /**
+     * Height of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 800;
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -31,28 +44,59 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     private Particles particles;
 
+    private BitmapFont whiteFont;
+    private BitmapFont yellowFont;
+
+    private final GlyphLayout layout;
+    private String controlMessage;
+
+    private float startX;
+    private float startY;
+
     public GameInfoControlsScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
             Camera camera,
-            FitViewport viewport
-    ) {
+            FitViewport viewport) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.game = game;
         this.assetManager = assetManager;
         this.camera = camera;
-        this.viewport = viewport;
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
         Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
         particles = new Particles(whitePixelTexture);
+
+        if (assetManager != null) {
+            assetManager.load("rubik.fnt", BitmapFont.class);
+            assetManager.load("rubik1.png", Texture.class);
+            assetManager.load("rubik2.png", Texture.class);
+            assetManager.finishLoading();
+            // Kept this commented out incase we want to utilize in the future
+            // Let me know if you prefer it removed.
+            // assetManager.load("rubik_yellow.fnt", BitmapFont.class);
+            // assetManager.load("rubik_yellow1.png", Texture.class);
+            // assetManager.load("rubik_yellow2.png", Texture.class);
+            // assetManager.finishLoading();
+        }
+        layout = new GlyphLayout();
+        controlMessage = "Game Info:\n" +
+                "Welcome to Game of Cells!\n" +
+                "Control a cell and explore the microscopic world.\n" +
+                "Controls:\n" +
+                "Arrow Keys - Move the cell\n" +
+                "Enter - Select/Confirm\n" +
+                "Escape - Pause/Return to Menu\n\n" +
+                "Press any key to return...";
     }
 
     @Override
-    public void show() {}
+    public void show() {
+    }
 
     @Override
     public void render(float delta) {
@@ -63,19 +107,20 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        camera.viewportWidth = width;
-        camera.viewportHeight = height;
+        viewport.update(width, height);
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
-    public void hide() {}
+    public void hide() {
+    }
 
     @Override
     public void dispose() {
@@ -93,8 +138,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
                     game,
                     assetManager,
                     camera,
-                    viewport
-            ));
+                    viewport));
         }
     }
 
@@ -114,28 +158,21 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
         particles.draw(spriteBatch);
 
+        // Font Setup
+        if (whiteFont == null) {
+            whiteFont = assetManager.get("rubik.fnt", BitmapFont.class);
+            whiteFont.getData().setScale(0.375f);
+            CharSequence cs = controlMessage;
+            layout.setText(whiteFont, cs, 0, cs.length(), Color.WHITE, 800, Align.left, true, null);
+            // Center the text
+            startX = (VIEW_RECT_WIDTH / 2) - (layout.width / 2);
+            startY = (VIEW_RECT_HEIGHT / 2) + (layout.height / 2);
+
+        }
+
         // Draw game info and controls
         spriteBatch.begin();
-        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-        font.getData().setScale(1.5f);  // Set the font size
-
-        float startX = viewport.getWorldWidth() / 2 - 200; // Center the text
-        float startY = viewport.getWorldHeight() / 2 + 100; // Start position for the text
-
-        // Game Info
-        font.draw(spriteBatch, "Game Info:", startX, startY);
-        font.draw(spriteBatch, "Welcome to Game of Cells!", startX, startY - 30);
-        font.draw(spriteBatch, "Control a cell and explore the microscopic world.", startX, startY - 60);
-
-        // Controls
-        font.draw(spriteBatch, "Controls:", startX, startY - 120);
-        font.draw(spriteBatch, "Arrow Keys - Move the cell", startX, startY - 150);
-        font.draw(spriteBatch, "Enter - Select/Confirm", startX, startY - 180);
-        font.draw(spriteBatch, "Escape - Pause/Return to Menu", startX, startY - 210);
-
-        // Press any key to return
-        font.draw(spriteBatch, "Press any key to return...", startX, startY - 270);
-
+        whiteFont.draw(spriteBatch, layout, startX, startY);
         spriteBatch.end();
     }
 }
