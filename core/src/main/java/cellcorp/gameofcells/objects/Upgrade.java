@@ -6,11 +6,11 @@ import cellcorp.gameofcells.screens.ShopScreen;
  * Based class for all upgrades
  */
 public abstract class Upgrade {
-    protected String name;
-    protected int cost;
-    protected String description;
-    protected int requiredATP;
-    protected int requiredSize;
+    protected String name; // Name of the upgrade
+    protected int cost; // Cost of the upgrade
+    protected String description; // Description of the upgrade
+    protected int requiredATP; // Required ATP to purchase the upgrade
+    protected int requiredSize; // Required size to purchase the upgrade
 
     public Upgrade(String name,
             int cost,
@@ -46,23 +46,42 @@ public abstract class Upgrade {
      */
     protected abstract boolean isPreviousUpgradePurchased(ShopScreen shopScreen);
 
-    // Getters
+    /**
+     * Get the name of the upgrade
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get the cost of the upgrade
+     * @return
+     */
     public int getCost() {
         return cost;
     }
 
+    /**
+     * Get the description of the upgrade
+     * @return
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Get the required ATP of the upgrade
+     * @return
+     */
     public int getRequiredATP() {
         return requiredATP;
     }
 
+    /**
+     * Get the required size of the upgrade
+     * @return
+     */
     public int getRequiredSize() {
         return requiredSize;
     }
