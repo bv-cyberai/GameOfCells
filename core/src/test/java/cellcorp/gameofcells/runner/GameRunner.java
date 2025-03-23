@@ -7,6 +7,7 @@ import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 

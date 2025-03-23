@@ -70,8 +70,6 @@ public class Main implements ApplicationListener {
      */
     private final FitViewport viewport;
 
-
-
     /**
      * Constructs a new `Main`.
      * This is a
@@ -218,5 +216,33 @@ public class Main implements ApplicationListener {
      */
     public GraphicsProvider getGraphicsProvider() {
         return this.graphicsProvider;
+    }
+
+    /**
+     * @return this game's input provider.
+     */
+    public InputProvider getInputProvider() {
+        return this.inputProvider;
+    }
+
+    /**
+     * @return this game's asset manager.
+     */
+    public AssetManager getAssetManager() {
+        return this.assetManager;
+    }
+
+    /**
+     * @return this game's camera.
+     */
+    public OrthographicCamera getCamera() {
+        return this.camera;
+    }
+
+    /**
+     * @return this game's viewport.
+     */
+    public FitViewport getViewport() {
+        return this.viewport;
     }
 }

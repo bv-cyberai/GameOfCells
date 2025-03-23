@@ -535,7 +535,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         messageLabel.setAlignment(Align.center);
 
         // Position the message label at the bottom of the screen
-        messageLabel.setPosition(ShopScreen.VIEW_RECT_WIDTH / 2 - messageLabel.getWidth() / 2, 100); // Centered horizontally
+        messageLabel.setPosition(ShopScreen.VIEW_RECT_WIDTH / 2 - messageLabel.getWidth() / 2, 50); // Centered horizontally
 
         // Add the message label to the stage
         stage.addActor(messageLabel);
