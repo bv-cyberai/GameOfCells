@@ -160,6 +160,9 @@ public class ShopScreen implements GameOfCellsScreen {
         // Handle the input first
         handleInput(delta);
 
+        // Update the ATP and size labels 
+        updateTrackers();
+
         // Update the game state
         update(delta);
 
@@ -308,6 +311,20 @@ public class ShopScreen implements GameOfCellsScreen {
             BitmapFont.class), Color.WHITE));
         titleLabel.setFontScale(SHOP_TEXT_SIZE);
         mainTable.add(titleLabel).padTop(20).row();
+
+        // ATP Tracker
+        Label atpLabel = new Label("ATP: " + cell.getCellATP(),
+            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
+            BitmapFont.class), Color.WHITE));
+        atpLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        mainTable.add(atpLabel).padTop(10).row();
+
+        // Size Tracker
+        Label sizeLabel = new Label("Size: " + cell.getcellSize() / 100,
+            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
+            BitmapFont.class), Color.WHITE));
+        sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        mainTable.add(sizeLabel).padTop(10).row();
 
         // Upgrade cards
         upgradeTable = new Table();
@@ -468,6 +485,28 @@ public class ShopScreen implements GameOfCellsScreen {
                 } else {
                     card.addAction(Actions.scaleTo(1.0f, 1.0f, 0.5f, Interpolation.smooth));
                     glowingBorder.setVisible(false); // Hide the glowing border
+                }
+            }
+        }
+    }
+
+    /**
+     * Update the ATP and size trackers.
+     */
+    private void updateTrackers() {
+        // Find the ATP and size labels in the stage
+        for (com.badlogic.gdx.scenes.scene2d.Actor actor : stage.getActors()) {
+            if (actor instanceof Label) {
+                Table table = (Table) actor;
+                for (com.badlogic.gdx.scenes.scene2d.Actor child : table.getChildren()) {
+                    if (child instanceof Label) {
+                        Label label = (Label) child;
+                        if (label.getText().toString().startsWith("ATP:")) {
+                            label.setText("ATP: " + cell.getCellATP()); // Update the ATP label
+                        } else if (label.getText().toString().startsWith("Size:")) {
+                            label.setText("Size: " + (cell.getcellSize() / 100)); // Update the size label
+                        }
+                    }
                 }
             }
         }

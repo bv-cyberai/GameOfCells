@@ -28,7 +28,7 @@ public abstract class Upgrade {
      * Check if the player can purchase this upgrade
      */
     public boolean canPurchase(Cell cell, ShopScreen shopScreen) {
-        if (cell.getCellATP() < cost || cell.getCellDiameter() < requiredSize) {
+        if (cell.getCellATP() < cost || cell.getcellSize() < requiredSize) {
             return false;
         }
 

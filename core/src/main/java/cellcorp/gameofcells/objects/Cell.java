@@ -29,6 +29,7 @@ public class Cell {
     public static  int MAX_HEALTH = 100;
     public static  int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
+    float cellSize;
 
     private final AssetManager assetManager;
     private final ConfigProvider configProvider;
@@ -49,9 +50,9 @@ public class Cell {
         this.gamePlayScreen = gamePlayScreen;
         this.configProvider = configProvider;
         setUserConfigOrDefault();
+        cellSize = 100;
 
-
-        cellCircle = new Circle(new Vector2(0, 0),100);
+        cellCircle = new Circle(new Vector2(0, 0), cellSize);
     }
 
     /**
@@ -93,15 +94,15 @@ public class Cell {
     public void draw(SpriteBatch batch) {
         // Draw cell centered around its position.
 
-        float bottomLeftX = cellCircle.x - (cellCircle.radius);
-        float bottomLeftY = cellCircle.y - (cellCircle.radius);
+        float bottomLeftX = cellPositionX - (cellSize / 2);
+        float bottomLeftY = cellPositionY - (cellSize / 2);
 
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
-        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellCircle.radius*2, cellCircle.radius*2);
+        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellSize, cellSize);
 
         // Draw mitochondria if the upgrade is purchased
         if (hasMitochondria) {
@@ -109,9 +110,9 @@ public class Cell {
             assert (mitochondriaTexture != null);
 
             // Draw mitochondria inside the cell
-            float mitochondriaSize = (cellCircle.radius*2) * 0.2f; // Make mitochondria smaller (30% of cell size)
-            float mitochondriaX = cellCircle.x - ((cellCircle.radius*2) / 4); // Position in the bottom-left of the cell
-            float mitochondriaY = cellCircle.y - (cellCircle.radius*2 / 4); // Position in the bottom-left of the cell
+            float mitochondriaSize = cellSize * 0.2f; // Make mitochondria smaller (30% of cell size)
+            float mitochondriaX = cellPositionX - (cellSize / 4); // Position in the bottom-left of the cell
+            float mitochondriaY = cellPositionY - (cellSize / 4); // Position in the bottom-left of the cell
             batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
         }
 
@@ -177,10 +178,10 @@ public class Cell {
     /**
      * Get Cell Diameter
      *
-     * @return cellDiameter
+     * @return cellSize
      */
-    public float getCellDiameter() {
-        return cellCircle.radius*2;
+    public int getcellSize() {
+        return (int) cellSize;
     }
 
     /**
@@ -248,13 +249,9 @@ public class Cell {
         cellATP = Math.max(cellATP - decreaseAmount, 0);
     }
 
-    /**
-     * Increase the cell diameter
-     *
-     * @param diameterIncrease - The amount to increase the cell by.
-     */
-    public void increaseCellDiameter(float diameterIncrease) {
-        cellCircle.radius += diameterIncrease/2;
+    public void increasecellSize(float sizeIncrease) {
+        this.cellSize += sizeIncrease;
+        cellCircle.radius += sizeIncrease / 2;
     }
 
       /**
