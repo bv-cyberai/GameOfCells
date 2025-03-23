@@ -7,7 +7,7 @@ import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
  */
 public class FlagellaUpgrade extends Upgrade {
     public FlagellaUpgrade() {
-        super("Flagella", 70, "Cell movement and propulsion\nIncreases movement speed", 70, 3);
+        super("Flagella", 70, "Cell movement", "Increases movement speed", 70, 3);
     }
 
     @Override

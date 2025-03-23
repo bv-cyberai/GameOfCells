@@ -7,7 +7,7 @@ import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
  */
 public class MitochondriaUpgrade extends Upgrade {
     public MitochondriaUpgrade() {
-        super("Mitochondria", 30, "Powerhouse of the cell\nIncreases ATP production", 30, 1);
+        super("Mitochondria", 30, "Powerhouse of the cell", "Increases ATP production", 30, 1);
     }
 
     @Override

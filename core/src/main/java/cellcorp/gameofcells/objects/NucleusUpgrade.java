@@ -7,7 +7,7 @@ import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
  */
 public class NucleusUpgrade extends Upgrade {
     public NucleusUpgrade() {
-        super("Nucleus", 90, "Control center of the cell\nUnlocks advanced abilities", 90, 4);
+        super("Nucleus", 90, "Control center of the cell", "Unlocks advanced abilities", 90, 4);
     }
 
     @Override

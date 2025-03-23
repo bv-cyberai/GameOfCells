@@ -43,6 +43,21 @@ public class AssetFileNames {
     public static String MITOCHONDRIA_ICON = "mitochondria.png";
 
     /**
+     * The file name for the ribosome texture.
+     */
+    public static String RIBOSOME_ICON = "ribosomes.png";
+
+    /**
+     * The file name for the flagella texture.
+     */
+    public static String FLAGELLA_ICON = "flagella.png";
+
+    /**
+     * The file name for the nucleus texture.
+     */
+    public static String NUCLEUS_ICON = "nucleus.png";
+
+    /**
      * The file name of the font used in the HUD
      */
     public static String HUD_FONT = "rubik.fnt";

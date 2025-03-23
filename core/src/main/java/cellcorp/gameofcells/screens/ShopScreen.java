@@ -68,11 +68,12 @@ public class ShopScreen implements GameOfCellsScreen {
     private final Particles particles; // For drawing particles
 
     private static final float SHOP_TEXT_SIZE = 0.3f;
-    private static final float UPGRADE_NAME_TEXT_SIZE = 0.2f;
-    private static final float UPGRADE_INFO_TEXT_SIZE = 0.15f;
+    private static final float OPTION_NAME_TEXT_SIZE = 0.2f;
+    private static final float OPTION_INFO_TEXT_SIZE = 0.15f;
+    private static final float INSTRUCTION_TEXT_SIZE = 0.18f;
 
-    private final static float UPGRADE_CARD_WIDTH = 400;
-    private final static float UPGRADE_CARD_HEIGHT = 450;
+    private final static float OPTION_CARD_WIDTH = 400;
+    private final static float OPTION_CARD_HEIGHT = 450;
     private final static float SELECTED_CARD_SCALE = 1.4f; // Scale of the selected card
 
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
@@ -346,7 +347,7 @@ public class ShopScreen implements GameOfCellsScreen {
         // For now, we'll just add a splaceholder label
         Label sizeUpgradeLabel = new Label("Size upgrades coming soon!",
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-        sizeUpgradeLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
+        sizeUpgradeLabel.setFontScale(OPTION_INFO_TEXT_SIZE);
         sizeUpgradeTable.add(sizeUpgradeLabel).pad(10);
 
         // Add the upgrade tables to the main table
@@ -356,7 +357,7 @@ public class ShopScreen implements GameOfCellsScreen {
         Label exitLabel = new Label("Press ESC to exit | Arrow keys to navigate | Enter to select",
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
 
-        exitLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
+        exitLabel.setFontScale(INSTRUCTION_TEXT_SIZE);
         mainTable.add(exitLabel).padBottom(20).row();
 
         stage.addActor(mainTable);
@@ -379,11 +380,11 @@ public class ShopScreen implements GameOfCellsScreen {
         card.defaults().center().pad(5); // Center all elements and add padding
 
         // Set a fixed size for the card to match the glowing border
-        card.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT); // Set the size of the card
+        card.setSize(OPTION_CARD_WIDTH, OPTION_CARD_HEIGHT); // Set the size of the card
 
         // Create a glowing border for the card
         Image glowingBorder = new Image(createGlowingBorderTexture());
-        glowingBorder.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT); // Match the card size
+        glowingBorder.setSize(OPTION_CARD_WIDTH, OPTION_CARD_HEIGHT); // Match the card size
         glowingBorder.setVisible(false); // Hide the border by default
         glowingBorder.setName("glowingBorder");
 
@@ -400,18 +401,18 @@ public class ShopScreen implements GameOfCellsScreen {
         Label titleLabel = new Label(title,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
-        titleLabel.setFontScale(UPGRADE_NAME_TEXT_SIZE);
+        titleLabel.setFontScale(OPTION_NAME_TEXT_SIZE);
         titleLabel.setAlignment(Align.center); // Center the text
-        card.add(titleLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
+        card.add(titleLabel).width(OPTION_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
 
         // Description
         Label descriptionLabel = new Label(description,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
-        descriptionLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
+        descriptionLabel.setFontScale(OPTION_INFO_TEXT_SIZE);
         descriptionLabel.setWrap(true);
         descriptionLabel.setAlignment(Align.center); // Center the text
-        card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Adjusted width for padding
+        card.add(descriptionLabel).width(OPTION_CARD_WIDTH - 20).padTop(10).row(); // Adjusted width for padding
 
         return card;
     }
@@ -436,9 +437,13 @@ public class ShopScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Create a custom background texture for the option cards.
+     * @return
+     */
     private Texture createOptionBackgroundTexture() {
-        int width = (int) UPGRADE_CARD_WIDTH;
-        int height = (int) UPGRADE_CARD_HEIGHT;
+        int width = (int) OPTION_CARD_WIDTH;
+        int height = (int) OPTION_CARD_HEIGHT;
         Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
 
         com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
@@ -458,8 +463,8 @@ public class ShopScreen implements GameOfCellsScreen {
      * Draw a glowing border around the selected upgrade card.
      */
     private Texture createGlowingBorderTexture() {
-        int width = (int) UPGRADE_CARD_WIDTH;
-        int height = (int) UPGRADE_CARD_HEIGHT;
+        int width = (int) OPTION_CARD_WIDTH;
+        int height = (int) OPTION_CARD_HEIGHT;
         Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
 
         com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);

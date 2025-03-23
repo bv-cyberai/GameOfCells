@@ -9,17 +9,20 @@ public abstract class Upgrade {
     protected String name; // Name of the upgrade
     protected int cost; // Cost of the upgrade
     protected String description; // Description of the upgrade
+    protected String perks; // Perks of the upgrade
     protected int requiredATP; // Required ATP to purchase the upgrade
     protected int requiredSize; // Required size to purchase the upgrade
 
     public Upgrade(String name,
             int cost,
             String description,
+            String perks,
             int requiredATP,
             int requiredSize) {
                 this.name = name;
                 this.cost = cost;
                 this.description = description;
+                this.perks = perks;
                 this.requiredATP = requiredATP;
                 this.requiredSize = requiredSize;
     }
@@ -70,6 +73,14 @@ public abstract class Upgrade {
         return description;
     }
 
+    /**
+     * Get the perks of the upgrade
+     * @return
+     */
+    public String getPerks() {
+        return perks;
+    }
+    
     /**
      * Get the required ATP of the upgrade
      * @return
