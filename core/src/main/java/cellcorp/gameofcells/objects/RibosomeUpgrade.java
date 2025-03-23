@@ -7,7 +7,7 @@ import cellcorp.gameofcells.screens.ShopScreen;
  */
 public class RibosomeUpgrade extends Upgrade {
     public RibosomeUpgrade() {
-        super("Ribosome", 75, "Increases protein synthesis", 50, 100); 
+        super("Ribosome", 50, "Protein synthesis factory\nIncreases protein synthesis", 50, 100); 
     }
 
     /**

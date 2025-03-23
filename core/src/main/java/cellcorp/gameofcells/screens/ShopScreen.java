@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -26,6 +26,7 @@ import com.badlogic.gdx.math.MathUtils;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
+import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.objects.FlagellaUpgrade;
 import cellcorp.gameofcells.objects.MitochondriaUpgrade;
 import cellcorp.gameofcells.objects.NucleusUpgrade;
@@ -72,14 +73,15 @@ public class ShopScreen implements GameOfCellsScreen {
     // For rendering text
     private final SpriteBatch batch;  // Define the batch for drawing text
     private final ShapeRenderer shapeRenderer;  // For drawing custom backgrounds
+    private final Particles particles; // For drawing particles
 
     private static final float SHOP_TEXT_SIZE = 0.3f;
     private static final float UPGRADE_NAME_TEXT_SIZE = 0.2f;
     private static final float UPGRADE_INFO_TEXT_SIZE = 0.15f;
 
-    private final static float UPGRADE_CARD_WIDTH = 300;
-    private final static float UPGRADE_CARD_HEIGHT = 200;
-    private final static float SELECTED_CARD_SCALE = 1.2f; // Scale of the selected card
+    private final static float UPGRADE_CARD_WIDTH = 400;
+    private final static float UPGRADE_CARD_HEIGHT = 450;
+    private final static float SELECTED_CARD_SCALE = 1.4f; // Scale of the selected card
 
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
     // Change as is most convenient.
@@ -126,7 +128,9 @@ public class ShopScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.shapeRenderer = graphicsProvider.createShapeRenderer(); // Initialize the shape renderer for custom backgrounds
 
-        this.stage = new Stage(viewport, batch);
+        Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
+        this.particles = new Particles(whitePixelTexture);
+        this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
          // Initialize upgrades
          upgrades = new ArrayList<>();
@@ -146,14 +150,18 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void render(float delta) {
+        // Clear the screen with a semi-transparent black color
+        ScreenUtils.clear(0, 0, 0, 0.5f); // 50% transparency
+
+        // Update and draw the particles
+        particles.update(delta, VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        particles.draw(batch);
+
         // Handle the input first
         handleInput(delta);
 
         // Update the game state
         update(delta);
-
-        // Clear the screen
-        ScreenUtils.clear(0, 0, 0, 1);
 
         // Draw the state (UI elements)
         stage.act(delta);
@@ -178,7 +186,19 @@ public class ShopScreen implements GameOfCellsScreen {
                 selectedUpgrade.applyUpgrade(cell);
             }
         } else if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(previousScreen);
+            // Fade put before exiting the shop screen
+            stage.getRoot().addAction(Actions.sequence(
+                Actions.fadeOut(1f), // Fade out over 1 seconds
+                Actions.run(() -> {
+                    // Unpause the game state (resume the cell movement)
+                    if (previousScreen instanceof GamePlayScreen) {
+                        ((GamePlayScreen) previousScreen).resumeGame();
+                    }
+
+                    // Transition back to the previous screen
+                    game.setScreen(previousScreen);
+                })
+            ));
         }
     }
 
@@ -206,6 +226,17 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void show() {
         // This method is called when the screen becomes the current screen for the game.
+
+        // Set the stage's root actor to be transparent initially
+        stage.getRoot().getColor().a = 0; // Full transparent
+
+        // Fade in the shop screen
+        stage.getRoot().addAction(Actions.fadeIn(2f)); // Fade in over 1 seconds
+
+        // Pause the game state (stop the cell from moving)
+        if (previousScreen instanceof GamePlayScreen) {
+            ((GamePlayScreen) previousScreen).pauseGame();
+        }
     }
 
     /**
@@ -224,7 +255,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void pause() {
-        // Invoked when your application is paused.
+        // No action neede
     }
 
     /**
@@ -232,7 +263,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void resume() {
-        // Invoked when your application is resumed after pause.
+        // No action needed
     }
 
     /**
@@ -240,7 +271,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void hide() {
-        // This method is called when another screen replaces this one.
+        // No action needed
     }
 
     /**
@@ -261,6 +292,7 @@ public class ShopScreen implements GameOfCellsScreen {
         batch.dispose();  // Dispose of the batch
         stage.dispose();
         shapeRenderer.dispose();
+        particles.dispose();
     }
 
     /**
@@ -309,12 +341,19 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     private Table createUpgradeCard(Upgrade upgrade) {
         Table card = new Table();
+        card.defaults().center().pad(5); // Center all elements and add padding
 
-        // Remove the shop background and replace with a custom background
-        // card.setBackground(new TextureRegionDrawable(
-        //    assetManager.get(
-        //        AssetFileNames.SHOP_BACKGROUND,
-        //        Texture.class)));
+        // Set a fixed size for the card to match the glowing border
+        card.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT); // Set the size of the card
+
+        // Create a glowing border for the card
+        Image glowingBorder = new Image(createGlowingBorderTexture());
+        glowingBorder.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT); // Match the card size
+        glowingBorder.setVisible(false); // Hide the border by default
+        glowingBorder.setName("glowingBorder");
+
+        // Add the glowing border to the card
+        card.addActor(glowingBorder); // Add the border as an actor (not part of the table layout)
 
         // Set custom background based on the upgrade type
         if (upgrade instanceof MitochondriaUpgrade) {
@@ -332,14 +371,16 @@ public class ShopScreen implements GameOfCellsScreen {
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
         nameLabel.setFontScale(UPGRADE_NAME_TEXT_SIZE);
-        card.add(nameLabel).padTop(10).row();
+        nameLabel.setAlignment(Align.center); // Center the text
+        card.add(nameLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
 
         // Upgrade cost
         Label costLabel = new Label("Cost: " + upgrade.getCost() + "ATP",
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
         costLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
-        card.add(costLabel).padTop(5).row();
+        costLabel.setAlignment(Align.center); // Center the text
+        card.add(costLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
 
         // Upgrade description
         Label descriptionLabel = new Label(upgrade.getDescription(),
@@ -348,7 +389,7 @@ public class ShopScreen implements GameOfCellsScreen {
         descriptionLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
         descriptionLabel.setWrap(true);
         descriptionLabel.setAlignment(Align.center); // Center the text
-        card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH).padTop(5).row();
+        card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Adjusted width for padding
 
         // Purchase button
         TextButton purchaseButton = new TextButton("Purchase",
@@ -367,21 +408,67 @@ public class ShopScreen implements GameOfCellsScreen {
         return card;
     }
 
+    /**
+     * Draw a glowing border around the selected upgrade card.
+     */
+    private Texture createGlowingBorderTexture() {
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
+        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        // Draw the glowing border
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (x < 10 || x >= width - 10 || y < 10 || y >= height - 10) {
+                    // Create a gradient effect for the border
+                    float alpha = Math.max(
+                        Math.max(10 - x, x - (width - 10)), 
+                        Math.max(10 - y, y - (height - 10))
+                    ) / 10f; // Normalize to 0..1
+                    pixmap.setColor(1, 1, 0, alpha); // Yellow with transparency
+                    pixmap.drawPixel(x, y);
+                }
+            }
+        }
+
+        // Draw the pixmap to the texture
+        texture.draw(pixmap, 0, 0);
+        pixmap.dispose(); // Clean up the pixmap
+
+        return texture;
+    }
+
+    /**
+     * Center the selected upgrade card in the upgrade table.
+     */
     private void centerSelectedUpgrade() {
-        // Calculate the target X position for the upgrade table
-        float targetX = (VIEW_RECT_HEIGHT / 2) - (UPGRADE_CARD_WIDTH / 2) - 
-        (selectedUpgradeIndex * (UPGRADE_CARD_WIDTH + 20));
+        // Calculate the center position of the screen
+        float screenCenterX = VIEW_RECT_WIDTH / 2;
+
+        // Calculate the position of the selected card within the upgrade table
+        float selectedCardCenterX = selectedUpgradeIndex * UPGRADE_CARD_WIDTH + (UPGRADE_CARD_WIDTH / 2);
+
+        // Calculate the offset to center the selected card
+        float tableOffsetX = screenCenterX - selectedCardCenterX;
 
         // Animate the upgrade table to the target X position
-        upgradeTable.addAction(Actions.moveTo(targetX, upgradeTable.getY(), 0.5f, Interpolation.smooth));
+        upgradeTable.addAction(Actions.moveTo(tableOffsetX, upgradeTable.getY(), 0.5f, Interpolation.smooth));
 
         // Scale the selected upgrade card up and others down
         for (int i = 0; i < upgradeCards.size(); i++) {
             Table card = upgradeCards.get(i);
-            if (i == selectedUpgradeIndex) {
-                card.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.5f, Interpolation.smooth));
-            } else {
-                card.addAction(Actions.scaleTo(1.0f, 1.0f, 0.5f, Interpolation.smooth));
+            Image glowingBorder = (Image) card.findActor("glowingBorder"); // Find the glowing border by name
+
+            if (glowingBorder != null) { // Check if the glowing border exists
+                if (i == selectedUpgradeIndex) {
+                    card.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.5f, Interpolation.smooth));
+                    glowingBorder.setVisible(true); // Show the glowing border
+                } else {
+                    card.addAction(Actions.scaleTo(1.0f, 1.0f, 0.5f, Interpolation.smooth));
+                    glowingBorder.setVisible(false); // Hide the glowing border
+                }
             }
         }
     }

@@ -1,6 +1,8 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -125,6 +127,25 @@ public class HUD {
         healthBarHeight = 25;
         ATPBarY = 740;
         ATPBarHeight = 25;
+
+        // Initialize text strings to avoid null values
+        timerString = "Timer: 0";
+        atpString = "ATP: " + maxATP + "/" + maxATP; // Initialize ATP to max
+        cellHealthString = "HEALTH: " + maxHealth + "/" + maxHealth; // Initialize Health to max
+
+        loadFonts();
+    }
+
+    /**
+     * Load Fonts
+     */
+    private void loadFonts() {
+        if (assetManager != null) {
+            assetManager.load("rubik.fnt", BitmapFont.class);
+            assetManager.load("rubik1.png", Texture.class);
+            assetManager.load("rubik2.png", Texture.class);
+            assetManager.finishLoading();
+        }
     }
 
     /**
@@ -153,9 +174,17 @@ public class HUD {
             // Fonts are shared, and scale needs to be reset on Screen changes.
             font.getData().setScale(hudFontScale);
         }
-        font.draw(batch, cellHealthString, 10, 790);
-        font.draw(batch, atpString, 10, 770);
-        font.draw(batch, timerString, 10, 750);
+
+        // Ensure strings are not null before drawing
+        if (cellHealthString != null) {
+            font.draw(batch, cellHealthString, 10, 790);
+        }
+        if (atpString != null) {
+            font.draw(batch, atpString, 10, 760);
+        }
+        if (timerString != null) {
+            font.draw(batch, timerString, 10, 730);
+        }
         batch.end();
     }
 

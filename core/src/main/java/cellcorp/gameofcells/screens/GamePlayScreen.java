@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -61,6 +63,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public static final boolean DEBUG_DRAW_ENABLED = false;
 
+    private final Stage stage;
     private final Main game;
 
     /// Loads assets during game creation,
@@ -144,6 +147,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
+    private boolean isPaused = false; // Whether the game is paused
+
 
     /**
      * Constructs the GamePlayScreen.
@@ -175,8 +180,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
+        this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
         this.hud = new HUD(graphicsProvider, assetManager, cell.getMaxHealth(), cell.getMaxATP());
+
+        this.isPaused = false;
     }
 
     /**
@@ -187,6 +195,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // This method should be "test-safe".
         // When run, if the game has been constructed with properly-mocked providers,
         // it should not crash test code.
+
+        // Fade in the gameplay screen when returning from the shop
+        stage.getRoot().getColor().a = 0; // Start transparent
+        stage.addAction(Actions.fadeIn(2f)); // Fade in over 2 seconds
         }
 
     /// Move the game state forward a tick, handling input, performing updates, and
@@ -260,6 +272,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void handleInput(float deltaTimeSeconds) {
         // Move to `ShopScreen` when 's' is pressed.
         if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
+            pauseGame();
             game.setScreen(new ShopScreen(
                     game,
                     inputProvider,
@@ -282,13 +295,18 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     graphicsProvider, game,
                     this, configProvider, PopupInfoScreen.Type.danger));
         }
-        cell.move(
+
+        // Only move the cell if the game is not paused
+        if (!isPaused) {
+            cell.move(
                 deltaTimeSeconds,
                 (inputProvider.isKeyPressed(Input.Keys.LEFT )|| inputProvider.isKeyPressed(Input.Keys.A )), // Check if the left key is pressed
                 (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D )), // Check if the right key is pressed
                 (inputProvider.isKeyPressed(Input.Keys.UP)||inputProvider.isKeyPressed(Input.Keys.W) ), // Check if the up key is pressed
                 (inputProvider.isKeyPressed(Input.Keys.DOWN)|| inputProvider.isKeyPressed(Input.Keys.S )) // Check if the down key is pressed
-        );
+
+            );
+        }
     }
 
     /**
@@ -298,10 +316,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
-        zoneManager.update(deltaTimeSeconds);
-        spawnManager.update();
-        handleCollisions();
+        if (!isPaused) {
+            hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
+            zoneManager.update(deltaTimeSeconds);
+            spawnManager.update();
+            handleCollisions();
+        }
     }
 
     private void handleCollisions() {
@@ -474,5 +494,21 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 assetManager,
                 graphicsProvider,
                 game,configProvider));
+    }
+
+    /**
+     * Pause the game.
+     */
+    public void pauseGame() {
+        // Pause game logic (e.g., stop updating entities)
+        isPaused = true;
+    }
+
+    /**
+     * Resume the game.
+     */
+    public void resumeGame() {
+        // Resume game logic (e.g., start updating entities)
+        isPaused = false;
     }
 }
