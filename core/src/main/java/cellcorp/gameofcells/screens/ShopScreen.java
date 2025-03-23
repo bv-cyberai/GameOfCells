@@ -140,6 +140,130 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Render the screen.
+     *
+     * @param delta The time since the last frame in seconds.
+     */
+    @Override
+    public void render(float delta) {
+        // Handle the input first
+        handleInput(delta);
+
+        // Update the game state
+        update(delta);
+
+        // Clear the screen
+        ScreenUtils.clear(0, 0, 0, 1);
+
+        // Draw the state (UI elements)
+        stage.act(delta);
+        stage.draw();
+    }
+
+    @Override
+    public void handleInput(float deltaTimeSeconds) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
+            if (selectedUpgradeIndex > 0) {
+                selectedUpgradeIndex--;
+                centerSelectedUpgrade();
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
+            if (selectedUpgradeIndex < upgrades.size() - 1) {
+                selectedUpgradeIndex++;
+                centerSelectedUpgrade();
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+            Upgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
+            if (selectedUpgrade.canPurchase(cell, this)) {
+                selectedUpgrade.applyUpgrade(cell);
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
+            game.setScreen(previousScreen);
+        }
+    }
+
+    /**
+     * Update the screen.
+     *
+     * @param deltaTimeSeconds The time since the last frame in seconds.
+     */
+    @Override
+    public void update(float deltaTimeSeconds) {
+        stage.act(deltaTimeSeconds);
+    }
+
+    /**
+     * Draw the screen.
+     */
+    @Override
+    public void draw() {
+        // This method is no longer needed as rendering is handled in `render`.
+    }
+
+    /**
+     * Show the screen.
+     */
+    @Override
+    public void show() {
+        // This method is called when the screen becomes the current screen for the game.
+    }
+
+    /**
+     * Resize the screen.
+     *
+     * @param width  The new width of the screen.
+     * @param height The new height of the screen.
+     */
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+    }
+
+    /**
+     * Pause the screen.
+     */
+    @Override
+    public void pause() {
+        // Invoked when your application is paused.
+    }
+
+    /**
+     * Resume the screen.
+     */
+    @Override
+    public void resume() {
+        // Invoked when your application is resumed after pause.
+    }
+
+    /**
+     * Hide the screen.
+     */
+    @Override
+    public void hide() {
+        // This method is called when another screen replaces this one.
+    }
+
+    /**
+     * Get the batch for rendering.
+     *
+     * @return The batch for rendering.
+     */
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
+    /**
+     * Dispose of the screen's assets.
+     */
+    @Override
+    public void dispose() {
+        // Destroy screen's assets here.
+        batch.dispose();  // Dispose of the batch
+        stage.dispose();
+        shapeRenderer.dispose();
+    }
+
+    /**
      * Create the UI for the shop screen.
      */
     private void createUI() {
@@ -178,6 +302,11 @@ public class ShopScreen implements GameOfCellsScreen {
         centerSelectedUpgrade();
     }
 
+    /**
+     * Create a table for an upgrade card.
+     * @param upgrade
+     * @return
+     */
     private Table createUpgradeCard(Upgrade upgrade) {
         Table card = new Table();
 
@@ -187,9 +316,15 @@ public class ShopScreen implements GameOfCellsScreen {
         //        AssetFileNames.SHOP_BACKGROUND,
         //        Texture.class)));
 
-        // Set custom background for Mitochondria upgrade
+        // Set custom background based on the upgrade type
         if (upgrade instanceof MitochondriaUpgrade) {
             card.setBackground(new TextureRegionDrawable(createMitochondriaBackgroundTexture()));
+        } else if (upgrade instanceof RibosomeUpgrade) {
+            card.setBackground(new TextureRegionDrawable(createRibosomeBackgroundTexture()));
+        } else if (upgrade instanceof FlagellaUpgrade) {
+            card.setBackground(new TextureRegionDrawable(createFlagellaBackgroundTexture()));
+        } else if (upgrade instanceof NucleusUpgrade) {
+            card.setBackground(new TextureRegionDrawable(createNucleusBackgroundTexture()));
         }
         
         // Upgrade name
@@ -252,17 +387,17 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Draw the background for the mitochondria upgrade.
+     * Draw the background for the Mitochondria upgrade.
      */
     private Texture createMitochondriaBackgroundTexture() {
-        // Create a texture for the mitochondria upgrade background
+        // Create a texture for the Mitochondria upgrade background
         int width = (int) UPGRADE_CARD_WIDTH;
         int height = (int) UPGRADE_CARD_HEIGHT;
         Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
 
         com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
 
-        // Draw the mitochondria background
+        // Draw the Mitochondria background using blue for energy
         pixmap.setColor(0.1f, 0.4f, 0.8f, 0.5f); // Blue energy
         for (int i = 0; i < 50; i++) {
             float x = MathUtils.random(0, width);
@@ -271,135 +406,107 @@ public class ShopScreen implements GameOfCellsScreen {
             pixmap.fillCircle((int) x, (int) y, (int) size);
         }
 
-        // Draw thepixmap to the texture
+        // Draw the pixmap to the texture
         texture.draw(pixmap, 0, 0);
-        pixmap.dispose();
+        pixmap.dispose(); // Clean up the pixmap
 
         return texture;
     }
 
-    /// Move the game state forward a tick, handling input, performing updates, and rendering.
-    /// LibGDX combines these into a single method call, but we separate them out into public methods,
-    /// to let us write tests where we call only [ShopScreen#handleInput] and [ShopScreen#update]
-    @Override
-    public void render(float delta) {
-        // Clear the screen
-        ScreenUtils.clear(0, 0, 0, 1);
-
-        // Draw the state (UI elements)
-        stage.act(delta);
-        stage.draw();
-    }
-
-    @Override
-    public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
-            if (selectedUpgradeIndex > 0) {
-                selectedUpgradeIndex--;
-                centerSelectedUpgrade();
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
-            if (selectedUpgradeIndex < upgrades.size() - 1) {
-                selectedUpgradeIndex++;
-                centerSelectedUpgrade();
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
-            Upgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
-            if (selectedUpgrade.canPurchase(cell, this)) {
-                selectedUpgrade.applyUpgrade(cell);
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(previousScreen);
-        }
-    }
-
     /**
-     * Update the screen.
-     *
-     * @param deltaTimeSeconds The time since the last frame in seconds.
+     * Check if the cell has mitochondria.
+     * @return True if the cell has mitochondria, false otherwise.
      */
-    @Override
-    public void update(float deltaTimeSeconds) {
-        stage.act(deltaTimeSeconds);
-    }
-
-    /**
-     * Draw the screen.
-     */
-    @Override
-    public void draw() {
-        // This method is no longer needed as rendering is handled in `render`.
-    }
-
-    /**
-     * Resize the screen.
-     *
-     * @param width  The new width of the screen.
-     * @param height The new height of the screen.
-     */
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-    }
-
-    /**
-     * Pause the screen.
-     */
-    @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
-
-    /**
-     * Resume the screen.
-     */
-    @Override
-    public void resume() {
-        // Invoked when your application is resumed after pause.
-    }
-
-    /**
-     * Hide the screen.
-     */
-    @Override
-    public void hide() {
-        // This method is called when another screen replaces this one.
-    }
-
-    /**
-     * Dispose of the screen's assets.
-     */
-    @Override
-    public void dispose() {
-        // Destroy screen's assets here.
-        batch.dispose();  // Dispose of the batch
-        stage.dispose();
-        shapeRenderer.dispose();
-    }
-
-    /**
-     * Get the batch for rendering.
-     *
-     * @return The batch for rendering.
-     */
-    public SpriteBatch getBatch() {
-        return batch;
-    }
-
-    @Override
-    public void show() {
-        // This method is called when the screen becomes the current screen for the game.
-    }
-
     public boolean hasMitochondria() {
         return cell.hasMitochondria();
+    }
+
+    /**
+     * Draw the background for the Ribosome upgrade.
+     */
+    private Texture createRibosomeBackgroundTexture() {
+        // Create a texture for the Ribosome upgrade background
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
+        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        // Draw the Ribosome background using yellow for protein synthesis
+        pixmap.setColor(0.8f, 0.8f, 0.1f, 0.5f); // Yellow protein (color-blind friendly)
+        for (int i = 0; i < 50; i++) {
+            float x = MathUtils.random(0, width);
+            float y = MathUtils.random(0, height);
+            float size = MathUtils.random(10, 30);
+            pixmap.fillCircle((int) x, (int) y, (int) size);
+        }
+
+        // Draw the pixmap to the texture
+        texture.draw(pixmap, 0, 0);
+        pixmap.dispose(); // Clean up the pixmap
+
+        return texture;
     }
 
     public boolean hasRibosome() {
         return cell.getProteinSynthesisMultiplier() > 1.0f;
     }
 
+    /**
+     * Draw the background for the Flagella upgrade.
+     */
+    private Texture createFlagellaBackgroundTexture() {
+        // Create a texture for the Flagella upgrade background
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
+        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        // Draw the Flagella background using purple for movement
+        pixmap.setColor(0.6f, 0.1f, 0.8f, 0.5f); // Purple movement (color-blind friendly)
+        for (int i = 0; i < 50; i++) {
+            float x = MathUtils.random(0, width);
+            float y = MathUtils.random(0, height);
+            float size = MathUtils.random(10, 30);
+            pixmap.fillCircle((int) x, (int) y, (int) size);
+        }
+
+        // Draw the pixmap to the texture
+        texture.draw(pixmap, 0, 0);
+        pixmap.dispose(); // Clean up the pixmap
+
+        return texture;
+    }
+
     public boolean hasFlagella() {
         return cell.getMovementSpeedMultiplier() > 1.0f;
+    }
+
+    /**
+     * Draw the background for the Nucleus upgrade.
+     */
+    private Texture createNucleusBackgroundTexture() {
+        // Create a texture for the Nucleus upgrade background
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
+        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        // Draw the Nucleus background using orange for DNA
+        pixmap.setColor(0.8f, 0.4f, 0.1f, 0.5f); // Orange DNA (color-blind friendly)
+        for (int i = 0; i < 50; i++) {
+            float x = MathUtils.random(0, width);
+            float y = MathUtils.random(0, height);
+            float size = MathUtils.random(10, 30);
+            pixmap.fillCircle((int) x, (int) y, (int) size);
+        }
+
+        // Draw the pixmap to the texture
+        texture.draw(pixmap, 0, 0);
+        pixmap.dispose(); // Clean up the pixmap
+
+        return texture;
     }
 }
