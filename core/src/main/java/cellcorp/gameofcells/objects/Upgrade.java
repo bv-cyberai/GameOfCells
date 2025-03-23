@@ -31,7 +31,11 @@ public abstract class Upgrade {
      * Check if the player can purchase this upgrade
      */
     public boolean canPurchase(Cell cell, OrganelleUpgradeScreen organelleUpgradeScreen) {
-        if (cell.getCellATP() < cost || cell.getcellSize() < requiredSize) {
+        // Convert the shop size to Cell class size
+        int requiredSizeInCellUnits = 100 + requiredSize * 100; // Conversion formula
+
+        // Check if the player has enough ATP and size
+        if (cell.getCellATP() < cost || cell.getcellSize() < requiredSizeInCellUnits) {
             return false;
         }
 

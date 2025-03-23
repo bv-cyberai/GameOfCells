@@ -160,6 +160,21 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
                 
                 // Update the display
                 updateUpgradeDisplay();
+            } else {
+                // Display a message indicating that the upgrade cannot be purchased
+                String message = "";
+                boolean notEnoughATP = cell.getCellATP() < selectedUpgrade.getRequiredATP();
+                boolean notEnoughSize = (cell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
+
+                if (notEnoughATP && notEnoughSize) {
+                    message = "Not enough ATP and size to purchase this upgrade.";
+                } else if (notEnoughATP) {
+                    message = "Not enough ATP to purchase this upgrade.";
+                } else if (notEnoughSize) {
+                    message = "Not enough size to purchase this upgrade.";
+                }
+
+                showMessage(message);
             }
         } else if(inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(previousScreen);
@@ -252,7 +267,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         mainTable.add(atpLabel).padTop(10).row();
 
         // Size Tracker
-        Label sizeLabel = new Label("Size: " + cell.getcellSize() / 100,
+        Label sizeLabel = new Label("Size: " + (cell.getcellSize() - 100) / 100,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
         sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
@@ -389,6 +404,18 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         card.add(requirementsTable).expand().bottom().left().padBottom(10).padLeft(10);
         card.row();
 
+        // Lock overlay (if the upgrade is locked)
+        if (!upgrade.canPurchase(cell, this)) {
+            card.getColor().a = 0.4f; // Semi-transparent
+
+            // Add a semi-transparent overlay to indicate that the upgrade is locked
+            Image lockIcon = new Image(assetManager.get(AssetFileNames.LOCK_ICON, Texture.class));
+            lockIcon.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
+            lockIcon.getColor().a = 0.6f; // Set lock icon opacity to 80%
+            lockIcon.setPosition(0, 0);
+            card.addActor(lockIcon);
+        }
+
         return card;
     }
 
@@ -493,6 +520,27 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         }
 
         return icon;
+    }
+
+    /**
+     * Show a message on the screen.
+     * @param message The message to display.
+     */
+    private void showMessage(String message) {
+        // Create a label with the message
+        Label messageLabel = new Label(message,
+                new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
+        messageLabel.setFontScale(0.3f);
+        messageLabel.setAlignment(Align.center);
+
+        // Position the message label at the bottom of the screen
+        messageLabel.setPosition(ShopScreen.VIEW_RECT_WIDTH / 2 - messageLabel.getWidth() / 2, 50); // Centered horizontally
+
+        // Add the message label to the stage
+        stage.addActor(messageLabel);
+
+        // Fade out the message label after 2 seconds
+        messageLabel.addAction(Actions.sequence(Actions.fadeOut(2.5f), Actions.removeActor()));
     }
 
     /**

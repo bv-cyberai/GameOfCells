@@ -58,6 +58,11 @@ public class AssetFileNames {
     public static String NUCLEUS_ICON = "nucleus.png";
 
     /**
+     * The file name for the lock texture.
+     */
+    public static String LOCK_ICON = "lock.png";
+
+    /**
      * The file name of the font used in the HUD
      */
     public static String HUD_FONT = "rubik.fnt";

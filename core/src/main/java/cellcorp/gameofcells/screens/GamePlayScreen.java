@@ -288,6 +288,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
             cell.addCellATP(20);
         }
+
+        if (inputProvider.isKeyJustPressed(Input.Keys.D)) {
+            cell.removeCellATP(20);
+        }
+
         // Will eventually be triggered by cell state
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             game.setScreen(new PopupInfoScreen(

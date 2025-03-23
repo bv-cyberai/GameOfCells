@@ -317,7 +317,7 @@ public class ShopScreen implements GameOfCellsScreen {
         mainTable.add(atpLabel).padTop(10).row();
 
         // Size Tracker
-        Label sizeLabel = new Label("Size: " + cell.getcellSize() / 100,
+        Label sizeLabel = new Label("Size: " + (cell.getcellSize() - 100) / 100,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
         sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
@@ -505,7 +505,7 @@ public class ShopScreen implements GameOfCellsScreen {
                         if (label.getText().toString().startsWith("ATP:")) {
                             label.setText("ATP: " + cell.getCellATP()); // Update the ATP label
                         } else if (label.getText().toString().startsWith("Size:")) {
-                            label.setText("Size: " + (cell.getcellSize() / 100)); // Update the size label
+                            label.setText("Size: " + (cell.getcellSize() - 100 / 100)); // Update the size label
                         }
                     }
                 }
