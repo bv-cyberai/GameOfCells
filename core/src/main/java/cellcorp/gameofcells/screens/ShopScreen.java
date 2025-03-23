@@ -15,23 +15,16 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.objects.FlagellaUpgrade;
-import cellcorp.gameofcells.objects.MitochondriaUpgrade;
-import cellcorp.gameofcells.objects.NucleusUpgrade;
-import cellcorp.gameofcells.objects.RibosomeUpgrade;
-import cellcorp.gameofcells.objects.Upgrade;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -55,7 +48,6 @@ import cellcorp.gameofcells.providers.InputProvider;
  */
 public class ShopScreen implements GameOfCellsScreen {
     private final Stage stage;
-    private final List<Upgrade> upgrades;
     private final Cell cell;
     private final Main game;
     /// Gets information about inputs, like held-down keys.
@@ -96,9 +88,9 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
-    private int selectedUpgradeIndex = 0; // Tracks the currently selected upgrade
-    private Table upgradeTable; // Table containing the upgrade cards
-    private List<Table> upgradeCards; // List of individual upgrade card tables
+    private int selectedOptionIndex = 0; // Tracks the currently selected option
+    private Table sizeUpgradeTable; // Table containing the size upgrade cards
+    private List<Table> optionCards; // List of individual option card tables
 
     /**
      * Constructs the GamePlayScreen.
@@ -132,15 +124,8 @@ public class ShopScreen implements GameOfCellsScreen {
         this.particles = new Particles(whitePixelTexture);
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
-         // Initialize upgrades
-         upgrades = new ArrayList<>();
-         upgrades.add(new MitochondriaUpgrade());
-         upgrades.add(new RibosomeUpgrade());
-         upgrades.add(new FlagellaUpgrade());
-         upgrades.add(new NucleusUpgrade());
-
          // Create UI
-         createUI();
+        createUI();
     }
 
     /**
@@ -174,21 +159,32 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
-            if (selectedUpgradeIndex > 0) {
-                selectedUpgradeIndex--;
-                centerSelectedUpgrade();
+            if (selectedOptionIndex > 0) {
+                selectedOptionIndex--;
+                updateOptionSelection();
             }
         } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
-            if (selectedUpgradeIndex < upgrades.size() - 1) {
-                selectedUpgradeIndex++;
-                centerSelectedUpgrade();
+            if (selectedOptionIndex < optionCards.size() - 1) {
+                selectedOptionIndex++;
+                updateOptionSelection();
             }
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
-            Upgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
-            if (selectedUpgrade.canPurchase(cell, this)) {
-                selectedUpgrade.applyUpgrade(cell);
+            // Handle selection of the current option
+            if (selectedOptionIndex == 0) {
+                // Size option selected
+                sizeUpgradeTable.setVisible(true); // Show the size upgrade table
+            } else if (selectedOptionIndex == 1) {
+                // Organelle option selected
+                // Navigate to the organelle upgrade screen
+                game.setScreen(new OrganelleUpgradeScreen(
+                    game, 
+                    inputProvider, 
+                    graphicsProvider, 
+                    assetManager, 
+                    this, 
+                    cell));
             }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             // Fade put before exiting the shop screen
             stage.getRoot().addAction(Actions.sequence(
                 Actions.fadeOut(1f), // Fade out over 1 seconds
@@ -326,20 +322,38 @@ public class ShopScreen implements GameOfCellsScreen {
         sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
         mainTable.add(sizeLabel).padTop(10).row();
 
-        // Upgrade cards
-        upgradeTable = new Table();
-        upgradeCards = new ArrayList<>();
+        // Table for Size and Organelle
+        Table optionsTable = new Table();
+        optionCards = new ArrayList<>();
 
-        for (Upgrade upgrade : upgrades) {
-            Table card = createUpgradeCard(upgrade);
-            upgradeCards.add(card);
-            upgradeTable.add(card).pad(10);
-        }
+        Table sizeCard = createOptionCard("Size", "Increase the size of the cell");
+        Table organelleCard = createOptionCard("Organelle", "Purchase organelle upgrades");
 
-        mainTable.add(upgradeTable).expand().fill().pad(20).row();
+        // Add the cards to the list and table
+        optionCards.add(sizeCard);
+        optionCards.add(organelleCard);
+        optionsTable.add(sizeCard).pad(10);
+        optionsTable.add(organelleCard).pad(10);
+
+        // Add the main table to the stage
+        mainTable.add(optionsTable).padTop(50).row();
+
+        // Create the upgrade tables
+        sizeUpgradeTable = new Table(); // Size upgrade table
+
+        // Add size upgrades to the size upgrade table
+        // (You can create a separate list of size upgrades if needed)
+        // For now, we'll just add a splaceholder label
+        Label sizeUpgradeLabel = new Label("Size upgrades coming soon!",
+            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
+        sizeUpgradeLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
+        sizeUpgradeTable.add(sizeUpgradeLabel).pad(10);
+
+        // Add the upgrade tables to the main table
+        mainTable.add(sizeUpgradeTable).expand().fill().pad(20).row(); // Initially hidden
 
         // Exit instructions
-        Label exitLabel = new Label("Press E to exit | Arrow keys to navigate | Enter to purchase",
+        Label exitLabel = new Label("Press ESC to exit | Arrow keys to navigate | Enter to select",
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
 
         exitLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
@@ -347,16 +361,20 @@ public class ShopScreen implements GameOfCellsScreen {
 
         stage.addActor(mainTable);
 
-        // Center the selected upgrade initially
-        centerSelectedUpgrade();
+        // Set the initial visibility of the upgrade tables
+        sizeUpgradeTable.setVisible(false); // Hide the size upgrades
+
+        // Highlight the initially selected option (size)
+        updateOptionSelection();
     }
 
     /**
-     * Create a table for an upgrade card.
-     * @param upgrade
+     * Create a table for an option card.
+     * @param title
+     * @param description
      * @return
      */
-    private Table createUpgradeCard(Upgrade upgrade) {
+    private Table createOptionCard(String title, String description) {
         Table card = new Table();
         card.defaults().center().pad(5); // Center all elements and add padding
 
@@ -372,35 +390,22 @@ public class ShopScreen implements GameOfCellsScreen {
         // Add the glowing border to the card
         card.addActor(glowingBorder); // Add the border as an actor (not part of the table layout)
 
-        // Set custom background based on the upgrade type
-        if (upgrade instanceof MitochondriaUpgrade) {
-            card.setBackground(new TextureRegionDrawable(createMitochondriaBackgroundTexture()));
-        } else if (upgrade instanceof RibosomeUpgrade) {
-            card.setBackground(new TextureRegionDrawable(createRibosomeBackgroundTexture()));
-        } else if (upgrade instanceof FlagellaUpgrade) {
-            card.setBackground(new TextureRegionDrawable(createFlagellaBackgroundTexture()));
-        } else if (upgrade instanceof NucleusUpgrade) {
-            card.setBackground(new TextureRegionDrawable(createNucleusBackgroundTexture()));
-        }
-        
-        // Upgrade name
-        Label nameLabel = new Label(upgrade.getName(),
+        // Set a custom background for the card
+        card.setBackground(new TextureRegionDrawable(createOptionBackgroundTexture()));
+
+        // Add padding to the top of the card
+        card.padTop(10);
+
+        // Title
+        Label titleLabel = new Label(title,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
-        nameLabel.setFontScale(UPGRADE_NAME_TEXT_SIZE);
-        nameLabel.setAlignment(Align.center); // Center the text
-        card.add(nameLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
+        titleLabel.setFontScale(UPGRADE_NAME_TEXT_SIZE);
+        titleLabel.setAlignment(Align.center); // Center the text
+        card.add(titleLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
 
-        // Upgrade cost
-        Label costLabel = new Label("Cost: " + upgrade.getCost() + "ATP",
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
-            BitmapFont.class), Color.WHITE));
-        costLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
-        costLabel.setAlignment(Align.center); // Center the text
-        card.add(costLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
-
-        // Upgrade description
-        Label descriptionLabel = new Label(upgrade.getDescription(),
+        // Description
+        Label descriptionLabel = new Label(description,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
         descriptionLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
@@ -408,21 +413,45 @@ public class ShopScreen implements GameOfCellsScreen {
         descriptionLabel.setAlignment(Align.center); // Center the text
         card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row(); // Adjusted width for padding
 
-        // Purchase button
-        TextButton purchaseButton = new TextButton("Purchase",
-            new TextButton.TextButtonStyle(null, null, null,
-                assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class)));
-        purchaseButton.setDisabled(!upgrade.canPurchase(cell, this));
-        purchaseButton.addListener(event -> {
-            if (upgrade.canPurchase(cell, this)) {
-                upgrade.applyUpgrade(cell);
-                return true;
-            }
-            return false;
-        });
-        card.add(purchaseButton).padTop(10).row();
-
         return card;
+    }
+
+    /**
+     * Update the selected option card.
+     */
+    private void updateOptionSelection() {
+        for (int i = 0; i < optionCards.size(); i++) {
+            Table card = optionCards.get(i);
+            Image glowingBorder = (Image) card.findActor("glowingBorder"); // Find the glowing border by name
+
+            if (glowingBorder != null) { // Check if the glowing border exists
+                if (i == selectedOptionIndex) {
+                    card.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.5f, Interpolation.smooth));
+                    glowingBorder.setVisible(true); // Show the glowing border
+                } else {
+                    card.addAction(Actions.scaleTo(1.0f, 1.0f, 0.5f, Interpolation.smooth));
+                    glowingBorder.setVisible(false); // Hide the glowing border
+                }
+            }
+        }
+    }
+
+    private Texture createOptionBackgroundTexture() {
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
+        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        // Draw the background using a gradient effect
+        pixmap.setColor(0.2f, 0.2f, 0.2f, 0.8f); // Dark gray with transparency
+        pixmap.fillRectangle(0, 0, width, height); // Fill the pixmap with the color
+
+        // Draw the pixmap to the texture
+        texture.draw(pixmap, 0, 0);
+        pixmap.dispose(); // Clean up the pixmap
+
+        return texture;
     }
 
     /**
@@ -458,39 +487,6 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Center the selected upgrade card in the upgrade table.
-     */
-    private void centerSelectedUpgrade() {
-        // Calculate the center position of the screen
-        float screenCenterX = VIEW_RECT_WIDTH / 2;
-
-        // Calculate the position of the selected card within the upgrade table
-        float selectedCardCenterX = selectedUpgradeIndex * UPGRADE_CARD_WIDTH + (UPGRADE_CARD_WIDTH / 2);
-
-        // Calculate the offset to center the selected card
-        float tableOffsetX = screenCenterX - selectedCardCenterX;
-
-        // Animate the upgrade table to the target X position
-        upgradeTable.addAction(Actions.moveTo(tableOffsetX, upgradeTable.getY(), 0.5f, Interpolation.smooth));
-
-        // Scale the selected upgrade card up and others down
-        for (int i = 0; i < upgradeCards.size(); i++) {
-            Table card = upgradeCards.get(i);
-            Image glowingBorder = (Image) card.findActor("glowingBorder"); // Find the glowing border by name
-
-            if (glowingBorder != null) { // Check if the glowing border exists
-                if (i == selectedUpgradeIndex) {
-                    card.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.5f, Interpolation.smooth));
-                    glowingBorder.setVisible(true); // Show the glowing border
-                } else {
-                    card.addAction(Actions.scaleTo(1.0f, 1.0f, 0.5f, Interpolation.smooth));
-                    glowingBorder.setVisible(false); // Hide the glowing border
-                }
-            }
-        }
-    }
-
-    /**
      * Update the ATP and size trackers.
      */
     private void updateTrackers() {
@@ -510,129 +506,5 @@ public class ShopScreen implements GameOfCellsScreen {
                 }
             }
         }
-    }
-
-    /**
-     * Draw the background for the Mitochondria upgrade.
-     */
-    private Texture createMitochondriaBackgroundTexture() {
-        // Create a texture for the Mitochondria upgrade background
-        int width = (int) UPGRADE_CARD_WIDTH;
-        int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        // Draw the Mitochondria background using blue for energy
-        pixmap.setColor(0.1f, 0.4f, 0.8f, 0.5f); // Blue energy
-        for (int i = 0; i < 50; i++) {
-            float x = MathUtils.random(0, width);
-            float y = MathUtils.random(0, height);
-            float size = MathUtils.random(10, 30);
-            pixmap.fillCircle((int) x, (int) y, (int) size);
-        }
-
-        // Draw the pixmap to the texture
-        texture.draw(pixmap, 0, 0);
-        pixmap.dispose(); // Clean up the pixmap
-
-        return texture;
-    }
-
-    /**
-     * Check if the cell has mitochondria.
-     * @return True if the cell has mitochondria, false otherwise.
-     */
-    public boolean hasMitochondria() {
-        return cell.hasMitochondria();
-    }
-
-    /**
-     * Draw the background for the Ribosome upgrade.
-     */
-    private Texture createRibosomeBackgroundTexture() {
-        // Create a texture for the Ribosome upgrade background
-        int width = (int) UPGRADE_CARD_WIDTH;
-        int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        // Draw the Ribosome background using yellow for protein synthesis
-        pixmap.setColor(0.8f, 0.8f, 0.1f, 0.5f); // Yellow protein (color-blind friendly)
-        for (int i = 0; i < 50; i++) {
-            float x = MathUtils.random(0, width);
-            float y = MathUtils.random(0, height);
-            float size = MathUtils.random(10, 30);
-            pixmap.fillCircle((int) x, (int) y, (int) size);
-        }
-
-        // Draw the pixmap to the texture
-        texture.draw(pixmap, 0, 0);
-        pixmap.dispose(); // Clean up the pixmap
-
-        return texture;
-    }
-
-    public boolean hasRibosome() {
-        return cell.getProteinSynthesisMultiplier() > 1.0f;
-    }
-
-    /**
-     * Draw the background for the Flagella upgrade.
-     */
-    private Texture createFlagellaBackgroundTexture() {
-        // Create a texture for the Flagella upgrade background
-        int width = (int) UPGRADE_CARD_WIDTH;
-        int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        // Draw the Flagella background using purple for movement
-        pixmap.setColor(0.6f, 0.1f, 0.8f, 0.5f); // Purple movement (color-blind friendly)
-        for (int i = 0; i < 50; i++) {
-            float x = MathUtils.random(0, width);
-            float y = MathUtils.random(0, height);
-            float size = MathUtils.random(10, 30);
-            pixmap.fillCircle((int) x, (int) y, (int) size);
-        }
-
-        // Draw the pixmap to the texture
-        texture.draw(pixmap, 0, 0);
-        pixmap.dispose(); // Clean up the pixmap
-
-        return texture;
-    }
-
-    public boolean hasFlagella() {
-        return cell.getMovementSpeedMultiplier() > 1.0f;
-    }
-
-    /**
-     * Draw the background for the Nucleus upgrade.
-     */
-    private Texture createNucleusBackgroundTexture() {
-        // Create a texture for the Nucleus upgrade background
-        int width = (int) UPGRADE_CARD_WIDTH;
-        int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        // Draw the Nucleus background using orange for DNA
-        pixmap.setColor(0.8f, 0.4f, 0.1f, 0.5f); // Orange DNA (color-blind friendly)
-        for (int i = 0; i < 50; i++) {
-            float x = MathUtils.random(0, width);
-            float y = MathUtils.random(0, height);
-            float size = MathUtils.random(10, 30);
-            pixmap.fillCircle((int) x, (int) y, (int) size);
-        }
-
-        // Draw the pixmap to the texture
-        texture.draw(pixmap, 0, 0);
-        pixmap.dispose(); // Clean up the pixmap
-
-        return texture;
     }
 }

@@ -1,13 +1,13 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
 
 /**
  * Ribosome upgrade.
  */
 public class NucleusUpgrade extends Upgrade {
     public NucleusUpgrade() {
-        super("Nucleus", 90, "Control center of the cell\nUnlocks advanced abilities", 90, 200);
+        super("Nucleus", 90, "Control center of the cell\nUnlocks advanced abilities", 90, 4);
     }
 
     @Override
@@ -17,8 +17,8 @@ public class NucleusUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean isPreviousUpgradePurchased(ShopScreen shopScreen) {
+    public boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
         // Nucleus requires Flagella to be purchased.
-        return shopScreen.hasFlagella();
+        return organelleUpgradeScreen.hasFlagella();
     }
 }

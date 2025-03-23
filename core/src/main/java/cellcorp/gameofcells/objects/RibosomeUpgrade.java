@@ -1,13 +1,13 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
 
 /**
  * Ribosome upgrade.
  */
 public class RibosomeUpgrade extends Upgrade {
     public RibosomeUpgrade() {
-        super("Ribosome", 50, "Protein synthesis factory\nIncreases protein synthesis", 50, 100); 
+        super("Ribosome", 50, "Protein synthesis factory\nIncreases protein synthesis", 50, 2); 
     }
 
     /**
@@ -23,8 +23,8 @@ public class RibosomeUpgrade extends Upgrade {
      * Check if the previous upgrade is purchased.
      */
     @Override
-    public boolean isPreviousUpgradePurchased(ShopScreen shopScreen) {
+    public boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
         // Ribosome requires Mitochondria to be purchased.
-        return shopScreen.hasMitochondria();
+        return organelleUpgradeScreen.hasMitochondria();
     }
 }

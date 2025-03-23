@@ -1,6 +1,6 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
 
 /**
  * Based class for all upgrades
@@ -27,13 +27,13 @@ public abstract class Upgrade {
     /**
      * Check if the player can purchase this upgrade
      */
-    public boolean canPurchase(Cell cell, ShopScreen shopScreen) {
+    public boolean canPurchase(Cell cell, OrganelleUpgradeScreen organelleUpgradeScreen) {
         if (cell.getCellATP() < cost || cell.getcellSize() < requiredSize) {
             return false;
         }
 
         // Check if previous upgrade is purchased
-        return isPreviousUpgradePurchased(shopScreen);
+        return isPreviousUpgradePurchased(organelleUpgradeScreen);
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class Upgrade {
     /**
      * Check if the previous upgrade is purchased.
      */
-    protected abstract boolean isPreviousUpgradePurchased(ShopScreen shopScreen);
+    protected abstract boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen);
 
     /**
      * Get the name of the upgrade

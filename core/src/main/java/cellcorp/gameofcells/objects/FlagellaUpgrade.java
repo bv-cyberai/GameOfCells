@@ -1,13 +1,13 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
 
 /**
  * Flagella upgrade.
  */
 public class FlagellaUpgrade extends Upgrade {
     public FlagellaUpgrade() {
-        super("Flagella", 70, "Cell movement and propulsion\nIncreases movement speed", 70, 150);
+        super("Flagella", 70, "Cell movement and propulsion\nIncreases movement speed", 70, 3);
     }
 
     @Override
@@ -17,8 +17,8 @@ public class FlagellaUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean isPreviousUpgradePurchased(ShopScreen shopScreen) {
+    public boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
         // Flagella requires Ribosome to be purchased.
-        return shopScreen.hasRibosome();
+        return organelleUpgradeScreen.hasRibosome();
     }
 }
