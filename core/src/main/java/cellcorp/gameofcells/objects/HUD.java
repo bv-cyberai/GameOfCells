@@ -1,16 +1,14 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 
 /**
  * Hud Class
@@ -40,13 +38,12 @@ public class HUD {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
-
     private final AssetManager assetManager;
 
     // HUD gets its own viewport (with its own internal camera)
     // It's position is never moved, so draw calls should always
-    //      take values in the range:
-    //      `(0, 0) .. (VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)`
+    // take values in the range:
+    // `(0, 0) .. (VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)`
     // See Main for more information.
     private final Viewport viewport;
     // To avoid having to reset the projection matrices after each draw call,
@@ -60,6 +57,8 @@ public class HUD {
     // fonts
     private BitmapFont font;
     private BitmapFont barFont;
+    private float hudFontScale;
+    private float barFontScale;
 
     // glyph
     private GlyphLayout healthLayout;
@@ -117,6 +116,8 @@ public class HUD {
 
         healthLayout = new GlyphLayout();
         ATPLayout = new GlyphLayout();
+        hudFontScale = 0.25f;
+        barFontScale = 0.2f;
 
         // For now these are hardcoded/pulled form the EnergyBar Class.
         // Don't see a huge need to not do that.
@@ -124,13 +125,6 @@ public class HUD {
         healthBarHeight = 25;
         ATPBarY = 740;
         ATPBarHeight = 25;
-
-        if (assetManager != null) {
-            assetManager.load("rubik.fnt", BitmapFont.class);
-            assetManager.load("rubik1.png", Texture.class);
-            assetManager.load("rubik2.png", Texture.class);
-            assetManager.finishLoading();
-        }
     }
 
     /**
@@ -152,8 +146,12 @@ public class HUD {
     private void drawHudText(SpriteBatch batch) {
         batch.begin();
         if (font == null) {
-            font = assetManager.get("rubik.fnt", BitmapFont.class);
-            font.getData().setScale(0.25f); // Set the scale of the font
+            font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+            font.getData().setScale(hudFontScale); // Set the scale of the font
+        }
+        if (font.getScaleX() != hudFontScale || font.getScaleY() != hudFontScale) {
+            // Fonts are shared, and scale needs to be reset on Screen changes.
+            font.getData().setScale(hudFontScale);
         }
         font.draw(batch, cellHealthString, 10, 790);
         font.draw(batch, atpString, 10, 770);
@@ -179,8 +177,8 @@ public class HUD {
     public void drawBarText(SpriteBatch batch) {
         if (barFont == null) {
             // setup font
-            barFont = assetManager.get("rubik.fnt", BitmapFont.class);
-            barFont.getData().setScale(.20f);
+            barFont = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+            barFont.getData().setScale(barFontScale);
 
             // setup glyphs
             healthLayout.setText(barFont, "HEALTH");
@@ -197,16 +195,16 @@ public class HUD {
             ATPTextY = ATPBarY + (ATPBarHeight / 2) + (ATPTextHeight / 2);
         }
 
+        if (barFont.getScaleX() != barFontScale || font.getScaleY() != barFontScale) {
+            // Fonts are shared, and scale needs to be reset on Screen changes.
+            font.getData().setScale(barFontScale);
+        }
+
         batch.begin();
         barFont.draw(batch, "HEALTH", (VIEW_RECT_WIDTH - healthTextWidth) / 2, healthTextY);
         barFont.draw(batch, "ATP", (VIEW_RECT_WIDTH - ATPTextWidth) / 2, ATPTextY);
         batch.end();
     }
-
-//    public void drawUpgradeMessage(SpriteBatch batch) {
-//        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-//        if ()
-//    }
 
     /**
      * Updater

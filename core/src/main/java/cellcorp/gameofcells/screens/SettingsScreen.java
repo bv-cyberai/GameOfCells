@@ -52,6 +52,7 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     private Particles particles;
 
+
     public SettingsScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -69,17 +70,6 @@ public class SettingsScreen implements GameOfCellsScreen {
 
         Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
         particles = new Particles(whitePixelTexture);
-
-        if (assetManager != null) {
-            assetManager.load("rubik.fnt", BitmapFont.class);
-            assetManager.load("rubik1.png", Texture.class);
-            assetManager.load("rubik2.png", Texture.class);
-            assetManager.finishLoading();
-            assetManager.load("rubik_yellow.fnt", BitmapFont.class);
-            assetManager.load("rubik_yellow1.png", Texture.class);
-            assetManager.load("rubik_yellow2.png", Texture.class);
-            assetManager.finishLoading();
-        }
 
         layout = new GlyphLayout();
 
@@ -165,9 +155,9 @@ public class SettingsScreen implements GameOfCellsScreen {
         ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark blue background
 
         if (whiteFont == null || yellowFont == null) {
-            whiteFont = assetManager.get("rubik.fnt", BitmapFont.class);
+            whiteFont = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
             whiteFont.getData().setScale(0.375f); // Set the scale of the font
-            yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
+            yellowFont = assetManager.get(AssetFileNames.HUD_FONT_YELLOW, BitmapFont.class);
             yellowFont.getData().setScale(0.375f); // Set the scale of the font
 
             // used to get the width of the longest option for centering.
@@ -183,8 +173,6 @@ public class SettingsScreen implements GameOfCellsScreen {
 
         // Draw the settings menu
         spriteBatch.begin();
-        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-        font.getData().setScale(2); // Set the font size
 
         float menuX = (viewport.getWorldWidth() - layout.width) / 2; // Center the menu
         float menuY = ((viewport.getWorldHeight()) / 2) + 50 + layout.height; // Start position for the menu

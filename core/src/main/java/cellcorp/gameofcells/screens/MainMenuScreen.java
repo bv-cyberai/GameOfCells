@@ -81,16 +81,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
         Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
         this.particles = new Particles(whitePixelTexture);
 
-        if (assetManager != null) {
-            assetManager.load("rubik.fnt", BitmapFont.class);
-            assetManager.load("rubik1.png", Texture.class);
-            assetManager.load("rubik2.png", Texture.class);
-            assetManager.finishLoading();
-            assetManager.load("rubik_yellow.fnt", BitmapFont.class);
-            assetManager.load("rubik_yellow1.png", Texture.class);
-            assetManager.load("rubik_yellow2.png", Texture.class);
-            assetManager.finishLoading();
-        }
         layout = new GlyphLayout();
     }
 
@@ -200,9 +190,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
         ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark purple background
 
         if (whiteFont == null || yellowFont == null) {
-            whiteFont = assetManager.get("rubik.fnt", BitmapFont.class);
+            whiteFont = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
             whiteFont.getData().setScale(0.375f); // Set the scale of the font
-            yellowFont = assetManager.get("rubik_yellow.fnt", BitmapFont.class);
+            yellowFont = assetManager.get(AssetFileNames.HUD_FONT_YELLOW, BitmapFont.class);
             yellowFont.getData().setScale(0.375f); // Set the scale of the font
             layout.setText(whiteFont, MENU_OPTIONS[0]);
         }

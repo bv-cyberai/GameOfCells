@@ -3,13 +3,13 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
@@ -131,12 +131,7 @@ public class GameOverScreen implements GameOfCellsScreen {
         viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
-        // figure out how to load once.
-        assetManager.load("rubik.fnt", BitmapFont.class);
-        assetManager.load("rubik1.png", Texture.class); // Texture for font characters
-        assetManager.load("rubik2.png", Texture.class); // Texture for font characters
-        assert (font != null);
-        font = assetManager.get("rubik.fnt", BitmapFont.class);
+        font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
         font.getData().setScale(0.5f); // Set the scale of the font
 
         // in draw :( but don't see another way.

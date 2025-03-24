@@ -145,8 +145,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param game             The main game instance.
      */
     public GamePlayScreen(
-            InputProvider inputProvider, 
-            GraphicsProvider graphicsProvider, 
+            InputProvider inputProvider,
+            GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager) {
 
@@ -254,17 +254,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     graphicsProvider,
                     assetManager,
                     this, // Pass the current screen to the shop screen
-                    cell
-            ));
+                    cell));
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
             game.setScreen(new GameOverScreen(
-                inputProvider, 
-                assetManager, 
-                graphicsProvider, 
-                game
-            ));
+                    inputProvider,
+                    assetManager,
+                    graphicsProvider,
+                    game));
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
@@ -302,7 +300,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         var glucoseToRemove = new ArrayList<Glucose>();
         for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
             var glucose = getGlucoseManager().getGlucoseArray().get(i);
-            if(cell.getcellCircle().overlaps(glucose.getCircle())) {
+            if (cell.getcellCircle().overlaps(glucose.getCircle())) {
                 glucoseToRemove.add(glucose);
                 cell.addCellATP(Glucose.ATP_PER_GLUCOSE);
 

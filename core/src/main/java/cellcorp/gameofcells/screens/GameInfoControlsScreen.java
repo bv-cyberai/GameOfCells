@@ -45,7 +45,6 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private Particles particles;
 
     private BitmapFont whiteFont;
-    private BitmapFont yellowFont;
 
     private final GlyphLayout layout;
     private String controlMessage;
@@ -71,18 +70,6 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
         particles = new Particles(whitePixelTexture);
 
-        if (assetManager != null) {
-            assetManager.load("rubik.fnt", BitmapFont.class);
-            assetManager.load("rubik1.png", Texture.class);
-            assetManager.load("rubik2.png", Texture.class);
-            assetManager.finishLoading();
-            // Kept this commented out incase we want to utilize in the future
-            // Let me know if you prefer it removed.
-            // assetManager.load("rubik_yellow.fnt", BitmapFont.class);
-            // assetManager.load("rubik_yellow1.png", Texture.class);
-            // assetManager.load("rubik_yellow2.png", Texture.class);
-            // assetManager.finishLoading();
-        }
         layout = new GlyphLayout();
         controlMessage = "Game Info:\n" +
                 "Welcome to Game of Cells!\n" +
@@ -160,7 +147,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
         // Font Setup
         if (whiteFont == null) {
-            whiteFont = assetManager.get("rubik.fnt", BitmapFont.class);
+            whiteFont = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
             whiteFont.getData().setScale(0.375f);
             CharSequence cs = controlMessage;
             layout.setText(whiteFont, cs, 0, cs.length(), Color.WHITE, 800, Align.left, true, null);

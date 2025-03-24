@@ -3,7 +3,6 @@ package cellcorp.gameofcells.screens;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
@@ -115,14 +115,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         padding = -10; // negative padding shifts y down, and x left. Should not need to be changed.
         popUpSize = 500f;
-
-        // Load Font
-        if (assetManager != null) {
-            assetManager.load("rubik.fnt", BitmapFont.class);
-            assetManager.load("rubik1.png", Texture.class);
-            assetManager.load("rubik2.png", Texture.class);
-            assetManager.finishLoading();
-        }
         setMessage();
     }
 
@@ -244,7 +236,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         }
 
         if (font == null) {
-            font = assetManager.get("rubik.fnt", BitmapFont.class);
+            font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
             font.getData().setScale(0.375f); // Set the scale of the font
 
             //wrap and align text.
