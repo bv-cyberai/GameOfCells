@@ -1,14 +1,12 @@
 package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
 
 import cellcorp.gameofcells.AssetFileNames;
-import com.badlogic.gdx.math.Circle;
 
 /**
  * Cell Class
@@ -42,20 +40,15 @@ public class Cell {
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
 
-    private Circle collisionCircle = null;
-
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
-
-        cellPositionX = 500;
-        cellPositionY = 300;
-        cellDiameter = 200;
         cellHealth = 100;
-        cellATP = 30;
         maxHealth = 100;
+        
+        cellATP = 30;
         maxATP = 100; // Alpha is actually 99, but thats painful.
-        cellCircle = new Circle();
-        cellCircle.set(cellPositionX, cellPositionY, cellDiameter/2);
+        
+        cellCircle = new Circle(new Vector2(500,300),100);
     }
 
     /**
@@ -69,14 +62,13 @@ public class Cell {
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
         if (moveLeft)
-            cellPositionX -= cellSpeed * deltaTime;
+            cellCircle.x -= cellSpeed * deltaTime;
         if (moveRight)
-            cellPositionX += cellSpeed * deltaTime;
+            cellCircle.x += cellSpeed * deltaTime;
         if (moveUp)
-            cellPositionY += cellSpeed * deltaTime;
+            cellCircle.y += cellSpeed * deltaTime;
         if (moveDown)
-            cellPositionY -= cellSpeed * deltaTime;
-        updateCollisionCircle();
+            cellCircle.y -= cellSpeed * deltaTime;
     }
 
     /**
@@ -98,15 +90,15 @@ public class Cell {
     public void draw(SpriteBatch batch) {
         // Draw cell centered around its position.
 
-        float bottomLeftX = cellPositionX - (cellDiameter / 2);
-        float bottomLeftY = cellPositionY - (cellDiameter / 2);
+        float bottomLeftX = cellCircle.x - (cellCircle.radius);
+        float bottomLeftY = cellCircle.y - (cellCircle.radius);
 
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         assert (cellTexture != null);
-        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellDiameter, cellDiameter);
+        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellCircle.radius*2, cellCircle.radius*2);
 
         // Draw mitochondria if the upgrade is purchased
         if (hasMitochondria) {
@@ -114,11 +106,13 @@ public class Cell {
             assert (mitochondriaTexture != null);
 
             // Draw mitochondria inside the cell
-            float mitochondriaSize = cellDiameter * 0.2f; // Make mitochondria smaller (30% of cell size)
-            float mitochondriaX = cellPositionX - (cellDiameter / 4); // Position in the bottom-left of the cell
-            float mitochondriaY = cellPositionY - (cellDiameter / 4); // Position in the bottom-left of the cell
+            float mitochondriaSize = (cellCircle.radius*2) * 0.2f; // Make mitochondria smaller (30% of cell size)
+            float mitochondriaX = cellCircle.x - ((cellCircle.radius*2) / 4); // Position in the bottom-left of the cell
+            float mitochondriaY = cellCircle.y - (cellCircle.radius*2 / 4); // Position in the bottom-left of the cell
             batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
         }
+
+        
     }
 
     /**
@@ -127,7 +121,7 @@ public class Cell {
      * @return cellPositionX
      */
     public float getCellPositionX() {
-        return cellPositionX;
+        return cellCircle.x;
     }
 
     /**
@@ -136,7 +130,7 @@ public class Cell {
      * @return cellPositionY
      */
     public float getCellPositionY() {
-        return cellPositionY;
+        return cellCircle.y;
     }
 
     /**
@@ -145,7 +139,7 @@ public class Cell {
      * @return cellDiameter
      */
     public float getCellDiameter() {
-        return cellDiameter;
+        return cellCircle.radius*2;
     }
 
     /**
@@ -213,19 +207,16 @@ public class Cell {
         cellATP = Math.max(cellATP - decreaseAmount, 0);
     }
 
-    public void increaseCellDiameter(float diameterIncrease) {
-        this.cellDiameter += diameterIncrease;
-        updateCollisionCircle();
-    }
-
     /**
-     * Calculate the cell collision circle based on the cell's radius and position.
+     * Increase the cell diameter
+     * 
+     * @param diameterIncrease - The amount to increase the cell by. 
      */
-    private void updateCollisionCircle() {
-        this.cellCircle = new Circle(cellPositionX, cellPositionY, cellDiameter / 2);
+    public void increaseCellDiameter(float diameterIncrease) {
+        cellCircle.radius += diameterIncrease/2;
     }
 
-    /**
+      /**
      * Check if the glucose popup has been shown
      */
     public boolean hasShownGlucosePopup() {
