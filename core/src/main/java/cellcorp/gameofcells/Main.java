@@ -134,9 +134,6 @@ public class Main implements ApplicationListener {
         assetManager.load("rubik_yellow.fnt", BitmapFont.class);
         assetManager.load("rubik_yellow1.png", Texture.class);
         assetManager.load("rubik_yellow2.png", Texture.class);
-        assetManager.load(AssetFileNames.START_BACKGROUND, Texture.class);
-        assetManager.load(AssetFileNames.GAME_BACKGROUND, Texture.class);
-        assetManager.load(AssetFileNames.SHOP_BACKGROUND, Texture.class);
         assetManager.load(AssetFileNames.CELL, Texture.class);
         assetManager.load(AssetFileNames.GLUCOSE, Texture.class);
         assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);

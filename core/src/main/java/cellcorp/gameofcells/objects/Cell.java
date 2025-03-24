@@ -50,7 +50,7 @@ public class Cell {
         this.gamePlayScreen = gamePlayScreen;
         this.configProvider = configProvider;
         setUserConfigOrDefault();
-        cellSize = 500;
+        cellSize = 100;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize);
     }
