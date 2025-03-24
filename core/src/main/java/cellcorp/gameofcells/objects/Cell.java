@@ -1,15 +1,12 @@
 package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 import cellcorp.gameofcells.AssetFileNames;
-import com.badlogic.gdx.math.Circle;
 
 /**
  * Cell Class
@@ -39,9 +36,6 @@ public class Cell {
     private int maxHealth;
     private int maxATP;
     private Circle cellCircle;
-
-
-    private Circle collisionCircle = null;
 
     public Cell(AssetManager assetManager) {
         this.assetManager = assetManager;
