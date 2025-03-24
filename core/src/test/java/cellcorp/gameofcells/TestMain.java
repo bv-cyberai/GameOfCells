@@ -3,9 +3,7 @@ package cellcorp.gameofcells;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,8 +37,8 @@ public class TestMain {
         // Make sure we're on the gameplay screen, and that some glucose have spawned
         var screen = gameRunner.game.getScreen();
         assertInstanceOf(GamePlayScreen.class, screen);
-        var gamePlayScreen = (GamePlayScreen) screen;
-        var glucoseArray = gamePlayScreen.getGlucoseManager().getGlucoseArray();
+        var currentGamePlayScreen = (GamePlayScreen) screen;
+        var glucoseArray = currentGamePlayScreen.getGlucoseManager().getGlucoseArray();
         assertNotEquals(0, glucoseArray.size());
 
         // Let the game run for 2 seconds, with nothing held down.
@@ -56,8 +54,8 @@ public class TestMain {
         // actual game.
         screen = gameRunner.game.getScreen();
         assertInstanceOf(GamePlayScreen.class, screen);
-        gamePlayScreen = (GamePlayScreen) screen;
-        glucoseArray = gamePlayScreen.getGlucoseManager().getGlucoseArray();
+        currentGamePlayScreen = (GamePlayScreen) screen;
+        glucoseArray = currentGamePlayScreen.getGlucoseManager().getGlucoseArray();
         assertNotEquals(0, glucoseArray.size());
     }
 
@@ -147,7 +145,7 @@ public class TestMain {
         gameRunner.step();
         gameRunner.runForSeconds(2);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
         gameRunner.step();
         var screen = (GamePlayScreen) gameRunner.game.getScreen();
         String time = screen.getHud().getTimerString();
@@ -162,11 +160,11 @@ public class TestMain {
         gameRunner.step();
         var screen = gameRunner.game.getScreen();
         assert screen instanceof GamePlayScreen;
-        var gamePlayScreen = (GamePlayScreen) screen;
+        var currentGamePlayScreen = (GamePlayScreen) screen;
         gameRunner.step();
 
         // Spawn multiple glucose on top of the cell
-        var cell = gamePlayScreen.getCell();
+        var cell = currentGamePlayScreen.getCell();
 
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
@@ -177,10 +175,9 @@ public class TestMain {
 
         var testCell = new Cell(gamePlayScreen,fakeAssetManager,fakeConfigProvider);
         System.out.println("TESTCELLSTART" + testCell.getCellATP());
-
         var startATP = cell.getCellATP();
         System.out.println("START ATP:" + startATP);
-        var gameGlucose = gamePlayScreen.getGlucoseManager().getGlucoseArray();
+        var gameGlucose = currentGamePlayScreen.getGlucoseManager().getGlucoseArray();
 
         var addedGlucose = new ArrayList<Glucose>();
         for (int i = 0; i < 10; i++) {
@@ -197,7 +194,7 @@ public class TestMain {
         // Assert that all the glucose have been removed, and that the cell ATP has
         // increased 10 times.
         for (var glucose : addedGlucose) {
-            assert !gameGlucose.contains(glucose);
+            assertFalse(gameGlucose.contains(glucose));
         }
         System.out.println(cell.getCellATP());
         assertEquals(100, cell.getCellATP());

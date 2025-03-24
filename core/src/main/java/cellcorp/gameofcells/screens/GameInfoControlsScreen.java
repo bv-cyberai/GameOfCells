@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -41,7 +42,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private final Main game;
     private final AssetManager assetManager;
     private final Camera camera;
-    private final FitViewport viewport;
+    private final Viewport viewport;
     private final SpriteBatch spriteBatch;
 
     private Particles particles;
@@ -55,12 +56,12 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private float startY;
 
     public GameInfoControlsScreen(
-        InputProvider inputProvider,
-        GraphicsProvider graphicsProvider,
-        Main game,
-        AssetManager assetManager,
-        Camera camera,
-        FitViewport viewport, ConfigProvider configProvider) {
+            InputProvider inputProvider,
+            GraphicsProvider graphicsProvider,
+            Main game,
+            AssetManager assetManager,
+            Camera camera,
+            Viewport viewport, ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.configProvider = configProvider;

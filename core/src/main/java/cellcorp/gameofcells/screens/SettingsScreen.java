@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -45,7 +45,7 @@ public class SettingsScreen implements GameOfCellsScreen {
     private final Main game;
     private final AssetManager assetManager;
     private final Camera camera;
-    private final FitViewport viewport;
+    private final Viewport viewport;
     private final SpriteBatch spriteBatch;
 
     private BitmapFont whiteFont;
@@ -56,12 +56,14 @@ public class SettingsScreen implements GameOfCellsScreen {
 
 
     public SettingsScreen(
-        InputProvider inputProvider,
-        GraphicsProvider graphicsProvider,
-        Main game,
-        AssetManager assetManager,
-        Camera camera,
-        FitViewport viewport, ConfigProvider configProvider) {
+            InputProvider inputProvider,
+            GraphicsProvider graphicsProvider,
+            Main game,
+            AssetManager assetManager,
+            Camera camera,
+            Viewport viewport,
+            ConfigProvider configProvider
+    ) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.configProvider = configProvider;

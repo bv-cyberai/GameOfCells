@@ -94,8 +94,8 @@ public class Cell {
     public void draw(SpriteBatch batch) {
         // Draw cell centered around its position.
 
-        float bottomLeftX = cellPositionX - (cellSize / 2);
-        float bottomLeftY = cellPositionY - (cellSize / 2);
+        float bottomLeftX = cellCircle.x - (cellSize / 2);
+        float bottomLeftY = cellCircle.y - (cellSize / 2);
 
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
@@ -111,8 +111,8 @@ public class Cell {
 
             // Draw mitochondria inside the cell
             float mitochondriaSize = cellSize * 0.2f; // Make mitochondria smaller (30% of cell size)
-            float mitochondriaX = cellPositionX - (cellSize / 4); // Position in the bottom-left of the cell
-            float mitochondriaY = cellPositionY - (cellSize / 4); // Position in the bottom-left of the cell
+            float mitochondriaX = cellCircle.x - (cellSize / 4); // Position in the bottom-left of the cell
+            float mitochondriaY = cellCircle.y - (cellSize / 4); // Position in the bottom-left of the cell
             batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
         }
 
