@@ -103,6 +103,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(ShopScreen.VIEW_RECT_WIDTH, ShopScreen.VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
+
         this.particles = new Particles(assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class));
         this.stage = new Stage(graphicsProvider.createFitViewport(ShopScreen.VIEW_RECT_WIDTH, ShopScreen.VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
@@ -123,7 +124,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
      */
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 0.5f); // Semi-transparent black background
+        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Clear the screen with a dark color
 
         particles.update(delta, ShopScreen.VIEW_RECT_WIDTH, ShopScreen.VIEW_RECT_HEIGHT);
         particles.draw(batch);
@@ -534,7 +535,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         messageLabel.setAlignment(Align.center);
 
         // Position the message label at the bottom of the screen
-        messageLabel.setPosition(ShopScreen.VIEW_RECT_WIDTH / 2 - messageLabel.getWidth() / 2, 50); // Centered horizontally
+        messageLabel.setPosition(ShopScreen.VIEW_RECT_WIDTH / 2 - messageLabel.getWidth() / 2, 100); // Centered horizontally
 
         // Add the message label to the stage
         stage.addActor(messageLabel);

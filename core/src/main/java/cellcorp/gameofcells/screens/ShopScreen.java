@@ -137,7 +137,7 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void render(float delta) {
         // Clear the screen with a semi-transparent black color
-        ScreenUtils.clear(0, 0, 0, 0.5f); // 50% transparency
+        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Clear the screen with a dark color
 
         // Update and draw the particles
         particles.update(delta, VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
