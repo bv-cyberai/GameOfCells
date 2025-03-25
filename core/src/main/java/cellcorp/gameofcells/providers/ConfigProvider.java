@@ -53,7 +53,15 @@ public class ConfigProvider {
             System.out.println("=====================");
             System.out.println(descriptionString);
             System.out.println("=================");
-
+            System.out.println("LINE: " + line);
+            System.out.println(line.contains("#"));
+            if(line.contains("#")) {
+                int trimIndex = line.indexOf("#");
+                String trimmedLine = line.substring(0,trimIndex);
+                System.out.println(trimmedLine);
+                trimmedLine = trimmedLine.trim();
+                System.out.println(trimmedLine);
+            }
 
             if(line.contains("[descriptions]")) {
                 break;
