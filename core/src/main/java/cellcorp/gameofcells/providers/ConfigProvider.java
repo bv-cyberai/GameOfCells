@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -48,32 +49,32 @@ public class ConfigProvider {
 
     private void parseObjectAttributes() {
         for (String line : fileString.split("\n",-1)) {
-//            System.out.println(line);
-            descriptionString = descriptionString.substring(line.length());
-
-
-//            if (descriptionString.startsWith(line)) {
-//                descriptionString = descriptionString.substring(line.length()).trim();
-//            }
+            descriptionString = descriptionString.substring(line.length()+1);
             System.out.println("=====================");
             System.out.println(descriptionString);
             System.out.println("=================");
 
+
+            if(line.contains("[descriptions]")) {
+                break;
+            }
             //These are lines for the user - skip parsing.
             if(line.startsWith("[")||line.startsWith("#")|| line.isEmpty()){
                 continue;
             }
 
             //Descriptions require different parsing, break loop.
-            if(line.equals("[descriptions]")) {
-                break;
-            }
+
+
+
         }
     }
 
     private void parseDescriptions() {
-        for (String line : fileString.split("\n")) {
+        for (String line : descriptionString.split("/")) {
             System.out.println(line);
+            String[] lineArray = line.split(":");
+            System.out.println(Arrays.toString(lineArray));
         }
     }
 

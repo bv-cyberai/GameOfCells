@@ -18,4 +18,5 @@ mitochondriaUpgradeCost:30 ##Unsure
 ## Messages must be placed inside <> and include "". These should not be used inside the message.
 [descriptions]
 [pop-ups]
-glucosePopupMessage:<"You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!"\>
+glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!/
+testMessage:This is a test\n message/
