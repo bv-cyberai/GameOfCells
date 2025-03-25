@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
@@ -44,7 +45,7 @@ public class AttractScreen implements GameOfCellsScreen {
     // Game objects
     private Cell cell;
     private List<Glucose> glucoseList;
-    
+
     // Simulation state
     private float animationTime = 0f; // Track time for simulation
     private boolean isSimulationRunning = true;
@@ -80,7 +81,7 @@ public class AttractScreen implements GameOfCellsScreen {
         this.particles = new Particles(whitePixelTexture);
 
         // Initialize game objects
-        this.cell = new Cell(assetManager);
+        this.cell = new Cell(assetManager, ConfigProvider.getInstance());
 
         // Initialize glucose objects randomly
         this.glucoseList = new ArrayList<>();
@@ -202,7 +203,7 @@ public class AttractScreen implements GameOfCellsScreen {
         spriteBatch.setProjectionMatrix(camera.combined);
 
         particles.draw(spriteBatch);
-        
+
         // Draw game objects
         spriteBatch.begin();
         cell.draw(spriteBatch);

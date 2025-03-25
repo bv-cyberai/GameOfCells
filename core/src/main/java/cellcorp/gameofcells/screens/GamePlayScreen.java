@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.objects.*;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -136,7 +136,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
-    
+
     /**
      * Constructs the GamePlayScreen.
      *
@@ -158,7 +158,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.camera = graphicsProvider.createCamera();
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
-        this.cell = new Cell(assetManager);
+        this.cell = new Cell(assetManager, ConfigProvider.getInstance());
         this.glucoseManager = new GlucoseManager(assetManager, cell.getCellPositionX(), cell.getCellPositionY());
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
@@ -268,7 +268,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
             cell.addCellATP(20);
         }
-        
+
         // Will eventually be triggered by cell state
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             game.setScreen(new PopupInfoScreen(

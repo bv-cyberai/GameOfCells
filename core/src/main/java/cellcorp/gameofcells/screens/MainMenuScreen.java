@@ -83,7 +83,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
         Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
         this.particles = new Particles(whitePixelTexture);
 
-        configProvider = new ConfigProvider();
+        //Config provider can be 'constructed' anywhere, this is useful as game objects will need access
+        //to it.
+        configProvider = ConfigProvider.getInstance();
+        //Config is loaded here to avoid issue with GDX files, it is also the first possible
+        //location that would use any user defined values.
+        configProvider.loadConfig();
 
 
         layout = new GlyphLayout();

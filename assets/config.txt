@@ -14,9 +14,8 @@ initialSizeUpgradeCost:40  ##Unsure
 mitochondriaUpgradeCost:30 ##Unsure
 
 ## The following settings are to change descriptions of various parts of the program.
-## Currently requires some java knowledge to format correctly
-## Messages must be placed inside <> and include "". These should not be used inside the message.
+## Message must only contain '/' as the last character. To create new lines use '\n'.
 [descriptions]
-[pop-ups]
+[pop-ups]/
 glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!/
 testMessage:This is a test\n message/

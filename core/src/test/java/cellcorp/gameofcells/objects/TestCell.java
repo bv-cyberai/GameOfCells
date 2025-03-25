@@ -1,10 +1,10 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.assets.AssetManager;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCell {
     @Test
@@ -14,6 +14,7 @@ public class TestCell {
         // Unlike the InputProvider, we don't need any additional behavior,
         // so we can just use `Mockito.mock`
         var fakeAssetManager = Mockito.mock(AssetManager.class);
-        new Cell(fakeAssetManager);
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        new Cell(fakeAssetManager, fakeConfigProvider);
     }
 }

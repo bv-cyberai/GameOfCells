@@ -84,7 +84,7 @@ public class Main implements ApplicationListener {
         var graphicsProvider = new DefaultGraphicsProvider();
         var assetManager = new AssetManager();
         var camera = new OrthographicCamera();
-        var configProvider = new ConfigProvider();
+        var configProvider = ConfigProvider.getInstance();
         // Gdx.graphics is not instantiated until `create()`.
         // Just use the configuration constants here.
         var viewport = new FitViewport(

@@ -23,17 +23,17 @@ public class ConfigProvider {
     private static String descriptionString;
 
 
-    public ConfigProvider() {
+    private ConfigProvider() {
 
 
     }
 
-//    public static ConfigProvider getInstance() {
-//        if (instance == null) {
-//            instance = new ConfigProvider();
-//        }
-//        return instance;
-//    }
+    public static ConfigProvider getInstance() {
+        if (instance == null) {
+            instance = new ConfigProvider();
+        }
+        return instance;
+    }
 
 
     public void loadConfig() {
@@ -49,29 +49,30 @@ public class ConfigProvider {
 
     private void parseObjectAttributes() {
         for (String line : fileString.split("\n",-1)) {
+            if(line.contains("[descriptions]")) {
+                //Descriptions require different parsing, break loop.
+                break;
+            }
             descriptionString = descriptionString.substring(line.length()+1);
-            System.out.println("=====================");
-            System.out.println(descriptionString);
-            System.out.println("=================");
-            System.out.println("LINE: " + line);
-            System.out.println(line.contains("#"));
+
+
+            //These are lines for the user - skip parsing.
+            if(line.startsWith("[")||line.startsWith("#")|| line.isEmpty()){
+                continue;
+            }
+
             if(line.contains("#")) {
                 int trimIndex = line.indexOf("#");
                 String trimmedLine = line.substring(0,trimIndex);
                 System.out.println(trimmedLine);
                 trimmedLine = trimmedLine.trim();
                 System.out.println(trimmedLine);
+                String[] lineArray = trimmedLine.split(":");
+                System.out.println(Arrays.toString(lineArray));
+                configData.put(lineArray[0],lineArray[1]);
             }
 
-            if(line.contains("[descriptions]")) {
-                break;
-            }
-            //These are lines for the user - skip parsing.
-            if(line.startsWith("[")||line.startsWith("#")|| line.isEmpty()){
-                continue;
-            }
 
-            //Descriptions require different parsing, break loop.
 
 
 
@@ -79,16 +80,83 @@ public class ConfigProvider {
     }
 
     private void parseDescriptions() {
-        for (String line : descriptionString.split("/")) {
+        System.out.println("DS: " + descriptionString);
+        for (String line : descriptionString.split("/",-1)) {
+            if(line.startsWith("[")||line.startsWith("#")|| line.isEmpty()){
+                continue;
+            }
             System.out.println(line);
             String[] lineArray = line.split(":");
             System.out.println(Arrays.toString(lineArray));
+            configData.put(lineArray[0],lineArray[1]);
         }
     }
 
-//    public float getCellHealth(String key) {
-//        return (float) configData.getLong(key);
+//    public int getCellHealth(String key) {
+//        String value = configData.get(key);
+//
+//        //Use default value if exception occurs.
+//        int retValue = 100;
+//        try{
+//            return Integer.parseInt(value);
+//
+//        } catch (NumberFormatException e) {
+//            return retValue;
+//        }
+//
 //    }
+
+//    public int getCellHealth() {
+//        String value = configData.get("cellHealth");
+//
+//        //Use default value if exception occurs.
+//        int retValue = 100;
+//        try{
+//            return Integer.parseInt(value);
+//
+//        } catch (NumberFormatException e) {
+//            return retValue;
+//        }
+//
+//    }
+
+
+    public int getIntValue(String key)  throws NumberFormatException{
+        String value = configData.get(key);
+        return Integer.parseInt(value);
+
+        //Use default value if exception occurs.
+//        try{
+//            return Integer.parseInt(value);
+//
+//        } catch (NumberFormatException e) {
+//            throw new NumberFormatException(e.getMessage());
+//        }
+    }
+
+    public float getFloatValue(String key) throws NumberFormatException {
+        String value = configData.get(key);
+        int temp = Integer.parseInt(value);
+        return (float) temp;
+
+        //Use default value if exception occurs.
+//        try{
+//            int temp = Integer.parseInt(value);
+//            return (float) temp;
+//
+//        } catch (NumberFormatException e) {
+//            throw new NumberFormatException(e.getMessage());
+//        }
+
+    }
+
+    public String getStringValue(String key) throws NullPointerException {
+        String value = configData.get(key);
+        if (value == null) {
+            throw new NullPointerException("Key: "+ key + " null!");
+        }
+        return value;
+    }
 
 
 }

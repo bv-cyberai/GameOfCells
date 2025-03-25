@@ -2,15 +2,17 @@ package cellcorp.gameofcells.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.FakeGraphicsProvider;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.badlogic.gdx.assets.AssetManager;
 
 /**
  * Hud tester
- * 
+ *
  * Tests all elements of the HUD including Energy bars even though these are
  * technically separate * from the HUDitself.
  */
@@ -19,14 +21,19 @@ public class TestHUD {
 
     /**
      * Update Tester
-     * 
+     *
      * Tests that hud updates properly.
      */
     @Test
     public void testHUDUpdate() {
         var fakeGraphicsProvider = new FakeGraphicsProvider();
         var fakeAssetManager = Mockito.mock(AssetManager.class);
-        var spyCell = Mockito.spy(new Cell(fakeAssetManager));
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        Mockito.when(fakeConfigProvider.getIntValue("cellHealth")).thenReturn(100);
+        Mockito.when(fakeConfigProvider.getIntValue("cellATP")).thenReturn(30);
+        Mockito.when(fakeConfigProvider.getIntValue("maxHealth")).thenReturn(100);
+        Mockito.when(fakeConfigProvider.getIntValue("maxATP")).thenReturn(100);
+        var spyCell = Mockito.spy(new Cell(fakeAssetManager,fakeConfigProvider));
 
         HUD hud = new HUD(fakeGraphicsProvider, fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
         hud.update(1f, spyCell.getCellHealth(), spyCell.getCellATP()); // simulate 1 second has passed
@@ -39,8 +46,15 @@ public class TestHUD {
     @Test
     public void testEnergyBarUpdate() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        Mockito.when(fakeConfigProvider.getIntValue("cellMaxHealth")).thenReturn(100);
+        Mockito.when(fakeConfigProvider.getIntValue("cellMaxATP")).thenReturn(100);
 
-        var spyCell = Mockito.spy(new Cell(fakeAssetManager));
+
+        var spyCell = Mockito.spy(new Cell(fakeAssetManager, fakeConfigProvider));
+
+
+
         EnergyBars energyBars = new EnergyBars(fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
 
         // default constructor values - correct values are set during update.
@@ -57,7 +71,8 @@ public class TestHUD {
     @Test
     public void testEnergyBarPercentage() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
-        var spyCell = Mockito.spy(new Cell(fakeAssetManager));
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        var spyCell = Mockito.spy(new Cell(fakeAssetManager, fakeConfigProvider));
 
         EnergyBars energyBars = new EnergyBars(fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
 
