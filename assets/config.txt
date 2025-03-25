@@ -1,0 +1,21 @@
+[cell]
+cellHealth:100          ##Starting Health
+cellMaxHealth:100       ##Max Health
+cellATP:100             ##Starting ATP
+cellMaxATP:100          ##Max Health
+cellMovementSpeed:200   ##Cell Movement Speed
+
+[glucose]
+glucoseRadius:30        ##Size of glucose
+conversionFactor:1      ##ATP:Glucose ratio
+
+[shop]
+initialSizeUpgradeCost:40  ##Unsure
+mitochondriaUpgradeCost:30 ##Unsure
+
+## The following settings are to change descriptions of various parts of the program.
+## Currently requires some java knowledge to format correctly
+## Messages must be placed inside <> and include "". These should not be used inside the message.
+[descriptions]
+[pop-ups]
+glucosePopupMessage:<"You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!"\>

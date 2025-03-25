@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
@@ -47,6 +48,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private final Camera camera;
+    private ConfigProvider configProvider;
 
     private final Main game;
     private final AssetManager assetManager;
@@ -80,6 +82,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Load white pixel texture and initialize particles
         Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
         this.particles = new Particles(whitePixelTexture);
+
+        configProvider = new ConfigProvider();
+
 
         layout = new GlyphLayout();
     }

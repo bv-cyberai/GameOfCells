@@ -14,6 +14,7 @@ package cellcorp.gameofcells;
  * @assignment GameOfCells
  */
 
+import cellcorp.gameofcells.providers.*;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -23,10 +24,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.providers.DefaultGraphicsProvider;
-import cellcorp.gameofcells.providers.DefaultInputProvider;
-import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.screens.GameOfCellsScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 
@@ -61,6 +58,8 @@ public class Main implements ApplicationListener {
      */
     private final GraphicsProvider graphicsProvider;
 
+    private ConfigProvider configProvider;
+
     /**
      * The camera used to render the game.
      */
@@ -85,15 +84,16 @@ public class Main implements ApplicationListener {
         var graphicsProvider = new DefaultGraphicsProvider();
         var assetManager = new AssetManager();
         var camera = new OrthographicCamera();
+        var configProvider = new ConfigProvider();
         // Gdx.graphics is not instantiated until `create()`.
         // Just use the configuration constants here.
         var viewport = new FitViewport(
-            DEFAULT_SCREEN_WIDTH, 
-            DEFAULT_SCREEN_HEIGHT, 
+            DEFAULT_SCREEN_WIDTH,
+            DEFAULT_SCREEN_HEIGHT,
             camera
         );
 
-        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);
+        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport,configProvider);
     }
 
     /**
@@ -104,18 +104,20 @@ public class Main implements ApplicationListener {
      * @param assetManager     Loads assets. Use `mock(AssetManager.class)` in test code.
      * @param camera           The camera. Use `mock(OrthographicCamera.class)` in test code.
      * @param viewport         The viewport. Use `mock(FitViewport.class)` in test code.
+     * @param configProvider
      */
     public Main(InputProvider inputProvider,
                 GraphicsProvider graphicsProvider,
                 AssetManager assetManager,
                 OrthographicCamera camera,
-                FitViewport viewport
-    ) {
+                FitViewport viewport,
+                ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
         this.camera = camera;
         this.viewport = viewport;
+        this.configProvider = configProvider;
     }
 
     @Override
@@ -143,7 +145,7 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.load(AssetFileNames.WHITE_PIXEL, Texture.class);
         assetManager.finishLoading();
-
+        configProvider.loadConfig();
         // May need to set to gameScreenManager at somepoint.
         setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
     }

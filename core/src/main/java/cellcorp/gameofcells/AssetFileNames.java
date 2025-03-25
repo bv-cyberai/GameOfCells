@@ -53,9 +53,14 @@ public class AssetFileNames {
      * This is needed due to the way bitmap fonts work.
      */
     public static String HUD_FONT_YELLOW = "rubik_yellow.fnt";
-    
+
     /**
      * The file name for our background particle texture.
      */
     public static String WHITE_PIXEL = "white_pixel.png";
+
+    /**
+     * The file name for the user editable config file.
+     */
+    public static String USER_CONFIG = "config.txt";
 }

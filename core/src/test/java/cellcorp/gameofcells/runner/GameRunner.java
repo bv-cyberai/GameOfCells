@@ -1,12 +1,13 @@
 package cellcorp.gameofcells.runner;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.FakeGraphicsProvider;
 import cellcorp.gameofcells.providers.FakeInputProvider;
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.providers.GraphicsProvider;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.Set;
@@ -17,6 +18,7 @@ public class GameRunner {
 
     public final Main game;
     public final FakeInputProvider inputProvider;
+    public ConfigProvider configProvider;
 
     private int ticksElapsed = 0;
 
@@ -34,7 +36,8 @@ public class GameRunner {
         var assetManager = Mockito.mock(AssetManager.class);
         var camera = Mockito.mock(OrthographicCamera.class);
         var viewport = Mockito.mock(FitViewport.class);
-        var game = new Main(inputProvider, graphicsProvider, assetManager, camera, viewport);
+        var ConfigProvider = Mockito.mock(ConfigProvider.class);
+        var game = new Main(inputProvider, graphicsProvider, assetManager, camera, viewport,ConfigProvider);
         game.create();
         return new GameRunner(game, inputProvider);
     }
