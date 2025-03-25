@@ -72,6 +72,10 @@ public class TestHUD {
     public void testEnergyBarPercentage() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        Mockito.when(fakeConfigProvider.getIntValue("maxHealth")).thenReturn(100);
+        Mockito.when(fakeConfigProvider.getIntValue("maxATP")).thenReturn(100);
+
+
         var spyCell = Mockito.spy(new Cell(fakeAssetManager, fakeConfigProvider));
 
         EnergyBars energyBars = new EnergyBars(fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
