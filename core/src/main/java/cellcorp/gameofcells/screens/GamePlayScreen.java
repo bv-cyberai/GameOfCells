@@ -156,6 +156,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.game = game;
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
+        this.configProvider = configProvider;
 
         this.camera = graphicsProvider.createCamera();
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);

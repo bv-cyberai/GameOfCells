@@ -1,7 +1,7 @@
 [cell]
 cellHealth:100          ##Starting Health
 cellMaxHealth:100       ##Max Health
-cellATP:100             ##Starting ATP
+cellATP:30            ##Starting ATP
 cellMaxATP:100          ##Max Health
 cellMovementSpeed:200   ##Cell Movement Speed
 

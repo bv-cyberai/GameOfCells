@@ -145,7 +145,9 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.load(AssetFileNames.WHITE_PIXEL, Texture.class);
         assetManager.finishLoading();
-        configProvider.loadConfig();
+        if(Gdx.files !=null) {
+            configProvider.loadConfig();
+        }
         // May need to set to gameScreenManager at somepoint.
         setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport,configProvider));
     }

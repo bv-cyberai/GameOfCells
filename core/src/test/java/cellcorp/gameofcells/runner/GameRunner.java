@@ -36,7 +36,7 @@ public class GameRunner {
         var assetManager = Mockito.mock(AssetManager.class);
         var camera = Mockito.mock(OrthographicCamera.class);
         var viewport = Mockito.mock(FitViewport.class);
-        var ConfigProvider = Mockito.mock(ConfigProvider.class);
+        var ConfigProvider = new ConfigProvider();
         var game = new Main(inputProvider, graphicsProvider, assetManager, camera, viewport,ConfigProvider);
         game.create();
         return new GameRunner(game, inputProvider);

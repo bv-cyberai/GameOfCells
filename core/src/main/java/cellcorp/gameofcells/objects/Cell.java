@@ -138,7 +138,7 @@ public class Cell {
             cellATP = configProvider.getIntValue("cellATP");
             //Eventually may need more robust handling if user enters crazy values.
         } catch (NumberFormatException e) {
-            cellATP = 100;
+            cellATP = 30;
             //Eventually print message telling user there value hasn't been set.
         }
         try {
