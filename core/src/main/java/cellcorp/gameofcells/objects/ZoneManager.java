@@ -1,14 +1,11 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Manages acid and basic zones.
@@ -19,15 +16,18 @@ import java.util.Optional;
 public class ZoneManager {
 
     private static final double ACID_ZONE_SPAWN_CHANCE = 0.33;
+    private static final double BASIC_ZONE_SPAWN_CHANCE = 0.33;
 
     private final AssetManager assetManager;
     private final Cell cell;
     private final RandomFromHash random;
 
+
     /**
      * Stored as a set of chunks, for easy despawning.
      */
     private final Map<Chunk, AcidZone> acidZones = new HashMap<>();
+    private final Map<Chunk, AcidZone> basicZones = new HashMap<>();
 
     private float timer = 0f;
     private float damageCounter = 0f;
@@ -84,8 +84,8 @@ public class ZoneManager {
         return x * x * (3.0f - 2.0f * x);
     }
 
-
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
+        drawBasicZones(spriteBatch, shapeRenderer);
         drawAcidZones(spriteBatch, shapeRenderer);
     }
 
@@ -95,13 +95,22 @@ public class ZoneManager {
         }
     }
 
+    private void drawBasicZones(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
+        for (var zone : basicZones.values()) {
+            zone.draw(spriteBatch, shapeRenderer);
+        }
+    }
+
     /**
      * Spawn zones outside the range of chunks `Chunk(row0, col0) .. Chunk(row1, col1)`
      */
     public void spawnInRange(int row0, int col0, int row1, int col1) {
+
         for (int row = row0; row < row1; row++) {
             for (int col = col0; col < col1; col++) {
-                spawnAcidZone(new Chunk(row, col));
+                var chunk = new Chunk(row, col);
+                spawnZone(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
+                spawnZone(basicZones, BASIC_ZONE_SPAWN_CHANCE, AssetFileNames.BASIC_ZONE, 3, chunk);
             }
         }
     }
@@ -111,20 +120,20 @@ public class ZoneManager {
      * and spawns it.
      * Zones will not spawn too close to the center of other zones.
      */
-    public void spawnAcidZone(Chunk chunk) {
-        if (acidZones.containsKey(chunk)) {
+    public void spawnZone(Map<Chunk, AcidZone> zoneMap, double spawnChance, String texturePath, int seed, Chunk chunk) {
+        if (zoneMap.containsKey(chunk)) {
             return;
         }
 
         var randomValue = random.floatFrom(chunk.hashCode());
-        if (randomValue < ACID_ZONE_SPAWN_CHANCE) {
+        if (randomValue < spawnChance) {
             var rect = chunk.toRectangle();
 
-            float randX = random.floatFrom(chunk.hashCode() * 2);
+            float randX = random.floatFrom(chunk.hashCode() * seed * 2);
             float x = rect.x + randX * Chunk.CHUNK_LENGTH;
-            float randY = random.floatFrom(chunk.hashCode() * 3);
+            float randY = random.floatFrom(chunk.hashCode() * seed * 3);
             float y = rect.y + randY * Chunk.CHUNK_LENGTH;
-            acidZones.put(chunk, new AcidZone(assetManager, x, y));
+            zoneMap.put(chunk, new AcidZone(assetManager, texturePath, x, y));
         }
     }
 

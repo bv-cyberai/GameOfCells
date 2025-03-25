@@ -340,9 +340,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
-        zoneManager.draw(batch, shapeRenderer);
         drawBackground(shapeRenderer);
-        drawGameObjects(batch);
+        drawGameObjects(batch, shapeRenderer);
         hud.draw(viewport);
 
         if (DEBUG_DRAW_ENABLED) {
@@ -425,7 +424,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.setColor(callerColor);
     }
 
-    private void drawGameObjects(SpriteBatch batch) {
+    private void drawGameObjects(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+        zoneManager.draw(batch, shapeRenderer);
         batch.begin();
         glucoseManager.draw(batch);
         cell.draw(batch);

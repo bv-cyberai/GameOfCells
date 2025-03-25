@@ -143,6 +143,7 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.load(AssetFileNames.WHITE_PIXEL, Texture.class);
         assetManager.load(AssetFileNames.ACID_ZONE, Texture.class);
+        assetManager.load(AssetFileNames.BASIC_ZONE, Texture.class);
         assetManager.finishLoading();
 
         // May need to set to gameScreenManager at somepoint.

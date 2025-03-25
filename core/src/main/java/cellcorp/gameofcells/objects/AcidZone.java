@@ -14,15 +14,17 @@ public final class AcidZone {
     public static final float ACID_ZONE_RADIUS = 400;
     public static final float ACID_ZONE_MAX_DAMAGE_PER_SECOND = 10;
     public static final float ACID_ZONE_DAMAGE_INCREMENT_SECONDS = 0.5f;
-    private static final float ACID_ZONE_TEXTURE_RADIUS = 600;
+    private static final float ACID_ZONE_TEXTURE_RADIUS = 500;
 
     private final AssetManager assetManager;
+    private final String texturePath;
 
     private final float x;
     private final float y;
 
-    public AcidZone(AssetManager assetManager, float x, float y) {
+    public AcidZone(AssetManager assetManager, String texturePath, float x, float y) {
         this.assetManager = assetManager;
+        this.texturePath = texturePath;
         this.x = x;
         this.y = y;
     }
@@ -36,7 +38,7 @@ public final class AcidZone {
     }
 
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
-        var texture = assetManager.get(AssetFileNames.ACID_ZONE, Texture.class);
+        var texture = assetManager.get(texturePath, Texture.class);
         float bottomLeftX = x - ACID_ZONE_TEXTURE_RADIUS;
         float bottomLeftY = y - ACID_ZONE_TEXTURE_RADIUS;
         float diameter = ACID_ZONE_TEXTURE_RADIUS * 2;
