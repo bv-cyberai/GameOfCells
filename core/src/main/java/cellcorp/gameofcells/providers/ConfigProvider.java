@@ -23,21 +23,29 @@ public class ConfigProvider {
     private static String descriptionString;
 
 
-    private ConfigProvider() {
-        loadConfig();
+//    private ConfigProvider() {
+//        System.out.println("Attemtping to load config");
+//        loadConfig();
+//
+//    }
 
+//    public static ConfigProvider getInstance() {
+//        if (instance == null) {
+//            System.out.println("ConfigProvider is Null");
+//            instance = new ConfigProvider();
+//            System.out.println("ConfigProvider is initialized");
+//        }
+//        return instance;
+//    }
+
+    public ConfigProvider() {
+        configData = new HashMap<>();
     }
-
-    public static ConfigProvider getInstance() {
-        if (instance == null) {
-            instance = new ConfigProvider();
-        }
-        return instance;
-    }
-
 
     public void loadConfig() {
+        System.out.println("attempting to load gdxfiles");
         FileHandle file = Gdx.files.internal(AssetFileNames.USER_CONFIG);
+        System.out.println("gdx files loaded");
         fileString = file.readString();
         descriptionString = new String(fileString);
         parseObjectAttributes();
@@ -88,7 +96,9 @@ public class ConfigProvider {
             System.out.println(line);
             String[] lineArray = line.split(":");
             System.out.println(Arrays.toString(lineArray));
-            configData.put(lineArray[0],lineArray[1]);
+            if(lineArray.length ==2) {
+                configData.put(lineArray[0], lineArray[1]);
+            }
         }
     }
 

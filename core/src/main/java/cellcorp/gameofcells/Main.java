@@ -84,7 +84,7 @@ public class Main implements ApplicationListener {
         var graphicsProvider = new DefaultGraphicsProvider();
         var assetManager = new AssetManager();
         var camera = new OrthographicCamera();
-        var configProvider = ConfigProvider.getInstance();
+        var configProvider = new ConfigProvider();
         // Gdx.graphics is not instantiated until `create()`.
         // Just use the configuration constants here.
         var viewport = new FitViewport(
@@ -93,7 +93,7 @@ public class Main implements ApplicationListener {
             camera
         );
 
-        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport,configProvider);
+        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport, configProvider);
     }
 
     /**
@@ -194,9 +194,7 @@ public class Main implements ApplicationListener {
      * @param deltaTimeSeconds The time passed since the last call to `handleInput`, in seconds.
      */
     public void handleInput(float deltaTimeSeconds) {
-        System.out.println("PreHandleINput");
         screen.handleInput(deltaTimeSeconds);
-        System.out.println("PostHandleINput");
     }
 
     /**

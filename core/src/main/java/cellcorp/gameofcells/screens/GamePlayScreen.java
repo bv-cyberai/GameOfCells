@@ -249,7 +249,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Move to `ShopScreen` when 's' is pressed.
-        System.out.println("HERE1");
         if (inputProvider.isKeyJustPressed(Input.Keys.S)) {
             game.setScreen(new ShopScreen(
                     game,
@@ -259,7 +258,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     this, // Pass the current screen to the shop screen
                     cell));
         }
-        System.out.println("HERE2");
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
             game.setScreen(new GameOverScreen(
                     inputProvider,
@@ -267,11 +265,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     graphicsProvider,
                     game,configProvider));
         }
-        System.out.println("HERE3");
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
             cell.addCellATP(20);
         }
-        System.out.println("HERE4");
         // Will eventually be triggered by cell state
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             game.setScreen(new PopupInfoScreen(
@@ -279,7 +275,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     graphicsProvider, game,
                     this, PopupInfoScreen.Type.danger));
         }
-        System.out.println("HERE5");
         cell.move(
                 deltaTimeSeconds,
                 inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
@@ -287,7 +282,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
                 inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
-        System.out.println("HERE6");
     }
 
     /**

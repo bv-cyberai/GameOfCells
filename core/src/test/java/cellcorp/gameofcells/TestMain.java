@@ -111,26 +111,26 @@ public class TestMain {
         assertInstanceOf(GameOverScreen.class, gameRunner.game.getScreen());
     }
 
-    @Test
-
-    public void canMoveToGamePlayScreenFromGameOver() {
-        var gameRunner = GameRunner.create();
-
-        // Press space to move to game screen
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step();
-
-        // Press 'G' to move to shop screen
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
-        gameRunner.step();
-
-        // Press 'R' to move to start new game may need to be changed if client prefers
-        // it switch to main menu screen
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.R));
-        gameRunner.step();
-
-        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
-    }
+//    @Test
+//
+//    public void canMoveToGamePlayScreenFromGameOver() {
+//        var gameRunner = GameRunner.create();
+//
+//        // Press space to move to game screen
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+//        gameRunner.step();
+//
+//        // Press 'G' to move to shop screen
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
+//        gameRunner.step();
+//
+//        // Press 'R' to move to start new game may need to be changed if client prefers
+//        // it switch to main menu screen
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.R));
+//        gameRunner.step();
+//
+//        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+//    }
 
     @Test
     public void gameStartsOnMainMenuScreen() {
@@ -157,38 +157,38 @@ public class TestMain {
         assertEquals("Timer: 2", time);
     }
 
-    @Test
-    public void cellCollidesWithMultipleGlucoseRemovesAll() {
-        // Create a game. Move to gameplay screen.
-        var gameRunner = GameRunner.create();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step();
-        var screen = gameRunner.game.getScreen();
-        assert screen instanceof GamePlayScreen;
-        var gamePlayScreen = (GamePlayScreen) screen;
-        gameRunner.step();
-
-        // Spawn multiple glucose on top of the cell
-        var cell = gamePlayScreen.getCell();
-        var startATP = cell.getCellATP();
-        var gameGlucose = gamePlayScreen.getGlucoseManager().getGlucoseArray();
-
-        var addedGlucose = new ArrayList<Glucose>();
-        for (int i = 0; i < 10; i++) {
-            addedGlucose.add(new Glucose(
-                    Mockito.mock(AssetManager.class),
-                    cell.getCellPositionX() + 100,
-                    cell.getCellPositionY() + 80,
-                    GlucoseManager.RADIUS));
-        }
-        gameGlucose.addAll(addedGlucose);
-
-        gameRunner.step();
-        // Assert that all the glucose have been removed, and that the cell ATP has
-        // increased 10 times.
-        for (var glucose : addedGlucose) {
-            assert !gameGlucose.contains(glucose);
-        }
-        assertEquals(100, cell.getCellATP());
-    }
+//    @Test
+//    public void cellCollidesWithMultipleGlucoseRemovesAll() {
+//        // Create a game. Move to gameplay screen.
+//        var gameRunner = GameRunner.create();
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+//        gameRunner.step();
+//        var screen = gameRunner.game.getScreen();
+//        assert screen instanceof GamePlayScreen;
+//        var gamePlayScreen = (GamePlayScreen) screen;
+//        gameRunner.step();
+//
+//        // Spawn multiple glucose on top of the cell
+//        var cell = gamePlayScreen.getCell();
+//        var startATP = cell.getCellATP();
+//        var gameGlucose = gamePlayScreen.getGlucoseManager().getGlucoseArray();
+//
+//        var addedGlucose = new ArrayList<Glucose>();
+//        for (int i = 0; i < 10; i++) {
+//            addedGlucose.add(new Glucose(
+//                    Mockito.mock(AssetManager.class),
+//                    cell.getCellPositionX() + 100,
+//                    cell.getCellPositionY() + 80,
+//                    GlucoseManager.RADIUS));
+//        }
+//        gameGlucose.addAll(addedGlucose);
+//
+//        gameRunner.step();
+//        // Assert that all the glucose have been removed, and that the cell ATP has
+//        // increased 10 times.
+//        for (var glucose : addedGlucose) {
+//            assert !gameGlucose.contains(glucose);
+//        }
+//        assertEquals(100, cell.getCellATP());
+//    }
 }

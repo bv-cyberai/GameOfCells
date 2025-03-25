@@ -52,11 +52,8 @@ public class GameRunner {
      * Like {@link Main#render()}, but won't crash your test.
      */
     public void step() {
-        System.out.println("game runner entered step");
         game.handleInput(DELTA_TIME);
-        System.out.println("gamerunner finished handleinput");
         game.update(DELTA_TIME);
-        System.out.println("gamerunner finished update");
         ticksElapsed += 1;
     }
 
