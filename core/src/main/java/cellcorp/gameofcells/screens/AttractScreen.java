@@ -9,6 +9,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -31,6 +32,7 @@ public class AttractScreen implements GameOfCellsScreen {
     private final Camera camera;
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
+    private final ShapeRenderer shapeRenderer;
 
     /**
      * Width of the HUD view rectangle.
@@ -77,6 +79,7 @@ public class AttractScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+        this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.random = new Random();
 
         Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
@@ -204,12 +207,10 @@ public class AttractScreen implements GameOfCellsScreen {
         particles.draw(spriteBatch);
 
         // Draw game objects
-        spriteBatch.begin();
-        cell.draw(spriteBatch);
+        cell.draw(spriteBatch, shapeRenderer);
         for (Glucose glucose : glucoseList) {
-            glucose.draw(spriteBatch);
+            glucose.draw(spriteBatch, shapeRenderer);
         }
-        spriteBatch.end();
     }
 
 }

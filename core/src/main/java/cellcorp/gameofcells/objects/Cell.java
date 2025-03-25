@@ -3,6 +3,7 @@ package cellcorp.gameofcells.objects;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
@@ -93,7 +94,7 @@ public class Cell {
         if (moveDown)
             cellCircle.y -= CELL_SPEED * deltaTime;
     }
- 
+
     /**
      * Moves the cell to a specific position
      *
@@ -110,7 +111,7 @@ public class Cell {
      *
      * @param batch - The passed spritebatch.
      */
-    public void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         // Draw cell centered around its position.
 
         float bottomLeftX = cellCircle.x - (cellSize / 2);
@@ -120,10 +121,17 @@ public class Cell {
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
         var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
-        assert (cellTexture != null);
+
+        batch.begin();
         batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellSize, cellSize);
 
         drawOrganelles(batch);
+        batch.end();
+        if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.circle(cellCircle.x, cellCircle.y, cellCircle.radius);
+            shapeRenderer.end();
+        }
     }
 
     public void update(float delta) {
@@ -408,7 +416,7 @@ public class Cell {
     public boolean hasNucleus() {
         return hasNucleus;
     }
-    
+
 
     /**
      * Check if the cell has the small size upgrade

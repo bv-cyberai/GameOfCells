@@ -7,6 +7,7 @@ import cellcorp.gameofcells.Util;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -31,14 +32,18 @@ public class GlucoseManager {
     /**
      * Max additional spawn chance for a sub-chunk inside a basic zone
      */
-    private static final float MAX_ADDITIONAL_SPAWN_CHANCE = 0.90f;
+    private static final float MAX_ADDITIONAL_SPAWN_CHANCE = 0.30f;
 
     /**
      * Adds a little extra space for spawning around actual zone radius
      */
     private static final float ZONE_ADDITIONAL_SPAWN_RADIUS = 100f;
 
-    public final class SubChunk {
+    /**
+     * Sub-chunks split each chunk into a grid, letting us get a glucose spawn chance
+     * for each sub-chunk.
+     */
+    private static final class SubChunk {
         /**
          * Number of rows/cols of sub-chunks to split the chunk into when spawning.
          * Gives 2500 sub-chunks per chunk.
@@ -281,27 +286,25 @@ public class GlucoseManager {
     /**
      * Draw glucose in current chunk
      */
-    public void draw(SpriteBatch spriteBatch) {
+    public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         // Draw all glucose in each adjacent chunk.
         // Will unnecessarily draw some glucose, but should be fine.
         var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
         var adjacentChunks = currentChunk.adjacentChunks();
         for (var chunk : adjacentChunks) {
-            drawInChunk(spriteBatch, chunk);
+            drawInChunk(spriteBatch, shapeRenderer, chunk);
         }
     }
 
-    private void drawInChunk(SpriteBatch spriteBatch, Chunk chunk) {
+    private void drawInChunk(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer, Chunk chunk) {
         var glucoseList = glucoses.get(chunk);
         if (glucoseList == null) {
             return;
         }
 
-        spriteBatch.begin();
         for (var glucose : glucoseList) {
-            glucose.draw(spriteBatch);
+            glucose.draw(spriteBatch, shapeRenderer);
         }
-        spriteBatch.end();
     }
 
     /**

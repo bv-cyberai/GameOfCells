@@ -1,9 +1,11 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 
 import java.util.Objects;
@@ -50,11 +52,23 @@ public class Glucose {
      * 
      * @param batch The gamePlayScreen Spritebatch
      */
-    public void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         // other options for glucose exist within assests.
         var glucoseTexture = assetManager.get("glucose_orange.png", Texture.class);
-        assert (glucoseTexture != null);
-        batch.draw(glucoseTexture, boundCircle.x, boundCircle.y, boundCircle.radius, boundCircle.radius);
+
+        var bottomLeftX = boundCircle.x - boundCircle.radius;
+        var bottomLeftY = boundCircle.y - boundCircle.radius;
+        var diameter = boundCircle.radius * 2;
+
+        batch.begin();
+        batch.draw(glucoseTexture, bottomLeftX, bottomLeftY, diameter, diameter);
+        batch.end();
+
+        if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.circle(boundCircle.x, boundCircle.y, boundCircle.radius);
+            shapeRenderer.end();
+        }
     }
 
     /**

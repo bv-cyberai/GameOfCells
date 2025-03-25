@@ -450,10 +450,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     private void drawGameObjects(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         zoneManager.draw(batch, shapeRenderer);
-        glucoseManager.draw(batch);
-        batch.begin();
-        playerCell.draw(batch);
-        batch.end();
+        glucoseManager.draw(batch, shapeRenderer);
+        playerCell.draw(batch, shapeRenderer);
     }
 
     /**
