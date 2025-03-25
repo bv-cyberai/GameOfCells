@@ -33,7 +33,7 @@ public class Cell {
 
     private int cellHealth;
     private int cellATP;
-    private int maxHealth;
+    private float maxHealth;
     private int maxATP;
     private Circle cellCircle;
 
@@ -147,7 +147,7 @@ public class Cell {
      * 
      * @return CellHealth
      */
-    public int getCellHealth() {
+    public float getCellHealth() {
         return cellHealth;
     }
 
@@ -165,7 +165,7 @@ public class Cell {
      * 
      * @return Cell Max Health
      */
-    public int getMaxHealth() {
+    public float getMaxHealth() {
         return maxHealth;
     }
 
@@ -242,5 +242,9 @@ public class Cell {
      */
     public void setHasMitochondria(boolean hasMitochondria) {
         this.hasMitochondria = hasMitochondria;
+    }
+
+    public void reduceHealth(int damage) {
+        this.cellHealth -= damage;
     }
 }

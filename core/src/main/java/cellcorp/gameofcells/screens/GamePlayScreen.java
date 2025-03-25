@@ -162,7 +162,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
         this.cell = new Cell(assetManager);
-        this.zoneManager = new ZoneManager(assetManager);
+        this.zoneManager = new ZoneManager(assetManager, cell);
         this.glucoseManager = new GlucoseManager(assetManager, cell);
         this.spawnManager = new SpawnManager(cell, zoneManager, glucoseManager);
 
@@ -298,6 +298,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
+        zoneManager.update(deltaTimeSeconds);
         spawnManager.update();
         handleCollisions();
     }

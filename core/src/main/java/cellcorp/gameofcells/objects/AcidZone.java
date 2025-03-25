@@ -12,6 +12,8 @@ import java.util.Objects;
 
 public final class AcidZone {
     public static final float ACID_ZONE_RADIUS = 400;
+    public static final float ACID_ZONE_MAX_DAMAGE_PER_SECOND = 10;
+    public static final float ACID_ZONE_DAMAGE_INCREMENT_SECONDS = 0.5f;
     private static final float ACID_ZONE_TEXTURE_RADIUS = 600;
 
     private final AssetManager assetManager;
@@ -63,5 +65,11 @@ public final class AcidZone {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    public double distanceFrom(float x, float y) {
+        return Math.sqrt(
+                Math.pow(this.x() - x, 2) + Math.pow(this.y() - y, 2)
+        );
     }
 }

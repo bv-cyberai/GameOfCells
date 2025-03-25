@@ -81,7 +81,7 @@ public class HUD {
     private int displayTime;
 
     // Cell Values
-    private final int maxHealth;
+    private final float maxHealth;
     private final int maxATP; // placeholder will likely be needed.
 
     // HUD Strings
@@ -99,7 +99,7 @@ public class HUD {
      * 
      * This font cant be changed if you have other preferences.
      */
-    public HUD(GraphicsProvider graphicsProvider, AssetManager assetManager, int maxHealth, int maxATP) {
+    public HUD(GraphicsProvider graphicsProvider, AssetManager assetManager, float maxHealth, int maxATP) {
 
         this.assetManager = assetManager;
         this.maxHealth = maxHealth;
@@ -213,7 +213,7 @@ public class HUD {
      * 
      * @param delta - time since last render.
      */
-    public void update(float delta, int cellHealth, int cellATP) {
+    public void update(float delta, float cellHealth, int cellATP) {
         timer += delta;
 
         roundTime();
