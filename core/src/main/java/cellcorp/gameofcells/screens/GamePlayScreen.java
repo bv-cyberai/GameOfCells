@@ -128,6 +128,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // Objects for rendering the game
     private final Cell cell;
     private final GlucoseManager glucoseManager;
+    private final ZoneManager zoneManager;
     private final HUD hud;
 
     // Part of game state.
@@ -159,6 +160,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
         this.cell = new Cell(assetManager);
+        this.zoneManager = new ZoneManager(assetManager);
         this.glucoseManager = new GlucoseManager(assetManager, cell.getCellPositionX(), cell.getCellPositionY());
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
@@ -292,7 +294,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
+        zoneManager.despawnAcidZone(new Chunk(0, 0));
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
+        zoneManager.spawnAcidZone(new Chunk(0, 0));
         handleCollisions();
     }
 
@@ -326,13 +330,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
         var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
         font.getData().setScale(2); // Set the font size
 
-        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // Clear the screen with a purple
+        ScreenUtils.clear(Main.PURPLE);
 
         centerCameraOnCell();
         viewport.apply();
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
+        zoneManager.draw(batch);
         drawBackground(shapeRenderer);
         drawGameObjects(batch);
         hud.draw(viewport);
@@ -378,7 +383,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        ScreenUtils.clear(Main.PURPLE);
         var callerColor = shapeRenderer.getColor();
 
         shapeRenderer.setColor(1, 1, 1, 0.5f);

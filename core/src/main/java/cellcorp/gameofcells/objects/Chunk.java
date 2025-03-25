@@ -1,0 +1,68 @@
+package cellcorp.gameofcells.objects;
+
+import com.badlogic.gdx.math.Rectangle;
+
+import java.util.Objects;
+
+/**
+ * A chunk of world space -- like chunks in minecraft.
+ * Used for spawning / despawning logic.
+ * This is just a value class, it has no state or behavior.
+ * Any two chunks with the same `row()` and `col()` are equal.
+ */
+public final class Chunk {
+    /**
+     * Length of chunks. Ideally, should be at least as large as the larger of (VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT),
+     * to prevent objects popping in within player view.
+     */
+    public static final int CHUNK_LENGTH = 1600;
+
+    private final int row;
+    private final int col;
+
+    public Chunk(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
+    public static Chunk fromCoords(float x, float y) {
+        return new Chunk(
+                (int) y / CHUNK_LENGTH,
+                (int) x / CHUNK_LENGTH
+        );
+    }
+
+    public int row() {
+        return row;
+    }
+
+    public int col() {
+        return col;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (Chunk) obj;
+        return this.row == that.row &&
+                this.col == that.col;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
+    }
+
+    /**
+     * Get the rectangle this chunk covers in the world.
+     */
+    public Rectangle toRectangle() {
+        return new Rectangle(
+                col * CHUNK_LENGTH,
+                row * CHUNK_LENGTH,
+                CHUNK_LENGTH,
+                CHUNK_LENGTH
+        );
+    }
+}

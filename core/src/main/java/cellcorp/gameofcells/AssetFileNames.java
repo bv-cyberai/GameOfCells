@@ -58,4 +58,9 @@ public class AssetFileNames {
      * The file name for our background particle texture.
      */
     public static String WHITE_PIXEL = "white_pixel.png";
+
+    /**
+     * The file name for the acid zone gradient.
+     */
+    public static String ACID_ZONE = "acid_zone.png";
 }
