@@ -32,16 +32,15 @@ public class GlucoseManager {
 
     private final AssetManager assetManager;
     private final int MAX_GLUCOSE;
-    private final float cellX, cellY; // Store the cell's position
+    private final Cell cell; // Store the cell's position
     
 
     private ArrayList<Glucose> glucoseArray;
     private Random rand;
 
-    public GlucoseManager(AssetManager assetManager, float cellX, float cellY) {
+    public GlucoseManager(AssetManager assetManager, Cell cell) {
         this.assetManager = assetManager;
-        this.cellX = cellX;
-        this.cellY = cellY;
+        this.cell = cell;
         MAX_GLUCOSE = 10; // likely the wrong max
         // may also need to track current glucose.
         rand = new Random();
@@ -95,7 +94,7 @@ public class GlucoseManager {
      */
     private void fillGlucoseArray() {
         for (int i = 0; i < MAX_GLUCOSE; i++) {
-            float[] generatedCoordinates = getRandomCoordinate(cellX, cellY);
+            float[] generatedCoordinates = getRandomCoordinate(cell.getX(), cell.getY());
             glucoseArray.add(new Glucose(assetManager, generatedCoordinates[0], generatedCoordinates[1], RADIUS));
         }
     }

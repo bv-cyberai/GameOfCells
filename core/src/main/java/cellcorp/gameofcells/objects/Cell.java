@@ -78,8 +78,8 @@ public class Cell {
      * @param y - The new Y position
      */
     public void moveTo(float x, float y) {
-        this.cellPositionX = x;
-        this.cellPositionY = y;
+        this.cellCircle.x = x;
+        this.cellCircle.y = y;
     }
 
     /**
@@ -120,7 +120,7 @@ public class Cell {
      * 
      * @return cellPositionX
      */
-    public float getCellPositionX() {
+    public float getX() {
         return cellCircle.x;
     }
 
@@ -129,7 +129,7 @@ public class Cell {
      * 
      * @return cellPositionY
      */
-    public float getCellPositionY() {
+    public float getY() {
         return cellCircle.y;
     }
 

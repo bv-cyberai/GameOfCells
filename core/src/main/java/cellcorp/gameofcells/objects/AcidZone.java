@@ -1,14 +1,18 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.physics.box2d.Shape;
 
 import java.util.Objects;
 
 public final class AcidZone {
-    public static final float ACID_ZONE_RADIUS = 600;
+    public static final float ACID_ZONE_RADIUS = 400;
+    private static final float ACID_ZONE_TEXTURE_RADIUS = 600;
 
     private final AssetManager assetManager;
 
@@ -29,16 +33,22 @@ public final class AcidZone {
         return y;
     }
 
-    /**
-     * Expects `spriteBatch` to be already-begun.
-     */
-    public void draw(SpriteBatch spriteBatch) {
+    public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         var texture = assetManager.get(AssetFileNames.ACID_ZONE, Texture.class);
-        float bottomLeftX = x - ACID_ZONE_RADIUS / 2f;
-        float bottomLeftY = y - ACID_ZONE_RADIUS / 2f;
-        float diameter = ACID_ZONE_RADIUS * 2;
+        float bottomLeftX = x - ACID_ZONE_TEXTURE_RADIUS;
+        float bottomLeftY = y - ACID_ZONE_TEXTURE_RADIUS;
+        float diameter = ACID_ZONE_TEXTURE_RADIUS * 2;
 
+        spriteBatch.begin();
         spriteBatch.draw(texture, bottomLeftX, bottomLeftY, diameter, diameter);
+        spriteBatch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
+            shapeRenderer.point(x, y, 0);
+            shapeRenderer.circle(x, y, ACID_ZONE_RADIUS);
+            shapeRenderer.end();
+        }
     }
 
     @Override

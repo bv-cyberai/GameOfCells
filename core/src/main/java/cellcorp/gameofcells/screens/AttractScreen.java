@@ -156,8 +156,8 @@ public class AttractScreen implements GameOfCellsScreen {
             particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
 
             // Humanistic movement logic
-            float cellX = cell.getCellPositionX();
-            float cellY = cell.getCellPositionY();
+            float cellX = cell.getX();
+            float cellY = cell.getY();
 
             // Calculate direction to target
             float dx = targetX - cellX;

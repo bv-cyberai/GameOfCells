@@ -6,7 +6,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -20,7 +20,6 @@ import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 import cellcorp.gameofcells.screens.ShopScreen;
-import org.mockito.Mockito;
 
 public class TestMain {
 
@@ -168,8 +167,8 @@ public class TestMain {
         for (int i = 0; i < 10; i++) {
             addedGlucose.add(new Glucose(
                     Mockito.mock(AssetManager.class),
-                    cell.getCellPositionX() + 100,
-                    cell.getCellPositionY() + 80,
+                    cell.getX() + 100,
+                    cell.getY() + 80,
                     GlucoseManager.RADIUS));
         }
         gameGlucose.addAll(addedGlucose);

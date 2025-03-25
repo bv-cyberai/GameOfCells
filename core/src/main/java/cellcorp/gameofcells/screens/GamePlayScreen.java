@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -55,6 +54,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
+
+    public static final boolean DEBUG_DRAW_ENABLED = true;
 
     private final Main game;
 
@@ -129,6 +130,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Cell cell;
     private final GlucoseManager glucoseManager;
     private final ZoneManager zoneManager;
+    private final SpawnManager spawnManager;
     private final HUD hud;
 
     // Part of game state.
@@ -137,7 +139,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
-    
+
     /**
      * Constructs the GamePlayScreen.
      *
@@ -161,7 +163,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         this.cell = new Cell(assetManager);
         this.zoneManager = new ZoneManager(assetManager);
-        this.glucoseManager = new GlucoseManager(assetManager, cell.getCellPositionX(), cell.getCellPositionY());
+        this.glucoseManager = new GlucoseManager(assetManager, cell);
+        this.spawnManager = new SpawnManager(cell, zoneManager, glucoseManager);
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
@@ -294,9 +297,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        zoneManager.despawnAcidZone(new Chunk(0, 0));
         hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
-        zoneManager.spawnAcidZone(new Chunk(0, 0));
+        spawnManager.update();
         handleCollisions();
     }
 
@@ -337,10 +339,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
-        zoneManager.draw(batch);
+        zoneManager.draw(batch, shapeRenderer);
         drawBackground(shapeRenderer);
         drawGameObjects(batch);
         hud.draw(viewport);
+
+        if (DEBUG_DRAW_ENABLED) {
+            drawChunks(shapeRenderer);
+        }
     }
 
     /**
@@ -372,7 +378,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Center's the camera's view rectangle on the cell.
      */
     private void centerCameraOnCell() {
-        camera.position.set(cell.getCellPositionX(), cell.getCellPositionY(), 0);
+        camera.position.set(cell.getX(), cell.getY(), 0);
     }
 
     /**
@@ -423,6 +429,25 @@ public class GamePlayScreen implements GameOfCellsScreen {
         glucoseManager.draw(batch);
         cell.draw(batch);
         batch.end();
+    }
+
+    /**
+     * Draw chunk borders.
+     */
+    private void drawChunks(ShapeRenderer shapeRenderer) {
+        // Get current chunk. Draw it and all adjacent chunks.
+
+        var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.YELLOW);
+        for (int row = currentChunk.row() - 1; row < currentChunk.row() + 2; row++) {
+            for (int col = currentChunk.col() - 1; col < currentChunk.col() + 2; col++) {
+                var rect = new Chunk(row, col).toRectangle();
+                shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
+            }
+        }
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.end();
     }
 
     /**

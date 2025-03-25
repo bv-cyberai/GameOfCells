@@ -1,15 +1,11 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Manages acid and basic zones.
@@ -34,16 +30,25 @@ public class ZoneManager {
         this.random = new RandomFromHash(SpawnManager.RANDOM_SEED);
     }
 
-    public void draw(SpriteBatch spriteBatch) {
-        drawAcidZones(spriteBatch);
+    public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
+        drawAcidZones(spriteBatch, shapeRenderer);
     }
 
-    private void drawAcidZones(SpriteBatch spriteBatch) {
-        spriteBatch.begin();
+    private void drawAcidZones(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         for (var zone : acidZones.values()) {
-            zone.draw(spriteBatch);
+            zone.draw(spriteBatch, shapeRenderer);
         }
-        spriteBatch.end();
+    }
+
+    /**
+     * Spawn zones outside the range of chunks `Chunk(row0, col0) .. Chunk(row1, col1)`
+     */
+    public void spawnInRange(int row0, int col0, int row1, int col1) {
+        for (int row = row0; row < row1; row++) {
+            for (int col = col0; col < col1; col++) {
+                spawnAcidZone(new Chunk(row, col));
+            }
+        }
     }
 
     /**
@@ -57,8 +62,7 @@ public class ZoneManager {
         }
 
         var randomValue = random.floatFrom(chunk.hashCode());
-        if (true) {
-//        if (randomValue < ACID_ZONE_SPAWN_CHANCE) {
+        if (randomValue < ACID_ZONE_SPAWN_CHANCE) {
             var rect = chunk.toRectangle();
 
             float randX = random.floatFrom(chunk.hashCode() * 2);
@@ -69,7 +73,17 @@ public class ZoneManager {
         }
     }
 
-    public void despawnAcidZone(Chunk chunk) {
-        acidZones.clear();
+    /**
+     * Despawn zones outside the range of chunks `Chunk(row0, col0) .. Chunk(row1, col1)`
+     */
+    public void despawnOutsideRange(int row0, int col0, int row1, int col1) {
+        var keepZones = acidZones.
+                keySet().
+                stream().
+                filter(chunk ->
+                       row0 <= chunk.row() && chunk.row() < row1
+                        && col0 <= chunk.col() && chunk.col() < col1
+                ).toList();
+        acidZones.keySet().retainAll(keepZones);
     }
 }
