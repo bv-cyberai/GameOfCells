@@ -65,14 +65,15 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private Particles particles;
 
     public MainMenuScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            Camera camera,
-            Viewport viewport) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        Camera camera,
+        Viewport viewport, ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
+        this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
         this.camera = camera;
@@ -85,10 +86,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
         //Config provider can be 'constructed' anywhere, this is useful as game objects will need access
         //to it.
-        configProvider = ConfigProvider.getInstance();
+//        configProvider = ConfigProvider.getInstance();
         //Config is loaded here to avoid issue with GDX files, it is also the first possible
         //location that would use any user defined values.
-        configProvider.loadConfig();
+//        configProvider.loadConfig();
 
 
         layout = new GlyphLayout();
@@ -151,7 +152,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             inputProvider,
                             graphicsProvider,
                             game,
-                            assetManager));
+                            assetManager, configProvider ));
                     break;
                 case 1: // Settings
                     // Open the settings screen
@@ -161,7 +162,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             game,
                             assetManager,
                             camera,
-                            viewport));
+                            viewport,configProvider ));
                     break;
                 case 2:
                     // Exit the game
@@ -187,7 +188,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager));
+                    assetManager,configProvider ));
         }
 
         // Update the particles system

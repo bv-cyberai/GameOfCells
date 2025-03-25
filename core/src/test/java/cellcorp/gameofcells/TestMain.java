@@ -6,6 +6,10 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -72,6 +76,9 @@ public class TestMain {
 
     @Test
     public void canMoveToShopScreen() {
+//        Gdx.files = Mockito.mock(Files.class);
+//        Mockito.when(Gdx.files.internal(Mockito.anyString()))
+//            .thenReturn(new FileHandle("config.txt"));
         var gameRunner = GameRunner.create();
 
         // Press enter to move to game screen
@@ -90,7 +97,9 @@ public class TestMain {
     // likely being removed.
     public void canMoveToGameOverScreen() {
         var gameRunner = GameRunner.create();
-
+//        Gdx.files = Mockito.mock(Files.class);
+//        Mockito.when(Gdx.files.internal(Mockito.anyString()))
+//            .thenReturn(new FileHandle("config.txt"));
         // Press space to move to game screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();

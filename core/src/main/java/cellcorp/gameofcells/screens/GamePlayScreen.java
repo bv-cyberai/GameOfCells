@@ -66,6 +66,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
+    private ConfigProvider configProvider;
 
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
@@ -143,12 +144,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param inputProvider    Provides user input information.
      * @param graphicsProvider Provide graphics information.
      * @param game             The main game instance.
+     * @param configProvider
      */
     public GamePlayScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager, ConfigProvider configProvider) {
 
         this.assetManager = assetManager;
         this.game = game;
@@ -158,7 +160,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.camera = graphicsProvider.createCamera();
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
-        this.cell = new Cell(assetManager, ConfigProvider.getInstance());
+        this.cell = new Cell(assetManager, configProvider);
         this.glucoseManager = new GlucoseManager(assetManager, cell.getCellPositionX(), cell.getCellPositionY());
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
@@ -247,6 +249,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Move to `ShopScreen` when 's' is pressed.
+        System.out.println("HERE1");
         if (inputProvider.isKeyJustPressed(Input.Keys.S)) {
             game.setScreen(new ShopScreen(
                     game,
@@ -256,19 +259,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     this, // Pass the current screen to the shop screen
                     cell));
         }
-
+        System.out.println("HERE2");
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
             game.setScreen(new GameOverScreen(
                     inputProvider,
                     assetManager,
                     graphicsProvider,
-                    game));
+                    game,configProvider));
         }
-
+        System.out.println("HERE3");
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
             cell.addCellATP(20);
         }
-
+        System.out.println("HERE4");
         // Will eventually be triggered by cell state
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             game.setScreen(new PopupInfoScreen(
@@ -276,6 +279,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     graphicsProvider, game,
                     this, PopupInfoScreen.Type.danger));
         }
+        System.out.println("HERE5");
         cell.move(
                 deltaTimeSeconds,
                 inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
@@ -283,6 +287,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
                 inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
+        System.out.println("HERE6");
     }
 
     /**

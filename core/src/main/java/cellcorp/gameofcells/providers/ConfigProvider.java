@@ -24,7 +24,7 @@ public class ConfigProvider {
 
 
     private ConfigProvider() {
-
+        loadConfig();
 
     }
 

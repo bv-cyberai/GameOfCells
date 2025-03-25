@@ -147,7 +147,7 @@ public class Main implements ApplicationListener {
         assetManager.finishLoading();
         configProvider.loadConfig();
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport));
+        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport,configProvider));
     }
 
     @Override
@@ -194,7 +194,9 @@ public class Main implements ApplicationListener {
      * @param deltaTimeSeconds The time passed since the last call to `handleInput`, in seconds.
      */
     public void handleInput(float deltaTimeSeconds) {
+        System.out.println("PreHandleINput");
         screen.handleInput(deltaTimeSeconds);
+        System.out.println("PostHandleINput");
     }
 
     /**

@@ -25,6 +25,7 @@ public class AttractScreen implements GameOfCellsScreen {
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
+    private ConfigProvider configProvider;
     private final Main game;
     private final AssetManager assetManager;
     private final Camera camera;
@@ -64,10 +65,11 @@ public class AttractScreen implements GameOfCellsScreen {
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             Main game,
-            AssetManager assetManager
-    ) {
+            AssetManager assetManager,
+            ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
+        this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
 
@@ -81,7 +83,7 @@ public class AttractScreen implements GameOfCellsScreen {
         this.particles = new Particles(whitePixelTexture);
 
         // Initialize game objects
-        this.cell = new Cell(assetManager, ConfigProvider.getInstance());
+        this.cell = new Cell(assetManager, configProvider);
 
         // Initialize glucose objects randomly
         this.glucoseList = new ArrayList<>();
@@ -144,7 +146,7 @@ public class AttractScreen implements GameOfCellsScreen {
     public void handleInput(float deltaTimeSeconds) {
         // Return to the main menu if any key is pressed or the screen is touched
         if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY) && !inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
-            game.setScreen(new MainMenuScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport));
+            game.setScreen(new MainMenuScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport, configProvider));
         }
     }
 
