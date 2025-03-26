@@ -4,6 +4,7 @@ cellMaxHealth:100       ##Max Health
 cellATP:30            ##Starting ATP
 cellMaxATP:100          ##Max Health
 cellMovementSpeed:200   ##Cell Movement Speed
+noComment:5
 
 [glucose]
 glucoseRadius:30        ##Size of glucose
@@ -19,3 +20,4 @@ mitochondriaUpgradeCost:30 ##Unsure
 [pop-ups]/
 glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!/
 testMessage:This is a test\n message/
+commentTest: this line will have comments/ ####oof
