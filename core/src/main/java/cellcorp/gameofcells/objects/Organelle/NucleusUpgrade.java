@@ -1,11 +1,12 @@
-package cellcorp.gameofcells.objects;
+package cellcorp.gameofcells.objects.Organelle;
 
+import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
 
 /**
  * Ribosome upgrade.
  */
-public class NucleusUpgrade extends Upgrade {
+public class NucleusUpgrade extends OrganelleUpgrade {
     public NucleusUpgrade() {
         super("Nucleus", 90, "Control center of the cell", "Unlocks advanced abilities", 90, 4);
     }

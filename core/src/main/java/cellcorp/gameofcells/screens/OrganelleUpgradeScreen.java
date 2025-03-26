@@ -25,11 +25,11 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.objects.FlagellaUpgrade;
-import cellcorp.gameofcells.objects.MitochondriaUpgrade;
-import cellcorp.gameofcells.objects.NucleusUpgrade;
-import cellcorp.gameofcells.objects.RibosomeUpgrade;
-import cellcorp.gameofcells.objects.Upgrade;
+import cellcorp.gameofcells.objects.Organelle.FlagellaUpgrade;
+import cellcorp.gameofcells.objects.Organelle.MitochondriaUpgrade;
+import cellcorp.gameofcells.objects.Organelle.NucleusUpgrade;
+import cellcorp.gameofcells.objects.Organelle.OrganelleUpgrade;
+import cellcorp.gameofcells.objects.Organelle.RibosomeUpgrade;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -49,7 +49,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 public class OrganelleUpgradeScreen implements GameOfCellsScreen {
     private final Stage stage;
-    private final List<Upgrade> upgrades;
+    private final List<OrganelleUpgrade> upgrades;
     private final Cell cell;
     private final Main game;
     private final InputProvider inputProvider;
@@ -153,7 +153,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
                 updateUpgradeSelection();
             }
         } else if(inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
-            Upgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
+            OrganelleUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
             if (selectedUpgrade.canPurchase(cell, this)) {
                 selectedUpgrade.applyUpgrade(cell);
                 upgrades.remove(selectedUpgrade); // Remove the upgrade from the list
@@ -279,7 +279,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         upgradeCards = new ArrayList<>();
         
         // Create and add upgrade cards to the table
-        for (Upgrade upgrade : upgrades) {
+        for (OrganelleUpgrade upgrade : upgrades) {
             Table upgradeCard = createUpgradeCard(upgrade);
             upgradeCards.add(upgradeCard);
             upgradeTable.add(upgradeCard).pad(10);
@@ -308,7 +308,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         upgradeCards.clear();
 
         // Recreate and add upgrade cards to the table
-        for (Upgrade upgrade : upgrades) {
+        for (OrganelleUpgrade upgrade : upgrades) {
             Table upgradeCard = createUpgradeCard(upgrade);
             upgradeCards.add(upgradeCard);
             upgradeTable.add(upgradeCard).pad(10);
@@ -341,7 +341,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
     /**
      * Create a table for an upgrade card.
      */
-    private Table createUpgradeCard(Upgrade upgrade) {
+    private Table createUpgradeCard(OrganelleUpgrade upgrade) {
         Table card = new Table();
         card.defaults().center().pad(5); // Center the actors in the table
 
@@ -478,7 +478,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
      * Returns a colorblind-friendly color for the upgrade description.
      * @return The colorblind-friendly color.
      */
-    private Color getDescriptionColor(Upgrade upgrade) {
+    private Color getDescriptionColor(OrganelleUpgrade upgrade) {
         if (upgrade instanceof MitochondriaUpgrade) {
             return new Color(0.0f, 0.45f, 0.7f, 1.0f); // Blue
         } else if (upgrade instanceof RibosomeUpgrade) {
@@ -495,7 +495,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
     /**
      * Returns the icon for the upgrade.
      */
-    private Image getUpgradeIcon(Upgrade upgrade) {
+    private Image getUpgradeIcon(OrganelleUpgrade upgrade) {
         Image icon = null;
         float iconWidth = 100;
         float iconHeight = 100;

@@ -173,7 +173,14 @@ public class ShopScreen implements GameOfCellsScreen {
             // Handle selection of the current option
             if (selectedOptionIndex == 0) {
                 // Size option selected
-                sizeUpgradeTable.setVisible(true); // Show the size upgrade table
+                // Navigate to the size upgrade screen
+                game.setScreen(new SizeUpgradeScreen(
+                    game, 
+                    inputProvider, 
+                    graphicsProvider, 
+                    assetManager, 
+                    previousScreen, 
+                    cell));
             } else if (selectedOptionIndex == 1) {
                 // Organelle option selected
                 // Navigate to the organelle upgrade screen
@@ -339,31 +346,15 @@ public class ShopScreen implements GameOfCellsScreen {
         // Add the main table to the stage
         mainTable.add(optionsTable).padTop(50).row();
 
-        // Create the upgrade tables
-        sizeUpgradeTable = new Table(); // Size upgrade table
-
-        // Add size upgrades to the size upgrade table
-        // (You can create a separate list of size upgrades if needed)
-        // For now, we'll just add a splaceholder label
-        Label sizeUpgradeLabel = new Label("Size upgrades coming soon!",
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-        sizeUpgradeLabel.setFontScale(OPTION_INFO_TEXT_SIZE);
-        sizeUpgradeTable.add(sizeUpgradeLabel).pad(10);
-
-        // Add the upgrade tables to the main table
-        mainTable.add(sizeUpgradeTable).expand().fill().pad(20).row(); // Initially hidden
-
         // Exit instructions
         Label exitLabel = new Label("Press ESC to exit | Arrow keys to navigate | Enter to select",
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
 
         exitLabel.setFontScale(INSTRUCTION_TEXT_SIZE);
+        exitLabel.setAlignment(Align.center); // Center the text
         mainTable.add(exitLabel).padBottom(20).row();
 
         stage.addActor(mainTable);
-
-        // Set the initial visibility of the upgrade tables
-        sizeUpgradeTable.setVisible(false); // Hide the size upgrades
 
         // Highlight the initially selected option (size)
         updateOptionSelection();
