@@ -1,5 +1,5 @@
 [cell]
-cellHealth:100          ##Starting Health
+cellHealth:75         ##Starting Health
 cellMaxHealth:100       ##Max Health
 cellATP:30            ##Starting ATP
 cellMaxATP:100          ##Max Health
