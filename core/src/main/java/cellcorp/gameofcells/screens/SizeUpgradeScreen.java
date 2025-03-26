@@ -37,7 +37,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 public class SizeUpgradeScreen implements GameOfCellsScreen {
     private final Stage stage;
     private final List<SizeUpgrade> upgrades;
-    private final Cell cell;
+    private final cellcorp.gameofcells.objects.Cell playerCell;
     private final Main game;
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -74,7 +74,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
         this.previousScreen = previousScreen;
-        this.cell = cell;
+        this.playerCell = cell;
 
         this.viewport = graphicsProvider.createFitViewport(ShopScreen.VIEW_RECT_WIDTH, ShopScreen.VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
@@ -119,12 +119,13 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
             }
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
             SizeUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
-            if (selectedUpgrade.canPurchase(cell, null)) {
-                selectedUpgrade.applyUpgrade(cell);
+            if (selectedUpgrade.canPurchase(playerCell, null)) {
+                selectedUpgrade.applyUpgrade(playerCell);
                 upgrades.remove(selectedUpgrade);
                 selectedUpgradeIndex = Math.min(selectedUpgradeIndex, upgrades.size() - 1);
+                
                 updateUpgradeDisplay();
-                showMessage("Size increased to " + (cell.getcellSize()/100) + "!");
+                showMessage("Size increased to " + (playerCell.getcellSize()/100) + "!");
             } else {
                 showMessage("Cannot purchase - check ATP and size requirements");
             }
@@ -144,13 +145,13 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         mainTable.add(titleLabel).padTop(20).row();
 
         // ATP Tracker
-        Label atpLabel = new Label("ATP: " + cell.getCellATP(),
+        Label atpLabel = new Label("ATP: " + playerCell.getCellATP(),
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
         atpLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
         mainTable.add(atpLabel).padTop(10).row();
 
         // Current Size
-        Label sizeLabel = new Label("Current Size: " + (cell.getcellSize() - 100)/100,
+        Label sizeLabel = new Label("Current Size: " + (playerCell.getcellSize() - 100)/100,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
         sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
         mainTable.add(sizeLabel).padTop(10).row();
@@ -228,7 +229,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         card.add(reqTable).expand().bottom().left().padBottom(10);
 
         // Lock overlay if not purchasable
-        if (!upgrade.canPurchase(cell, null)) {
+        if (!upgrade.canPurchase(playerCell, null)) {
             card.getColor().a = 0.6f;
             Image lock = new Image(assetManager.get(AssetFileNames.LOCK_ICON, Texture.class));
             lock.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);

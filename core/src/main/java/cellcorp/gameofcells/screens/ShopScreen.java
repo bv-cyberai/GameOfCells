@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -48,7 +50,7 @@ import cellcorp.gameofcells.providers.InputProvider;
  */
 public class ShopScreen implements GameOfCellsScreen {
     private final Stage stage;
-    private final Cell cell;
+    private final cellcorp.gameofcells.objects.Cell playerCell;
     private final Main game;
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
@@ -100,7 +102,7 @@ public class ShopScreen implements GameOfCellsScreen {
      * @param inputProvider  Handles user input.
      * @param assetManager   Manages game assets.
      * @param previousScreen The current screen gameplayscreen
-     * @param cell           The cell object
+     * @param playerCell           The cell object
      */
     public ShopScreen(
             Main game,
@@ -115,7 +117,7 @@ public class ShopScreen implements GameOfCellsScreen {
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
         this.previousScreen = previousScreen;
-        this.cell = cell;
+        this.playerCell = cell;
 
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
@@ -125,8 +127,12 @@ public class ShopScreen implements GameOfCellsScreen {
         this.particles = new Particles(whitePixelTexture);
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
+        // Pre load textures
+        Texture optionBgTexture = createOptionBackgroundTexture();
+        Texture glowingBorderTexture = createGlowingBorderTexture();
+
          // Create UI
-        createUI();
+        createUI(optionBgTexture, glowingBorderTexture);
     }
 
     /**
@@ -180,7 +186,7 @@ public class ShopScreen implements GameOfCellsScreen {
                     graphicsProvider, 
                     assetManager, 
                     previousScreen, 
-                    cell));
+                    playerCell));
             } else if (selectedOptionIndex == 1) {
                 // Organelle option selected
                 // Navigate to the organelle upgrade screen
@@ -190,9 +196,11 @@ public class ShopScreen implements GameOfCellsScreen {
                     graphicsProvider, 
                     assetManager, 
                     this, 
-                    cell));
+                    playerCell));
             }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        }
+        
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             // Fade put before exiting the shop screen
             stage.getRoot().addAction(Actions.sequence(
                 Actions.fadeOut(1f), // Fade out over 1 seconds
@@ -305,37 +313,28 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Create the UI for the shop screen.
      */
-    private void createUI() {
+    private void createUI(Texture optionBgTexture, Texture glowingBorderTexture) {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
 
         // Title
-        Label titleLabel = new Label("Organelle Shop",
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
-            BitmapFont.class), Color.WHITE));
-        titleLabel.setFontScale(SHOP_TEXT_SIZE);
+        Label titleLabel = createLabel("Organelle Shop", SHOP_TEXT_SIZE);
         mainTable.add(titleLabel).padTop(20).row();
 
         // ATP Tracker
-        Label atpLabel = new Label("ATP: " + cell.getCellATP(),
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
-            BitmapFont.class), Color.WHITE));
-        atpLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        Label atpLabel = createLabel("ATP: " + playerCell.getCellATP(), SHOP_TEXT_SIZE - 0.1f);
         mainTable.add(atpLabel).padTop(10).row();
 
         // Size Tracker
-        Label sizeLabel = new Label("Size: " + (cell.getcellSize() - 100) / 100,
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
-            BitmapFont.class), Color.WHITE));
-        sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        Label sizeLabel = createLabel("Size: " + (playerCell.getcellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
         mainTable.add(sizeLabel).padTop(10).row();
 
         // Table for Size and Organelle
         Table optionsTable = new Table();
         optionCards = new ArrayList<>();
 
-        Table sizeCard = createOptionCard("Size", "Increase the size of the cell");
-        Table organelleCard = createOptionCard("Organelle", "Purchase organelle upgrades");
+        Table sizeCard = createOptionCard("Size", "Increase the size of the cell", optionBgTexture, glowingBorderTexture);
+        Table organelleCard = createOptionCard("Organelle", "Purchase organelle upgrades", optionBgTexture, glowingBorderTexture);
 
         // Add the cards to the list and table
         optionCards.add(sizeCard);
@@ -347,10 +346,7 @@ public class ShopScreen implements GameOfCellsScreen {
         mainTable.add(optionsTable).padTop(50).row();
 
         // Exit instructions
-        Label exitLabel = new Label("Press ESC to exit | Arrow keys to navigate | Enter to select",
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-
-        exitLabel.setFontScale(INSTRUCTION_TEXT_SIZE);
+        Label exitLabel = createLabel("Press ESC to exit | Arrow keys to navigate | Enter to select", INSTRUCTION_TEXT_SIZE);
         exitLabel.setAlignment(Align.center); // Center the text
         mainTable.add(exitLabel).padBottom(20).row();
 
@@ -361,20 +357,32 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Create a label with the specified text and scale.
+     * @param text
+     * @param scale
+     * @return
+     */
+    private Label createLabel(String text,float scale) {
+        Label label = new Label(text, new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
+        label.setFontScale(scale);
+        return label;
+    }
+
+    /**
      * Create a table for an option card.
      * @param title
      * @param description
      * @return
      */
-    private Table createOptionCard(String title, String description) {
+    private Table createOptionCard(String title, String description, Texture bgTexture, Texture borderTexture) {
         Table card = new Table();
-        card.defaults().center().pad(5); // Center all elements and add padding
+        card.center(); // Center all elements and add padding
 
         // Set a fixed size for the card to match the glowing border
         card.setSize(OPTION_CARD_WIDTH, OPTION_CARD_HEIGHT); // Set the size of the card
 
         // Create a glowing border for the card
-        Image glowingBorder = new Image(createGlowingBorderTexture());
+        Image glowingBorder = new Image(borderTexture);
         glowingBorder.setSize(OPTION_CARD_WIDTH, OPTION_CARD_HEIGHT); // Match the card size
         glowingBorder.setVisible(false); // Hide the border by default
         glowingBorder.setName("glowingBorder");
@@ -383,24 +391,18 @@ public class ShopScreen implements GameOfCellsScreen {
         card.addActor(glowingBorder); // Add the border as an actor (not part of the table layout)
 
         // Set a custom background for the card
-        card.setBackground(new TextureRegionDrawable(createOptionBackgroundTexture()));
+        card.setBackground(new TextureRegionDrawable(bgTexture));
 
         // Add padding to the top of the card
         card.padTop(10);
 
         // Title
-        Label titleLabel = new Label(title,
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
-            BitmapFont.class), Color.WHITE));
-        titleLabel.setFontScale(OPTION_NAME_TEXT_SIZE);
+        Label titleLabel = createLabel(title, OPTION_NAME_TEXT_SIZE);
         titleLabel.setAlignment(Align.center); // Center the text
         card.add(titleLabel).width(OPTION_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
 
         // Description
-        Label descriptionLabel = new Label(description,
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
-            BitmapFont.class), Color.WHITE));
-        descriptionLabel.setFontScale(OPTION_INFO_TEXT_SIZE);
+        Label descriptionLabel = createLabel(description, OPTION_INFO_TEXT_SIZE);
         descriptionLabel.setWrap(true);
         descriptionLabel.setAlignment(Align.center); // Center the text
         card.add(descriptionLabel).width(OPTION_CARD_WIDTH - 20).padTop(10).row(); // Adjusted width for padding
@@ -482,21 +484,23 @@ public class ShopScreen implements GameOfCellsScreen {
         return texture;
     }
 
-    /**
-     * Update the ATP and size trackers.
-     */
     private void updateTrackers() {
-        // Find the ATP and size labels in the stage
-        for (com.badlogic.gdx.scenes.scene2d.Actor actor : stage.getActors()) {
-            if (actor instanceof Label) {
-                Table table = (Table) actor;
-                for (com.badlogic.gdx.scenes.scene2d.Actor child : table.getChildren()) {
+        // Get all actors from the stage
+        for (Actor actor : stage.getActors()) {
+            if (actor instanceof Table) {
+                // Search through all children of the table
+                for (Actor child : ((Table)actor).getChildren()) {
                     if (child instanceof Label) {
-                        Label label = (Label) child;
-                        if (label.getText().toString().startsWith("ATP:")) {
-                            label.setText("ATP: " + cell.getCellATP()); // Update the ATP label
-                        } else if (label.getText().toString().startsWith("Size:")) {
-                            label.setText("Size: " + (cell.getcellSize() - 100 / 100)); // Update the size label
+                        Label label = (Label)child;
+                        String text = label.getText().toString();
+                        
+                        // Update ATP label for your custom Cell
+                        if (text.startsWith("ATP:")) {
+                            label.setText("ATP: " + playerCell.getCellATP());
+                        } 
+                        // Update Size label for your custom Cell
+                        else if (text.startsWith("Size:")) {
+                            label.setText("Size: " + ((playerCell.getcellSize() - 100) / 100));
                         }
                     }
                 }

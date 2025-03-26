@@ -135,7 +135,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpriteBatch batch;
 
     // Objects for rendering the game
-    private final Cell cell;
+    private final Cell playerCell;
     private final GlucoseManager glucoseManager;
     private final ZoneManager zoneManager;
     private final SpawnManager spawnManager;
@@ -173,16 +173,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.camera = graphicsProvider.createCamera();
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
-        this.cell = new Cell(this, assetManager, configProvider);
-        this.zoneManager = new ZoneManager(assetManager, cell);
-        this.glucoseManager = new GlucoseManager(assetManager, cell);
-        this.spawnManager = new SpawnManager(cell, zoneManager, glucoseManager);
+        this.playerCell = new Cell(this, assetManager, configProvider);
+        this.zoneManager = new ZoneManager(assetManager, playerCell);
+        this.glucoseManager = new GlucoseManager(assetManager, playerCell);
+        this.spawnManager = new SpawnManager(playerCell, zoneManager, glucoseManager);
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
-        this.hud = new HUD(graphicsProvider, assetManager, cell.getMaxHealth(), cell.getMaxATP());
+        this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
 
         this.isPaused = false;
     }
@@ -258,7 +258,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
-        cell.dispose(); // dispose cell
+        playerCell.dispose(); // dispose cell
         glucoseManager.dispose();
         hud.dispose();
         batch.dispose(); // Dispose of the batch
@@ -279,18 +279,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     graphicsProvider,
                     assetManager,
                     this, // Pass the current screen to the shop screen
-                    cell));
+                    playerCell
+            ));
         }
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
             endGame();
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
-            cell.addCellATP(20);
+            playerCell.addCellATP(20);
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.D)) {
-            cell.removeCellATP(20);
+            playerCell.removeCellATP(20);
         }
 
         // Will eventually be triggered by cell state
@@ -303,7 +304,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         // Only move the cell if the game is not paused
         if (!isPaused) {
-            cell.move(
+            playerCell.move(
                 deltaTimeSeconds,
                 (inputProvider.isKeyPressed(Input.Keys.LEFT )|| inputProvider.isKeyPressed(Input.Keys.A )), // Check if the left key is pressed
                 (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D )), // Check if the right key is pressed
@@ -322,7 +323,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         if (!isPaused) {
-            hud.update(deltaTimeSeconds, cell.getCellHealth(), cell.getCellATP());
+            hud.update(deltaTimeSeconds, playerCell.getCellHealth(), playerCell.getCellATP());
             zoneManager.update(deltaTimeSeconds);
             spawnManager.update();
             handleCollisions();
@@ -333,17 +334,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
         var glucoseToRemove = new ArrayList<Glucose>();
         for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
             var glucose = getGlucoseManager().getGlucoseArray().get(i);
-            if (cell.getcellCircle().overlaps(glucose.getCircle())) {
+            if (playerCell.getcellCircle().overlaps(glucose.getCircle())) {
                 glucoseToRemove.add(glucose);
-                cell.addCellATP(Glucose.ATP_PER_GLUCOSE);
+                playerCell.addCellATP(Glucose.ATP_PER_GLUCOSE);
 
                 // Show the popup on the first glucose collision
-                if (!cell.hasShownGlucosePopup()) {
+                if (!playerCell.hasShownGlucosePopup()) {
                     game.setScreen(new PopupInfoScreen(
                             inputProvider, assetManager,
                             graphicsProvider, game,
                             this, configProvider,PopupInfoScreen.Type.glucose));
-                    cell.setHasShownGlucosePopup(true); // Mark the popup as shown
+                            playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
                 }
             }
         }
@@ -404,7 +405,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Center's the camera's view rectangle on the cell.
      */
     private void centerCameraOnCell() {
-        camera.position.set(cell.getX(), cell.getY(), 0);
+        camera.position.set(playerCell.getX(), playerCell.getY(), 0);
     }
 
     /**
@@ -454,7 +455,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         zoneManager.draw(batch, shapeRenderer);
         batch.begin();
         glucoseManager.draw(batch);
-        cell.draw(batch);
+        playerCell.draw(batch);
         batch.end();
     }
 
@@ -464,7 +465,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private void drawChunks(ShapeRenderer shapeRenderer) {
         // Get current chunk. Draw it and all adjacent chunks.
 
-        var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
+        var currentChunk = Chunk.fromWorldCoords(playerCell.getX(), playerCell.getY());
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.YELLOW);
         for (int row = currentChunk.row() - 1; row < currentChunk.row() + 2; row++) {
@@ -490,7 +491,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * For test use only.
      */
     public Cell getCell() {
-        return this.cell;
+        return this.playerCell;
     }
 
     public void endGame() {

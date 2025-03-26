@@ -79,7 +79,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.camera = camera;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
-
+        
         // Load white pixel texture and initialize particles
         Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
         this.particles = new Particles(whitePixelTexture);

@@ -50,7 +50,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 public class OrganelleUpgradeScreen implements GameOfCellsScreen {
     private final Stage stage;
     private final List<OrganelleUpgrade> upgrades;
-    private final Cell cell;
+    private final cellcorp.gameofcells.objects.Cell playerCell;
     private final Main game;
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -98,7 +98,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
         this.previousScreen = previousScreen;
-        this.cell = cell;
+        this.playerCell = cell;
 
         this.viewport = graphicsProvider.createFitViewport(ShopScreen.VIEW_RECT_WIDTH, ShopScreen.VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
@@ -154,8 +154,8 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
             }
         } else if(inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
             OrganelleUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
-            if (selectedUpgrade.canPurchase(cell, this)) {
-                selectedUpgrade.applyUpgrade(cell);
+            if (selectedUpgrade.canPurchase(playerCell, this)) {
+                selectedUpgrade.applyUpgrade(playerCell);
                 upgrades.remove(selectedUpgrade); // Remove the upgrade from the list
                 selectedUpgradeIndex = Math.min(selectedUpgradeIndex, upgrades.size() - 1); // Clamp the index
                 
@@ -164,8 +164,8 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
             } else {
                 // Display a message indicating that the upgrade cannot be purchased
                 String message = "";
-                boolean notEnoughATP = cell.getCellATP() < selectedUpgrade.getRequiredATP();
-                boolean notEnoughSize = (cell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
+                boolean notEnoughATP = playerCell.getCellATP() < selectedUpgrade.getRequiredATP();
+                boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
 
                 if (notEnoughATP && notEnoughSize) {
                     message = "Not enough ATP and size to purchase this upgrade.";
@@ -261,14 +261,14 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         mainTable.add(titleLabel).padTop(20).row();
 
         // ATP Tracker
-        Label atpLabel = new Label("ATP: " + cell.getCellATP(),
+        Label atpLabel = new Label("ATP: " + playerCell.getCellATP(),
                 new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, 
                 BitmapFont.class), Color.WHITE));
         atpLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
         mainTable.add(atpLabel).padTop(10).row();
 
         // Size Tracker
-        Label sizeLabel = new Label("Size: " + (cell.getcellSize() - 100) / 100,
+        Label sizeLabel = new Label("Size: " + (playerCell.getcellSize() - 100) / 100,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
             BitmapFont.class), Color.WHITE));
         sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
@@ -406,7 +406,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         card.row();
 
         // Lock overlay (if the upgrade is locked)
-        if (!upgrade.canPurchase(cell, this)) {
+        if (!upgrade.canPurchase(playerCell, this)) {
             card.getColor().a = 0.4f; // Semi-transparent
 
             // Add a semi-transparent overlay to indicate that the upgrade is locked
@@ -549,15 +549,15 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
      * @return True if the cell has mitochondria, false otherwise.
      */
     public boolean hasMitochondria() {
-        return cell.hasMitochondria();
+        return playerCell.hasMitochondria();
     }
 
     public boolean hasRibosome() {
-        return cell.getProteinSynthesisMultiplier() > 1.0f;
+        return playerCell.getProteinSynthesisMultiplier() > 1.0f;
     }
 
 
     public boolean hasFlagella() {
-        return cell.getMovementSpeedMultiplier() > 1.0f;
+        return playerCell.getMovementSpeedMultiplier() > 1.0f;
     }
 }

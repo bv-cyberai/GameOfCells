@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import org.mockito.Mockito;
 
 public class FakeGraphicsProvider implements GraphicsProvider {
@@ -36,6 +37,11 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
+    public Viewport createViewport(float viewRectWidth, float viewRectHeight) {
+        return Mockito.mock(FitViewport.class);
+    }
+
+    @Override
     public ShapeRenderer createShapeRenderer() {
         // Non-graphics code should never reference the shape renderer
         return null;
@@ -45,7 +51,7 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     public SpriteBatch createSpriteBatch() {
         // Non-graphics code should never reference the sprite batch,
         // so this might even be safe.
-        return null;
+        return Mockito.mock(SpriteBatch.class);
     }
 
 }

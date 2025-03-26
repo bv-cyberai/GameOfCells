@@ -38,6 +38,7 @@ public class GameRunner {
         var camera = Mockito.mock(OrthographicCamera.class);
         var viewport = Mockito.mock(FitViewport.class);
         var ConfigProvider = new ConfigProvider();
+        var spriteBatch = Mockito.mock(SpriteBatch.class);
         var game = new Main(inputProvider, graphicsProvider, assetManager, camera, viewport,ConfigProvider);
         game.create();
         return new GameRunner(game, inputProvider);

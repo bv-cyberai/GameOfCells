@@ -55,6 +55,19 @@ public interface GraphicsProvider {
     FitViewport createFitViewport(float viewRectWidth, float viewRectHeight, Camera camera);
 
     /**
+     * Create a viewport. Equivalent to calling `new FitViewport()`,
+     * but won't crash test code.
+     *
+     * @param viewRectWidth The width of the camera view rectangle
+     *                      (the rectangle of the world which the camera will display).
+     *                      Equivalent to the questionably-named {@link Viewport} `worldWidth`
+     * @param viewRectHeight The width of the camera view rectangle
+     *                      Equivalent to the questionably-named {@link Camera} `worldHeight`
+     * @return A newly-constructed {@link Viewport}
+     */
+    Viewport createViewport(float viewRectWidth, float viewRectHeight);
+    
+    /**
      * Create a shape renderer. Equivalent to calling `new ShapeRenderer()`,
      * but won't crash test code.
      *

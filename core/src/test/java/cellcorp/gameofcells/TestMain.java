@@ -5,10 +5,14 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.assets.AssetManager;
 
 import cellcorp.gameofcells.objects.Cell;
@@ -22,6 +26,14 @@ import cellcorp.gameofcells.screens.MainMenuScreen;
 import cellcorp.gameofcells.screens.ShopScreen;
 
 public class TestMain {
+
+    @BeforeAll
+    public static void setUpLibGDX() {
+        // Set up the mock graphics provider to return the default screen dimensions
+        Gdx.graphics = Mockito.mock(Graphics.class);
+        Mockito.when(Gdx.graphics.getWidth()).thenReturn(Main.DEFAULT_SCREEN_WIDTH);
+        Mockito.when(Gdx.graphics.getHeight()).thenReturn(Main.DEFAULT_SCREEN_HEIGHT);
+    }
 
     @Test
     public void movingToGamePlayScreenSpawnsGlucose() {
@@ -79,7 +91,7 @@ public class TestMain {
         // Press enter to move to game screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
-
+        
         // Press 's' to move to shop screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();

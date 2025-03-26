@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
@@ -33,6 +34,10 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
         return new FitViewport(viewRectWidth, viewRectHeight, camera);
     }
 
+    @Override
+    public Viewport createViewport(float viewRectWidth, float viewRectHeight) {
+        return new FitViewport(viewRectWidth, viewRectHeight);
+    }
 
     @Override
     public ShapeRenderer createShapeRenderer() {
