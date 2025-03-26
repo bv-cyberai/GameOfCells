@@ -54,7 +54,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public static final int VIEW_RECT_HEIGHT = 1080;
 
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
-    public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
+    public static final String MESSAGE_SHOP = "Press Q to access the shop screen.";
 
     private final Main game;
 
@@ -247,7 +247,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Move to `ShopScreen` when 's' is pressed.
-        if (inputProvider.isKeyJustPressed(Input.Keys.S)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             game.setScreen(new ShopScreen(
                     game,
                     inputProvider,
@@ -265,7 +265,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     game));
         }
 
-        if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
             cell.addCellATP(20);
         }
         
@@ -278,10 +278,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
         cell.move(
                 deltaTimeSeconds,
-                inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
-                inputProvider.isKeyPressed(Input.Keys.RIGHT), // Check if the right key is pressed
-                inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
-                inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
+                inputProvider.isKeyPressed(Input.Keys.A), // Check if the A key is pressed
+                inputProvider.isKeyPressed(Input.Keys.D), // Check if the D key is pressed
+                inputProvider.isKeyPressed(Input.Keys.W), // Check if the W key is pressed
+                inputProvider.isKeyPressed(Input.Keys.S) // Check if the S key is pressed
         );
     }
 

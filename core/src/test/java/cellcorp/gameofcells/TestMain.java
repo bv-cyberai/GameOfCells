@@ -79,7 +79,7 @@ public class TestMain {
         gameRunner.step();
 
         // Press 's' to move to shop screen
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
 
         assertInstanceOf(ShopScreen.class, gameRunner.game.getScreen());
@@ -137,7 +137,7 @@ public class TestMain {
         gameRunner.step();
         gameRunner.runForSeconds(2);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.runForSeconds(2);
 

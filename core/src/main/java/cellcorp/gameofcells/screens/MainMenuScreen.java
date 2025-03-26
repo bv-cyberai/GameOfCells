@@ -125,10 +125,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Navigate menu options with arrow keys
-        if (inputProvider.isKeyJustPressed(Input.Keys.UP)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.W | Input.Keys.UP)) {
             selectedOption = (selectedOption - 1 + MENU_OPTIONS.length) % MENU_OPTIONS.length;
         }
-        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.D| Input.Keys.DOWN)) {
             selectedOption = (selectedOption + 1) % MENU_OPTIONS.length;
         }
 
