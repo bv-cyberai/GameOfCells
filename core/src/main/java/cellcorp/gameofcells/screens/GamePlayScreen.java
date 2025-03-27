@@ -274,7 +274,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
                     graphicsProvider, game,
-                    this, PopupInfoScreen.Type.danger));
+                    this, configProvider, PopupInfoScreen.Type.danger));
         }
         cell.move(
                 deltaTimeSeconds,
@@ -309,7 +309,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     game.setScreen(new PopupInfoScreen(
                             inputProvider, assetManager,
                             graphicsProvider, game,
-                            this, PopupInfoScreen.Type.glucose));
+                            this, configProvider,PopupInfoScreen.Type.glucose));
                     cell.setHasShownGlucosePopup(true); // Mark the popup as shown
                 }
             }

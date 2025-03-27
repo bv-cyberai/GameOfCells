@@ -202,7 +202,16 @@ public class ConfigProvider {
      */
     private void parseDescriptions() {
         for (String line : descriptionString.split("/", -1)) {
+            //Handle windows CRLF
+            line = line.replace("\r\n", "\n");
+
+            //This should remove the \n after / was read, while leaving the others intact.
+            if(line.charAt(0) == '\n' && line.length() >=2) {
+                line = line.substring(1);
+            }
+
             //These are lines for the user - skip parsing.
+            System.out.println("LINE: " + line+":EOL");
             if (line.startsWith("[") || line.startsWith("#") || line.startsWith(" ") || line.isEmpty()) {
                 continue;
             }
@@ -259,7 +268,7 @@ public class ConfigProvider {
         if (value == null) {
             throw new NullPointerException("Key: " + key + " null!");
         }
-        return value;
+        return value.replace("\\n", "\n");
     }
 
 }

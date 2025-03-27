@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -18,7 +19,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * PopupInfoScreen
- * 
+ *
  * Provides the ability to create a popup with informational text.
  *
  * @author Brendon Vinyard / vineyabn207
@@ -58,6 +59,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
+    private final ConfigProvider configProvider;
 
     // Batch/Camera
     private final FitViewport viewport;
@@ -78,19 +80,18 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     /**
      * Popup Screen Constructor
-     * 
+     *
      * Creates a new popup with the given type.
-     * 
+     *
      * @param inputProvider    - The input provider
      * @param assetManager     - The Asset manager
      * @param graphicsProvider - The graphics provider
      * @param game             - The game instance
-     * @param viewport         - The game viewport
      * @param previousScreen   - The previous screen
      * @param type             - The type of popup to create -- See type enum.
      */
     public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
-            Main game, GameOfCellsScreen previousScreen, Type type) {
+                           Main game, GameOfCellsScreen previousScreen,ConfigProvider configProvider, Type type) {
 
         this.type = type;
 
@@ -105,6 +106,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+        this.configProvider = configProvider;
 
         // Font/Message
         layout = new GlyphLayout();
@@ -115,7 +117,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         padding = -10; // negative padding shifts y down, and x left. Should not need to be changed.
         popUpSize = 500f;
-        setMessage();
+        setMessageOrDefault();
     }
 
     @Override
@@ -132,28 +134,53 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     /**
      * Message Setter
-     * 
+     *
      * Will set the message of the popup based on the given type of the popup.
      */
-    private void setMessage() {
+//    private void setMessage() {
+//        switch (type) {
+//            case glucose:
+//                message = "You've collected glucose!" + "\n" + "\n" + "Cells convert glucose into ATP for energy."
+//                        + "\n" + "\n" + "Press 'C' to continue!";
+//                break;
+//            case danger:
+//                message = "You're in danger!" + "\n\n" + "Gradient color 'X' damages cell health" + "\n\n"
+//                        + "Press 'C' to continue!";
+//                break;
+//            default:
+//                break;
+//
+//        }
+//    }
+
+    private void setMessageOrDefault() {
         switch (type) {
             case glucose:
-                message = "You've collected glucose!" + "\n" + "\n" + "Cells convert glucose into ATP for energy."
+                try {
+                    message = configProvider.getStringValue("glucosePopupMessage");
+                }catch (NullPointerException e) {
+                    message = "You've collected glucose!" + "\n" + "\n" + "Cells convert glucose into ATP for energy."
                         + "\n" + "\n" + "Press 'C' to continue!";
+                }
                 break;
             case danger:
-                message = "You're in danger!" + "\n\n" + "Gradient color 'X' damages cell health" + "\n\n"
+                try {
+                    message = configProvider.getStringValue("dangerPopupMessage");
+
+                }catch (NullPointerException e) {
+                    message = "You're in danger!" + "\n\n" + "Gradient color 'X' damages cell health" + "\n\n"
                         + "Press 'C' to continue!";
+                }
                 break;
             default:
                 break;
-
         }
     }
 
+
     /**
      * Resize
-     * 
+     *
      * @param width  - the new width
      * @param height - the new height
      */
@@ -202,7 +229,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     /**
      * Handle Input
-     * 
+     *
      * Exits the popup screen on escape
      */
     @Override

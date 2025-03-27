@@ -26,7 +26,7 @@ import cellcorp.gameofcells.AssetFileNames;
  */
 public class Cell {
     private final AssetManager assetManager;
-    private ConfigProvider configProvider;
+    private final ConfigProvider configProvider;
 
     float cellPositionX;
     float cellPositionY;
