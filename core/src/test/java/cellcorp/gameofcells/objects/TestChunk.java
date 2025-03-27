@@ -2,8 +2,11 @@ package cellcorp.gameofcells.objects;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,5 +33,67 @@ public class TestChunk {
         cell = ((GamePlayScreen)runner.game.getScreen()).getCell();
         var newChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
         assertNotEquals(initialChunk, newChunk);
+    }
+
+    @Test
+    public void testFromCoords() {
+        // At time of writing, Chunk.CHUNK_LENGTH == 1600
+        var chunk_at_0_0 = Chunk.fromWorldCoords(0, 0);
+        assertEquals(new Chunk(0, 0), chunk_at_0_0);
+        chunk_at_0_0 = Chunk.fromWorldCoords(1000, 1000);
+        assertEquals(new Chunk(0, 0), chunk_at_0_0);
+        chunk_at_0_0 = Chunk.fromWorldCoords(1599, 1599);
+        assertEquals(new Chunk(0, 0), chunk_at_0_0);
+
+        var chunk_at_1_1 = Chunk.fromWorldCoords(1600, 1600);
+        assertEquals(new Chunk(1, 1), chunk_at_1_1);
+        chunk_at_1_1 = Chunk.fromWorldCoords(2000, 2000);
+        assertEquals(new Chunk(1, 1), chunk_at_1_1);
+
+        var chunk_at_neg_1_neg_1 = Chunk.fromWorldCoords(-500, -500);
+        assertEquals(new Chunk(-1, -1), chunk_at_neg_1_neg_1);
+    }
+
+    @Test
+    public void testAdjacentChunks() {
+        var chunk = new Chunk(0, 0);
+        var expected = Set.of(
+                new Chunk(-1, -1),
+                new Chunk(-1, 0),
+                new Chunk(-1, 1),
+                new Chunk(0, -1),
+                new Chunk(0, 0),
+                new Chunk(0, 1),
+                new Chunk(1, -1),
+                new Chunk(1, 0),
+                new Chunk(1, 1)
+        );
+        assertEquals(expected, new HashSet<>(chunk.adjacentChunks()));
+
+        chunk = new Chunk(-1000, -1000);
+        expected = Set.of(
+                new Chunk(-999, -999),
+                new Chunk(-999, -1000),
+                new Chunk(-999, -1001),
+                new Chunk(-1000, -999),
+                new Chunk(-1000, -1000),
+                new Chunk(-1000, -1001),
+                new Chunk(-1001, -999),
+                new Chunk(-1001, -1000),
+                new Chunk(-1001, -1001)
+        );
+        assertEquals(expected, new HashSet<>(chunk.adjacentChunks()));
+    }
+
+    @Test
+    public void testToRectangle() {
+        // At time of writing, Chunk.CHUNK_LENGTH == 1600
+        var chunk = new Chunk(0, 0);
+        var expected = new Rectangle(0, 0, 1600, 1600);
+        assertEquals(expected, chunk.toRectangle());
+
+        chunk = new Chunk(1000, 0);
+        expected = new Rectangle(1_600_000, 0, 1600, 1600);
+        assertEquals(expected, chunk.toRectangle());
     }
 }

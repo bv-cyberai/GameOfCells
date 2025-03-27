@@ -71,9 +71,18 @@ public class ZoneManager {
      * Distance from the given location to the nearest zone, if any exist.
      */
     public Optional<Double> distanceToNearestAcidZone(float x, float y) {
-        var nearestZone = acidZones.values().stream().min(Comparator.comparingDouble(z -> z.distanceFrom(x, y)));
+        return distanceToNearestZone(acidZones, x, y);
+    }
+
+    public Optional<Double> distanceToNearestBasicZone(float x, float y) {
+        return distanceToNearestZone(basicZones, x, y);
+    }
+
+    private Optional<Double> distanceToNearestZone(Map<Chunk, Zone> zoneMap, float x, float y) {
+        var nearestZone = zoneMap.values().stream().min(Comparator.comparingDouble(z -> z.distanceFrom(x, y)));
         return nearestZone.map(z -> z.distanceFrom(x, y));
     }
+
 
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         drawBasicZones(spriteBatch, shapeRenderer);

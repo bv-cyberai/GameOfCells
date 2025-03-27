@@ -32,8 +32,8 @@ public final class Chunk {
      */
     public static Chunk fromWorldCoords(float x, float y) {
         return new Chunk(
-                (int) y / CHUNK_LENGTH,
-                (int) x / CHUNK_LENGTH
+                (int) Math.floor(x / (float) CHUNK_LENGTH),
+                (int) Math.floor(y / (float) CHUNK_LENGTH)
         );
     }
 
@@ -59,13 +59,20 @@ public final class Chunk {
         return Objects.hash(row, col);
     }
 
+    @Override
+    public String toString() {
+        return "Chunk[" +
+                "row=" + row + ", " +
+                "col=" + col + ']';
+    }
+
     /**
      * Get the rectangle this chunk covers in the world.
      */
     public Rectangle toRectangle() {
         return new Rectangle(
-                col * CHUNK_LENGTH,
                 row * CHUNK_LENGTH,
+                col * CHUNK_LENGTH,
                 CHUNK_LENGTH,
                 CHUNK_LENGTH
         );

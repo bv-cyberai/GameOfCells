@@ -25,6 +25,7 @@ import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GamePlay Screen
@@ -175,7 +176,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         this.playerCell = new Cell(this, assetManager, configProvider);
         this.zoneManager = new ZoneManager(assetManager, playerCell);
-        this.glucoseManager = new GlucoseManager(assetManager, playerCell);
+        this.glucoseManager = new GlucoseManager(assetManager, this, zoneManager, playerCell);
         this.spawnManager = new SpawnManager(playerCell, zoneManager, glucoseManager);
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
@@ -294,7 +295,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
                     graphicsProvider, game,
-                    this, configProvider, PopupInfoScreen.Type.danger));
+                    this, configProvider, PopupInfoScreen.Type.danger
+            ));
         }
 
         // Only move the cell if the game is not paused
@@ -320,8 +322,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (!isPaused) {
             hud.update(deltaTimeSeconds, playerCell.getCellHealth(), playerCell.getCellATP());
             zoneManager.update(deltaTimeSeconds);
+            glucoseManager.update();
             spawnManager.update();
-            handleCollisions();
         }
     }
 
@@ -329,7 +331,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         var glucoseToRemove = new ArrayList<Glucose>();
         for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
             var glucose = getGlucoseManager().getGlucoseArray().get(i);
-            if (playerCell.getcellCircle().overlaps(glucose.getCircle())) {
+            if (playerCell.getCircle().overlaps(glucose.getCircle())) {
                 glucoseToRemove.add(glucose);
                 playerCell.addCellATP(Glucose.ATP_PER_GLUCOSE);
 
@@ -459,15 +461,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     private void drawChunks(ShapeRenderer shapeRenderer) {
         // Get current chunk. Draw it and all adjacent chunks.
-
         var currentChunk = Chunk.fromWorldCoords(playerCell.getX(), playerCell.getY());
+        var adjacentChunks = currentChunk.adjacentChunks();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.YELLOW);
-        for (int row = currentChunk.row() - 1; row < currentChunk.row() + 2; row++) {
-            for (int col = currentChunk.col() - 1; col < currentChunk.col() + 2; col++) {
-                var rect = new Chunk(row, col).toRectangle();
-                shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
-            }
+        for (var chunk : adjacentChunks) {
+            var rect = chunk.toRectangle();
+            shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
         }
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.end();
@@ -511,5 +511,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void resumeGame() {
         // Resume game logic (e.g., start updating entities)
         isPaused = false;
+    }
+
+    /**
+     * Reports a collision to this GamePlayScreen.
+     * If this is the first collision, shows an info screen.
+     */
+    public void reportGlucoseCollision() {
+        if (!playerCell.hasShownGlucosePopup()) {
+            game.setScreen(new PopupInfoScreen(
+                    inputProvider, assetManager,
+                    graphicsProvider, game,
+                    this, configProvider, PopupInfoScreen.Type.glucose
+            ));
+            playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
+        }
     }
 }

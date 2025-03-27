@@ -301,7 +301,7 @@ public class Cell {
      *
      *
      */
-    public Circle getcellCircle() {
+    public Circle getCircle() {
         return cellCircle;
     }
     /**

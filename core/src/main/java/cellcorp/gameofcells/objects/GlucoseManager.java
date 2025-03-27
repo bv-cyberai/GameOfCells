@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import cellcorp.gameofcells.Util;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,7 +18,6 @@ import com.badlogic.gdx.math.Vector2;
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
- *
  * @date 03/05/2025
  * @course CIS 405
  * @assignment GameOfCells
@@ -101,6 +101,7 @@ public class GlucoseManager {
     }
 
     private final AssetManager assetManager;
+    private final GamePlayScreen gamePlayScreen;
     private final ZoneManager zoneManager;
     private final Cell cell; // Store the cell's position
 
@@ -112,8 +113,9 @@ public class GlucoseManager {
     private final Map<Chunk, List<Glucose>> glucoses;
     private final Random rand;
 
-    public GlucoseManager(AssetManager assetManager, ZoneManager zoneManager, Cell cell) {
+    public GlucoseManager(AssetManager assetManager, GamePlayScreen gamePlayScreen, ZoneManager zoneManager, Cell cell) {
         this.assetManager = assetManager;
+        this.gamePlayScreen = gamePlayScreen;
         this.zoneManager = zoneManager;
         this.cell = cell;
 
@@ -179,8 +181,8 @@ public class GlucoseManager {
         }
 
         var glucoseList = new ArrayList<Glucose>();
-        for (int subRow = 0; subRow < SubChunk.SUB_CHUNK_ROWS; subRow ++) {
-            for (int subCol = 0; subCol < SubChunk.SUB_CHUNK_ROWS; subCol ++) {
+        for (int subRow = 0; subRow < SubChunk.SUB_CHUNK_ROWS; subRow++) {
+            for (int subCol = 0; subCol < SubChunk.SUB_CHUNK_ROWS; subCol++) {
                 var subChunk = new SubChunk(chunk, subRow, subCol);
                 var center = subChunk.center();
                 float spawnChance = spawnChance(center.x, center.y);
@@ -195,7 +197,7 @@ public class GlucoseManager {
     }
 
     private float spawnChance(float x, float y) {
-        var distance = zoneManager.distanceToNearestAcidZone(x, y);
+        var distance = zoneManager.distanceToNearestBasicZone(x, y);
         float additionalSpawnChance;
         if (distance.isEmpty()) {
             additionalSpawnChance = 0;
@@ -209,7 +211,9 @@ public class GlucoseManager {
     }
 
     private Glucose spawnInSubChunk(SubChunk subChunk) {
-        // Lets the spawn location be a few sub-chunks outside the sub-chunk.
+        // This the spawn location be a few sub-chunks outside the sub-chunk,
+        // to cut down on the grid-like look
+        // This can place a glucose outside its assigned chunk.
         // I _think_ this will never be a problem for collision/drawing,
         // because even if it goes outside the current chunk, we're always drawing/checking collision
         // a few chunks out.
@@ -232,6 +236,46 @@ public class GlucoseManager {
                                        && col0 <= chunk.col() && chunk.col() < col1
                 ).collect(Collectors.toList());
         glucoses.keySet().retainAll(keep);
+    }
+
+    /**
+     * Checks for cell <-> glucose collisions
+     */
+    public void update() {
+        handleCollisions();
+    }
+
+    /**
+     * Checks for collisions between the cell and each glucose in adjacent chunks.
+     */
+    private void handleCollisions() {
+        var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
+        var adjacentChunks = currentChunk.adjacentChunks();
+
+        for (var chunk : adjacentChunks) {
+            handleCollisionsInChunk(chunk);
+        }
+    }
+
+    private void handleCollisionsInChunk(Chunk chunk) {
+        var glucoseList = glucoses.get(chunk);
+        if (glucoseList == null) {
+            return;
+        }
+
+        var collisions = glucoseList
+            .stream()
+            .filter(glucose ->
+                cell.getCircle().overlaps(glucose.getCircle())
+            ).collect(Collectors.toList());
+
+        if (!collisions.isEmpty()) {
+            gamePlayScreen.reportGlucoseCollision();
+        }
+        for (var ignored : collisions) {
+            cell.addCellATP(Glucose.ATP_PER_GLUCOSE);
+        }
+        glucoseList.removeAll(collisions);
     }
 
     /**
@@ -258,5 +302,17 @@ public class GlucoseManager {
             glucose.draw(spriteBatch);
         }
         spriteBatch.end();
+    }
+
+    /**
+     * For use in tests only.
+     * Get an array of all glucose.
+     */
+    public List<Glucose> getGlucoseArray() {
+        return glucoses
+            .values()
+            .stream()
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
     }
 }
