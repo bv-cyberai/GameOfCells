@@ -186,8 +186,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
                 showMessage(message);
             }
         } else if(inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(previousScreen);
-
+            stage.getRoot().addAction(Actions.sequence(Actions.fadeOut(1f), Actions.run(() -> game.setScreen(previousScreen))));
         }
     }
 

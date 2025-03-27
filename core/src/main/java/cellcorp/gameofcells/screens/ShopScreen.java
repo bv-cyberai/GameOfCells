@@ -186,7 +186,7 @@ public class ShopScreen implements GameOfCellsScreen {
                     inputProvider, 
                     graphicsProvider, 
                     assetManager, 
-                    previousScreen, 
+                    this, 
                     playerCell));
             } else if (selectedOptionIndex == 1) {
                 // Organelle option selected

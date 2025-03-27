@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -61,6 +62,15 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     private Table upgradeTable;
     private List<Table> upgradeCards;
 
+    /**
+     * Constructor for the SizeUpgradeScreen
+     * @param game
+     * @param inputProvider
+     * @param graphicsProvider
+     * @param assetManager
+     * @param previousScreen
+     * @param cell
+     */
     public SizeUpgradeScreen(
             Main game,
             InputProvider inputProvider,
@@ -130,7 +140,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
                 showMessage("Cannot purchase - check ATP and size requirements");
             }
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(previousScreen);
+            stage.getRoot().addAction(Actions.sequence(Actions.fadeOut(1f), Actions.run(() -> game.setScreen(previousScreen))));
         }
     }
 
@@ -269,19 +279,19 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     }
 
     private void showMessage(String message) {
-        Label msg = new Label(message,
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.YELLOW));
-        msg.setFontScale(0.3f);
-        msg.setPosition(
-            viewport.getWorldWidth()/2 - msg.getWidth()/2,
-            viewport.getWorldHeight() * 0.2f
-        );
-        stage.addActor(msg);
-        msg.addAction(Actions.sequence(
-            Actions.delay(2f),
-            Actions.fadeOut(0.5f),
-            Actions.removeActor()
-        ));
+        Label messageLabel = new Label(message,
+            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
+        messageLabel.setFontScale(0.3f);
+        messageLabel.setAlignment(Align.center);
+
+        // Position the message label at the bottom of the screen
+        messageLabel.setPosition(ShopScreen.VIEW_RECT_HEIGHT / 2 - messageLabel.getWidth() / 2, 50); // Center horizontally, 50 pixels from the bottom
+
+        // Add message label to the stage
+        stage.addActor(messageLabel);
+
+        // Fade out the message label after 2 seconds
+        messageLabel.addAction(Actions.sequence(Actions.fadeOut(2.5f), Actions.removeActor()));
     }
 
     /**
@@ -299,7 +309,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     @Override 
     public void show() {
         stage.getRoot().getColor().a = 0;
-        stage.getRoot().addAction(Actions.fadeIn(0.5f)); 
+        stage.getRoot().addAction(Actions.fadeIn(2f)); 
     }
 
     /**
