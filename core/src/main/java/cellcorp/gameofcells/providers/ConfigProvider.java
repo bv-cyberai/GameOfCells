@@ -64,7 +64,7 @@ public class ConfigProvider {
     // BE CAREFUL DO NOT BUILD WITH LOCAL HOST AND PUSH TO CSDEV!!
 
     //Used for dev/testing locally
-    // private static final String CONFIG_URL = "http://localhost:1600/assets/config.txt";
+//     private static final String CONFIG_URL = "http://localhost:1600/assets/config.txt";
 
     //Used for CSDEV
    private static String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
@@ -217,12 +217,10 @@ public class ConfigProvider {
             }
 
             //These are lines for the user - skip parsing.
-//            System.out.println("LINE: " + line+":EOL");
             if (line.startsWith("[") || line.startsWith("#") || line.startsWith(" ") || line.isEmpty()) {
                 continue;
             }
             String[] lineArray = line.split(":");
-//            System.out.println(Arrays.toString(lineArray));
             if (lineArray.length >= 2) {
                 lineArray[1] = lineArray[1].replace("/","");
                 configData.put(lineArray[0], lineArray[1]);

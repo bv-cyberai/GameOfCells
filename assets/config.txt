@@ -1,7 +1,7 @@
 ## Format variable:value ##Coments
 
 [cell]
-cellHealth:100         ##Starting Health
+cellHealth:100       ##Starting Health
 cellMaxHealth:100       ##Max Health
 cellATP:30              ##Starting ATP
 cellMaxATP:100          ##Max Health
@@ -22,6 +22,6 @@ mitochondriaUpgradeCost:30 ##UNIMPLEMENTED - This is being refactored this sprin
 ## Note: There should be no space before the variable name, this will break things.
 
 [descriptions]/
-[pop-ups]/
+[pop-ups]
 glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!/
 dangerPopupMessage:You're in danger!\n\nGradient color 'X' damages cell health\n\nPress 'C' to continue!"/
