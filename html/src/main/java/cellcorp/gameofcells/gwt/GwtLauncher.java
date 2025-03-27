@@ -25,7 +25,6 @@ public class GwtLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-//            Gdx.app.setLogLevel(Application.LOG_DEBUG);
             return Main.createMain();
         }
 }
