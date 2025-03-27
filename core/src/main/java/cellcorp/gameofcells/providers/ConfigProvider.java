@@ -102,7 +102,7 @@ public class ConfigProvider {
         }
         //Config file is only parsed on successful reads.
         if (descriptionString != null) {
-            parseObjectAttributes();
+//            parseObjectAttributes();
 //            parseDescriptions();
         }
     }
@@ -135,6 +135,8 @@ public class ConfigProvider {
                 fileString = fileString.replace("\r\n", "\n");
 
                 descriptionString = fileString;
+                parseObjectAttributes();
+                parseDescriptions();
             }
 
             @Override
@@ -158,6 +160,8 @@ public class ConfigProvider {
         FileHandle file = Gdx.files.internal(AssetFileNames.USER_CONFIG);
         fileString = file.readString();
         descriptionString = new String(fileString);
+        parseObjectAttributes();
+        parseDescriptions();
     }
 
     /**
