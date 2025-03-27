@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,27 +25,27 @@ import cellcorp.gameofcells.AssetFileNames;
  * @assignment GameOfCells
  */
 public class Cell {
-    private final AssetManager assetManager;
+    public static final int maxHealth = 100;
+    public static final int maxATP = 100;
+    private static final float cellSpeed = 200f; // Speed of the cell
 
-    private final float cellSpeed = 200f; // Speed of the cell
+    private final AssetManager assetManager;
+    private final GamePlayScreen gamePlayScreen;
 
     private int cellHealth;
     private int cellATP;
-    private int maxHealth;
-    private int maxATP;
-    private Circle cellCircle;
+    private final Circle cellCircle;
 
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
 
-    public Cell(AssetManager assetManager) {
+    public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager) {
         this.assetManager = assetManager;
+        this.gamePlayScreen = gamePlayScreen;
         cellHealth = 100;
-        maxHealth = 100;
-        
+
         cellATP = 30;
-        maxATP = 100; // Alpha is actually 99, but thats painful.
-        
+
         cellCircle = new Circle(new Vector2(0, 0),100);
     }
 
@@ -241,7 +242,16 @@ public class Cell {
         this.hasMitochondria = hasMitochondria;
     }
 
-    public void reduceHealth(int damage) {
+    /**
+     * Applies damage to the cell.
+     * Ends the game if cell health goes below 0.
+     * @param damage Damage to apply.
+     */
+    public void applyDamage(int damage) {
+        var newHealth = cellHealth - damage;
+        if (newHealth <= 0) {
+            gamePlayScreen.endGame();
+        }
         this.cellHealth -= damage;
     }
 }

@@ -161,7 +161,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.camera = graphicsProvider.createCamera();
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
-        this.cell = new Cell(assetManager);
+        this.cell = new Cell(this, assetManager);
         this.zoneManager = new ZoneManager(assetManager, cell);
         this.glucoseManager = new GlucoseManager(assetManager, cell);
         this.spawnManager = new SpawnManager(cell, zoneManager, glucoseManager);
@@ -263,11 +263,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
-            game.setScreen(new GameOverScreen(
-                    inputProvider,
-                    assetManager,
-                    graphicsProvider,
-                    game));
+            endGame();
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
@@ -465,5 +461,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public Cell getCell() {
         return this.cell;
+    }
+
+    public void endGame() {
+        game.setScreen(new GameOverScreen(
+                inputProvider,
+                assetManager,
+                graphicsProvider,
+                game));
     }
 }

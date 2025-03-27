@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,6 +15,7 @@ public class TestCell {
         // Unlike the InputProvider, we don't need any additional behavior,
         // so we can just use `Mockito.mock`
         var fakeAssetManager = Mockito.mock(AssetManager.class);
-        new Cell(fakeAssetManager);
+        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
+        new Cell(fakeGamePlayScreen, fakeAssetManager);
     }
 }

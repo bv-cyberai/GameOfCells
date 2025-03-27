@@ -80,7 +80,7 @@ public class AttractScreen implements GameOfCellsScreen {
         this.particles = new Particles(whitePixelTexture);
 
         // Initialize game objects
-        this.cell = new Cell(assetManager);
+        this.cell = new Cell(new GamePlayScreen(inputProvider, graphicsProvider, game, assetManager), assetManager);
 
         // Initialize glucose objects randomly
         this.glucoseList = new ArrayList<>();

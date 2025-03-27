@@ -53,7 +53,7 @@ public class ZoneManager {
         var distanceRatio = 1 - smoothStep(0f, Zone.ZONE_RADIUS, (float) distance.get().doubleValue());
         var damage = distanceRatio * Zone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
         if (timer > Zone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
-            cell.reduceHealth((int)damageCounter);
+            cell.applyDamage((int)damageCounter);
             timer = deltaTimeSeconds;
             damageCounter = damage;
         } else if (damage == 0) {

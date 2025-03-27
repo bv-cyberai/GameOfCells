@@ -3,6 +3,7 @@ package cellcorp.gameofcells.objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import cellcorp.gameofcells.providers.FakeGraphicsProvider;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -26,7 +27,9 @@ public class TestHUD {
     public void testHUDUpdate() {
         var fakeGraphicsProvider = new FakeGraphicsProvider();
         var fakeAssetManager = Mockito.mock(AssetManager.class);
-        var spyCell = Mockito.spy(new Cell(fakeAssetManager));
+        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
+        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager);
+        var spyCell = Mockito.spy(cell);
 
         HUD hud = new HUD(fakeGraphicsProvider, fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
         hud.update(1f, spyCell.getCellHealth(), spyCell.getCellATP()); // simulate 1 second has passed
@@ -39,8 +42,10 @@ public class TestHUD {
     @Test
     public void testEnergyBarUpdate() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
+        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager);
 
-        var spyCell = Mockito.spy(new Cell(fakeAssetManager));
+        var spyCell = Mockito.spy(cell);
         EnergyBars energyBars = new EnergyBars(fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
 
         // default constructor values - correct values are set during update.
@@ -57,8 +62,10 @@ public class TestHUD {
     @Test
     public void testEnergyBarPercentage() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
-        var spyCell = Mockito.spy(new Cell(fakeAssetManager));
+        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
+        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager);
 
+        var spyCell = Mockito.spy(cell);
         EnergyBars energyBars = new EnergyBars(fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
 
         energyBars.update(50, 50);
