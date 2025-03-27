@@ -100,11 +100,6 @@ public class ConfigProvider {
         } else {
             loadConfigLocal();
         }
-        //Config file is only parsed on successful reads.
-        if (descriptionString != null) {
-//            parseObjectAttributes();
-//            parseDescriptions();
-        }
     }
 
     /**
@@ -131,10 +126,11 @@ public class ConfigProvider {
                 Gdx.app.log("Config Debug", "RAWDATA \n" + fileString);
 
                 //Ensures filesStrings can be parsed correctly.
-//                fileString = new String(httpResponse.getResultAsString().getBytes());
                 fileString = fileString.replace("\r\n", "\n");
 
                 descriptionString = fileString;
+                //For some reason this only works here, which means its also called separately in
+                //load config local
                 parseObjectAttributes();
                 parseDescriptions();
             }
