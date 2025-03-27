@@ -27,15 +27,17 @@ public class TestGlucoseManager {
     @Test
     public void constructingGlucoseGeneratorDoesNotCrash() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var cell = new Cell(fakeAssetManager);
         // Pass arbitrary values for cellX and cellY
-        new GlucoseManager(fakeAssetManager, 0f, 0f);
+        new GlucoseManager(fakeAssetManager, cell);
     }
 
     @Test
     public void glucoseManagerFillsArray() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var cell = new Cell(fakeAssetManager);
         // Again pass arbitrary values for cellX and cellY
-        var testManager = new GlucoseManager(fakeAssetManager, 0f, 0f);
+        var testManager = new GlucoseManager(fakeAssetManager, cell);
 
         int testMaxGlucose = testManager.getMAX_GLUCOSE();
 

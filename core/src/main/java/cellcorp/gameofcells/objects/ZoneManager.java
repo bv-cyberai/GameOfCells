@@ -22,12 +22,11 @@ public class ZoneManager {
     private final Cell cell;
     private final RandomFromHash random;
 
-
     /**
      * Stored as a set of chunks, for easy despawning.
      */
-    private final Map<Chunk, AcidZone> acidZones = new HashMap<>();
-    private final Map<Chunk, AcidZone> basicZones = new HashMap<>();
+    private final Map<Chunk, Zone> acidZones = new HashMap<>();
+    private final Map<Chunk, Zone> basicZones = new HashMap<>();
 
     private float timer = 0f;
     private float damageCounter = 0f;
@@ -49,9 +48,9 @@ public class ZoneManager {
             return;
         }
         // Get the % distance from zone center in range [0, 1]
-        var distanceRatio = 1 - smoothStep(0f, AcidZone.ACID_ZONE_RADIUS, (float) distance.get().doubleValue());
-        var damage = distanceRatio * AcidZone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
-        if (timer > AcidZone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
+        var distanceRatio = 1 - smoothStep(0f, Zone.ACID_ZONE_RADIUS, (float) distance.get().doubleValue());
+        var damage = distanceRatio * Zone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
+        if (timer > Zone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
             cell.reduceHealth((int)damageCounter);
             timer = deltaTimeSeconds;
             damageCounter = damage;
@@ -109,8 +108,8 @@ public class ZoneManager {
         for (int row = row0; row < row1; row++) {
             for (int col = col0; col < col1; col++) {
                 var chunk = new Chunk(row, col);
-                spawnZone(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
-                spawnZone(basicZones, BASIC_ZONE_SPAWN_CHANCE, AssetFileNames.BASIC_ZONE, 3, chunk);
+                spawnZoneSetInRange(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
+                spawnZoneSetInRange(basicZones, BASIC_ZONE_SPAWN_CHANCE, AssetFileNames.BASIC_ZONE, 3, chunk);
             }
         }
     }
@@ -120,8 +119,8 @@ public class ZoneManager {
      * and spawns it.
      * Zones will not spawn too close to the center of other zones.
      */
-    public void spawnZone(Map<Chunk, AcidZone> zoneMap, double spawnChance, String texturePath, int seed, Chunk chunk) {
-        if (zoneMap.containsKey(chunk)) {
+    public void spawnZoneSetInRange(Map<Chunk, Zone> zoneSet, double spawnChance, String texturePath, int seed, Chunk chunk) {
+        if (zoneSet.containsKey(chunk)) {
             return;
         }
 
@@ -133,7 +132,7 @@ public class ZoneManager {
             float x = rect.x + randX * Chunk.CHUNK_LENGTH;
             float randY = random.floatFrom(chunk.hashCode() * seed * 3);
             float y = rect.y + randY * Chunk.CHUNK_LENGTH;
-            zoneMap.put(chunk, new AcidZone(assetManager, texturePath, x, y));
+            zoneSet.put(chunk, new Zone(assetManager, texturePath, x, y));
         }
     }
 
@@ -141,13 +140,32 @@ public class ZoneManager {
      * Despawn zones outside the range of chunks `Chunk(row0, col0) .. Chunk(row1, col1)`
      */
     public void despawnOutsideRange(int row0, int col0, int row1, int col1) {
-        var keepZones = acidZones.
+        despawnZoneSetOutsideRange(acidZones, row0, col0, row1, col1);
+        despawnZoneSetOutsideRange(basicZones, row0, col0, row1, col1);
+    }
+
+    private void despawnZoneSetOutsideRange(Map<Chunk, Zone> zoneSet, int row0, int col0, int row1, int col1) {
+        var keepZones = zoneSet.
                 keySet().
                 stream().
                 filter(chunk ->
                                row0 <= chunk.row() && chunk.row() < row1
                                        && col0 <= chunk.col() && chunk.col() < col1
                 ).toList();
-        acidZones.keySet().retainAll(keepZones);
+        zoneSet.keySet().retainAll(keepZones);
+    }
+
+    /**
+     * For test use only.
+     */
+    public Map<Chunk, Zone> getAcidZones() {
+        return acidZones;
+    }
+
+    /**
+     * For test use only.
+     */
+    public Map<Chunk, Zone> getBasicZones() {
+        return basicZones;
     }
 }

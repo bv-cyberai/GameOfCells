@@ -1,16 +1,14 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.physics.box2d.Shape;
 
 import java.util.Objects;
 
-public final class AcidZone {
+public final class Zone {
     public static final float ACID_ZONE_RADIUS = 400;
     public static final float ACID_ZONE_MAX_DAMAGE_PER_SECOND = 10;
     public static final float ACID_ZONE_DAMAGE_INCREMENT_SECONDS = 0.5f;
@@ -22,7 +20,7 @@ public final class AcidZone {
     private final float x;
     private final float y;
 
-    public AcidZone(AssetManager assetManager, String texturePath, float x, float y) {
+    public Zone(AssetManager assetManager, String texturePath, float x, float y) {
         this.assetManager = assetManager;
         this.texturePath = texturePath;
         this.x = x;
@@ -59,7 +57,7 @@ public final class AcidZone {
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (AcidZone) obj;
+        var that = (Zone) obj;
         return Float.floatToIntBits(this.x) == Float.floatToIntBits(that.x) &&
                 Float.floatToIntBits(this.y) == Float.floatToIntBits(that.y);
     }
