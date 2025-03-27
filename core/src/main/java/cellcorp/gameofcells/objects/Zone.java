@@ -9,10 +9,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.Objects;
 
 public final class Zone {
-    public static final float ACID_ZONE_RADIUS = 400;
+    public static final float ZONE_RADIUS = 400;
+    private static final float ZONE_TEXTURE_RADIUS = 500;
+    /**
+     * Minimum distance required between zone centers to be "non-overlapping"
+     */
+    public static final float ZONE_NON_OVERLAPPING_DISTANCE = 600;
     public static final float ACID_ZONE_MAX_DAMAGE_PER_SECOND = 10;
     public static final float ACID_ZONE_DAMAGE_INCREMENT_SECONDS = 0.5f;
-    private static final float ACID_ZONE_TEXTURE_RADIUS = 500;
 
     private final AssetManager assetManager;
     private final String texturePath;
@@ -37,9 +41,9 @@ public final class Zone {
 
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         var texture = assetManager.get(texturePath, Texture.class);
-        float bottomLeftX = x - ACID_ZONE_TEXTURE_RADIUS;
-        float bottomLeftY = y - ACID_ZONE_TEXTURE_RADIUS;
-        float diameter = ACID_ZONE_TEXTURE_RADIUS * 2;
+        float bottomLeftX = x - ZONE_TEXTURE_RADIUS;
+        float bottomLeftY = y - ZONE_TEXTURE_RADIUS;
+        float diameter = ZONE_TEXTURE_RADIUS * 2;
 
         spriteBatch.begin();
         spriteBatch.draw(texture, bottomLeftX, bottomLeftY, diameter, diameter);
@@ -48,7 +52,7 @@ public final class Zone {
 
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
             shapeRenderer.point(x, y, 0);
-            shapeRenderer.circle(x, y, ACID_ZONE_RADIUS);
+            shapeRenderer.circle(x, y, ZONE_RADIUS);
             shapeRenderer.end();
         }
     }

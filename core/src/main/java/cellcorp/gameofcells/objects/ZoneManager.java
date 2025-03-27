@@ -4,6 +4,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.*;
 
@@ -15,8 +16,8 @@ import java.util.*;
  */
 public class ZoneManager {
 
-    private static final double ACID_ZONE_SPAWN_CHANCE = 0.33;
-    private static final double BASIC_ZONE_SPAWN_CHANCE = 0.33;
+    private static final double ACID_ZONE_SPAWN_CHANCE = 0.4;
+    private static final double BASIC_ZONE_SPAWN_CHANCE = 0.4;
 
     private final AssetManager assetManager;
     private final Cell cell;
@@ -48,7 +49,7 @@ public class ZoneManager {
             return;
         }
         // Get the % distance from zone center in range [0, 1]
-        var distanceRatio = 1 - smoothStep(0f, Zone.ACID_ZONE_RADIUS, (float) distance.get().doubleValue());
+        var distanceRatio = 1 - smoothStep(0f, Zone.ZONE_RADIUS, (float) distance.get().doubleValue());
         var damage = distanceRatio * Zone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
         if (timer > Zone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
             cell.reduceHealth((int)damageCounter);
@@ -108,8 +109,8 @@ public class ZoneManager {
         for (int row = row0; row < row1; row++) {
             for (int col = col0; col < col1; col++) {
                 var chunk = new Chunk(row, col);
-                spawnZoneSetInRange(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
-                spawnZoneSetInRange(basicZones, BASIC_ZONE_SPAWN_CHANCE, AssetFileNames.BASIC_ZONE, 3, chunk);
+                spawnZone(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
+                spawnZone(basicZones, BASIC_ZONE_SPAWN_CHANCE, AssetFileNames.BASIC_ZONE, 3, chunk);
             }
         }
     }
@@ -119,21 +120,77 @@ public class ZoneManager {
      * and spawns it.
      * Zones will not spawn too close to the center of other zones.
      */
-    public void spawnZoneSetInRange(Map<Chunk, Zone> zoneSet, double spawnChance, String texturePath, int seed, Chunk chunk) {
+    public void spawnZone(Map<Chunk, Zone> zoneSet, double spawnChance, String texturePath, int seed, Chunk chunk) {
         if (zoneSet.containsKey(chunk)) {
             return;
         }
 
         var randomValue = random.floatFrom(chunk.hashCode());
         if (randomValue < spawnChance) {
-            var rect = chunk.toRectangle();
 
-            float randX = random.floatFrom(chunk.hashCode() * seed * 2);
-            float x = rect.x + randX * Chunk.CHUNK_LENGTH;
-            float randY = random.floatFrom(chunk.hashCode() * seed * 3);
-            float y = rect.y + randY * Chunk.CHUNK_LENGTH;
-            zoneSet.put(chunk, new Zone(assetManager, texturePath, x, y));
+            // Retry placement until we get a placement that doesn't overlap with any other zone.
+            // Update the seed offset each time, so we get new placements each time,
+            // but the final placement is still reproducible.
+            int seedOffset = 0;
+            while (true) {
+                var zonePlacement = placeZone(chunk, seed + seedOffset);
+                if (!overlapInSurroundingChunks(chunk, zonePlacement)) {
+                    zoneSet.put(chunk, new Zone(assetManager, texturePath, zonePlacement.x, zonePlacement.y));
+                    return;
+                }
+                seedOffset += 1;
+            }
         }
+    }
+
+    /**
+     * Place a zone within the given chunk.
+     * @param chunk The chunk
+     * @param seed The random seed. Multiple calls on the same `ZoneManager` with the same chunk and seed
+     *             will produce identical results.
+     * @return The coordinates of the zone's midpoint.
+     */
+    private Vector2 placeZone(Chunk chunk, int seed) {
+        var rect = chunk.toRectangle();
+        float randX = random.floatFrom(chunk.hashCode() * seed * 2);
+        float x = rect.x + randX * Chunk.CHUNK_LENGTH;
+        float randY = random.floatFrom(chunk.hashCode() * seed * 3);
+        float y = rect.y + randY * Chunk.CHUNK_LENGTH;
+        return new Vector2(x, y);
+    }
+
+    /**
+     * Determine whether the given zone placement in the given chunk overlaps with any existing zones.
+     */
+    private boolean overlapInSurroundingChunks(Chunk chunk, Vector2 zonePlacement) {
+        // Get chunks in a 3x3 grid around `chunk`
+        var surroundingChunks = new ArrayList<Chunk>();
+        for (int row = chunk.row() - 1; row <= chunk.row() + 1; row++) {
+            for (int col = chunk.col() - 1; col <= chunk.col() + 1; col++) {
+                surroundingChunks.add(new Chunk(row, col));
+            }
+        }
+
+        for (var ch : surroundingChunks) {
+            if (overlap(acidZones, ch, zonePlacement)
+                || overlap(basicZones, ch, zonePlacement)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines whether a zone in `zoneSet.get(chunk)` overlaps with the given zone placement.
+     */
+    private boolean overlap(Map<Chunk, Zone> zoneSet, Chunk chunk, Vector2 zonePlacement) {
+        var existingZone = zoneSet.get(chunk);
+        if (existingZone == null) {
+            return false;
+        }
+        var zoneSetPosition = new Vector2(existingZone.x(), existingZone.y());
+        return zonePlacement.dst(zoneSetPosition) <= Zone.ZONE_NON_OVERLAPPING_DISTANCE;
     }
 
     /**

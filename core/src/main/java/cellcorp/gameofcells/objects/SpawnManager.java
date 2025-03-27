@@ -7,6 +7,9 @@ public class SpawnManager {
 
     public static final long RANDOM_SEED = System.nanoTime();
 
+    /**
+     * SpawnManager spawns in a `SPAWN_CHUNK_RANGE` x `SPAWN_CHUNK_RANGE` grid around the cell position.
+     */
     public static final int SPAWN_CHUNK_RANGE = 3;
     /**
      * SpawnManager despawns in a `DESPAWN_CHUNK_RANGE` x `DESPAWN_CHUNK_RANGE` grid around the cell position.

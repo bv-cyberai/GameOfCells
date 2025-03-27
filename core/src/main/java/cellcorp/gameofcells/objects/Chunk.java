@@ -15,7 +15,7 @@ public final class Chunk {
      * Length of chunks. Ideally, should be at least as large as the larger of (VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT),
      * to prevent objects popping in within player view.
      */
-    public static final int CHUNK_LENGTH = 1000;
+    public static final int CHUNK_LENGTH = 1600;
 
     private final int row;
     private final int col;
