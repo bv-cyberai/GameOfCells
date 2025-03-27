@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
@@ -64,5 +65,10 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
     public Pixmap createPixmap(int width, int height, Pixmap.Format format) {
         return new Pixmap(width, height, format);
+    }
+
+    @Override
+    public BitmapFont createBitmapFont() {
+        return new BitmapFont(Gdx.files.internal("rubik.fnt"));
     }
 }

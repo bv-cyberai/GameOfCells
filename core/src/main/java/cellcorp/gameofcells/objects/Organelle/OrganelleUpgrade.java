@@ -77,7 +77,7 @@ public abstract class OrganelleUpgrade implements Upgrade<OrganelleUpgradeScreen
         int requiredSizeInCellUnits = 100 + requiredSize * 100;
         return cell.getCellATP() >= cost && 
             cell.getcellSize() >= requiredSizeInCellUnits &&
-            isPreviousUpgradePurchased(screen);
+            !isAlreadyPurchased(cell) && isPreviousUpgradePurchased(screen);
     }
 
     /**
@@ -86,6 +86,13 @@ public abstract class OrganelleUpgrade implements Upgrade<OrganelleUpgradeScreen
     @Override
     public abstract void applyUpgrade(Cell cell);
 
+    /**
+     * Check if the upgrade is already purchased.
+     * @param screen
+     * @return
+     */
+    protected abstract boolean isAlreadyPurchased(Cell cell);
+    
     /**
      * Check if the previous upgrade is purchased.
      * @param screen

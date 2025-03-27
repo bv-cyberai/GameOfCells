@@ -3,7 +3,11 @@ package cellcorp.gameofcells.providers;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -11,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import org.mockito.Mockito;
+import com.badlogic.gdx.utils.Array;
 
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
@@ -71,4 +76,8 @@ public class FakeGraphicsProvider implements GraphicsProvider {
         return Mockito.mock(Pixmap.class);
     }
 
+    @Override
+    public BitmapFont createBitmapFont() {
+        return new BitmapFont();
+    }
 }

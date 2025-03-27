@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -299,6 +300,14 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Get the stage for rendering.
+     * @return
+     */
+    public Stage getStage() {
+        return stage;
+    }
+
+    /**
      * Dispose of the screen's assets.
      */
     @Override
@@ -363,7 +372,9 @@ public class ShopScreen implements GameOfCellsScreen {
      * @return
      */
     private Label createLabel(String text,float scale) {
-        Label label = new Label(text, new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
+        BitmapFont font = graphicsProvider.createBitmapFont();
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label label = new Label(text, labelStyle);        
         label.setFontScale(scale);
         return label;
     }
@@ -437,9 +448,8 @@ public class ShopScreen implements GameOfCellsScreen {
     private Texture createOptionBackgroundTexture() {
         int width = (int) OPTION_CARD_WIDTH;
         int height = (int) OPTION_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = graphicsProvider.createPixmap(width, height, Pixmap.Format.RGBA8888);
 
         // Draw the background using a gradient effect
         pixmap.setColor(0.2f, 0.2f, 0.2f, 0.8f); // Dark gray with transparency
@@ -458,9 +468,8 @@ public class ShopScreen implements GameOfCellsScreen {
     private Texture createGlowingBorderTexture() {
         int width = (int) OPTION_CARD_WIDTH;
         int height = (int) OPTION_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = graphicsProvider.createPixmap(width, height, Pixmap.Format.RGBA8888);
 
         // Draw the glowing border
         for (int x = 0; x < width; x++) {

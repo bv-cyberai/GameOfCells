@@ -53,7 +53,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final Main game;
     private final AssetManager assetManager;
     private final FitViewport viewport;
-    private final SpriteBatch spriteBatch;
+    private SpriteBatch spriteBatch;
 
     private BitmapFont whiteFont;
     private BitmapFont yellowFont;
@@ -229,5 +229,117 @@ public class MainMenuScreen implements GameOfCellsScreen {
         }
 
         spriteBatch.end();
+    }
+
+    /**
+     * Get the index of the currently selected menu option.
+     * @return
+     */
+    public int getSelectedOption() {
+        return selectedOption;
+    }
+
+    /**
+     * Set the index of the currently selected menu option.
+     * @param selectedOption
+     */
+    public void setSelectedOption(int selectedOption) {
+        this.selectedOption = selectedOption;
+    }
+
+    /**
+     * Get the number of menu options.
+     * @return
+     */
+    public int getMenuOptionCount() {
+        return MENU_OPTIONS.length;
+    }
+
+    /**
+     * Get the inactivity timeout duration.
+     * @return
+     */
+    public float getInactivityTimeout() {
+        return INACTIVITY_TIMEOUT;
+    }
+
+    /**
+     * Get the inactivity timer.
+     * @return
+     */
+    public float getInactivityTimer() {
+        return inactivityTimer;
+    }
+
+    /**
+     * Set the inactivity timer.
+     * @param inactivityTimer
+     */
+    public void setInactivityTimer(float inactivityTimer) {
+        this.inactivityTimer = inactivityTimer;
+    }
+
+    /**
+     * Get the particles system.
+     * @return
+     */
+    public Particles getParticles() {
+        return particles;
+    }
+
+    /**
+     * Set the particles system.
+     * @param particles
+     */
+    public void setParticles(Particles particles) {
+        this.particles = particles;
+    }
+
+    /**
+     * Get the game object.
+     * @return
+     */
+    public Main getGame() {
+        return game;
+    }
+
+    /**
+     * Get the asset manager.
+     * @return
+     */
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    /**
+     * Get the viewport.
+     * @return
+     */
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    /**
+     * Get the sprite batch.
+     * @return
+     */
+    public SpriteBatch getSpriteBatch() {
+        return spriteBatch;
+    }
+
+    /**
+     * Set the sprite batch.
+     * @param spriteBatch
+     */
+    public void setSpriteBatch(SpriteBatch spriteBatch) {
+        this.spriteBatch = spriteBatch;
+    }
+
+    /**
+     * Get the input provider.
+     * @return
+     */
+    public InputProvider getInputProvider() {
+        return inputProvider;
     }
 }

@@ -40,7 +40,13 @@ public class Cell {
     private final Circle cellCircle;
 
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
+
+    // Upgrades
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
+    private boolean hasRibosomes = false; // Whether the cell has the ribosomes upgrade
+    private boolean hasFlagella = false; // Whether the cell has the flagella upgrade
+    private boolean hasNucleus = false; // Whether the cell has the nucleus upgrade
+
     private float proteinSynthesisMultiplier = 1.0f;
     private float movementSpeedMultiplier = 1.0f;
     private boolean canSplit = false;
@@ -269,13 +275,6 @@ public class Cell {
     }
 
     /**
-     * Check if the cell has the mitochondria upgrade
-     */
-    public boolean hasMitochondria() {
-        return hasMitochondria;
-    }
-
-    /**
      * Set whether the cell has the mitochondria upgrade
      */
     public void setHasMitochondria(boolean hasMitochondria) {
@@ -296,26 +295,99 @@ public class Cell {
         }
     }
 
+    /**
+     * Check if the cell has the mitochondria upgrade
+     */
+    public boolean hasMitochondria() {
+        return hasMitochondria;
+    }
+
+    /**
+     * Set whether the cell has the ribosomes upgrade
+     */
+    public void setHasRibosomes(boolean hasRibosomes) {
+        this.hasRibosomes = hasRibosomes;
+    }
+
+    /**
+     * Check if the cell has the ribosomes upgrade
+     */
+    public boolean hasRibosomes() {
+        return hasRibosomes;
+    }
+
+    /**
+     * Set whether the cell has the flagella upgrade
+     */
+    public void setHasFlagella(boolean hasFlagella) {
+        this.hasFlagella = hasFlagella;
+    }
+
+    /**
+     * Check if the cell has the flagella upgrade
+     */
+    public boolean hasFlagella() {
+        return hasFlagella;
+    }
+
+    /**
+     * Set whether the cell has the nucleus upgrade
+     */
+    public void setHasNucleus(boolean hasNucleus) {
+        this.hasNucleus = hasNucleus;
+    }
+
+    /**
+     * Check if the cell has the nucleus upgrade
+     */
+    public boolean hasNucleus() {
+        return hasNucleus;
+    }
+
+    /**
+     * Get the protein synthesis multiplier
+     * @return
+     */
     public float getProteinSynthesisMultiplier() {
         return proteinSynthesisMultiplier;
     }
 
+    /**
+     * Set the protein synthesis multiplier
+     * @param proteinSynthesisMultiplier
+     */
     public void setProteinSynthesisMultiplier(float proteinSynthesisMultiplier) {
         this.proteinSynthesisMultiplier = proteinSynthesisMultiplier;
     }
 
+    /**
+     * Get the movement speed multiplier
+     * @return
+     */
     public float getMovementSpeedMultiplier() {
         return movementSpeedMultiplier;
     }
 
+    /**
+     * Set the movement speed multiplier
+     * @param movementSpeedMultiplier
+     */
     public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
         this.movementSpeedMultiplier = movementSpeedMultiplier;
     }
 
+    /**
+     * Get the canSplit boolean
+     * @return
+     */
     public boolean canSplit() {
         return canSplit;
     }
 
+    /**
+     * Set the canSplit boolean
+     * @param canSplit
+     */
     public void setCanSplit(boolean canSplit) {
         this.canSplit = canSplit;
     }

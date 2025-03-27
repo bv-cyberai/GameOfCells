@@ -107,12 +107,20 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         this.particles = new Particles(assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class));
         this.stage = new Stage(graphicsProvider.createFitViewport(ShopScreen.VIEW_RECT_WIDTH, ShopScreen.VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
-        // Initialize upgrades
+        // Initialize only unpurchased upgrades
         upgrades = new ArrayList<>();
-        upgrades.add(new MitochondriaUpgrade());
-        upgrades.add(new RibosomeUpgrade());
-        upgrades.add(new FlagellaUpgrade());
-        upgrades.add(new NucleusUpgrade());
+        if (!playerCell.hasMitochondria()) {
+            upgrades.add(new MitochondriaUpgrade());
+        }
+        if (!playerCell.hasRibosomes()) {
+            upgrades.add(new RibosomeUpgrade());
+        }
+        if (!playerCell.hasFlagella()) {
+            upgrades.add(new FlagellaUpgrade());
+        }
+        if (!playerCell.hasNucleus()) {
+            upgrades.add(new NucleusUpgrade());
+        }
 
         // Create UI
         createUI();
@@ -552,12 +560,27 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         return playerCell.hasMitochondria();
     }
 
+    /**
+     * Check if the cell has ribosomes.
+     * @return True if the cell has ribosomes, false otherwise.
+     */
     public boolean hasRibosome() {
-        return playerCell.getProteinSynthesisMultiplier() > 1.0f;
+        return playerCell.hasRibosomes();
     }
 
-
+    /**
+     * Check if the cell has flagella.
+     * @return True if the cell has flagella, false otherwise.
+     */
     public boolean hasFlagella() {
-        return playerCell.getMovementSpeedMultiplier() > 1.0f;
+        return playerCell.hasFlagella();
+    }
+
+    /**
+     * Check if the cell has a nucleus.
+     * @return True if the cell has a nucleus, false otherwise.
+     */
+    public boolean hasNucleus() {
+        return playerCell.hasNucleus();
     }
 }

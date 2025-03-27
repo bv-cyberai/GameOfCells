@@ -12,20 +12,33 @@ public class RibosomeUpgrade extends OrganelleUpgrade {
     }
 
     /**
+     * Check if the ribosome upgrade is already purchased.
+     * @param cell
+     */
+    @Override
+    protected boolean isAlreadyPurchased(Cell cell) {
+        return cell.hasRibosomes();
+    }
+
+    /**
      * Apply the upgrade's perks to the cell.
+     * Increase protein synthesis.
+     * @param cell
      */
     @Override
     public void applyUpgrade(Cell cell) {
         // Increase protein synthesis (e.g., increase ATP gain from glucose)
         cell.setProteinSynthesisMultiplier(1.5f);
+        cell.setHasRibosomes(true);
     }
 
     /**
      * Check if the previous upgrade is purchased.
+     * Ribosome requires Mitochondria to be purchased.
+     * @param organelleUpgradeScreen
      */
     @Override
     protected boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
-        // Ribosome requires Mitochondria to be purchased.
         return organelleUpgradeScreen.hasMitochondria();
     }
 }

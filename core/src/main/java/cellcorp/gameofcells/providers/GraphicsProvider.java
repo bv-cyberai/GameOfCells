@@ -3,6 +3,7 @@ package cellcorp.gameofcells.providers;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -109,4 +110,10 @@ public interface GraphicsProvider {
      * @return
      */
     Pixmap createPixmap(int width, int height, Pixmap.Format format);
+
+    /**
+     * Create a bitmap font.
+     * @return
+     */
+    BitmapFont createBitmapFont();
 }

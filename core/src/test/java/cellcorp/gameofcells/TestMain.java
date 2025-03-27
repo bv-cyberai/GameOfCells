@@ -5,16 +5,21 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
@@ -30,10 +35,40 @@ public class TestMain {
 
     @BeforeAll
     public static void setUpLibGDX() {
+        System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
+        // Initialize headless LibGDX
+        HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
+        new HeadlessApplication(new ApplicationListener() {
+            @Override public void create() {}
+            @Override public void resize(int width, int height) {}
+            @Override public void render() {}
+            @Override public void pause() {}
+            @Override public void resume() {}
+            @Override public void dispose() {}
+        }, config);
+
         // Mock the graphics provider
         Gdx.graphics = Mockito.mock(Graphics.class);
         Mockito.when(Gdx.graphics.getWidth()).thenReturn(Main.DEFAULT_SCREEN_WIDTH);
         Mockito.when(Gdx.graphics.getHeight()).thenReturn(Main.DEFAULT_SCREEN_HEIGHT);
+
+        GL20 gl20 = Mockito.mock(GL20.class);
+        Gdx.gl = gl20;
+        Gdx.gl20 = gl20;
+    }
+
+    @AfterAll
+    public static void cleanUp() {
+        if (Gdx.app != null) {
+            Gdx.app.exit();
+        }
+    }
+
+    public AssetManager createMockAssetManager() {
+        var assetManager = Mockito.mock(AssetManager.class);
+        Mockito.when(assetManager.get(Mockito.anyString(), Mockito.eq(BitmapFont.class)))
+            .thenReturn(Mockito.mock(BitmapFont.class));
+        return assetManager;
     }
 
     @Test
@@ -150,19 +185,45 @@ public class TestMain {
     public void timerCorrectAfterScreenSwitch() {
         var gameRunner = GameRunner.create();
 
+        // 1. Start on main menu and verify
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
+
+        // 2. Press ENTER to go to gameplay screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        // 3. Let game run for 2 seconds (timer should be at 2)
         gameRunner.runForSeconds(2);
 
+        // Verify timer before switching screens
+        var gameplayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        assertEquals("Timer: 2", gameplayScreen.getHud().getTimerString());
+
+        // 4. Press S to go to shop screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
+        assertInstanceOf(ShopScreen.class, gameRunner.game.getScreen());
+
+        // 5. Let shop screen be active for 2 seconds (timer should pause)
         gameRunner.runForSeconds(2);
 
+        // 6. Press ESCAPE to return to gameplay
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
         gameRunner.step();
-        var screen = (GamePlayScreen) gameRunner.game.getScreen();
-        String time = screen.getHud().getTimerString();
-        assertEquals("Timer: 2", time);
+
+        // Wait for transition to complete (if using fade effects)
+        int maxWait = 100;
+        while (!(gameRunner.game.getScreen() instanceof GamePlayScreen) && maxWait-- > 0) {
+            gameRunner.step();
+        }
+
+        // 7. Verify we're back on gameplay screen
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        // 8. Verify timer is still at 2 (shouldn't increment while in shop)
+        gameplayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        assertEquals("Timer: 2", gameplayScreen.getHud().getTimerString());
     }
 
     @Test
@@ -211,5 +272,40 @@ public class TestMain {
         }
         System.out.println(cell.getCellATP());
         assertEquals(100, cell.getCellATP());
+    }
+
+    @Test
+    public void testShopScreenTransitionWithFade() {
+        var gameRunner = GameRunner.create();
+
+        // 1. Start on main menu
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
+
+        // 2. Press ENTER to go to gameplay
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        // 3. Press S to go to shop
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.step();
+
+        // Wait for transition to shop screen
+        int maxWait = 100; // Prevent infinite loops
+        while (!(gameRunner.game.getScreen() instanceof ShopScreen) && maxWait-- > 0) {
+            gameRunner.step();
+        }
+        assertInstanceOf(ShopScreen.class, gameRunner.game.getScreen());
+
+        // 4. Press ESCAPE to return to gameplay
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
+        gameRunner.step();
+
+        // Wait for transition back to gameplay
+        maxWait = 100;
+        while (!(gameRunner.game.getScreen() instanceof GamePlayScreen) && maxWait-- > 0) {
+            gameRunner.step();
+        }
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
     }
 }
