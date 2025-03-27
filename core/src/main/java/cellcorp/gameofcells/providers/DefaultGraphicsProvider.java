@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap;
 
 public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
@@ -47,5 +49,20 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
     public SpriteBatch createSpriteBatch() {
         return new SpriteBatch();
+    }
+
+    @Override
+    public Texture createTexture(int width, int height, Pixmap.Format format) {
+        return new Texture(width, height, format);
+    }
+
+    @Override
+    public Texture createTexture(Pixmap pixmap) {
+        return new Texture(pixmap);
+    }
+
+    @Override
+    public Pixmap createPixmap(int width, int height, Pixmap.Format format) {
+        return new Pixmap(width, height, format);
     }
 }

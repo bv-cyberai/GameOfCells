@@ -2,10 +2,12 @@ package cellcorp.gameofcells.providers;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Provides information from `Gdx.graphics`, which is needed by game code.
@@ -82,4 +84,29 @@ public interface GraphicsProvider {
      * @return A newly-constructed {@link SpriteBatch}
      */
     SpriteBatch createSpriteBatch();
+
+    /**
+     * Create a texture with the given width, height, and format.
+     * @param width
+     * @param height
+     * @param format
+     * @return
+     */
+    Texture createTexture(int width, int height, Pixmap.Format format);
+
+    /**
+     * Create a texture from the given pixmap.
+     * @param pixmap
+     * @return
+     */
+    Texture createTexture(Pixmap pixmap);
+
+    /**
+     * Create a pixmap with the given width, height, and format.
+     * @param width
+     * @param height
+     * @param format
+     * @return
+     */
+    Pixmap createPixmap(int width, int height, Pixmap.Format format);
 }

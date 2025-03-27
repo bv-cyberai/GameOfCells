@@ -14,6 +14,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.ApplicationListener;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
@@ -29,7 +30,7 @@ public class TestMain {
 
     @BeforeAll
     public static void setUpLibGDX() {
-        // Set up the mock graphics provider to return the default screen dimensions
+        // Mock the graphics provider
         Gdx.graphics = Mockito.mock(Graphics.class);
         Mockito.when(Gdx.graphics.getWidth()).thenReturn(Main.DEFAULT_SCREEN_WIDTH);
         Mockito.when(Gdx.graphics.getHeight()).thenReturn(Main.DEFAULT_SCREEN_HEIGHT);
