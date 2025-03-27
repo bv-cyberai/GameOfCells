@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.Util;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -50,7 +51,7 @@ public class ZoneManager {
             return;
         }
         // Get the % distance from zone center in range [0, 1]
-        var distanceRatio = 1 - smoothStep(0f, Zone.ZONE_RADIUS, (float) distance.get().doubleValue());
+        var distanceRatio = 1 - Util.smoothStep(0f, Zone.ZONE_RADIUS, (float) distance.get().doubleValue());
         var damage = distanceRatio * Zone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
         if (timer > Zone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
             cell.applyDamage((int)damageCounter);
@@ -67,22 +68,11 @@ public class ZoneManager {
     }
 
     /**
-     * Distance from the give location to the nearest zone, if any exist.
+     * Distance from the given location to the nearest zone, if any exist.
      */
-    private Optional<Double> distanceToNearestAcidZone(float x, float y) {
+    public Optional<Double> distanceToNearestAcidZone(float x, float y) {
         var nearestZone = acidZones.values().stream().min(Comparator.comparingDouble(z -> z.distanceFrom(x, y)));
         return nearestZone.map(z -> z.distanceFrom(x, y));
-    }
-
-    /**
-     * Adapted from Wikipedia:
-     * <a href="https://en.wikipedia.org/wiki/Smoothstep">smoothstep</a>
-     */
-    private float smoothStep(float min, float max, float x) {
-        // Scale, and clamp x to 0..1 range
-        x = Math.min(Math.max((x - min) / (max - min), 0f), 1f);
-
-        return x * x * (3.0f - 2.0f * x);
     }
 
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
@@ -108,7 +98,6 @@ public class ZoneManager {
      * to give player a chance to move around before encountering zones.
      */
     public void spawnInRange(int row0, int col0, int row1, int col1) {
-
         for (int row = row0; row < row1; row++) {
             for (int col = col0; col < col1; col++) {
                 // Don't spawn in the range (-1, -1) ..= (0, 0)
@@ -173,14 +162,9 @@ public class ZoneManager {
      */
     private boolean overlapInSurroundingChunks(Chunk chunk, Vector2 zonePlacement) {
         // Get chunks in a 3x3 grid around `chunk`
-        var surroundingChunks = new ArrayList<Chunk>();
-        for (int row = chunk.row() - 1; row <= chunk.row() + 1; row++) {
-            for (int col = chunk.col() - 1; col <= chunk.col() + 1; col++) {
-                surroundingChunks.add(new Chunk(row, col));
-            }
-        }
+        var adjacentChunks = chunk.adjacentChunks();
 
-        for (var ch : surroundingChunks) {
+        for (var ch : adjacentChunks) {
             if (overlap(acidZones, ch, zonePlacement)
                 || overlap(basicZones, ch, zonePlacement)) {
                 return true;

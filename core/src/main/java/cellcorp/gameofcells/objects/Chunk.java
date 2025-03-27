@@ -2,6 +2,8 @@ package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -67,5 +69,18 @@ public final class Chunk {
                 CHUNK_LENGTH,
                 CHUNK_LENGTH
         );
+    }
+
+    /**
+     * Get a list of chunks in a 3x3 grid around this chunk, including this chunk.
+     */
+    public List<Chunk> adjacentChunks() {
+        var adjacentChunks = new ArrayList<Chunk>();
+        for (int row = this.row() - 1; row <= this.row() + 1; row++) {
+            for (int col = this.col() - 1; col <= this.col() + 1; col++) {
+                adjacentChunks.add(new Chunk(row, col));
+            }
+        }
+        return adjacentChunks;
     }
 }

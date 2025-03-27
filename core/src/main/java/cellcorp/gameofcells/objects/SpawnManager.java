@@ -47,7 +47,9 @@ public class SpawnManager {
         var col0 = centerChunk.col() - SPAWN_CHUNK_RANGE;
         var row1 = centerChunk.row() + SPAWN_CHUNK_RANGE;
         var col1 = centerChunk.col() + SPAWN_CHUNK_RANGE;
+
         zoneManager.spawnInRange(row0, col0, row1, col1);
+        glucoseManager.spawnInRange(row0, col0, row1, col1);
     }
 
     /**
@@ -61,5 +63,6 @@ public class SpawnManager {
         var row1 = centerChunk.row() + DESPAWN_CHUNK_RANGE;
         var col1 = centerChunk.col() + DESPAWN_CHUNK_RANGE;
         zoneManager.despawnOutsideRange(row0, col0, row1, col1);
+        glucoseManager.despawnOutsideRange(row0, col0, row1, col1);
     }
 }

@@ -127,7 +127,7 @@ public class TestMain {
         // Press enter to move to game screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
-        
+
         // Press 's' to move to shop screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
@@ -259,8 +259,7 @@ public class TestMain {
             addedGlucose.add(new Glucose(
                     Mockito.mock(AssetManager.class),
                     cell.getX(),
-                    cell.getY(),
-                    GlucoseManager.RADIUS
+                    cell.getY()
             ));
         }
         gameGlucose.addAll(addedGlucose);

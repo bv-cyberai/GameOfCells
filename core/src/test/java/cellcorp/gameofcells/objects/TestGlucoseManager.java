@@ -24,7 +24,7 @@ public class TestGlucoseManager {
         // Unlike the InputProvider, we don't need any additional behavior,
         // so we can just use `Mockito.mock`
         var fakeAssetManager = Mockito.mock(AssetManager.class);
-        new Glucose(fakeAssetManager, 10, 10, 20);
+        new Glucose(fakeAssetManager, 10, 10);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class TestGlucoseManager {
     public void glucoseStoresCoordinatesAndRadiusCorrectly() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
 
-        Glucose glucose = new Glucose(fakeAssetManager, 100, 200, 30);
+        Glucose glucose = new Glucose(fakeAssetManager, 100, 200);
 
         assertEquals(100, glucose.getX());
         assertEquals(200, glucose.getY());

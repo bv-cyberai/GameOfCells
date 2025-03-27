@@ -1,9 +1,12 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
+
+import java.util.Objects;
 
 /**
  * Glucose Object
@@ -22,22 +25,22 @@ import com.badlogic.gdx.math.Circle;
  */
 
 public class Glucose {
+    public static final int RADIUS = 30;
     public static final int ATP_PER_GLUCOSE = 20;
 
     private final AssetManager assetManager;
-    private Circle boundCircle;
+    private final Circle boundCircle;
 
     /**
      * Constructor
-     * 
+     *
      * @param assetManager The Game assetManager
      * @param x            - The x position
      * @param y            - The y position
-     * @param radius       - The radius of the circle hitbox.
      */
-    public Glucose(AssetManager assetManager, float x, float y, float radius) {
+    public Glucose(AssetManager assetManager, float x, float y) {
         this.assetManager = assetManager;
-        boundCircle = new Circle(x, y, radius);
+        boundCircle = new Circle(x, y, RADIUS);
     }
 
     /**
@@ -52,15 +55,6 @@ public class Glucose {
         var glucoseTexture = assetManager.get("glucose_orange.png", Texture.class);
         assert (glucoseTexture != null);
         batch.draw(glucoseTexture, boundCircle.x, boundCircle.y, boundCircle.radius, boundCircle.radius);
-    }
-
-    /**
-     * Dispose
-     * 
-     * Unloads a glucose asset.
-     */
-    public void dispose() {
-        assetManager.unload("glucose_orange.png");
     }
 
     /**

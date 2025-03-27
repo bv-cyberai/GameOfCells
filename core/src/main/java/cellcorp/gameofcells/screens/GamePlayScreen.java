@@ -259,7 +259,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void dispose() {
         // Destroy screen's assets here.
         playerCell.dispose(); // dispose cell
-        glucoseManager.dispose();
         hud.dispose();
         batch.dispose(); // Dispose of the batch
     }
@@ -449,8 +448,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     private void drawGameObjects(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         zoneManager.draw(batch, shapeRenderer);
-        batch.begin();
         glucoseManager.draw(batch);
+        batch.begin();
         playerCell.draw(batch);
         batch.end();
     }

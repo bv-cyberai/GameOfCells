@@ -91,7 +91,7 @@ public class AttractScreen implements GameOfCellsScreen {
             float x = random.nextFloat() * viewport.getWorldWidth(); // Random x position
             float y = random.nextFloat() * viewport.getWorldHeight(); // Random y position
             float radius = 20; // Smaller radius for glucose
-            glucoseList.add(new Glucose(assetManager, x, y, radius));
+            glucoseList.add(new Glucose(assetManager, x, y));
         }
 
         // Set initial target position for the cell
@@ -135,9 +135,6 @@ public class AttractScreen implements GameOfCellsScreen {
     public void dispose() {
         spriteBatch.dispose();
         cell.dispose();
-        for (Glucose glucose : glucoseList) {
-            glucose.dispose();
-        }
         particles.dispose();
         // Dispose of any resources used by the attract screen
     }
