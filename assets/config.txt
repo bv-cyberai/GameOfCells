@@ -8,7 +8,7 @@ cellMaxATP:100          ##Max Health
 cellMovementSpeed:200   ##Cell Movement Speed
 
 [glucose]
-glucoseRadius:30        ##UNIMPLEMENTED - Perhaps Dangerous
+glucoseRadius:100        ##UNIMPLEMENTED - Perhaps Dangerous
 conversionFactor:0      ##UNIMPLEMENTED - This is being implemented this sprint.
 
 [shop]

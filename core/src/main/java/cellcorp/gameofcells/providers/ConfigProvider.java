@@ -10,7 +10,6 @@ import com.badlogic.gdx.files.FileHandle;
 //import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * Config Provider
@@ -70,7 +69,7 @@ public class ConfigProvider {
    private static String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
 
     // This forces the browser to grab a new copy of config.txt
-    private static String cacheBuster = CONFIG_URL + "?nocache=" + System.currentTimeMillis();
+    private static String CACHE_BUSTER = CONFIG_URL + "?nocache=" + System.currentTimeMillis();
 
     /**
      * Config Provider Constructor
@@ -109,7 +108,7 @@ public class ConfigProvider {
      */
     private void loadConfigServer() {
         Net.HttpRequest request = new Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.GET);
-        request.setUrl(cacheBuster);
+        request.setUrl(CACHE_BUSTER);
 
         Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
             @Override
@@ -192,7 +191,6 @@ public class ConfigProvider {
             line = line.trim();
             String[] lineArray = line.split(":");
             Gdx.app.log("parse1", Arrays.toString(lineArray));
-//            System.out.println(Arrays.toString(lineArray));
             if (lineArray.length >= 2) {
                 configData.put(lineArray[0], lineArray[1]);
             }
@@ -240,6 +238,9 @@ public class ConfigProvider {
      */
     public int getIntValue(String key) throws NumberFormatException {
         String value = configData.get(key);
+        if (value == null) {
+            throw new NumberFormatException("Value for key: " + key + "' is null!");
+        }
         return Integer.parseInt(value);
     }
 
@@ -255,6 +256,10 @@ public class ConfigProvider {
      */
     public float getFloatValue(String key) throws NumberFormatException {
         String value = configData.get(key);
+
+        if (value == null) {
+            throw new NumberFormatException("Value for key: " + key + "' is null!");
+        }
         int temp = Integer.parseInt(value);
         return (float) temp;
     }

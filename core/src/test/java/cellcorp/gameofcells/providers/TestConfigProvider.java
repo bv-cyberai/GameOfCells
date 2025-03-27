@@ -19,6 +19,10 @@ public class TestConfigProvider {
         testConfigData.put("cellHealth","50");
         testConfigData.put("glucosePopupMessage","glucoseFound");
         testConfigData.put("cellMovementSpeed","200");
+        testConfigData.put("badint",null);
+        testConfigData.put("badPopupMessage",null);
+        testConfigData.put("badFloat",null);
+
 
     }
 
@@ -28,5 +32,12 @@ public class TestConfigProvider {
         assertEquals(50,configProvider.getIntValue("cellHealth"));
         assertEquals("glucoseFound", configProvider.getStringValue("glucosePopupMessage"));
         assertEquals(200f, configProvider.getFloatValue("cellMovementSpeed"));
+    }
+
+    @Test
+    public void testValueExceptions() {
+        assertThrowsExactly(NumberFormatException.class, () -> configProvider.getIntValue("badint"));
+        assertThrowsExactly(NullPointerException.class, () -> configProvider.getStringValue("badPopupMessage"));
+        assertThrowsExactly(NumberFormatException.class, () -> configProvider.getFloatValue("badFloat"));
     }
 }
