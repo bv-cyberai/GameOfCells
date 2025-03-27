@@ -64,10 +64,10 @@ public class ConfigProvider {
     // BE CAREFUL DO NOT BUILD WITH LOCAL HOST AND PUSH TO CSDEV!!
 
     //Used for dev/testing locally
-//     private static final String CONFIG_URL = "http://localhost:1600/assets/config.txt";
+     private static final String CONFIG_URL = "http://localhost:1600/assets/config.txt";
 
     //Used for CSDEV
-   private static String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
+//   private static String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
 
     // This forces the browser to grab a new copy of config.txt
     private static String cacheBuster = CONFIG_URL + "?nocache=" + System.currentTimeMillis();
@@ -128,7 +128,7 @@ public class ConfigProvider {
                 //Ensures filesStrings can be parsed correctly.
                 fileString = fileString.replace("\r\n", "\n");
 
-                descriptionString = fileString;
+                descriptionString = new String(fileString);
                 //For some reason this only works here, which means its also called separately in
                 //load config local
                 parseObjectAttributes();
