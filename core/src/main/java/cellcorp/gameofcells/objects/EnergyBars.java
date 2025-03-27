@@ -32,9 +32,9 @@ public class EnergyBars {
 
     private AssetManager assetManager;
 
-    private float cellHealth;
+    private int cellHealth;
     private int cellATP;
-    private final float maxHealth;
+    private final int maxHealth;
     private final int maxATP;
     public static final int BAR_SIZE = 400;
 
@@ -46,7 +46,7 @@ public class EnergyBars {
     private float healthPercentage;
     private float ATPPercentage;
 
-    public EnergyBars(AssetManager assetManager, float maxHealth, int maxATP) {
+    public EnergyBars(AssetManager assetManager, int maxHealth, int maxATP) {
         this.assetManager = assetManager;
         this.maxHealth = maxHealth;
         this.maxATP = maxATP;
@@ -102,7 +102,7 @@ public class EnergyBars {
      * @param updatedCellHealth - The new cell health.
      * @param updatedCellATP    - The new ATP amount.
      */
-    public void update(float updatedCellHealth, int updatedCellATP) {
+    public void update(int updatedCellHealth, int updatedCellATP) {
         cellHealth = updatedCellHealth;
         cellATP = updatedCellATP;
         healthPercentage = ((float) cellHealth / maxHealth) * BAR_SIZE;

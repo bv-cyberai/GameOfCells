@@ -33,7 +33,7 @@ public class Cell {
 
     private int cellHealth;
     private int cellATP;
-    private float maxHealth;
+    private int maxHealth;
     private int maxATP;
     private Circle cellCircle;
 
@@ -147,7 +147,7 @@ public class Cell {
      * 
      * @return CellHealth
      */
-    public float getCellHealth() {
+    public int getCellHealth() {
         return cellHealth;
     }
 
@@ -165,7 +165,7 @@ public class Cell {
      * 
      * @return Cell Max Health
      */
-    public float getMaxHealth() {
+    public int getMaxHealth() {
         return maxHealth;
     }
 
