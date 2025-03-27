@@ -55,6 +55,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
 
+    /**
+     * Set to true to enable debug drawing.
+     */
     public static final boolean DEBUG_DRAW_ENABLED = false;
 
     private final Main game;

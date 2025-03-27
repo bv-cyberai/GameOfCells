@@ -25,9 +25,9 @@ import cellcorp.gameofcells.AssetFileNames;
  * @assignment GameOfCells
  */
 public class Cell {
-    public static final int maxHealth = 100;
-    public static final int maxATP = 100;
-    private static final float cellSpeed = 200f; // Speed of the cell
+    public static final int MAX_HEALTH = 100;
+    public static final int MAX_ATP = 100;
+    private static final float CELL_SPEED = 200f; // Speed of the cell
 
     private final AssetManager assetManager;
     private final GamePlayScreen gamePlayScreen;
@@ -60,13 +60,13 @@ public class Cell {
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
         if (moveLeft)
-            cellCircle.x -= cellSpeed * deltaTime;
+            cellCircle.x -= CELL_SPEED * deltaTime;
         if (moveRight)
-            cellCircle.x += cellSpeed * deltaTime;
+            cellCircle.x += CELL_SPEED * deltaTime;
         if (moveUp)
-            cellCircle.y += cellSpeed * deltaTime;
+            cellCircle.y += CELL_SPEED * deltaTime;
         if (moveDown)
-            cellCircle.y -= cellSpeed * deltaTime;
+            cellCircle.y -= CELL_SPEED * deltaTime;
     }
 
     /**
@@ -164,7 +164,7 @@ public class Cell {
      * @return Cell Max Health
      */
     public int getMaxHealth() {
-        return maxHealth;
+        return MAX_HEALTH;
     }
 
     /**
@@ -173,7 +173,7 @@ public class Cell {
      * @return Cell Max ATP
      */
     public int getMaxATP() {
-        return maxATP;
+        return MAX_ATP;
     }
 
     /**
@@ -195,7 +195,7 @@ public class Cell {
      * increases ATP for glucose collection
      */
     public void addCellATP(int increaseAmount) {
-        cellATP = Math.min(cellATP + increaseAmount, maxATP);
+        cellATP = Math.min(cellATP + increaseAmount, MAX_ATP);
     }
     /**
      * Adds ATP
@@ -251,7 +251,8 @@ public class Cell {
         var newHealth = cellHealth - damage;
         if (newHealth <= 0) {
             gamePlayScreen.endGame();
+        } else {
+            this.cellHealth -= damage;
         }
-        this.cellHealth -= damage;
     }
 }
