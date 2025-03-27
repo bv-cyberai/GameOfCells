@@ -1,7 +1,7 @@
 ## Format variable:value ##Coments
 
 [cell]
-cellHealth:54         ##Starting Health
+cellHealth:100         ##Starting Health
 cellMaxHealth:100       ##Max Health
 cellATP:30              ##Starting ATP
 cellMaxATP:100          ##Max Health

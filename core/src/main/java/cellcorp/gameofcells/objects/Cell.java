@@ -31,7 +31,7 @@ public class Cell {
     float cellPositionX;
     float cellPositionY;
     float cellDiameter;
-    private final float cellSpeed = 200f; // Speed of the cell
+    private float cellSpeed = 200f; // Speed of the cell
 
     private int cellHealth;
     private int cellATP;
@@ -147,6 +147,12 @@ public class Cell {
         } catch (NumberFormatException e) {
             maxATP = 100;
             //Eventually print message telling user there value hasn't been set.
+        }
+
+        try {
+            cellSpeed = configProvider.getFloatValue("cellMovementSpeed");
+        } catch (NumberFormatException e) {
+            cellSpeed = 200f;
         }
 
     }

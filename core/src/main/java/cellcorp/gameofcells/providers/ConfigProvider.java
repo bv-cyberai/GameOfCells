@@ -70,7 +70,7 @@ public class ConfigProvider {
 //    private static String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
 
     // This forces the browser to grab a new copy of config.txt
-    private static String cacheBuster = CONFIG_URL + "?nocahce=" + System.currentTimeMillis();
+    private static String cacheBuster = CONFIG_URL + "?nocache=" + System.currentTimeMillis();
 
     /**
      * Config Provider Constructor
@@ -278,4 +278,7 @@ public class ConfigProvider {
         return value.replace("\\n", "\n");
     }
 
+    public HashMap<String, String> getConfigData() {
+        return configData;
+    }
 }
