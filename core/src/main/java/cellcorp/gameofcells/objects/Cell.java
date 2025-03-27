@@ -1,6 +1,5 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,13 +7,15 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 
 /**
  * Cell Class
  *
  * Includes the data for the primary cell the player
  * Controls in the game
- * 
+ *
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -25,11 +26,12 @@ import cellcorp.gameofcells.AssetFileNames;
  * @assignment GameOfCells
  */
 public class Cell {
-    public static final int MAX_HEALTH = 100;
-    public static final int MAX_ATP = 100;
-    private static final float CELL_SPEED = 200f; // Speed of the cell
+    public static  int MAX_HEALTH = 100;
+    public static  int MAX_ATP = 100;
+    private static float CELL_SPEED = 200f; // Speed of the cell
 
     private final AssetManager assetManager;
+    private final ConfigProvider configProvider;
     private final GamePlayScreen gamePlayScreen;
 
     private int cellHealth;
@@ -39,19 +41,19 @@ public class Cell {
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
 
-    public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager) {
+    public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
-        cellHealth = 100;
+        this.configProvider = configProvider;
+        setUserConfigOrDefault();
 
-        cellATP = 30;
-
+        
         cellCircle = new Circle(new Vector2(0, 0),100);
     }
 
     /**
      * Moves the cell based on input direction as well as its collision circle
-     * 
+     *
      * @param deltaTime - The time passed since the last frame
      * @param moveLeft  - If the cell should move left
      * @param moveRight - If the cell should move right
@@ -71,7 +73,7 @@ public class Cell {
 
     /**
      * Moves the cell to a specific position
-     * 
+     *
      * @param x - The new X position
      * @param y - The new Y position
      */
@@ -82,7 +84,7 @@ public class Cell {
 
     /**
      * Draw
-     * 
+     *
      * @param batch - The passed spritebatch.
      */
     public void draw(SpriteBatch batch) {
@@ -110,12 +112,50 @@ public class Cell {
             batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
         }
 
-        
+
+    }
+
+    private void setUserConfigOrDefault() {
+        try {
+            cellHealth = configProvider.getIntValue("cellHealth");
+            //Eventually may need more robust handling if user enters crazy values.
+        } catch (NumberFormatException e) {
+            cellHealth = 100;
+            //Eventually print message telling user there value hasn't been set.
+        }
+        try {
+            MAX_HEALTH = configProvider.getIntValue("maxHealth");
+            //Eventually may need more robust handling if user enters crazy values.
+        } catch (NumberFormatException e) {
+            MAX_HEALTH = 100;
+            //Eventually print message telling user there value hasn't been set.
+        }
+        try {
+            cellATP = configProvider.getIntValue("cellATP");
+            //Eventually may need more robust handling if user enters crazy values.
+        } catch (NumberFormatException e) {
+            cellATP = 30;
+            //Eventually print message telling user there value hasn't been set.
+        }
+        try {
+            MAX_ATP = configProvider.getIntValue("maxATP");
+            //Eventually may need more robust handling if user enters crazy values.
+        } catch (NumberFormatException e) {
+            MAX_ATP = 100;
+            //Eventually print message telling user there value hasn't been set.
+        }
+
+        try {
+            CELL_SPEED = configProvider.getFloatValue("cellMovementSpeed");
+        } catch (NumberFormatException e) {
+            CELL_SPEED = 200f;
+        }
+
     }
 
     /**
      * Get Cell Position X
-     * 
+     *
      * @return cellPositionX
      */
     public float getX() {
@@ -124,7 +164,7 @@ public class Cell {
 
     /**
      * Get Cell Position Y
-     * 
+     *
      * @return cellPositionY
      */
     public float getY() {
@@ -142,7 +182,7 @@ public class Cell {
 
     /**
      * Health Getter
-     * 
+     *
      * @return CellHealth
      */
     public int getCellHealth() {
@@ -151,7 +191,7 @@ public class Cell {
 
     /**
      * ATP Getter
-     * 
+     *
      * @return ATP
      */
     public int getCellATP() {
@@ -160,7 +200,7 @@ public class Cell {
 
     /**
      * Max Health Getter
-     * 
+     *
      * @return Cell Max Health
      */
     public int getMaxHealth() {
@@ -169,7 +209,7 @@ public class Cell {
 
     /**
      * MAX ATP Getter
-     * 
+     *
      * @return Cell Max ATP
      */
     public int getMaxATP() {
@@ -207,8 +247,8 @@ public class Cell {
 
     /**
      * Increase the cell diameter
-     * 
-     * @param diameterIncrease - The amount to increase the cell by. 
+     *
+     * @param diameterIncrease - The amount to increase the cell by.
      */
     public void increaseCellDiameter(float diameterIncrease) {
         cellCircle.radius += diameterIncrease/2;

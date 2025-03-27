@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -16,9 +17,9 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * GameOver Screen
- * 
+ *
  * Presents the game over screen, and allows for resetting the game.
- * 
+ *
  * @author Brendon Vinyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -48,6 +49,7 @@ public class GameOverScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
+    private ConfigProvider configProvider;
 
     // Batch/Camera
     private final Viewport viewport;
@@ -66,18 +68,19 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Constructor
-     * 
+     *
      * Creates a game over screen.
-     * 
+     *
      * @param inputProvider    - The input provider.
      * @param assetManager     - The asset manager.
      * @param graphicsProvider - The graphics provider.
      * @param game             - The game.
+     * @param configProvider
      */
     public GameOverScreen(InputProvider inputProvider,
-            AssetManager assetManager,
-            GraphicsProvider graphicsProvider,
-            Main game) {
+                          AssetManager assetManager,
+                          GraphicsProvider graphicsProvider,
+                          Main game, ConfigProvider configProvider) {
 
         this.game = game;
 
@@ -87,6 +90,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
+        this.configProvider = configProvider;
 
         layout = new GlyphLayout();
 
@@ -96,7 +100,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Handle Input
-     * 
+     *
      * Resets the game with 'R'.
      */
     @Override
@@ -108,7 +112,7 @@ public class GameOverScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager));
+                    assetManager, configProvider));
         }
     }
 
@@ -121,7 +125,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Draw
-     * 
+     *
      * Draws the game over message.
      */
     @Override
@@ -155,7 +159,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Render
-     * 
+     *
      * Does not call update has there is nothing to update.
      */
     @Override

@@ -6,15 +6,16 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 
+import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.objects.GlucoseManager;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
@@ -71,6 +72,9 @@ public class TestMain {
 
     @Test
     public void canMoveToShopScreen() {
+//        Gdx.files = Mockito.mock(Files.class);
+//        Mockito.when(Gdx.files.internal(Mockito.anyString()))
+//            .thenReturn(new FileHandle("config.txt"));
         var gameRunner = GameRunner.create();
 
         // Press enter to move to game screen
@@ -89,7 +93,9 @@ public class TestMain {
     // likely being removed.
     public void canMoveToGameOverScreen() {
         var gameRunner = GameRunner.create();
-
+//        Gdx.files = Mockito.mock(Files.class);
+//        Mockito.when(Gdx.files.internal(Mockito.anyString()))
+//            .thenReturn(new FileHandle("config.txt"));
         // Press space to move to game screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
@@ -160,7 +166,19 @@ public class TestMain {
 
         // Spawn multiple glucose on top of the cell
         var cell = gamePlayScreen.getCell();
+
+        var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        Mockito.when(fakeConfigProvider.getIntValue("cellHealth")).thenReturn(100);
+        Mockito.when(fakeConfigProvider.getIntValue("cellATP")).thenReturn(30);
+        Mockito.when(fakeConfigProvider.getIntValue("maxHealth")).thenReturn(100);
+        Mockito.when(fakeConfigProvider.getIntValue("maxATP")).thenReturn(100);
+
+        var testCell = new Cell(gamePlayScreen,fakeAssetManager,fakeConfigProvider);
+        System.out.println("TESTCELLSTART" + testCell.getCellATP());
+
         var startATP = cell.getCellATP();
+        System.out.println("START ATP:" + startATP);
         var gameGlucose = gamePlayScreen.getGlucoseManager().getGlucoseArray();
 
         var addedGlucose = new ArrayList<Glucose>();
@@ -179,6 +197,7 @@ public class TestMain {
         for (var glucose : addedGlucose) {
             assert !gameGlucose.contains(glucose);
         }
+        System.out.println(cell.getCellATP());
         assertEquals(100, cell.getCellATP());
     }
 }

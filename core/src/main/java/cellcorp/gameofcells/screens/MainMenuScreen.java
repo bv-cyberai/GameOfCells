@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
@@ -47,6 +48,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private final Camera camera;
+    private ConfigProvider configProvider;
 
     private final Main game;
     private final AssetManager assetManager;
@@ -63,14 +65,15 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private Particles particles;
 
     public MainMenuScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            Camera camera,
-            Viewport viewport) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        Camera camera,
+        Viewport viewport, ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
+        this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
         this.camera = camera;
@@ -80,6 +83,14 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Load white pixel texture and initialize particles
         Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
         this.particles = new Particles(whitePixelTexture);
+
+        //Config provider can be 'constructed' anywhere, this is useful as game objects will need access
+        //to it.
+//        configProvider = ConfigProvider.getInstance();
+        //Config is loaded here to avoid issue with GDX files, it is also the first possible
+        //location that would use any user defined values.
+//        configProvider.loadConfig();
+
 
         layout = new GlyphLayout();
     }
@@ -141,7 +152,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             inputProvider,
                             graphicsProvider,
                             game,
-                            assetManager));
+                            assetManager, configProvider ));
                     break;
                 case 1: // Settings
                     // Open the settings screen
@@ -151,7 +162,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             game,
                             assetManager,
                             camera,
-                            viewport));
+                            viewport,configProvider ));
                     break;
                 case 2:
                     // Exit the game
@@ -177,7 +188,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager));
+                    assetManager,configProvider ));
         }
 
         // Update the particles system

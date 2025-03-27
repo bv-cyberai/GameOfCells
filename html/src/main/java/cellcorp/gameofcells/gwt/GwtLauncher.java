@@ -1,6 +1,8 @@
 package cellcorp.gameofcells.gwt;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 
@@ -15,7 +17,7 @@ public class GwtLauncher extends GwtApplication {
             // cfg.padVertical = 0;
             // cfg.padHorizontal = 0;
             // return cfg;
-            
+
             // If you want a fixed size application, comment out the above resizable section,
             // and uncomment below:
             return new GwtApplicationConfiguration(1200, 800);

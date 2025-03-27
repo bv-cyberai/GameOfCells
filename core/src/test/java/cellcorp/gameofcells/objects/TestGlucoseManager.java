@@ -1,12 +1,13 @@
 package cellcorp.gameofcells.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import cellcorp.gameofcells.screens.GamePlayScreen;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.badlogic.gdx.assets.AssetManager;
+
+import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 
 /**
  * Glucose Testing
@@ -30,7 +31,8 @@ public class TestGlucoseManager {
     public void constructingGlucoseGeneratorDoesNotCrash() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
-        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager);
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
         // Pass arbitrary values for cellX and cellY
         new GlucoseManager(fakeAssetManager, cell);
     }
@@ -39,7 +41,8 @@ public class TestGlucoseManager {
     public void glucoseManagerFillsArray() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
-        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager);
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
         // Again pass arbitrary values for cellX and cellY
         var testManager = new GlucoseManager(fakeAssetManager, cell);
 

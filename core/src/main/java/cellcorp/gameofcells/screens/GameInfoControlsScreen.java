@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
@@ -35,6 +36,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
+    private ConfigProvider configProvider;
 
     private final Main game;
     private final AssetManager assetManager;
@@ -53,14 +55,15 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private float startY;
 
     public GameInfoControlsScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            Camera camera,
-            FitViewport viewport) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        Camera camera,
+        FitViewport viewport, ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
+        this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
         this.camera = camera;
@@ -125,7 +128,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
                     game,
                     assetManager,
                     camera,
-                    viewport));
+                    viewport, configProvider ));
         }
     }
 

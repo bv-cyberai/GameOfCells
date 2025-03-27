@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
@@ -39,6 +40,7 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
+    private ConfigProvider configProvider;
 
     private final Main game;
     private final AssetManager assetManager;
@@ -54,14 +56,15 @@ public class SettingsScreen implements GameOfCellsScreen {
 
 
     public SettingsScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            Camera camera,
-            FitViewport viewport) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        Camera camera,
+        FitViewport viewport, ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
+        this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
         this.camera = camera;
@@ -129,7 +132,7 @@ public class SettingsScreen implements GameOfCellsScreen {
                             game,
                             assetManager,
                             camera,
-                            viewport));
+                            viewport,configProvider ));
                     break;
                 case 1: // Back
                     game.setScreen(new MainMenuScreen(
@@ -138,7 +141,7 @@ public class SettingsScreen implements GameOfCellsScreen {
                             game,
                             assetManager,
                             camera,
-                            viewport));
+                            viewport, configProvider));
                     break;
             }
         }

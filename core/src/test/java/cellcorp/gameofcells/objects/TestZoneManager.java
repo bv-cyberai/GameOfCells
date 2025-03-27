@@ -1,20 +1,25 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.screens.GamePlayScreen;
-import com.badlogic.gdx.assets.AssetManager;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.HashMap;
+import com.badlogic.gdx.assets.AssetManager;
 
-import static org.junit.jupiter.api.Assertions.*;
+import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 
 public class TestZoneManager {
     @Test
     public void canSpawnZonesIn100x100Chunks() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
-        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager);
+
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager, fakeConfigProvider);
         var zoneManager = new ZoneManager(fakeAssetManager, cell);
         zoneManager.spawnInRange(-50, -50, 50, 50);
         // Non-deterministic, but the probability of < 1000 spawns at 33% chance is super low
@@ -28,7 +33,8 @@ public class TestZoneManager {
         // The results of the two spans should be the same
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
-        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager);
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
         var zoneManager = new ZoneManager(fakeAssetManager, cell);
 
         zoneManager.spawnInRange(0, 0, 25, 25);

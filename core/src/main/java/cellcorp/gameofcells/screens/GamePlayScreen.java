@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.objects.*;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
@@ -70,6 +71,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
+    private ConfigProvider configProvider;
 
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
@@ -149,22 +151,24 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param inputProvider    Provides user input information.
      * @param graphicsProvider Provide graphics information.
      * @param game             The main game instance.
+     * @param configProvider
      */
     public GamePlayScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager, ConfigProvider configProvider) {
 
         this.assetManager = assetManager;
         this.game = game;
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
+        this.configProvider = configProvider;
 
         this.camera = graphicsProvider.createCamera();
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
 
-        this.cell = new Cell(this, assetManager);
+        this.cell = new Cell(this, assetManager, configProvider);
         this.zoneManager = new ZoneManager(assetManager, cell);
         this.glucoseManager = new GlucoseManager(assetManager, cell);
         this.spawnManager = new SpawnManager(cell, zoneManager, glucoseManager);
@@ -264,21 +268,18 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     this, // Pass the current screen to the shop screen
                     cell));
         }
-
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
             endGame();
         }
-
         if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
             cell.addCellATP(20);
         }
-        
         // Will eventually be triggered by cell state
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             game.setScreen(new PopupInfoScreen(
                     inputProvider, assetManager,
                     graphicsProvider, game,
-                    this, PopupInfoScreen.Type.danger));
+                    this, configProvider, PopupInfoScreen.Type.danger));
         }
         cell.move(
                 deltaTimeSeconds,
@@ -315,7 +316,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     game.setScreen(new PopupInfoScreen(
                             inputProvider, assetManager,
                             graphicsProvider, game,
-                            this, PopupInfoScreen.Type.glucose));
+                            this, configProvider,PopupInfoScreen.Type.glucose));
                     cell.setHasShownGlucosePopup(true); // Mark the popup as shown
                 }
             }
@@ -471,6 +472,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 inputProvider,
                 assetManager,
                 graphicsProvider,
-                game));
+                game,configProvider));
     }
 }

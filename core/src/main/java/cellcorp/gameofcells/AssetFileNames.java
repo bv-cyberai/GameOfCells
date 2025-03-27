@@ -53,7 +53,7 @@ public class AssetFileNames {
      * This is needed due to the way bitmap fonts work.
      */
     public static String HUD_FONT_YELLOW = "rubik_yellow.fnt";
-    
+
     /**
      * The file name for our background particle texture.
      */
@@ -67,4 +67,10 @@ public class AssetFileNames {
      * The file name for the basic zone gradient.
      */
     public static String BASIC_ZONE = "basic_zone.png";
+
+    /**
+     * The file name for our config file.
+     */
+
+    public static String USER_CONFIG = "config.txt";
 }
