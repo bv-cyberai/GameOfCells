@@ -6,9 +6,11 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
 
 
-import java.nio.charset.StandardCharsets;
+
+//import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Config Provider
@@ -51,10 +53,7 @@ import java.util.HashMap;
  */
 public class ConfigProvider {
 
-    private boolean isDevEnv;
-    private boolean isTestEnv;
-
-    private static HashMap<String, String> configData;
+    private HashMap<String, String> configData;
     private static String fileString;
     private static String descriptionString;
 
@@ -65,7 +64,7 @@ public class ConfigProvider {
     // BE CAREFUL DO NOT BUILD WITH LOCAL HOST AND PUSH TO CSDEV!!
 
     //Used for dev/testing locally
-    private static String CONFIG_URL = "http://localhost:1600/assets/config.txt";
+    private static final String CONFIG_URL = "http://localhost:1600/assets/config.txt";
 
     //Used for CSDEV
 //    private static String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
@@ -86,7 +85,6 @@ public class ConfigProvider {
      * never gets pushed to csdev accidentally.
      */
     public ConfigProvider() {
-        cacheBuster = CONFIG_URL + "?nocahce=" + System.currentTimeMillis();
         configData = new HashMap<>();
     }
 
@@ -105,7 +103,7 @@ public class ConfigProvider {
         //Config file is only parsed on successful reads.
         if (descriptionString != null) {
             parseObjectAttributes();
-            parseDescriptions();
+//            parseDescriptions();
         }
     }
 
@@ -123,12 +121,17 @@ public class ConfigProvider {
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 fileString = httpResponse.getResultAsString();
 
+                if (fileString == null || fileString.isEmpty()) {
+                    Gdx.app.error("ConfigProvider", "Empty config file received!");
+                    return;
+                }
+
                 //This should print information to the javascript console
                 // accessed via your browsers developer tools.
                 Gdx.app.log("Config Debug", "RAWDATA \n" + fileString);
 
                 //Ensures filesStrings can be parsed correctly.
-                fileString = new String(httpResponse.getResultAsString().getBytes(), StandardCharsets.UTF_8);
+//                fileString = new String(httpResponse.getResultAsString().getBytes());
                 fileString = fileString.replace("\r\n", "\n");
 
                 descriptionString = fileString;
@@ -136,12 +139,12 @@ public class ConfigProvider {
 
             @Override
             public void failed(Throwable t) {
-                System.err.println("Failed to load config from server: " + t.getMessage());
+                Gdx.app.error("ConfigProvider", "Failed to load config from server: " + t.getMessage());
             }
 
             @Override
             public void cancelled() {
-                System.err.println("Config request cancelled.");
+                Gdx.app.error("ConfigProvider", "Config request cancelled.");
             }
         });
     }
@@ -166,7 +169,7 @@ public class ConfigProvider {
      */
     private void parseObjectAttributes() {
         for (String line : fileString.split("\n", -1)) {
-            if (line.contains("[descriptions]")) {
+            if (line.contains("[descriptions]/")) {
                 //Descriptions require different parsing, break loop.
                 break;
             }
@@ -188,8 +191,11 @@ public class ConfigProvider {
 
             line = line.trim();
             String[] lineArray = line.split(":");
-            System.out.println(Arrays.toString(lineArray));
-            configData.put(lineArray[0], lineArray[1]);
+            Gdx.app.log("parse1", Arrays.toString(lineArray));
+//            System.out.println(Arrays.toString(lineArray));
+            if (lineArray.length >= 2) {
+                configData.put(lineArray[0], lineArray[1]);
+            }
 
         }
     }
@@ -206,19 +212,20 @@ public class ConfigProvider {
             line = line.replace("\r\n", "\n");
 
             //This should remove the \n after / was read, while leaving the others intact.
-            if(line.charAt(0) == '\n' && line.length() >=2) {
+            if(line.length() >=2 && line.charAt(0) == '\n') {
                 line = line.substring(1);
             }
 
             //These are lines for the user - skip parsing.
-            System.out.println("LINE: " + line+":EOL");
+//            System.out.println("LINE: " + line+":EOL");
             if (line.startsWith("[") || line.startsWith("#") || line.startsWith(" ") || line.isEmpty()) {
                 continue;
             }
             String[] lineArray = line.split(":");
-            System.out.println(Arrays.toString(lineArray));
-            if (lineArray.length == 2) {
-                configData.put(lineArray[0], lineArray[1].replace("/", ""));
+//            System.out.println(Arrays.toString(lineArray));
+            if (lineArray.length >= 2) {
+                lineArray[1] = lineArray[1].replace("/","");
+                configData.put(lineArray[0], lineArray[1]);
             }
         }
     }

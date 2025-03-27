@@ -154,16 +154,30 @@
  ```sh
  gradle superdev
  ```
- 
+
  Access the following URL via a web browser:
  
  [http://localhost:8080/index.html](http://localhost:8080/index.html)
- 
+
+## Python Web Server Setup
+A local web server instance has been provided to aid in testing of adding user
+configurable variables to the web version of the game. Below are instructions 
+to initialize this setup.
+
+In a terminal window containing our GameOfCells project enter:
+   ```python local_web_server.py```
+This will create a basic web server configured to handle requests from GameOfCells.
+
+Run ```gradle superdev``` and navigate to  [http://localhost:8080/index.html](http://localhost:8080/index.html)
+
+
+Edit and save config.txt as desired. Refresh web instance of game to see updated configs.
+
+
  ## Testing
  
  ### Test
  Testing is performed via JUnit tests on each build.
- 
  
  ## Asset list
  

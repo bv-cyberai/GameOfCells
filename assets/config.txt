@@ -1,19 +1,19 @@
 ## Format variable:value ##Coments
 
 [cell]
-cellHealth:100           ##Starting Health
+cellHealth:75         ##Starting Health
 cellMaxHealth:100       ##Max Health
 cellATP:30              ##Starting ATP
 cellMaxATP:100          ##Max Health
 cellMovementSpeed:200   ##Cell Movement Speed
 
 [glucose]
-glucoseRadius:30        ##UNIMPLEMENTED
-conversionFactor:0      ##UNIMPLEMENTED
+glucoseRadius:30        ##UNIMPLEMENTED - Perhaps Dangerous
+conversionFactor:0      ##UNIMPLEMENTED - This is being implemented this sprint.
 
 [shop]
-initialSizeUpgradeCost:40  ##UNIMPLEMENTED
-mitochondriaUpgradeCost:30 ##UNIMPLEMENTED
+initialSizeUpgradeCost:40  ##UNIMPLEMENTED - This is being refactored this sprint
+mitochondriaUpgradeCost:30 ##UNIMPLEMENTED - This is being refactored this sprint
 
 ## The following settings are to change descriptions of various parts of the program.
 ## Message must only contain '/' as the last character. To create new lines use '\n'.
@@ -23,7 +23,5 @@ mitochondriaUpgradeCost:30 ##UNIMPLEMENTED
 
 [descriptions]/
 [pop-ups]/
-glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!/
-                    testMessage:This is a test\n message/
-dangerPopupMessage:"You're in danger!" + "\n\n" + "Gradient color 'X' damages cell health" + "\n\n"
-                                           + "Press 'C' to continue!"/
+glucosePopupMessage:BLOOP collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'C' to continue!/
+dangerPopupMessage:You're in danger!\n\nGradient color 'X' damages cell health\n\nPress 'C' to continue!"/
