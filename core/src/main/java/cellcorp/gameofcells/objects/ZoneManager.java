@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Manages acid and basic zones.
@@ -103,13 +104,21 @@ public class ZoneManager {
 
     /**
      * Spawn zones outside the range of chunks `Chunk(row0, col0) .. Chunk(row1, col1)`
+     * Will never spawn in the range (-1, -1)..=(0, 0),
+     * to give player a chance to move around before encountering zones.
      */
     public void spawnInRange(int row0, int col0, int row1, int col1) {
 
         for (int row = row0; row < row1; row++) {
             for (int col = col0; col < col1; col++) {
+                // Don't spawn in the range (-1, -1) ..= (0, 0)
+                if ((-1 <= row && row <= 0)
+                        && (-1 <= col && col <= 0)) {
+                    continue;
+                }
                 var chunk = new Chunk(row, col);
                 spawnZone(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
+
                 spawnZone(basicZones, BASIC_ZONE_SPAWN_CHANCE, AssetFileNames.BASIC_ZONE, 3, chunk);
             }
         }
@@ -208,7 +217,7 @@ public class ZoneManager {
                 filter(chunk ->
                                row0 <= chunk.row() && chunk.row() < row1
                                        && col0 <= chunk.col() && chunk.col() < col1
-                ).toList();
+                ).collect(Collectors.toList());
         zoneSet.keySet().retainAll(keepZones);
     }
 

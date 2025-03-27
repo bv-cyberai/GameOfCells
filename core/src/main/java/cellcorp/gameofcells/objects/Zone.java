@@ -48,9 +48,9 @@ public final class Zone {
         spriteBatch.begin();
         spriteBatch.draw(texture, bottomLeftX, bottomLeftY, diameter, diameter);
         spriteBatch.end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.point(x, y, 0);
             shapeRenderer.circle(x, y, ZONE_RADIUS);
             shapeRenderer.end();

@@ -26,9 +26,6 @@ import cellcorp.gameofcells.AssetFileNames;
 public class Cell {
     private final AssetManager assetManager;
 
-    float cellPositionX;
-    float cellPositionY;
-    float cellDiameter;
     private final float cellSpeed = 200f; // Speed of the cell
 
     private int cellHealth;
@@ -48,7 +45,7 @@ public class Cell {
         cellATP = 30;
         maxATP = 100; // Alpha is actually 99, but thats painful.
         
-        cellCircle = new Circle(new Vector2(500,300),100);
+        cellCircle = new Circle(new Vector2(0, 0),100);
     }
 
     /**
