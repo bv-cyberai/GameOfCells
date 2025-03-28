@@ -1,10 +1,16 @@
 package cellcorp.gameofcells.providers;
 
+import cellcorp.gameofcells.AssetFileNames;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class TestConfigProvider {
 
@@ -24,6 +30,29 @@ public class TestConfigProvider {
         testConfigData.put("badFloat",null);
 
 
+    }
+
+    @Test
+    public void testParsing() {
+        // Mock Gdx.app
+        Gdx.app = mock(Application.class);
+        doNothing().when(Gdx.app).log(anyString(), anyString());
+
+        //Mock Files
+        Gdx.files = mock(Files.class);
+        FileHandle mockFileHandle = mock(FileHandle.class);
+        when(Gdx.files.internal(AssetFileNames.TEST_CONFIG)).thenReturn(mockFileHandle);
+        when(mockFileHandle.readString()).thenReturn("## line comment\n\n[cell]\ntestInt:100       ##inline comment is ignored.\n"+
+            "testFloat:100\n[descriptions]/\ntestMessage:Read me/\n");
+
+
+        configProvider.loadDataForParsingTestDoNotUse();
+        HashMap<String, String> expectedConfigData = new HashMap<>();
+        expectedConfigData.put("testInt", "100");
+        expectedConfigData.put("testFloat", "100");
+        expectedConfigData.put("testMessage", "Read me");
+        HashMap<String, String> testParsingData = configProvider.getConfigData();
+        assertEquals(expectedConfigData, testParsingData);
     }
 
 

@@ -1,0 +1,8 @@
+## line comment
+
+[cell]
+testInt:100       ##inline comment is ignored.
+testFloat:100
+
+[descriptions]/
+testMessage:Read me/

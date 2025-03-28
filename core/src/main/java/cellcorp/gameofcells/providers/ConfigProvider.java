@@ -284,4 +284,18 @@ public class ConfigProvider {
     public HashMap<String, String> getConfigData() {
         return configData;
     }
+
+    /**
+     * DO NOT USE OUTSIDE OF TESTING
+     *
+     * Reads testing data.
+     */
+    public void loadDataForParsingTestDoNotUse() {
+        configData = new HashMap<>();
+        FileHandle file = Gdx.files.internal(AssetFileNames.TEST_CONFIG);
+        fileString = file.readString();
+        descriptionString = new String(fileString);
+        parseObjectAttributes();
+        parseDescriptions();
+    }
 }

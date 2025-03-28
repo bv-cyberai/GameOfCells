@@ -78,4 +78,10 @@ public class AssetFileNames {
      */
 
     public static String USER_CONFIG = "config.txt";
+
+    /**
+     * File that is read to test parsing sense user_config can
+     * change.
+     */
+    public static String TEST_CONFIG = "test_config.txt";
 }
