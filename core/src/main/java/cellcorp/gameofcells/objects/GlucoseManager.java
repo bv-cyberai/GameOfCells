@@ -227,8 +227,10 @@ public class GlucoseManager {
         float y0 = rect.y - 2 * SubChunk.SUB_CHUNK_LENGTH;
         float x1 = x0 + 5 * SubChunk.SUB_CHUNK_LENGTH;
         float y1 = y0 + 5 * SubChunk.SUB_CHUNK_LENGTH;
-        float x = rand.nextFloat(x0, x1);
-        float y = rand.nextFloat(y0, y1);
+        float xPct = rand.nextFloat();
+        float x = x0 + xPct * (x1 - x0);
+        float yPct = rand.nextFloat();
+        float y = y0 + yPct * (y1 - y0);
         return new Glucose(assetManager, x, y);
     }
 

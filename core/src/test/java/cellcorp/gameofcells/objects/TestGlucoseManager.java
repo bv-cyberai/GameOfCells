@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,24 +34,26 @@ public class TestGlucoseManager {
         var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
         var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
         var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
+        var zoneManager = new ZoneManager(fakeAssetManager, cell);
         // Pass arbitrary values for cellX and cellY
-        new GlucoseManager(fakeAssetManager, cell);
+        new GlucoseManager(fakeAssetManager, fakeGamePlayScreen, zoneManager, cell);
     }
 
-    @Test
-    public void glucoseManagerFillsArray() {
-        var fakeAssetManager = Mockito.mock(AssetManager.class);
-        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
-        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+// DEPRECATED
+// Max glucose no longer exists
+//    @Test
+//    public void glucoseManagerFillsArray() {
+//        var fakeAssetManager = Mockito.mock(AssetManager.class);
+//        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
+//        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
         var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
-        // Again pass arbitrary values for cellX and cellY
-        var testManager = new GlucoseManager(fakeAssetManager, cell);
-
-        int testMaxGlucose = testManager.getMAX_GLUCOSE();
-
-        assertEquals(testMaxGlucose, testManager.getGlucoseArray().size());
-
-    }
+//        // Again pass arbitrary values for cellX and cellY
+//        var testManager = new GlucoseManager(fakeAssetManager, cell);
+//
+//        int testMaxGlucose = testManager.getMAX_GLUCOSE();
+//
+//        assertEquals(testMaxGlucose, testManager.getGlucoseArray().size());
+//    }
 
     @Test
     public void glucoseStoresCoordinatesAndRadiusCorrectly() {
