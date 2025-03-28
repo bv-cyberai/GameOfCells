@@ -70,7 +70,7 @@ public class Cell {
         if (moveDown)
             cellCircle.y -= CELL_SPEED * deltaTime;
     }
-
+ 
     /**
      * Moves the cell to a specific position
      *
