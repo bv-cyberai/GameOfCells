@@ -49,7 +49,7 @@ public class Glucose {
      */
     public void draw(SpriteBatch batch) {
         // other options for glucose exist within assests.
-        var glucoseTexture = assetManager.get("glucose2.png", Texture.class);
+        var glucoseTexture = assetManager.get("glucose_orange.png", Texture.class);
         assert (glucoseTexture != null);
         batch.draw(glucoseTexture, boundCircle.x, boundCircle.y, boundCircle.radius, boundCircle.radius);
     }
@@ -60,7 +60,7 @@ public class Glucose {
      * Unloads a glucose asset.
      */
     public void dispose() {
-        assetManager.unload("glucose2.png");
+        assetManager.unload("glucose_orange.png");
     }
 
     /**

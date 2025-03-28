@@ -13,7 +13,7 @@ public class AssetFileNames {
     /**
      * The file name for our glucose texture.
      */
-    public static String GLUCOSE = "glucose2.png";
+    public static String GLUCOSE = "glucose_orange.png";
 
     /**
      * The file name of the default LibGDX font.
