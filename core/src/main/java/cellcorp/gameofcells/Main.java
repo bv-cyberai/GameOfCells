@@ -147,7 +147,10 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.ACID_ZONE, Texture.class);
         assetManager.load(AssetFileNames.BASIC_ZONE, Texture.class);
         assetManager.finishLoading();
-        if(Gdx.files !=null) {
+        // I know. I know.
+        // HeadlessFiles isn't available to GWT, cause the headless backend isn't.
+        // I'm sure there's a better way to do this.
+        if(Gdx.files !=null && !(Gdx.files.getClass().getName().equals("com.badlogic.gdx.backends.headless.HeadlessFiles"))) {
             configProvider.loadConfig();
         }
         // May need to set to gameScreenManager at somepoint.

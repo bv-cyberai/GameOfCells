@@ -288,7 +288,7 @@ public class TestMain {
         assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
 
         // 3. Press S to go to shop
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
 
         // Wait for transition to shop screen
