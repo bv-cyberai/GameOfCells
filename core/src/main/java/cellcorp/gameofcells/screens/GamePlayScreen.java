@@ -54,7 +54,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public static final int VIEW_RECT_HEIGHT = 1080;
 
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
-    public static final String MESSAGE_SHOP = "Press S to access the shop screen.";
+    public static final String MESSAGE_SHOP = "Press Q to access the shop screen.";
 
     /**
      * Set to true to enable debug drawing.
@@ -258,8 +258,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        // Move to `ShopScreen` when 'Q' is pressed.
-        if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
+        // Move to `ShopScreen` when 's' is pressed.
+        if (inputProvider.isKeyJustPressed(Input.Keys.S)) {
             game.setScreen(new ShopScreen(
                     game,
                     inputProvider,
@@ -271,7 +271,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
             endGame();
         }
-        if (inputProvider.isKeyJustPressed(Input.Keys.E)) {
+
+        if (inputProvider.isKeyJustPressed(Input.Keys.A)) {
             cell.addCellATP(20);
         }
         // Will eventually be triggered by cell state
@@ -283,10 +284,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
         cell.move(
                 deltaTimeSeconds,
-                (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
+                inputProvider.isKeyPressed(Input.Keys.LEFT), // Check if the left key is pressed
+                inputProvider.isKeyPressed(Input.Keys.RIGHT), // Check if the right key is pressed
+                inputProvider.isKeyPressed(Input.Keys.UP), // Check if the up key is pressed
+                inputProvider.isKeyPressed(Input.Keys.DOWN) // Check if the down key is pressed
         );
     }
 
