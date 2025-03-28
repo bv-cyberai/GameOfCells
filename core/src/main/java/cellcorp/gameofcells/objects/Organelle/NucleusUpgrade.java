@@ -27,8 +27,9 @@ public class NucleusUpgrade extends OrganelleUpgrade {
      */
     @Override
     public void applyUpgrade(Cell cell) {
+        cell.setHasNucleus(true);
+        cell.removeCellATP(cost);
         // Unlock advanced abilities (e.g., allow the cell to split)
-        cell.setCanSplit(true);
     }
 
     /**

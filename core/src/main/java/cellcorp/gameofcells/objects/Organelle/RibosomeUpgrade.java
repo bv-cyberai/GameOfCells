@@ -27,9 +27,9 @@ public class RibosomeUpgrade extends OrganelleUpgrade {
      */
     @Override
     public void applyUpgrade(Cell cell) {
-        // Increase protein synthesis (e.g., increase ATP gain from glucose)
-        cell.setProteinSynthesisMultiplier(1.5f);
         cell.setHasRibosomes(true);
+        cell.removeCellATP(cost);
+        // Increase protein synthesis (e.g., increase ATP gain from glucose)        
     }
 
     /**

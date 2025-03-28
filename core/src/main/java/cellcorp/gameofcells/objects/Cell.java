@@ -41,12 +41,19 @@ public class Cell {
 
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
 
-    // Upgrades
+    // Organelle Upgrades
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
     private boolean hasRibosomes = false; // Whether the cell has the ribosomes upgrade
     private boolean hasFlagella = false; // Whether the cell has the flagella upgrade
     private boolean hasNucleus = false; // Whether the cell has the nucleus upgrade
 
+    // Size Upgrades
+    private boolean hasSmallSizeUpgrade = false; // Whether the cell has the small size upgrade
+    private boolean hasMediumSizeUpgrade = false; // Whether the cell has the medium size upgrade
+    private boolean hasLargeSizeUpgrade = false; // Whether the cell has the large size upgrade
+    private boolean hasMassiveSizeUpgrade = false; // Whether the cell has the massive size upgrade
+
+    // Upgrade multipliers
     private float proteinSynthesisMultiplier = 1.0f;
     private float movementSpeedMultiplier = 1.0f;
     private boolean canSplit = false;
@@ -342,6 +349,63 @@ public class Cell {
      */
     public boolean hasNucleus() {
         return hasNucleus;
+    }
+    
+
+    /**
+     * Check if the cell has the small size upgrade
+     */
+    public boolean hasSmallSizeUpgrade() {
+        return hasSmallSizeUpgrade;
+    }
+
+    /**
+     * Set whether the cell has the small size upgrade
+     */
+    public void setSmallSizeUpgrade(boolean hasSmallSizeUpgrade) {
+        this.hasSmallSizeUpgrade = hasSmallSizeUpgrade;
+    }
+
+    /**
+     * Check if the cell has the medium size upgrade
+     */
+    public boolean hasMediumSizeUpgrade() {
+        return hasMediumSizeUpgrade;
+    }
+
+    /**
+     * Set whether the cell has the medium size upgrade
+     */
+    public void setMediumSizeUpgrade(boolean hasMediumSizeUpgrade) {
+        this.hasMediumSizeUpgrade = hasMediumSizeUpgrade;
+    }
+
+    /**
+     * Check if the cell has the large size upgrade
+     */
+    public boolean hasLargeSizeUpgrade() {
+        return hasLargeSizeUpgrade;
+    }
+
+    /**
+     * Set whether the cell has the large size upgrade
+     */
+    public void setLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
+        this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
+    }
+
+    /**
+     * Check if the cell has the massive size upgrade
+     */
+    public boolean hasMassiveSizeUpgrade() {
+        return hasMassiveSizeUpgrade;
+    }
+
+    /**
+     * Set whether the cell has the massive size upgrade
+     */
+    public void setMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
+        this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
     }
 
     /**

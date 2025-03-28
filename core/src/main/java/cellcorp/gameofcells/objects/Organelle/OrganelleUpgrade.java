@@ -71,6 +71,9 @@ public abstract class OrganelleUpgrade implements Upgrade<OrganelleUpgradeScreen
 
     /**
      * Check if the upgrade can be purchased.
+     * @param cell
+     * @param screen
+     * @return true if the upgrade can be purchased, false otherwise
      */
     @Override
     public boolean canPurchase(Cell cell, OrganelleUpgradeScreen screen) {
@@ -82,6 +85,7 @@ public abstract class OrganelleUpgrade implements Upgrade<OrganelleUpgradeScreen
 
     /**
      * Apply the upgrade's perks to the cell.
+     * @param cell
      */
     @Override
     public abstract void applyUpgrade(Cell cell);

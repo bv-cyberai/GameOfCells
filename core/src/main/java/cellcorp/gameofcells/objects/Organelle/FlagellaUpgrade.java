@@ -26,8 +26,9 @@ public class FlagellaUpgrade extends OrganelleUpgrade {
      */
     @Override
     public void applyUpgrade(Cell cell) {
+        cell.setHasFlagella(true);
+        cell.removeCellATP(cost);
         // Increase movement speed
-        cell.setMovementSpeedMultiplier(1.5f);
     }
 
     /**

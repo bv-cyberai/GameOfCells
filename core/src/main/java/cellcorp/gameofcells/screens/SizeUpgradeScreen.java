@@ -8,8 +8,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -54,6 +57,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     private static final float UPGRADE_NAME_TEXT_SIZE = 0.2f;
     private static final float UPGRADE_INFO_TEXT_SIZE = 0.15f;
     private static final float INSTRUCTION_TEXT_SIZE = 0.18f;
+
     private static final float UPGRADE_CARD_WIDTH = 250;
     private static final float UPGRADE_CARD_HEIGHT = 350;
     private static final float SELECTED_CARD_SCALE = 1.4f;
@@ -94,10 +98,18 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
 
         // Initialize size upgrades
         upgrades = new ArrayList<>();
-        upgrades.add(new SmallSizeUpgrade());   // +1 size for 50 ATP
-        upgrades.add(new MediumSizeUpgrade());  // +1 size for 65 ATP
-        upgrades.add(new LargeSizeUpgrade());  // +1 size for 85 ATP
-        upgrades.add(new MassiveSizeUpgrade());  // +1 size for 100 ATP
+        if (!playerCell.hasSmallSizeUpgrade()) {
+            upgrades.add(new SmallSizeUpgrade()); // +1 size for 50 ATP
+        }
+        if (!playerCell.hasMediumSizeUpgrade()) {
+            upgrades.add(new MediumSizeUpgrade()); // +1 size for 65 ATP
+        }
+        if (!playerCell.hasLargeSizeUpgrade()) {
+            upgrades.add(new LargeSizeUpgrade()); // +1 size for 85 ATP
+        }
+        if (!playerCell.hasMassiveSizeUpgrade()) {
+            upgrades.add(new MassiveSizeUpgrade()); // +1 size for 100 ATP
+        }
 
         createUI();
     }
@@ -135,13 +147,48 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
                 selectedUpgradeIndex = Math.min(selectedUpgradeIndex, upgrades.size() - 1);
                 
                 updateUpgradeDisplay();
-                showMessage("Size increased to " + (playerCell.getcellSize()/100) + "!");
+
+                // Close ALL shop screens and return to gameplayscreen
+                stage.getRoot().addAction(Actions.sequence(
+                    Actions.fadeOut(0.5f), Actions.run(() -> {
+                        // Resume gameplay and return to GameplayScreen
+                        GamePlayScreen gamePlayScreen = findGamePlayScreen();
+                        if (gamePlayScreen != null) {
+                            gamePlayScreen.resumeGame();
+                            game.setScreen(gamePlayScreen);
+                        }
+                    })));
+
             } else {
-                showMessage("Cannot purchase - check ATP and size requirements");
+                // Display a message indicating that the upgrade cannot be purchased
+                String message = "";
+                boolean notEnoughATP = playerCell.getCellATP() < selectedUpgrade.getRequiredATP();
+                boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
+
+                if (notEnoughATP && notEnoughSize) {
+                    message = "Not enough ATP and size to purchase this upgrade.";
+                } else if (notEnoughATP) {
+                    message = "Not enough ATP to purchase this upgrade.";
+                } else if (notEnoughSize) {
+                    message = "Not enough size to purchase this upgrade.";
+                }
+
+                showMessage(message);
             }
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             stage.getRoot().addAction(Actions.sequence(Actions.fadeOut(1f), Actions.run(() -> game.setScreen(previousScreen))));
         }
+    }
+
+    /**
+     * Find the GamePlayScreen instance.
+     * @return The GamePlayScreen instance.
+     */
+    private GamePlayScreen findGamePlayScreen() {
+        if (previousScreen instanceof ShopScreen) {
+            return ((ShopScreen) previousScreen).getPreviousScreen();
+        }
+        return null;
     }
 
     private void createUI() {
@@ -185,6 +232,8 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         mainTable.add(instructions).padBottom(20).row();
 
         stage.addActor(mainTable);
+
+        updateUpgradeSelection();
     }
 
     private Table createUpgradeCard(SizeUpgrade upgrade) {
@@ -206,6 +255,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         Label nameLabel = new Label(upgrade.getName(),
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.YELLOW));
         nameLabel.setFontScale(UPGRADE_NAME_TEXT_SIZE);
+        nameLabel.setAlignment(Align.center);
         card.add(nameLabel).width(UPGRADE_CARD_WIDTH - 20).row();
 
         // Description
@@ -213,6 +263,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
         descLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
         descLabel.setWrap(true);
+        nameLabel.setAlignment(Align.center);
         card.add(descLabel).width(UPGRADE_CARD_WIDTH - 20).row();
 
         // Perks
@@ -220,6 +271,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.LIGHT_GRAY));
         perksLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE - 0.05f);
         perksLabel.setWrap(true);
+        nameLabel.setAlignment(Align.center);
         card.add(perksLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row();
 
         // Requirements
@@ -254,13 +306,15 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         for (int i = 0; i < upgradeCards.size(); i++) {
             Table card = upgradeCards.get(i);
             Image border = (Image) card.findActor("glowingBorder");
-            
-            if (i == selectedUpgradeIndex) {
-                card.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f));
-                if (border != null) border.setVisible(true);
-            } else {
-                card.addAction(Actions.scaleTo(1f, 1f, 0.2f));
-                if (border != null) border.setVisible(false);
+
+            if (border != null) {
+                if (i == selectedUpgradeIndex) {
+                    card.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f, Interpolation.swingOut));
+                    border.setVisible(true);
+                } else {
+                    card.addAction(Actions.scaleTo(1.0f, 1.0f, 0.5f, Interpolation.swingOut));
+                    border.setVisible(false);
+                }
             }
         }
     }
@@ -285,7 +339,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         messageLabel.setAlignment(Align.center);
 
         // Position the message label at the bottom of the screen
-        messageLabel.setPosition(ShopScreen.VIEW_RECT_HEIGHT / 2 - messageLabel.getWidth() / 2, 50); // Center horizontally, 50 pixels from the bottom
+        messageLabel.setPosition(ShopScreen.VIEW_RECT_WIDTH / 2 - messageLabel.getWidth() / 2, 50); // Center horizontally, 50 pixels from the bottom
 
         // Add message label to the stage
         stage.addActor(messageLabel);
@@ -371,9 +425,8 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     private Texture createGlowingBorderTexture() {
         int width = (int) UPGRADE_CARD_WIDTH;
         int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
 
         // Draw the glowing border
         for (int x = 0; x < width; x++) {
@@ -404,9 +457,8 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     private Texture createOptionBackgroundTexture() {
         int width = (int) UPGRADE_CARD_WIDTH;
         int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
 
         // Draw the background using a gradient effect
         pixmap.setColor(0.2f, 0.2f, 0.2f, 0.8f); // Dark gray with transparency
@@ -417,5 +469,37 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         pixmap.dispose(); // Clean up the pixmap
 
         return texture;
+    }
+
+    /**
+     * Check if the player has the small size upgrade
+     * @return true if the player has the small size upgrade, false otherwise
+     */
+    public boolean hasSmallSizeUpgrade() {
+        return playerCell.hasSmallSizeUpgrade();
+    }
+
+    /**
+     * Check if the player has the medium size upgrade
+     * @return true if the player has the medium size upgrade, false otherwise
+     */
+    public boolean hasMediumSizeUpgrade() {
+        return playerCell.hasMediumSizeUpgrade();
+    }
+
+    /**
+     * Check if the player has the large size upgrade
+     * @return true if the player has the large size upgrade, false otherwise
+     */
+    public boolean hasLargeSizeUpgrade() {
+        return playerCell.hasLargeSizeUpgrade();
+    }
+
+    /**
+     * Check if the player has the massive size upgrade
+     * @return true if the player has the massive size upgrade, false otherwise
+     */
+    public boolean hasMassiveSizeUpgrade() {
+        return playerCell.hasMassiveSizeUpgrade();
     }
 }

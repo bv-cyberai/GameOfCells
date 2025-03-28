@@ -1,5 +1,8 @@
 package cellcorp.gameofcells.objects.Size;
 
+import cellcorp.gameofcells.objects.Cell;
+import cellcorp.gameofcells.screens.SizeUpgradeScreen;
+
 public class MediumSizeUpgrade extends SizeUpgrade {
     public MediumSizeUpgrade() {
         super(1, 65, 1, "Medium");
@@ -13,5 +16,22 @@ public class MediumSizeUpgrade extends SizeUpgrade {
     @Override
     public String getVisualEffect() {
         return "Pulsing membrane";
+    }
+
+    @Override
+    public void applyUpgrade(Cell cell) {
+        cell.increasecellSize(sizeIncrease * 100);
+        cell.setMediumSizeUpgrade(true);
+        cell.removeCellATP(atpCost);
+    }
+
+    @Override
+    public boolean isAlreadyPurchased(Cell cell) {
+        return cell.hasMediumSizeUpgrade();
+    }
+
+    @Override
+    protected boolean isPreviousUpgradePurchased(SizeUpgradeScreen sizeUpgradeScreen) {
+        return sizeUpgradeScreen.hasSmallSizeUpgrade();
     }
 }

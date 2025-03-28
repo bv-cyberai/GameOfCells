@@ -29,44 +29,57 @@ public abstract class SizeUpgrade implements Upgrade<SizeUpgradeScreen> {
         this.tierName = tierName;
     }
 
+    /**
+     * Gets the name of the upgrade
+     */
     @Override
     public String getName() {
         return tierName + " Size Upgrade";
     }
 
+    /**
+     * Gets the description of the upgrade
+     */
     @Override
     public String getDescription() {
         return "Increases cell size by " + sizeIncrease + " units";
     }
 
+    /**
+     * Gets the perks of the upgrade
+     */
     @Override
     public String getPerks() {
         return "• Larger collision radius\n• Increased visibility";
     }
 
+    /**
+     * Gets the ATP cost of the upgrade
+     */
     @Override
     public int getRequiredATP() {
         return atpCost;
     }
 
+    /**
+     * Gets the required size for the upgrade
+     */
     @Override
     public int getRequiredSize() {
         return requiredSize;
     }
 
+    /**
+     * Checks if the upgrade can be purchased
+     * @param cell The cell to check
+     * @param screen The screen to check
+     */
     @Override
     public boolean canPurchase(Cell cell, SizeUpgradeScreen screen) {
         // Convert shop size units to actual cell size (100 = base size)
         int currentSizeUnits = (cell.getcellSize() - 100) / 100;
         return cell.getCellATP() >= atpCost && 
             currentSizeUnits >= requiredSize;
-    }
-
-    @Override
-    public void applyUpgrade(Cell cell) {
-        // Convert size units to actual pixels (100 = base size)
-        cell.increasecellSize(sizeIncrease * 100);
-        cell.removeCellATP(atpCost);
     }
 
     /**
@@ -78,4 +91,25 @@ public abstract class SizeUpgrade implements Upgrade<SizeUpgradeScreen> {
 
     // Unique visual effect description for each tier
     public abstract String getVisualEffect();
+
+    /**
+     * Applies the upgrade to the cell
+     * @param cell The cell to apply the upgrade to
+     */
+    @Override
+    public abstract void applyUpgrade(Cell cell);
+
+    /**
+     * Check if the previous upgrade was purchased
+     * @param screen
+     * @return true if the previous upgrade was purchased, false otherwise
+     */
+    protected abstract boolean isPreviousUpgradePurchased(SizeUpgradeScreen screen);
+
+    /**
+     * Check if the upgrade is already purchased
+     * @param cell
+     * @return true if the upgrade is already purchased, false otherwise
+     */
+    protected abstract boolean isAlreadyPurchased(Cell cell);
 }

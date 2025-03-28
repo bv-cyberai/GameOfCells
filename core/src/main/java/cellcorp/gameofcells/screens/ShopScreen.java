@@ -63,7 +63,7 @@ public class ShopScreen implements GameOfCellsScreen {
     private final Viewport viewport;
 
     // Keeps track of the initial screen prior to transition
-    private final GameOfCellsScreen previousScreen;
+    private final GamePlayScreen previousScreen;
 
     // For rendering text
     private final SpriteBatch batch;  // Define the batch for drawing text
@@ -317,6 +317,10 @@ public class ShopScreen implements GameOfCellsScreen {
         stage.dispose();
         shapeRenderer.dispose();
         particles.dispose();
+    }
+
+    public GamePlayScreen getPreviousScreen() {
+        return this.previousScreen;
     }
 
     /**

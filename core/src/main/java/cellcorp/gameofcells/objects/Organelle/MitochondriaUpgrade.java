@@ -27,6 +27,8 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
     @Override
     public void applyUpgrade(Cell cell) {
         cell.setHasMitochondria(true);
+        cell.removeCellATP(cost);
+        // Increase ATP production
     }
 
     /**

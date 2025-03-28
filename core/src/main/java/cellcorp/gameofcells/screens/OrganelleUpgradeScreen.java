@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -169,6 +170,17 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
                 
                 // Update the display
                 updateUpgradeDisplay();
+
+                // Close ALL shop screens and return to gameplayscreen
+                stage.getRoot().addAction(Actions.sequence(
+                    Actions.fadeOut(0.5f), Actions.run(() -> {
+                        // Resume gameplay and return to GameplayScreen
+                        GamePlayScreen gamePlayScreen = findGamePlayScreen();
+                        if (gamePlayScreen != null) {
+                            gamePlayScreen.resumeGame();
+                            game.setScreen(gamePlayScreen);
+                        }
+                    })));
             } else {
                 // Display a message indicating that the upgrade cannot be purchased
                 String message = "";
@@ -188,6 +200,17 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         } else if(inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             stage.getRoot().addAction(Actions.sequence(Actions.fadeOut(1f), Actions.run(() -> game.setScreen(previousScreen))));
         }
+    }
+
+    /**
+     * Find the GamePlayScreen instance.
+     * @return The GamePlayScreen instance.
+     */
+    private GamePlayScreen findGamePlayScreen() {
+        if (previousScreen instanceof ShopScreen) {
+            return ((ShopScreen) previousScreen).getPreviousScreen();
+        }
+        return null;
     }
 
     /**
@@ -433,9 +456,8 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
     private Texture createGlowingBorderTexture() {
         int width = (int) UPGRADE_CARD_WIDTH;
         int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
 
         // Draw the glowing border
         for (int x = 0; x < width; x++) {
@@ -466,9 +488,8 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
     private Texture createOptionBackgroundTexture() {
         int width = (int) UPGRADE_CARD_WIDTH;
         int height = (int) UPGRADE_CARD_HEIGHT;
-        Texture texture = new Texture(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
 
         // Draw the background using a gradient effect
         pixmap.setColor(0.2f, 0.2f, 0.2f, 0.8f); // Dark gray with transparency
