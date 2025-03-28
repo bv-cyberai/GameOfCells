@@ -159,6 +159,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
                         }
                     })));
 
+                checkAllUpgradesPurchased();
             } else {
                 // Display a message indicating that the upgrade cannot be purchased
                 String message = "";
@@ -364,6 +365,8 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     public void show() {
         stage.getRoot().getColor().a = 0;
         stage.getRoot().addAction(Actions.fadeIn(2f)); 
+
+        checkAllUpgradesPurchased();
     }
 
     /**
@@ -469,6 +472,35 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         pixmap.dispose(); // Clean up the pixmap
 
         return texture;
+    }
+
+    /**
+     * Check if all upgrades have been purchased.
+     * If so, display a message and return to the gameplay screen.
+     */
+    private void checkAllUpgradesPurchased() {
+        if (upgrades.isEmpty()) {
+            Label comingSoonLabel = new Label("More upgrades coming soon!",
+                new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.YELLOW));
+            comingSoonLabel.setFontScale(0.3f);
+            comingSoonLabel.setAlignment(Align.center);
+
+            comingSoonLabel.setPosition(ShopScreen.VIEW_RECT_WIDTH / 2 - comingSoonLabel.getWidth() / 2, ShopScreen.VIEW_RECT_HEIGHT / 2 - comingSoonLabel.getHeight() / 2); // Center the label
+            stage.addActor(comingSoonLabel);
+            
+            // Optional: Add a delay before returning to gameplay
+            comingSoonLabel.addAction(Actions.sequence(
+                Actions.delay(3f),
+                Actions.fadeOut(1f),
+                Actions.run(() -> {
+                    GamePlayScreen gameplayScreen = findGamePlayScreen();
+                    if (gameplayScreen != null) {
+                        gameplayScreen.resumeGame();
+                        game.setScreen(gameplayScreen);
+                    }
+                })
+            ));
+        }
     }
 
     /**

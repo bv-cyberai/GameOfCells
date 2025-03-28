@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
@@ -52,6 +53,11 @@ public class Cell {
     private boolean hasMediumSizeUpgrade = false; // Whether the cell has the medium size upgrade
     private boolean hasLargeSizeUpgrade = false; // Whether the cell has the large size upgrade
     private boolean hasMassiveSizeUpgrade = false; // Whether the cell has the massive size upgrade
+
+    // Add rotation and animation fields here if needed
+    private float flagellaRotation = 0.0f; // Rotation angle for flagella animation
+    private float nucleusPulse = 0.0f; // Pulse effect for nucleus animation
+    private float pulseScale = 1.0f; // Scale for nucleus pulse effect
 
     // Upgrade multipliers
     private float proteinSynthesisMultiplier = 1.0f;
@@ -117,16 +123,68 @@ public class Cell {
         assert (cellTexture != null);
         batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellSize, cellSize);
 
-        // Draw mitochondria if the upgrade is purchased
+        drawOrganelles(batch);
+    }
+
+    public void update(float delta) {
+        // Update animations
+        if (hasFlagella) {
+            flagellaRotation += 100 * delta; // Adjust rotation speed as needed
+        }
+
+        if (hasNucleus) {
+            nucleusPulse += delta; // Adjust pulse speed as needed
+            pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
+        }
+    }
+
+    private void drawOrganelles(SpriteBatch batch) {
+        float cellRadius = cellSize/2f;
+        float centerX = cellCircle.x;
+        float centerY = cellCircle.y;
+
+        // Draw mitochondria (bottom-left quadrant)
         if (hasMitochondria) {
             var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
-            assert (mitochondriaTexture != null);
+            float mitochondriaSize = cellSize * 0.3f; // Adjust size as needed
+            batch.draw(mitochondriaTexture,
+                    centerX - cellRadius * 0.6f,
+                    centerY - cellRadius * 0.6f,
+                    mitochondriaSize, mitochondriaSize);
+        }
 
-            // Draw mitochondria inside the cell
-            float mitochondriaSize = cellSize * 0.2f; // Make mitochondria smaller (30% of cell size)
-            float mitochondriaX = cellCircle.x - (cellSize / 4); // Position in the bottom-left of the cell
-            float mitochondriaY = cellCircle.y - (cellSize / 4); // Position in the bottom-left of the cell
-            batch.draw(mitochondriaTexture, mitochondriaX, mitochondriaY, mitochondriaSize, mitochondriaSize);
+        // Draw ribosomes (top-left quadrant)
+        if (hasRibosomes) {
+            var ribosomeTexture = assetManager.get(AssetFileNames.RIBOSOME_ICON, Texture.class);
+            float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
+            batch.draw(ribosomeTexture,
+                    centerX - cellRadius * 0.7f,
+                    centerY + cellRadius * 0.3f,
+                    ribosomeSize, ribosomeSize);
+        }
+
+        // Draw flagella (right edge)
+        if (hasFlagella) {
+            var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
+            batch.draw(flagellaTexture,
+                    centerX + cellRadius * 0.8f, centerY - 5,
+                    10, 5, // Origin for rotation
+                    40, 10, // Size
+                    1, 1, // Scale
+                    flagellaRotation,
+                    0, 0,
+                    flagellaTexture.getWidth(), flagellaTexture.getHeight(),
+                    false, false);
+        }
+
+        // Draw nucleus (center with pulse effect)
+        if (hasNucleus) {
+            var nucleusTexture = assetManager.get(AssetFileNames.NUCLEUS_ICON, Texture.class);
+            float nucleusSize = cellSize * 0.4f * pulseScale; // Adjust size and pulse effect
+            batch.draw(nucleusTexture,
+                    centerX - nucleusSize / 2,
+                    centerY - nucleusSize / 2,
+                    nucleusSize, nucleusSize);
         }
 
 
