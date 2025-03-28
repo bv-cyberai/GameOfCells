@@ -72,7 +72,7 @@ public class Cell {
         setUserConfigOrDefault();
         cellSize = 100;
 
-        cellCircle = new Circle(new Vector2(0, 0), cellSize);
+        cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
     }
 
     /**

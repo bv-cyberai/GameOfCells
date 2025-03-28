@@ -27,6 +27,8 @@ import cellcorp.gameofcells.Main;
  */
 public class EnergyBars {
 
+    private static final Color DARK_RED = new Color(0.7f, 0, 0, 1);
+
     // Since HUD uses its own viewport with an unchanging position,
     // we can use constant world coordinates to describe our draw locations.
 
@@ -73,12 +75,12 @@ public class EnergyBars {
     public void draw(ShapeRenderer shape) {
         // Draw Health Bar
         shape.begin(ShapeRenderer.ShapeType.Line);
-        shape.setColor(Color.RED);
+        shape.setColor(DARK_RED);
         shape.rect(HEALTH_BAR_X, HEALTH_BAR_Y, BAR_SIZE, 25);
         shape.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.setColor(Color.RED);
+        shape.setColor(DARK_RED);
         shape.rect(HEALTH_BAR_X, HEALTH_BAR_Y, healthPercentage, 25);
         shape.end();
         // Draw ATP Bar

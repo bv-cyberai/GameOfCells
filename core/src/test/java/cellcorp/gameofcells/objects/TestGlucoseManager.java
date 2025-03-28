@@ -46,7 +46,7 @@ public class TestGlucoseManager {
 //        var fakeAssetManager = Mockito.mock(AssetManager.class);
 //        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
 //        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
-        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
+//        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
 //        // Again pass arbitrary values for cellX and cellY
 //        var testManager = new GlucoseManager(fakeAssetManager, cell);
 //

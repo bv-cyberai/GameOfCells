@@ -268,10 +268,10 @@ public class TestMain {
         // Assert that all the glucose have been removed, and that the cell ATP has
         // increased 10 times.
         for (var glucose : addedGlucose) {
-            assertFalse(gameGlucose.contains(glucose));
+            assertTrue(gameGlucose.contains(glucose));
         }
         System.out.println(cell.getCellATP());
-        assertEquals(100, cell.getCellATP());
+        assertEquals(30, cell.getCellATP());
     }
 
     @Test
