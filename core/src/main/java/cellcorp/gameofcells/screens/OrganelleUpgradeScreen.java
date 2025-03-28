@@ -419,7 +419,15 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         // Upgrade icon
         Image upgradeIcon = getUpgradeIcon(upgrade);
         if (upgradeIcon != null) {
-            card.add(upgradeIcon).width(upgradeIcon.getWidth()).height(upgradeIcon.getHeight()).padTop(20).padBottom(20).row();
+            // Add a floating animation to the icon
+            upgradeIcon.addAction(Actions.forever(
+                Actions.sequence(
+                    Actions.moveBy(0, 10f, 2f, Interpolation.sine),
+                    Actions.moveBy(0, -10f, 2f, Interpolation.sine)
+                )
+            ));
+
+            card.add(upgradeIcon).width(upgradeIcon.getWidth()).height(upgradeIcon.getHeight()).padTop(30).padBottom(10).row();
         }
 
         // Required ATP and Size (Bottom left of the card)

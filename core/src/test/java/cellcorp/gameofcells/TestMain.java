@@ -247,7 +247,8 @@ public class TestMain {
         Mockito.when(fakeConfigProvider.getIntValue("maxHealth")).thenReturn(100);
         Mockito.when(fakeConfigProvider.getIntValue("maxATP")).thenReturn(100);
 
-        var testCell = new Cell(gamePlayScreen,fakeAssetManager,fakeConfigProvider);
+
+        var testCell = new Cell(currentGamePlayScreen,fakeAssetManager,fakeConfigProvider);
         System.out.println("TESTCELLSTART" + testCell.getCellATP());
         var startATP = cell.getCellATP();
         System.out.println("START ATP:" + startATP);
@@ -257,8 +258,8 @@ public class TestMain {
         for (int i = 0; i < 10; i++) {
             addedGlucose.add(new Glucose(
                     Mockito.mock(AssetManager.class),
-                    cell.getCellPositionX(),
-                    cell.getCellPositionY(),
+                    cell.getX(),
+                    cell.getY(),
                     GlucoseManager.RADIUS
             ));
         }
