@@ -12,6 +12,8 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
+import static java.lang.Math.abs;
+
 /**
  * Cell Class
  *
@@ -65,12 +67,29 @@ public class Cell {
     private float movementSpeedMultiplier = 1.0f;
     private boolean canSplit = false;
 
+    // Energy Use tracking
+    private float lastX;
+    private float lastY;
+    private float xMovementSinceLastTick;
+    private float yMovementSInceLastTick;
+    private float totalDistnaceMoved;
+    private float distanceMovedSinceLastTick;
+    private float distanceMovedSinceLastThreshold;
+    private float timeThreshold;
+    private float timePassedSinceLastATPUse;
+
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
         this.configProvider = configProvider;
+
         setUserConfigOrDefault();
         cellSize = 100;
+        //Move into Config
+        distanceMovedSinceLastTick = 0f;
+        distanceMovedSinceLastThreshold =0f;
+        timeThreshold = 1f;
+        timePassedSinceLastATPUse = 0f;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
     }
@@ -85,6 +104,12 @@ public class Cell {
      * @param moveDown  - If the cell should move down
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
+
+        lastX = cellCircle.x;
+        lastY = cellCircle.y;
+        timePassedSinceLastATPUse += deltaTime;
+
+
         if (moveLeft)
             cellCircle.x -= CELL_SPEED * deltaTime;
         if (moveRight)
@@ -93,6 +118,18 @@ public class Cell {
             cellCircle.y += CELL_SPEED * deltaTime;
         if (moveDown)
             cellCircle.y -= CELL_SPEED * deltaTime;
+
+        xMovementSinceLastTick += abs(lastX-cellCircle.x);
+        yMovementSInceLastTick += abs(lastY-cellCircle.y);
+
+
+//        distanceMovedSinceLastTick = ;
+        totalDistnaceMoved += xMovementSinceLastTick + yMovementSInceLastTick;
+        lastX = cellCircle.x;
+        lastY = cellCircle.y;
+        xMovementSinceLastTick = 0f;
+        yMovementSInceLastTick =0f;
+        System.out.println(totalDistnaceMoved);
     }
 
     /**
