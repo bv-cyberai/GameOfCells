@@ -268,6 +268,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
+        notificationSystem.dispose();
         playerCell.dispose(); // dispose cell
         hud.dispose();
         batch.dispose(); // Dispose of the batch
@@ -359,7 +360,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
             if (playerCell.getCircle().overlaps(glucose.getCircle())) {
                 glucoseToRemove.add(glucose);
                 playerCell.addCellATP(Glucose.ATP_PER_GLUCOSE);
-
+                
                 // Show the popup on the first glucose collision
                 if (!playerCell.hasShownGlucosePopup()) {
                     game.setScreen(new PopupInfoScreen(
@@ -555,6 +556,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Shows a warning that the cell is out of energy.
+     * This is used for displaying the energy warning.
+     * For example, "WARNING: Out of energy, losing health!".
      */
     public void showEnergyWarning() {
         notificationSystem.addNotification("WARNING: Out of energy, losing health!", 3f, Color.YELLOW);
@@ -562,11 +565,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Shows a warning that the cell is in an acid zone.
+     * This is used for displaying the acid zone warning.
+     * For example, "DANGER: Acid zone! Taking damage!".
      */
     public void showAcidZoneWarning() {
         notificationSystem.addNotification("DANGER: Acid zone! Taking damage!", 3f, Color.RED);
     }
 
+    /**
+     * Shows a notification with a generic message.
+     * This is used for displaying messages that are not specific to any event.
+     * For example, "Game is now playing..." or "Press Q to access the shop screen."
+     * @param message
+     */
     public void showGenericNotification(String message) {
         notificationSystem.addNotification(message, 2f, Color.WHITE);
     }

@@ -3,6 +3,11 @@ package cellcorp.gameofcells.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Notification {
     private String message;
@@ -10,6 +15,12 @@ public class Notification {
     private float elapsedTime;
     private Color color;
     private float alpha;
+    private float yOffset; // For bounce effect
+
+    // Visual polish additions
+    private static final float PADDING = 10f;
+    private static final float CORNER_RADIUS = 5f;
+    private ShapeRenderer shapeRenderer;
 
     public Notification(String message, float duration, Color color) {
         this.message = message;
@@ -17,6 +28,8 @@ public class Notification {
         this.elapsedTime = 0;
         this.color = color;
         this.alpha = 0; // Start transparent for fade-in effect
+        this.yOffset = 0; // Start with no offset
+        this.shapeRenderer = new ShapeRenderer(); // Initialize shape renderer
     }
 
     /**
@@ -37,6 +50,9 @@ public class Notification {
             alpha = 1; // Fully visible in the middle of the duration
         }
 
+        // Bounce effect logic
+        yOffset = MathUtils.sin(elapsedTime * 10f) * 5f * alpha; // Bounce effect
+
         return elapsedTime >= duration; // Return true if the notification is expired
     }
 
@@ -49,10 +65,39 @@ public class Notification {
      * @param y
     */
     public void render(SpriteBatch batch, BitmapFont font, float x, float y) {
-        Color oldColor = font.getColor();
-        font.setColor(color.r, color.g, color.b, alpha);
-        font.draw(batch, message, x, y);
-        font.setColor(oldColor); // Reset to old color
+        // First calculate text dimensions
+        font.getData().setScale(1f); // Set font scale for better visibility
+        GlyphLayout layout = new GlyphLayout(font, message);
+
+        // Draw background (using ShapeRenderer)
+        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        
+        // Background with rounded corners
+        shapeRenderer.setColor(0f, 0f, 0f, alpha * 0.7f); // Semi-transparent background
+        shapeRenderer.rect(
+            x - PADDING, 
+            y - layout.height - PADDING/2 + yOffset, 
+            layout.width + PADDING*2, 
+            layout.height + PADDING, 
+            Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK
+        );
+
+        // Border
+        shapeRenderer.setColor(color.r, color.g, color.b, alpha); // Border color
+        shapeRenderer.rect(
+            x - PADDING + 2, 
+            y - layout.height - PADDING/2 + 2 + yOffset, 
+            layout.width + PADDING * 2 - 4, 
+            layout.height - PADDING - 4, 
+            color, color, color, color
+        );
+
+        shapeRenderer.end();
+
+        // Draw text
+        font.setColor(1f, 1f, 1f, alpha); // White text color
+        font.draw(batch, message, x, y + yOffset); // Draw the notification message
     }
 
     /**
@@ -80,5 +125,9 @@ public class Notification {
     */
     public float getAlpha() {
         return alpha;
+    }
+
+    public void dispose() {
+        shapeRenderer.dispose(); // Dispose of the ShapeRenderer when done
     }
 }

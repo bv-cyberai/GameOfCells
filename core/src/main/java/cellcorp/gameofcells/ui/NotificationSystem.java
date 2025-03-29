@@ -42,6 +42,13 @@ public class NotificationSystem {
             font.draw(batch, glyphLayout, x, y); // Draw the notification
             y -= 50; // Stack notifications vertically
         }
-        font.setColor(Color.WHITE); // Reset font color to white after rendering notifications
+        font.setColor(Color.WHITE); // Reset font size
+    }
+
+    public void dispose() {
+        font.dispose(); // Dispose of the font when done
+        for (Notification notification : notifications) {
+            notification.dispose(); // Dispose of each notification
+        }
     }
 }
