@@ -47,6 +47,7 @@ public class SettingsScreen implements GameOfCellsScreen {
     private final Camera camera;
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
+    private final Texture whitePixelTexture;
 
     private BitmapFont whiteFont;
     private BitmapFont yellowFont;
@@ -73,8 +74,9 @@ public class SettingsScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
-        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
-        particles = new Particles(whitePixelTexture);
+        // Load white pixel texture and initialize particles
+        this.whitePixelTexture = graphicsProvider.createTexture();
+        this.particles = new Particles(whitePixelTexture);
 
         layout = new GlyphLayout();
 

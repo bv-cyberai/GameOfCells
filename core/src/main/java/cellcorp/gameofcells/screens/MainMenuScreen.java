@@ -54,6 +54,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final AssetManager assetManager;
     private final FitViewport viewport;
     private SpriteBatch spriteBatch;
+    private final Texture whitePixelTexture;
 
     private BitmapFont whiteFont;
     private BitmapFont yellowFont;
@@ -81,7 +82,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.spriteBatch = graphicsProvider.createSpriteBatch();
         
         // Load white pixel texture and initialize particles
-        Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
+        this.whitePixelTexture = graphicsProvider.createTexture();
         this.particles = new Particles(whitePixelTexture);
 
         //Config provider can be 'constructed' anywhere, this is useful as game objects will need access

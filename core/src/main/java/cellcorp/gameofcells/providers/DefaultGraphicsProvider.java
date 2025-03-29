@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Matrix4;
 
 public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
@@ -58,8 +60,13 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
-    public Texture createTexture(Pixmap pixmap) {
-        return new Texture(pixmap);
+    public Texture createTexture() {
+        Pixmap whitePixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        whitePixmap.setColor(Color.WHITE);
+        whitePixmap.fill();
+        Texture whiteTexture = new Texture(whitePixmap);
+        whitePixmap.dispose();
+        return whiteTexture;
     }
 
     @Override
@@ -71,4 +78,10 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     public BitmapFont createBitmapFont() {
         return new BitmapFont(Gdx.files.internal("rubik.fnt"));
     }
+
+    @Override
+    public Matrix4 getScreenProjectionMatrix() {
+        return new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
 }

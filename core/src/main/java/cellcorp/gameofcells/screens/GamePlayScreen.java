@@ -15,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import cellcorp.gameofcells.ui.NotificationSystem;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.Color;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -26,6 +29,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * GamePlay Screen
@@ -63,6 +67,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Set to true to enable debug drawing.
      */
     public static final boolean DEBUG_DRAW_ENABLED = false;
+    public static final float GLUCOSE_SIZE = 15f;
 
     private final Stage stage;
     private final Main game;
@@ -76,6 +81,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private ConfigProvider configProvider;
+    private NotificationSystem notificationSystem;
 
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
@@ -149,6 +155,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
     private boolean isPaused = false; // Whether the game is paused
+    private boolean hasShownEnergyWarning = false; // Whether the energy warning has been shown
+    private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
 
 
     /**
@@ -184,6 +192,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
         this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
+        this.notificationSystem = new NotificationSystem(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class));
 
         this.isPaused = false;
     }
@@ -324,9 +333,25 @@ public class GamePlayScreen implements GameOfCellsScreen {
             zoneManager.update(deltaTimeSeconds);
             glucoseManager.update();
             spawnManager.update();
-        }
-    }
+            notificationSystem.update(deltaTimeSeconds);
 
+            // Check for low ATP warning
+            if (playerCell.getCellATP() <= 0 && !hasShownEnergyWarning) {
+                showEnergyWarning();
+                hasShownEnergyWarning = true; // Mark the warning as shown
+            } else if (playerCell.getCellATP() > 0) {
+                hasShownEnergyWarning = false; // Reset the warning
+            }
+        }
+
+        // Check for acid zone damage
+        boolean currentlyInAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
+        if (currentlyInAcidZone && !wasInAcidZone) {
+            showAcidZoneWarning();
+        }
+        wasInAcidZone = currentlyInAcidZone;
+    }
+    
     private void handleCollisions() {
         var glucoseToRemove = new ArrayList<Glucose>();
         for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
@@ -354,9 +379,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        var font = assetManager.get(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
-        font.getData().setScale(2); // Set the font size
-
         ScreenUtils.clear(Main.PURPLE);
 
         centerCameraOnCell();
@@ -367,6 +389,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         drawBackground(shapeRenderer);
         drawGameObjects(batch, shapeRenderer);
         hud.draw(viewport);
+        
+        batch.begin();
+        batch.setProjectionMatrix(graphicsProvider.getScreenProjectionMatrix());
+        notificationSystem.render(batch);
+        batch.end();
 
         if (DEBUG_DRAW_ENABLED) {
             drawChunks(shapeRenderer);
@@ -524,5 +551,28 @@ public class GamePlayScreen implements GameOfCellsScreen {
             ));
             playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
         }
+    }
+
+    /**
+     * Shows a warning that the cell is out of energy.
+     */
+    public void showEnergyWarning() {
+        notificationSystem.addNotification("WARNING: Out of energy, losing health!", 3f, Color.YELLOW);
+    }
+
+    /**
+     * Shows a warning that the cell is in an acid zone.
+     */
+    public void showAcidZoneWarning() {
+        notificationSystem.addNotification("DANGER: Acid zone! Taking damage!", 3f, Color.RED);
+    }
+
+    public void showGenericNotification(String message) {
+        notificationSystem.addNotification(message, 2f, Color.WHITE);
+    }
+
+    private boolean isInAcidZone(float x, float y) {
+        Optional<Double> distance = zoneManager.distanceToNearestAcidZone(x, y);
+        return distance.isPresent() && distance.get() <= Zone.ZONE_RADIUS;
     }
 }

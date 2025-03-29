@@ -174,15 +174,28 @@ public class Cell {
         // Draw flagella (right edge)
         if (hasFlagella) {
             var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
+
+            // New calculations for better flagella positioning
+            float flagellaLength = cellSize * 0.5f;// Adjust length as needed
+            float flagellaWidth = cellSize * 0.3f; // Adjust width as needed
+            float pivotX = centerX + cellRadius; // Start at cell edge
+            float pivotY = centerY; // Center vertically
+
+            // Calculate position so only the tail sticks out
+            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
+            float drawY = pivotY - flagellaWidth / 2; // Center vertically
+
+
             batch.draw(flagellaTexture,
-                    centerX + cellRadius * 0.8f, centerY - 5,
-                    10, 5, // Origin for rotation
-                    40, 10, // Size
+                    drawX, drawY, // Position
+                    flagellaLength * 0.7f, flagellaWidth/2, // Size
+                    flagellaLength, flagellaWidth, // Size
                     1, 1, // Scale
-                    flagellaRotation,
-                    0, 0,
-                    flagellaTexture.getWidth(), flagellaTexture.getHeight(),
-                    false, false);
+                    flagellaRotation, // Rotation
+                    0, 0, // Texture region
+                    flagellaTexture.getWidth(), flagellaTexture.getHeight(), // Texture region size
+                    true, // Flip X
+                    false); // Flip Y
         }
 
         // Draw nucleus (center with pulse effect)

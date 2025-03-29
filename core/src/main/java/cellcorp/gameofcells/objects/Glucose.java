@@ -27,7 +27,7 @@ import java.util.Objects;
  */
 
 public class Glucose {
-    public static final int RADIUS = 30;
+    public static final int RADIUS = 15;
     public static final int ATP_PER_GLUCOSE = 20;
 
     private final AssetManager assetManager;

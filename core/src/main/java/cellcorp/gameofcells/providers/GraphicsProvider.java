@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Matrix4;
 
 /**
  * Provides information from `Gdx.graphics`, which is needed by game code.
@@ -97,10 +98,8 @@ public interface GraphicsProvider {
 
     /**
      * Create a texture from the given pixmap.
-     * @param pixmap
-     * @return
      */
-    Texture createTexture(Pixmap pixmap);
+    Texture createTexture();
 
     /**
      * Create a pixmap with the given width, height, and format.
@@ -116,4 +115,10 @@ public interface GraphicsProvider {
      * @return
      */
     BitmapFont createBitmapFont();
+
+    /**
+     * Get the screen projection matrix.
+     * @return
+     */
+    Matrix4 getScreenProjectionMatrix();
 }

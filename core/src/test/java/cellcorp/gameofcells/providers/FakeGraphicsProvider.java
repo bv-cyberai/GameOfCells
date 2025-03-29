@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import org.mockito.Mockito;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Matrix4;
 
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
@@ -67,7 +68,7 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
-    public Texture createTexture(Pixmap pixmap) {
+    public Texture createTexture() {
         return Mockito.mock(Texture.class);
     }
 
@@ -79,5 +80,10 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
     public BitmapFont createBitmapFont() {
         return new BitmapFont();
+    }
+
+    @Override
+    public Matrix4 getScreenProjectionMatrix() {
+        return Mockito.mock(Matrix4.class);
     }
 }
