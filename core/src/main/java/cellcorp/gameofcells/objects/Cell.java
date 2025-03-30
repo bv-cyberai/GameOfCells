@@ -74,10 +74,14 @@ public class Cell {
     private float totalDistanceMoved;
     private float distanceSinceLastATPUse;
 
-    private float currentATPLoss;
+    private float currentATPLost;
     private float ATPLossThreshold;
     private float cellSizeATPLossFactor;
     private float upgradeReductionToCellSizeATPLossFactor;
+
+    private float idleATPLossFactor;
+    private float movingATPLossFactor;
+    private float effectiveLossFactor;
 
 
     private float xMovementSinceLastTick;
@@ -100,9 +104,13 @@ public class Cell {
 //        distanceMovedSinceLastTick = 0f;
 //        distanceMovedSinceLastThreshold =0f;
 //        timeThreshold = 1f;
+
+        idleATPLossFactor = 0.1f;
+        movingATPLossFactor = 0.2f;
+
         timePassedSinceLastATPUse = 0f;
 
-        currentATPLoss = 0f;
+        currentATPLost = 0f;
         ATPLossThreshold = 1f;
         //should be based/set when boolean changes.
         cellSizeATPLossFactor = 1f;
@@ -148,18 +156,14 @@ public class Cell {
     }
 
     private void calculateATPLoss(float deltaTime) {
-//        currentATPLoss = deltaTime *
-//            (
-//            (1 -
-//                (1 / (1 + (distanceMovedSinceLastTick))))
-//                * ((1 / cellSizeATPLossFactor)
-//                - (1 / upgradeReductionToCellSizeATPLossFactor)));
 
-        currentATPLoss += deltaTime * (
-            (1-(1/(1+distanceMovedSinceLastTick)))
-        *((cellSizeATPLossFactor - upgradeReductionToCellSizeATPLossFactor)));
-        System.out.println(currentATPLoss);
-//        currentATPLoss = deltaTime * (1);
+        //If Size Loss == Upgrade loss set effective loss to near zero.
+        effectiveLossFactor = Math.max(cellSizeATPLossFactor - upgradeReductionToCellSizeATPLossFactor,0.001f);
+
+        float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
+
+        currentATPLost += deltaTime * (idleATPLossFactor + movementMultiplier * movingATPLossFactor) * effectiveLossFactor;
+
     }
 
     /**
@@ -212,12 +216,12 @@ public class Cell {
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
 
-        if(currentATPLoss>=1) {
+        if(currentATPLost >=1) {
             if(cellATP >0) {
                 cellATP -= 1;
             }
 
-            currentATPLoss =0;
+            currentATPLost =0;
         }
     }
 
