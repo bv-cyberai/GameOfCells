@@ -79,6 +79,8 @@ public class HUD {
     private BitmapFont notificationFont;
     private float hudFontScale = 0.25f;
     private float barFontScale = 0.2f;
+    private boolean acidWarningActive = false;
+    private float acidWarningDuration = 5f; // Duration of the acid warning
 
     // glyph
     private GlyphLayout healthLayout;
@@ -283,17 +285,41 @@ public class HUD {
 
 
     /**
-     * Show Energy Warning
+     * Show Energy Below Twenty Warning
      */
-    public void showEnergyWarning() {
-        addNotification("LOW ENERGY: ATP critically low!", NOTIFICATION_DURATION, new Color(1, 0.5f, 0, 1));
+    public void showEnergyBelowTwentyWarning() {
+        addNotification("WARNING: ATP low!", NOTIFICATION_DURATION, new Color(1, 0.5f, 0, 1));
+    }
+
+    /**
+     * Show Energy Equals Zero Warning
+     */
+    public void showEnergyEqualsZeroWarning() {
+        addNotification("WARNING: Out of energy! Losing health!", NOTIFICATION_DURATION, Color.YELLOW);
     }
 
     /**
      * Show Acid Zone Warning
      */
     public void showAcidZoneWarning() {
-        addNotification("DANGER: Acid zone!", NOTIFICATION_DURATION, Color.RED);
+        if (!acidWarningActive) {
+            addNotification("DANGER: Acid zone! You're taking damage!", acidWarningDuration, Color.RED);
+            acidWarningActive = true;
+        }
+    }
+
+    public void clearAcidZoneWarning() {
+        Array<Notification> toRemove = new Array<>();
+
+        // Find all acid zone warnings
+        for (Notification notification : notificationManager.getNotifications()) {
+            if (notification.getMessage().equals("DANGER: Acid zone! You're taking damage!")) {
+                toRemove.add(notification);
+            }
+        }
+
+        // Remove them
+        notificationManager.getNotifications().removeAll(toRemove, true);
     }
 
     /**

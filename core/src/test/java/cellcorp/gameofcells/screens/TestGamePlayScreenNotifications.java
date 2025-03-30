@@ -87,37 +87,48 @@ public class TestGamePlayScreenNotifications {
      */
     @Test
     public void energyWarningNotificationShowsWhenATPLow() {
-        // Create game and move to gameplay screen
+        // Setup game
         var gameRunner = GameRunner.create();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step();
+        gameRunner.step(); // Move to gameplay screen
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
         var cell = gamePlayScreen.getCell();
         HUD hud = gamePlayScreen.getHUD();
-        NotificationManager notificationSystem = hud.getNotificationManager();
         
-        // Force low ATP condition
-        cell.setCellATP(0);
+        // Reset state
         gamePlayScreen.setHasShownEnergyWarning(false);
+        cell.setCellATP(15); // Force ATP below threshold (20)
         
-        // Update the game (should trigger warning)
-        gameRunner.step();
+        // Run multiple updates to ensure systems process
+        for (int i = 0; i < 5; i++) {
+            gameRunner.step();
+        }
         
-        // Check notification was shown
-        assertFalse(notificationSystem.getNotifications().isEmpty());
+        // Verify notification was shown
+        NotificationManager notificationManager = hud.getNotificationManager();
+        assertFalse(notificationManager.getNotifications().isEmpty(), "No notifications shown");
         
-        boolean foundWarning = false;
-        for (Notification n : notificationSystem.getNotifications()) {
-            if (n.getMessage().contains("LOW ENERGY: ATP critically low")) {
-                foundWarning = true;
+        boolean warningFound = false;
+        for (Notification n : notificationManager.getNotifications()) {
+            if (n.getMessage().contains("WARNING")) {
+                warningFound = true;
                 break;
             }
         }
-        assertTrue(foundWarning);
+        assertTrue(warningFound, "Warning notification not found");
         
         // Verify flag was set
-        assertTrue(gamePlayScreen.isHasShownEnergyWarning());
+        assertTrue(
+            gamePlayScreen.isHasShownEnergyWarning(),
+            "GamePlayScreen should have recorded the warning"
+        );
+        
+        // Verify cooldown was set
+        assertTrue(
+            gamePlayScreen.getLowEnergyWarningCooldown() > 0,
+            "Low energy cooldown should be active"
+        );
     }
 
 

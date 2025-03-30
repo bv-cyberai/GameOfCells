@@ -14,8 +14,6 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.*;
 
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.providers.InputProvider;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -145,7 +143,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public boolean hasMitochondria = false;
     private boolean isPaused = false; // Whether the game is paused
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
-    private boolean hasShownEnergyWarning; // Tracks if the energy warning has been shown
+    private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
 
 
@@ -325,22 +323,28 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
             // Check for acid zone
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
-            if (inAcidZone && !wasInAcidZone) {
+            if (inAcidZone) {
                 hud.showAcidZoneWarning();
+
+            } else if (wasInAcidZone) {
+                // If the cell was in an acid zone last frame, and is not in one now,
+                // remove the warning
+                hud.clearAcidZoneWarning();
             }
             wasInAcidZone = inAcidZone;
 
             // Check for low energy (20 or below)
-            if (playerCell.getCellATP() <= 20 && playerCell.getCellATP() >= 0 && lowEnergyWarningCooldown <= 0) {
-                hud.showEnergyWarning();
+            if (playerCell.getCellATP() <= 20 && playerCell.getCellATP() > 0 && lowEnergyWarningCooldown <= 0 && !hasShownEnergyWarning) {
+                hud.showEnergyBelowTwentyWarning();
+                hasShownEnergyWarning = true;
                 lowEnergyWarningCooldown = LOW_ENERGY_COOLDOWN; // Reset cooldown
             }
 
             // Existing out-of-energy checking
-            if (playerCell.getCellATP() <= 0 && !hasShownEnergyWarning) {
-                hud.showEnergyWarning();
+            if (playerCell.getCellATP() == 0 && !hasShownEnergyWarning) {
+                hud.showEnergyEqualsZeroWarning();
                 hasShownEnergyWarning = true;
-            } else if (playerCell.getCellATP() > 0) {
+            } else if (playerCell.getCellATP() > 20) {
                 hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
             }
         }
@@ -546,10 +550,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Shows a warning that the cell is out of energy.
      * This is used for displaying the energy warning.
-     * For example, "WARNING: Out of energy, losing health!".
+     * For example, "WARNING: ATP low!".
      */
-    public void showEnergyWarning() {
-        hud.showEnergyWarning();
+    public void showEnergyBelowTwentyWarning() {
+        hud.showEnergyBelowTwentyWarning();
+    }
+
+    /**
+     * Shows a warning that the cell is out of energy.
+     * This is used for displaying the energy warning.
+     * For example, "WARNING: Out of energy! Losing health!".
+     */
+    public void showEnergyEqualsZeroWarning() {
+        hud.showEnergyEqualsZeroWarning();
     }
 
     /**
@@ -671,5 +684,29 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public boolean isHasShownEnergyWarning() {
         return hasShownEnergyWarning;
+    }
+
+    /**
+     * Get the lowEnergyWarningCooldown.
+     * This is used for checking if the low energy warning cooldown is active.
+     * For example, if the low energy warning cooldown is active, it will not show
+     * the energy warning again.
+     * @see #lowEnergyWarningCooldown
+     * @return the low energy warning cooldown
+     */
+    public float getLowEnergyWarningCooldown() {
+        return lowEnergyWarningCooldown;
+    }
+
+    /**
+     * Set the lowEnergyWarningCooldown.
+     * This is used for checking if the low energy warning cooldown is active.
+     * For example, if the low energy warning cooldown is active, it will not show
+     * the energy warning again.
+     * @see #lowEnergyWarningCooldown
+     * @param lowEnergyWarningCooldown
+     */
+    public void setLowEnergyWarningCooldown(float lowEnergyWarningCooldown) {
+        this.lowEnergyWarningCooldown = lowEnergyWarningCooldown;
     }
 }
