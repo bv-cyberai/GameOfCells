@@ -53,6 +53,10 @@ public class TestNotificationManager {
         }
     }
 
+    /**
+     * * Test that the notification system starts empty.
+     * This test checks that when the notification system is created, it starts with no notifications.
+     */
     @Test
     public void systemStartsEmpty() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
@@ -61,6 +65,10 @@ public class TestNotificationManager {
         assertTrue(system.getNotifications().isEmpty());
     }
 
+    /**
+     * * Test that notifications are added correctly.
+     * This test checks that when a notification is added, it is stored in the system with the correct message and color.
+     */
     @Test
     public void addNotificationWorks() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
@@ -74,6 +82,10 @@ public class TestNotificationManager {
         assertEquals(Color.RED, added.getColor());
     }
 
+    /**
+     * * Test that notifications are removed after their duration.
+     * This test checks that after the duration of a notification has passed, it is removed from the system.
+     */
     @Test
     public void updateRemovesExpiredNotifications() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
@@ -88,6 +100,10 @@ public class TestNotificationManager {
         assertTrue(system.getNotifications().isEmpty());
     }
 
+    /**
+     * * Test that notifications are removed after their duration.
+     * This test checks that after the duration of a notification has passed, it is removed from the system.
+     */
     @Test
     public void updatePreservesActiveNotifications() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
@@ -100,6 +116,10 @@ public class TestNotificationManager {
         assertEquals("Long", system.getNotifications().get(0).getMessage());
     }
 
+    /**
+     * * Test that multiple notifications stack in order.
+     * This test checks that when multiple notifications are added, they are stored in the order they were added.
+     */
     @Test
     public void multipleNotificationsStackInOrder() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);

@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.Color;
 
 public class TestNotification {
     
+    /**
+     * * Test that the notification initializes correctly.
+     * This test checks that the notification's message, duration, color, elapsed time, and alpha are set correctly upon creation.
+     */
     @Test
     public void notificationInitializesCorrectly() {
         String message = "Test";
@@ -20,6 +24,10 @@ public class TestNotification {
         assertEquals(0, notification.getAlpha()); // Should start transparent
     }
 
+    /**
+     * * Test that the notification updates its elapsed time and alpha correctly.
+     * This test checks that the elapsed time increases and the alpha value changes based on the elapsed time.
+     */
     @Test
     public void updateAdvancesTimeAndAlpha() {
         Notification notification = new Notification("Test", 1f, Color.WHITE);
@@ -35,6 +43,10 @@ public class TestNotification {
         assertEquals(0.5f, notification.getAlpha());
     }
 
+    /**
+     * * Test that the notification is marked as expired after its duration.
+     * This test checks that the notification's elapsed time is correctly updated and that it returns true when expired.
+     */
     @Test
     public void updateReturnsTrueWhenExpired() {
         Notification notification = new Notification("Test", 1f, Color.WHITE);
@@ -43,6 +55,10 @@ public class TestNotification {
         assertTrue(notification.update(0.2f)); // Now elapsed (0.9 + 0.2 > 1)
     }
 
+    /**
+     * * Test that the notification fades in correctly.
+     * This test checks that the alpha value increases from 0 to 1 over the first half of the duration.
+     */
     @Test
     public void fadeOutWorksCorrectly() {
         Notification notification = new Notification("Test", 2f, Color.WHITE);

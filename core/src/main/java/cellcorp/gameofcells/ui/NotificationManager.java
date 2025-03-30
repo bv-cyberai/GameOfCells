@@ -21,10 +21,22 @@ public class NotificationManager {
         this.notificationSystem = this; // Initialize the notification system
     }
 
+    /**
+     * * * Add a notification to the notification system.
+     * This method is used to add a notification to the notification system with a specified message, duration, and color.
+     * @param message
+     * @param duration
+     * @param color
+     */
     public void addNotification(String message, float duration, Color color) {
         notifications.add(new Notification(message, duration, color));
     }
 
+    /**
+     * * * Add a notification to the notification system.
+     * This method is used to add a notification to the notification system with a specified message, duration, and color.
+     * @param deltaTime
+     */
     public void update(float deltaTime) {
         for (int i = notifications.size - 1; i >= 0; i--) {
             if (notifications.get(i).update(deltaTime)) {
@@ -33,6 +45,11 @@ public class NotificationManager {
         }
     }
 
+    /**
+     * * Render the notifications on the screen.
+     * This method is used to render the notifications on the screen using the provided SpriteBatch.
+     * @param batch
+     */
     public void render(SpriteBatch batch) {
         float y = Gdx.graphics.getHeight() - 50; // Start from the top of the screen
 

@@ -56,6 +56,10 @@ public class TestGamePlayScreenNotifications {
         }
     }
 
+    /**
+     * * Test that notifications appear on the gameplay screen.
+     * This test checks that when a notification is added, it appears on the gameplay screen.
+     */
     @Test
     public void notificationsAppearOnGamePlayScreen() {
         // Create a new game runner
@@ -89,6 +93,10 @@ public class TestGamePlayScreenNotifications {
         assertEquals(Color.WHITE, notification.getColor());
     }
 
+    /**
+     * * Test that energy warning notification shows when ATP is low.
+     * This test checks that when the ATP level is low, a warning notification is displayed to the player.
+     */
     @Test
     public void energyWarningNotificationShowsWhenATPLow() {
         // Create game and move to gameplay screen
@@ -123,6 +131,10 @@ public class TestGamePlayScreenNotifications {
         assertTrue(gamePlayScreen.isHasShownEnergyWarning());
     }
 
+    /**
+     * * * Test that acid zone warning notification shows when entering acid zone.
+     * This test checks that when the player enters an acid zone, a warning notification is displayed to the player.
+     */
     @Test
     public void acidZoneWarningNotificationShowsWhenEnteringAcidZone() {
         // Create game and move to gameplay screen
@@ -154,6 +166,10 @@ public class TestGamePlayScreenNotifications {
         assertTrue(foundWarning);
     }
 
+    /**
+     * * * Test that notifications expire after their duration.
+     * This test checks that after the duration of a notification has passed, it is removed from the system.
+     */
     @Test
     public void notificationsExpireAfterDuration() {
         // Create game and move to gameplay screen
@@ -175,6 +191,10 @@ public class TestGamePlayScreenNotifications {
         assertTrue(notificationSystem.getNotifications().isEmpty());
     }
 
+    /**
+     * * * Test that multiple notifications stack vertically.
+     * This test checks that when multiple notifications are added, they are displayed in a stack vertically.
+     */
     @Test
     public void multipleNotificationsStackVertically() {
         // Create game and move to gameplay screen
