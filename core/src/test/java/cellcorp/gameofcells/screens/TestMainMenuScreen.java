@@ -13,6 +13,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
@@ -34,10 +35,26 @@ public class TestMainMenuScreen {
 
     @BeforeAll
     public static void setUpLibGDX() {
+        System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
+        // Initialize headless LibGDX
+        HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
+        new HeadlessApplication(new ApplicationListener() {
+            @Override public void create() {}
+            @Override public void resize(int width, int height) {}
+            @Override public void render() {}
+            @Override public void pause() {}
+            @Override public void resume() {}
+            @Override public void dispose() {}
+        }, config);
+
         // Mock the graphics provider
         Gdx.graphics = Mockito.mock(Graphics.class);
         Mockito.when(Gdx.graphics.getWidth()).thenReturn(Main.DEFAULT_SCREEN_WIDTH);
         Mockito.when(Gdx.graphics.getHeight()).thenReturn(Main.DEFAULT_SCREEN_HEIGHT);
+
+        // Mock Gdx.app for exit
+        Gdx.app = Mockito.mock(Application.class);
+        Mockito.doNothing().when(Gdx.app).exit();
 
         GL20 gl20 = Mockito.mock(GL20.class);
         Gdx.gl = gl20;
@@ -147,7 +164,16 @@ public class TestMainMenuScreen {
         gameRunner.step();
         assertInstanceOf(SettingsScreen.class, gameRunner.game.getScreen());
         
-        // Reset to main menu
+        // Reset to main menu - IMPORTANT: Create fresh instance
+        mainMenuScreen = new MainMenuScreen(
+            gameRunner.inputProvider,
+            gameRunner.game.getGraphicsProvider(),
+            gameRunner.game,
+            gameRunner.game.getAssetManager(),
+            gameRunner.game.getCamera(),
+            gameRunner.game.getViewport(),
+            gameRunner.configProvider
+        );
         gameRunner.game.setScreen(mainMenuScreen);
         
         // Move to "Exit" (option 2)
@@ -160,12 +186,9 @@ public class TestMainMenuScreen {
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
         
-        // We can't actually test exit in headless mode, but we can verify
-        // the screen attempts to handle the exit command
+        // Test exit - should remain on main menu screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
-        
-        // Verify the screen is still active (since we can't actually exit)
         assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
     }
 }
