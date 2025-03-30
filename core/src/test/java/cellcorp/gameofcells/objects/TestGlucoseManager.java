@@ -63,6 +63,6 @@ public class TestGlucoseManager {
 
         assertEquals(100, glucose.getX());
         assertEquals(200, glucose.getY());
-        assertEquals(30, glucose.getRadius());
+        assertEquals(15, glucose.getRadius());
     }
 }

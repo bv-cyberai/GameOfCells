@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class NotificationSystem {
+public class NotificationManager {
     private Array<Notification> notifications;
     private BitmapFont font;
     private GlyphLayout glyphLayout;
-    private NotificationSystem notificationSystem;
+    private NotificationManager notificationSystem;
     
 
-    public NotificationSystem(BitmapFont rubikFont) {
+    public NotificationManager(BitmapFont rubikFont) {
         this.notifications = new Array<>();
         this.font = rubikFont;
         this.glyphLayout = new GlyphLayout();
@@ -53,7 +53,7 @@ public class NotificationSystem {
      * This method is used to retrieve the notification system for the game.
      * @return
      */
-    public NotificationSystem getNotificationSystem() {
+    public NotificationManager getNotificationSystem() {
         return notificationSystem; // Get a specific notification by index
     }
 

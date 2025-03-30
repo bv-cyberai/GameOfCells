@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import cellcorp.gameofcells.ui.NotificationSystem;
+import cellcorp.gameofcells.ui.NotificationManager;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.Color;
 
@@ -78,7 +78,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private ConfigProvider configProvider;
-    private NotificationSystem notificationSystem;
+    private NotificationManager notificationSystem;
 
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
@@ -189,7 +189,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
         this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
-        this.notificationSystem = new NotificationSystem(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class));
+        this.notificationSystem = new NotificationManager(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class));
 
         this.isPaused = false;
     }
@@ -596,9 +596,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for getting the notification system.
      * For example, if the notification system is not null, it will be used to
      * @return the notification system.
-     * @see NotificationSystem
+     * @see NotificationManager
      */
-    public NotificationSystem getNotificationSystem() {
+    public NotificationManager getNotificationSystem() {
         return this.notificationSystem;
     }
 

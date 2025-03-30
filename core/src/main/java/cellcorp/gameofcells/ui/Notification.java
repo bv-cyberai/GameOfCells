@@ -81,4 +81,22 @@ public class Notification {
     public float getAlpha() {
         return alpha;
     }
+
+    /**
+     * * Get the elapsed time since the notification was created.
+     * This value is used to determine if the notification has expired.
+     * @return The elapsed time of the notification.
+     */
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    /**
+     * * Get the duration of the notification.
+     * This value is used to determine how long the notification will be displayed before it expires.
+     * @return The duration of the notification.
+     */
+    public float getDuration() {
+        return duration;
+    }
 }

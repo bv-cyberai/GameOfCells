@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.GL20;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.ui.Notification;
-import cellcorp.gameofcells.ui.NotificationSystem;
+import cellcorp.gameofcells.ui.NotificationManager;
 
 public class TestGamePlayScreenNotifications {
 
@@ -76,7 +76,7 @@ public class TestGamePlayScreenNotifications {
         var gamePlayScreen = (GamePlayScreen) screen;
         
         // Get the notification system
-        NotificationSystem notificationSystem = gamePlayScreen.getNotificationSystem();
+        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
         
         // Add a test notification
         String testMessage = "Test notification";
@@ -107,7 +107,7 @@ public class TestGamePlayScreenNotifications {
         gameRunner.step();
         
         // Check notification was shown
-        NotificationSystem notificationSystem = gamePlayScreen.getNotificationSystem();
+        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
         assertFalse(notificationSystem.getNotifications().isEmpty());
         
         boolean foundWarning = false;
@@ -141,7 +141,7 @@ public class TestGamePlayScreenNotifications {
         gamePlayScreen.showAcidZoneWarning();
         
         // Check notification was shown
-        NotificationSystem notificationSystem = gamePlayScreen.getNotificationSystem();
+        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
         assertFalse(notificationSystem.getNotifications().isEmpty());
         
         boolean foundWarning = false;
@@ -162,7 +162,7 @@ public class TestGamePlayScreenNotifications {
         gameRunner.step();
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        NotificationSystem notificationSystem = gamePlayScreen.getNotificationSystem();
+        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
         
         // Add a short-lived notification
         notificationSystem.addNotification("Test notification", 0.1f, Color.WHITE);
@@ -183,7 +183,7 @@ public class TestGamePlayScreenNotifications {
         gameRunner.step();
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        NotificationSystem notificationSystem = gamePlayScreen.getNotificationSystem();
+        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
         
         // Add multiple notifications
         notificationSystem.addNotification("Notification 1", 2f, Color.WHITE);
