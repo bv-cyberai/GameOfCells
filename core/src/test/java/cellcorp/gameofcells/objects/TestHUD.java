@@ -1,11 +1,22 @@
 package cellcorp.gameofcells.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.badlogic.gdx.graphics.GL20;
+
+import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.FakeGraphicsProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
@@ -19,6 +30,30 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
 
 public class TestHUD {
 
+    @BeforeAll
+    public static void setUpLibGDX() {
+        System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
+        // Initialize headless LibGDX
+        HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
+        new HeadlessApplication(new ApplicationListener() {
+            @Override public void create() {}
+            @Override public void resize(int width, int height) {}
+            @Override public void render() {}
+            @Override public void pause() {}
+            @Override public void resume() {}
+            @Override public void dispose() {}
+        }, config);
+
+        // Mock the graphics provider
+        Gdx.graphics = Mockito.mock(Graphics.class);
+        Mockito.when(Gdx.graphics.getWidth()).thenReturn(Main.DEFAULT_SCREEN_WIDTH);
+        Mockito.when(Gdx.graphics.getHeight()).thenReturn(Main.DEFAULT_SCREEN_HEIGHT);
+
+        GL20 gl20 = Mockito.mock(GL20.class);
+        Gdx.gl = gl20;
+        Gdx.gl20 = gl20;
+    }
+
     /**
      * Update Tester
      *
@@ -29,6 +64,7 @@ public class TestHUD {
         var fakeGraphicsProvider = new FakeGraphicsProvider();
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        
         Mockito.when(fakeConfigProvider.getIntValue("cellHealth")).thenReturn(100);
         Mockito.when(fakeConfigProvider.getIntValue("cellATP")).thenReturn(30);
         Mockito.when(fakeConfigProvider.getIntValue("maxHealth")).thenReturn(100);
@@ -37,14 +73,14 @@ public class TestHUD {
         var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
         var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
 
-         var spyCell = Mockito.spy(cell);
+        var spyCell = Mockito.spy(cell);
 
         HUD hud = new HUD(fakeGraphicsProvider, fakeAssetManager, spyCell.getMaxHealth(), spyCell.getMaxATP());
         hud.update(1f, spyCell.getCellHealth(), spyCell.getCellATP()); // simulate 1 second has passed
 
         assertEquals("Timer: 1", hud.getTimerString());
         assertEquals("HEALTH: 100/100", hud.getCellHealthString());
-        assertEquals("ATP: 30", hud.getAtpString());
+        assertEquals("ATP: 30/100", hud.getAtpString());
     }
 
     @Test
