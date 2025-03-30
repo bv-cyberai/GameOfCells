@@ -21,9 +21,6 @@ import com.badlogic.gdx.graphics.Color;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.objects.GlucoseManager;
-import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -268,7 +265,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
-        notificationSystem.dispose();
         playerCell.dispose(); // dispose cell
         hud.dispose();
         batch.dispose(); // Dispose of the batch
@@ -582,8 +578,92 @@ public class GamePlayScreen implements GameOfCellsScreen {
         notificationSystem.addNotification(message, 2f, Color.WHITE);
     }
 
+    /**
+     * Check if the cell is in an acid zone.
+     * This is used for checking if the cell is in an acid zone.
+     * For example, if the cell is in an acid zone, it will take damage.
+     * @param x
+     * @param y
+     * @return true if the cell is in an acid zone, false otherwise.
+     */
     private boolean isInAcidZone(float x, float y) {
         Optional<Double> distance = zoneManager.distanceToNearestAcidZone(x, y);
         return distance.isPresent() && distance.get() <= Zone.ZONE_RADIUS;
+    }
+
+    /**
+     * Get the notification system.
+     * This is used for getting the notification system.
+     * For example, if the notification system is not null, it will be used to
+     * @return the notification system.
+     * @see NotificationSystem
+     */
+    public NotificationSystem getNotificationSystem() {
+        return this.notificationSystem;
+    }
+
+    /**
+     * Set the wasInAcidZone flag.
+     * This is used for checking if the cell was in an acid zone last frame.
+     * For example, if the cell was in an acid zone last frame, it will take damage.
+     * @param wasInAcidZone
+     */
+    public void setWasInAcidZone(boolean wasInAcidZone) {
+        this.wasInAcidZone = wasInAcidZone;
+    }
+
+    /**
+     * Get the wasInAcidZone flag.
+     * This is used for checking if the cell was in an acid zone last frame.
+     * For example, if the cell was in an acid zone last frame, it will take damage.
+     * @return true if the cell was in an acid zone last frame, false otherwise.
+     * @see #wasInAcidZone
+     */
+    public boolean getWasInAcidZone() {
+        return wasInAcidZone;
+    }
+
+    /**
+     * Check if the energy warning has been shown.
+     * This is used for checking if the energy warning has been shown.
+     * For example, if the energy warning has been shown, it will not be shown again.
+     * @return true if the energy warning has been shown, false otherwise.
+     * @see #hasShownEnergyWarning
+     */
+    public boolean isHasShownEnergyWarning() {
+        return hasShownEnergyWarning;
+    }
+
+    /**
+     * Set the hasShownEnergyWarning flag.
+     * This is used for checking if the energy warning has been shown.
+     * For example, if the energy warning has been shown, it will not be shown again.
+     * @param hasShownEnergyWarning
+     * @see #hasShownEnergyWarning
+     */
+    public void setHasShownEnergyWarning(boolean hasShownEnergyWarning) {
+        this.hasShownEnergyWarning = hasShownEnergyWarning;
+    }
+
+    /**
+     * Get the isPaused flag.
+     * This is used for checking if the game is paused.
+     * For example, if the game is paused, it will not update the game state.
+     * @return true if the game is paused, false otherwise.
+     * @see #isPaused
+     */
+    public boolean getIsPaused() {
+        return isPaused;
+    }
+
+    /**
+     * Set the isPaused flag.
+     * This is used for checking if the game is paused.
+     * For example, if the game is paused, it will not update the game state.
+     * @param isPaused
+     * @see #isPaused
+     */
+    public void setIsPaused(boolean isPaused) {
+        this.isPaused = isPaused;
     }
 }

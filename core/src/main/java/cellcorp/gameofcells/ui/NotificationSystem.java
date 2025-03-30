@@ -11,11 +11,14 @@ public class NotificationSystem {
     private Array<Notification> notifications;
     private BitmapFont font;
     private GlyphLayout glyphLayout;
+    private NotificationSystem notificationSystem;
+    
 
     public NotificationSystem(BitmapFont rubikFont) {
         this.notifications = new Array<>();
         this.font = rubikFont;
         this.glyphLayout = new GlyphLayout();
+        this.notificationSystem = this; // Initialize the notification system
     }
 
     public void addNotification(String message, float duration, Color color) {
@@ -45,10 +48,30 @@ public class NotificationSystem {
         font.setColor(Color.WHITE); // Reset font size
     }
 
-    public void dispose() {
-        font.dispose(); // Dispose of the font when done
-        for (Notification notification : notifications) {
-            notification.dispose(); // Dispose of each notification
-        }
+    /**
+     * * Get the notification system.
+     * This method is used to retrieve the notification system for the game.
+     * @return
+     */
+    public NotificationSystem getNotificationSystem() {
+        return notificationSystem; // Get a specific notification by index
+    }
+
+    /**
+     * * Get the notifications array.
+     * This method is used to retrieve the notifications array for the notification system.
+     * @return
+     */
+    public Array<Notification> getNotifications() {
+        return notifications; // Get all notifications
+    }
+
+    /**
+     * * Set the notifications array.
+     * This method is used to set the notifications array for the notification system.
+     * @param notifications
+     */
+    public void setNotifications(Array<Notification> notifications) {
+        this.notifications = notifications; // Set the notifications array
     }
 }

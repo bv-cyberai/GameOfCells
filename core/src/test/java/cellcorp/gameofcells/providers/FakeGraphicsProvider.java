@@ -51,8 +51,7 @@ public class FakeGraphicsProvider implements GraphicsProvider {
 
     @Override
     public ShapeRenderer createShapeRenderer() {
-        // Non-graphics code should never reference the shape renderer
-        return null;
+        return Mockito.mock(ShapeRenderer.class);
     }
 
     @Override

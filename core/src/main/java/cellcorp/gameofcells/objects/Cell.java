@@ -286,12 +286,29 @@ public class Cell {
     }
 
     /**
+     * Set Cell Health
+     *
+     * @param cellHealth
+     */
+    public void setCellHealth(int cellHealth) {
+        this.cellHealth = cellHealth;
+    }
+
+    /**
      * ATP Getter
      *
      * @return ATP
      */
     public int getCellATP() {
         return cellATP;
+    }
+
+    /**
+     * Set Cell Health
+     * @param cellATP
+     */
+    public void setCellATP(int cellATP) {
+        this.cellATP = cellATP;
     }
 
     /**
