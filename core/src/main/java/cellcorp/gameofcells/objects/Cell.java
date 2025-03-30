@@ -119,16 +119,10 @@ public class Cell {
         if (moveDown)
             cellCircle.y -= CELL_SPEED * deltaTime;
 
-        xMovementSinceLastTick += abs(lastX-cellCircle.x);
-        yMovementSInceLastTick += abs(lastY-cellCircle.y);
 
 
-//        distanceMovedSinceLastTick = ;
-        totalDistnaceMoved += xMovementSinceLastTick + yMovementSInceLastTick;
-        lastX = cellCircle.x;
-        lastY = cellCircle.y;
-        xMovementSinceLastTick = 0f;
-        yMovementSInceLastTick =0f;
+        totalDistnaceMoved += abs(lastX-cellCircle.x) + abs(lastY-cellCircle.y);
+
         System.out.println(totalDistnaceMoved);
     }
 
