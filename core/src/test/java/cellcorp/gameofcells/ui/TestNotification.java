@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.graphics.Color;
 
+import cellcorp.gameofcells.objects.Notification;
+
 public class TestNotification {
     
     /**

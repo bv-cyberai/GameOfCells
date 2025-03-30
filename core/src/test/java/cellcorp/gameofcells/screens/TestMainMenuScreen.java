@@ -6,30 +6,19 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.providers.ConfigProvider;
-import cellcorp.gameofcells.providers.FakeGraphicsProvider;
-import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.runner.GameRunner;
-import cellcorp.gameofcells.screens.MainMenuScreen;
-import cellcorp.gameofcells.screens.GamePlayScreen;
-import cellcorp.gameofcells.screens.SettingsScreen;
 
 public class TestMainMenuScreen {
 

@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.Notification;
+import cellcorp.gameofcells.objects.NotificationManager;
 
 import org.mockito.Mockito;
 

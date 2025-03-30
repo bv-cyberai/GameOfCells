@@ -1,8 +1,6 @@
-package cellcorp.gameofcells.ui;
+package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Notification {
     private String message;
@@ -14,7 +12,6 @@ public class Notification {
     public Notification(String message, float duration, Color color) {
         this.message = message;
         this.duration = duration;
-        this.elapsedTime = 0;
         this.color = color != null ? color : Color.WHITE; // Default to white if no color is provided
         this.alpha = 0; // Start transparent for fade-in effect
     }
@@ -38,21 +35,6 @@ public class Notification {
         }
 
         return elapsedTime >= duration; // Return true if the notification is expired
-    }
-
-    /**
-     * * Renders the notification on the screen.
-     * This method uses the provided SpriteBatch and BitmapFont to draw the notification message at the specified position.
-     * @param batch
-     * @param font
-     * @param x
-     * @param y
-    */
-    public void render(SpriteBatch batch, BitmapFont font, float x, float y) {
-        Color oldColor = font.getColor(); // Store the old color
-        font.setColor(color.r, color.g, color.b, alpha); // Set the new color with alpha
-        font.draw(batch, message, x, y); // Draw the notification message
-        font.setColor(oldColor); // Restore the old color
     }
 
     /**

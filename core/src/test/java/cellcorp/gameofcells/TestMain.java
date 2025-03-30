@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -23,7 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
-import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GameOverScreen;

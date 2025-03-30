@@ -1,16 +1,20 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.providers.GraphicsProvider;
+
+import cellcorp.gameofcells.objects.NotificationManager;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.Array;
 
 import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.providers.GraphicsProvider;
 
 /**
  * Hud Class
@@ -52,44 +56,47 @@ public class HUD {
     // let's give HUD its own sprite batch and shape renderer.
     // Draw calls will be less efficient (I think?), but it shouldn't matter much.
     private final SpriteBatch batch;
+    
+    // ShapeRenderer shapeRenderer;
+    // ShapeRenderer is used to draw the energy bars.
+    // It is not used for the HUD text, which is drawn using a SpriteBatch.
+    // This is because the energy bars are drawn using a shape renderer,
+    // which requires a different projection matrix than the sprite batch.
     private final ShapeRenderer shapeRenderer;
-
+    
+    // Energy Bars
+    // This is a separate class that handles the drawing of the energy bars.
     private final EnergyBars energyBars;
+
+    // Notification Manager
+    // This is a separate class that handles the drawing of notifications.
+    // It is not used in the HUD class, but it is included here for completeness.
+    private final NotificationManager notificationManager;
 
     // fonts
     private BitmapFont font;
     private BitmapFont barFont;
-    private float hudFontScale;
-    private float barFontScale;
+    private BitmapFont notificationFont;
+    private float hudFontScale = 0.25f;
+    private float barFontScale = 0.2f;
 
     // glyph
     private GlyphLayout healthLayout;
-    private GlyphLayout ATPLayout;
+    private GlyphLayout atpLayout;
+    private GlyphLayout notificationLayout;
 
     // Energy Bar Values for storing and calculating position of text.
-    private final float healthBarY;
-    private final float healthBarHeight;
-    private final float ATPBarY;
-    private final float ATPBarHeight;
-    private float healthTextWidth;
-    private float healthTextHeight;
-    private float ATPTextWidth;
-    private float ATPTextHeight;
-    private float healthTextY;
-    private float ATPTextY;
-
-    // Timer Values
-    private Float timer;
-    private int displayTime;
-
-    // Cell Values
-    private final int maxHealth;
-    private final int maxATP; // placeholder will likely be needed.
-
-    // HUD Strings
-    private String timerString;
+    private String timerString = "Timer: 0";
     private String atpString;
     private String cellHealthString;
+    private final int maxHealth;
+    private final int maxATP;
+    private float timer = 0;
+
+    // Positioning Constants
+    private static final float HEALTH_BAR_Y = 770f;
+    private static final float ATP_BAR_Y = 740f;
+    private static final float NOTIFICATION_DURATION = 3f;
 
     /**
      * HUD Class
@@ -110,28 +117,19 @@ public class HUD {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
-
         this.energyBars = new EnergyBars(assetManager, maxHealth, maxATP);
 
-        timer = 0f;
-        displayTime = 0;
+        this.healthLayout = new GlyphLayout();
+        this.atpLayout = new GlyphLayout();
+        this.notificationLayout = new GlyphLayout();
 
-        healthLayout = new GlyphLayout();
-        ATPLayout = new GlyphLayout();
-        hudFontScale = 0.25f;
-        barFontScale = 0.2f;
+        this.notificationFont = graphicsProvider.createBitmapFont();
+        this.notificationFont.getData().setScale(hudFontScale);
+        this.notificationManager = new NotificationManager(notificationFont);
 
-        // For now these are hardcoded/pulled form the EnergyBar Class.
-        // Don't see a huge need to not do that.
-        healthBarY = 770;
-        healthBarHeight = 25;
-        ATPBarY = 740;
-        ATPBarHeight = 25;
-
-        // Initialize text strings to avoid null values
-        timerString = "Timer: 0";
-        atpString = "ATP: " + maxATP + "/" + maxATP; // Initialize ATP to max
-        cellHealthString = "HEALTH: " + maxHealth + "/" + maxHealth; // Initialize Health to max
+        // Initialize strings
+        this.atpString = "ATP: " + maxATP + "/" + maxATP;
+        this.cellHealthString = "HEALTH: " + maxHealth + "/" + maxHealth;
 
         loadFonts();
     }
@@ -154,13 +152,21 @@ public class HUD {
      */
     public void draw(Viewport callerViewport) {
         viewport.apply(true);
+
+        // Set up rendering
         batch.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
-        drawHudText(batch);
+        // Draw components in proper order
         drawEnergyBars(shapeRenderer);
+        drawHudText(batch);
         drawBarText(batch);
+        drawNotifications(batch);
 
+        // Reset the projection matrix to the caller's viewport
+        // This is important to avoid breaking the caller's viewport.
+        // This is done by re-applying the caller's viewport.
+        // This is a bit of a hack, but it works.
         callerViewport.apply();
     }
 
@@ -170,21 +176,12 @@ public class HUD {
             font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
             font.getData().setScale(hudFontScale); // Set the scale of the font
         }
-        if (font.getScaleX() != hudFontScale || font.getScaleY() != hudFontScale) {
-            // Fonts are shared, and scale needs to be reset on Screen changes.
-            font.getData().setScale(hudFontScale);
-        }
+        font.getData().setScale(hudFontScale); // Ensure the font scale is correct
 
-        // Ensure strings are not null before drawing
-        if (cellHealthString != null) {
-            font.draw(batch, cellHealthString, 10, 790);
-        }
-        if (atpString != null) {
-            font.draw(batch, atpString, 10, 760);
-        }
-        if (timerString != null) {
-            font.draw(batch, timerString, 10, 730);
-        }
+        font.draw(batch, cellHealthString, 10, 790);
+        font.draw(batch, atpString, 10, 760);
+        font.draw(batch, timerString, 10, 730);
+        
         batch.end();
     }
 
@@ -209,30 +206,44 @@ public class HUD {
             barFont = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
             barFont.getData().setScale(barFontScale);
 
-            // setup glyphs
+            // Pre-calculate text dimensions
             healthLayout.setText(barFont, "HEALTH");
-            ATPLayout.setText(barFont, "ATP");
-
-            // setup position
-            healthTextWidth = healthLayout.width;
-            healthTextHeight = healthLayout.height;
-
-            ATPTextWidth = ATPLayout.width;
-            ATPTextHeight = ATPLayout.height;
-
-            healthTextY = healthBarY + (healthBarHeight / 2) + (healthTextHeight / 2);
-            ATPTextY = ATPBarY + (ATPBarHeight / 2) + (ATPTextHeight / 2);
+            atpLayout.setText(barFont, "ATP");
         }
-
-        if (barFont.getScaleX() != barFontScale || font.getScaleY() != barFontScale) {
-            // Fonts are shared, and scale needs to be reset on Screen changes.
-            font.getData().setScale(barFontScale);
-        }
+        barFont.getData().setScale(barFontScale); // Ensure the font scale is correct
 
         batch.begin();
-        barFont.draw(batch, "HEALTH", (VIEW_RECT_WIDTH - healthTextWidth) / 2, healthTextY);
-        barFont.draw(batch, "ATP", (VIEW_RECT_WIDTH - ATPTextWidth) / 2, ATPTextY);
+        barFont.draw(batch, "HEALTH", (VIEW_RECT_WIDTH - healthLayout.width) / 2, 
+                    HEALTH_BAR_Y + 20);
+        barFont.draw(batch, "ATP", (VIEW_RECT_WIDTH - atpLayout.width) / 2, ATP_BAR_Y + 20);
         batch.end();
+    }
+
+    private void drawNotifications(SpriteBatch batch) {
+        if (notificationFont == null) { return; }
+            
+        batch.begin();
+        Array<Notification> notifications = notificationManager.getNotifications();
+        for (int i = 0; i < notifications.size; i++) {
+            Notification notification = notifications.get(i);
+            notificationLayout.setText(notificationFont, notification.getMessage());
+            float x = (VIEW_RECT_WIDTH - notificationLayout.width) / 2;
+            float y = notificationManager.getNotificationY(i);
+
+            Color oldColor = notificationFont.getColor();
+
+            // Set the color and alpha for the notification
+            Color notificationColor = notification.getColor();
+            
+            notificationFont.setColor(notificationColor.r, 
+                notificationColor.g, 
+                notificationColor.b, 
+                notification.getAlpha());
+            notificationFont.draw(batch, notification.getMessage(), x, y);
+            notificationFont.setColor(oldColor);
+        }
+        batch.end();
+        
     }
 
     /**
@@ -243,24 +254,14 @@ public class HUD {
      * @param delta - time since last render.
      */
     public void update(float delta, int cellHealth, int cellATP) {
-        timer += delta;
-
-        roundTime();
-        timerString = "Timer: " + displayTime;
-        cellHealthString = "HEALTH: " + cellHealth + "/" + maxHealth;
-        atpString = "ATP: " + cellATP;
-
         energyBars.update(cellHealth, cellATP);
-    }
+        notificationManager.update(delta);
 
-    /**
-     * Time Rounder
-     * 
-     * Rounds time to 1 second intervals
-     */
-    private void roundTime() {
-        int timeRounded = (int) (timer * 10);
-        displayTime = timeRounded / 10;
+        // Update HUD Strings & timer
+        timer += delta;
+        timerString = "Timer: " + (int)timer;
+        cellHealthString = "HEALTH: " + cellHealth + "/" + maxHealth;
+        atpString = "ATP: " + cellATP + "/" + maxATP;
     }
 
     /**
@@ -274,7 +275,35 @@ public class HUD {
      * Dispose
      */
     public void dispose() {
-        font.dispose();
+        batch.dispose();
+        shapeRenderer.dispose();
+        if (font != null) font.dispose();
+        if (barFont != null) barFont.dispose();
+    }
+
+
+    /**
+     * Show Energy Warning
+     */
+    public void showEnergyWarning() {
+        addNotification("LOW ENERGY: ATP critically low!", NOTIFICATION_DURATION, new Color(1, 0.5f, 0, 1));
+    }
+
+    /**
+     * Show Acid Zone Warning
+     */
+    public void showAcidZoneWarning() {
+        addNotification("DANGER: Acid zone!", NOTIFICATION_DURATION, Color.RED);
+    }
+
+    /**
+     * Add Notification
+     * @param message
+     * @param duration
+     * @param color
+     */
+    private void addNotification(String message, float duration, Color color) {
+        notificationManager.addNotification(message, duration, color);
     }
 
     /**
@@ -303,5 +332,4 @@ public class HUD {
     public String getCellHealthString() {
         return cellHealthString;
     }
-
 }

@@ -1,31 +1,23 @@
 package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.objects.*;
-import cellcorp.gameofcells.providers.ConfigProvider;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import cellcorp.gameofcells.ui.NotificationManager;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.Color;
+import cellcorp.gameofcells.providers.*;
 
-import cellcorp.gameofcells.AssetFileNames;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.*;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.*;
+import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.viewport.*;
+
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,7 +25,7 @@ import java.util.Optional;
  * <p>
  * Contains the main gameplay loop.
  *
- * @author Brendon Vinyard / vineyabn207
+ * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
@@ -59,6 +51,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press Q to access the shop screen.";
+    private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
 
     /**
      * Set to true to enable debug drawing.
@@ -77,8 +70,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
-    private ConfigProvider configProvider;
-    private NotificationManager notificationSystem;
+    private final ConfigProvider configProvider;
 
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
@@ -152,8 +144,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
     private boolean isPaused = false; // Whether the game is paused
-    private boolean hasShownEnergyWarning = false; // Whether the energy warning has been shown
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
+    private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
+    private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
 
 
     /**
@@ -189,9 +182,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
 
         this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
-        this.notificationSystem = new NotificationManager(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class));
-
-        this.isPaused = false;
     }
 
     /**
@@ -325,51 +315,59 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
+        lowEnergyWarningCooldown -= deltaTimeSeconds; // Decrease cooldown
+
         if (!isPaused) {
             hud.update(deltaTimeSeconds, playerCell.getCellHealth(), playerCell.getCellATP());
             zoneManager.update(deltaTimeSeconds);
             glucoseManager.update();
             spawnManager.update();
-            notificationSystem.update(deltaTimeSeconds);
 
-            // Check for low ATP warning
+            // Check for acid zone
+            boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
+            if (inAcidZone && !wasInAcidZone) {
+                hud.showAcidZoneWarning();
+            }
+            wasInAcidZone = inAcidZone;
+
+            // Check for low energy (20 or below)
+            if (playerCell.getCellATP() <= 20 && playerCell.getCellATP() >= 0 && lowEnergyWarningCooldown <= 0) {
+                hud.showEnergyWarning();
+                lowEnergyWarningCooldown = LOW_ENERGY_COOLDOWN; // Reset cooldown
+            }
+
+            // Existing out-of-energy checking
             if (playerCell.getCellATP() <= 0 && !hasShownEnergyWarning) {
-                showEnergyWarning();
-                hasShownEnergyWarning = true; // Mark the warning as shown
+                hud.showEnergyWarning();
+                hasShownEnergyWarning = true;
             } else if (playerCell.getCellATP() > 0) {
-                hasShownEnergyWarning = false; // Reset the warning
+                hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
             }
         }
-
-        // Check for acid zone damage
-        boolean currentlyInAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
-        if (currentlyInAcidZone && !wasInAcidZone) {
-            showAcidZoneWarning();
-        }
-        wasInAcidZone = currentlyInAcidZone;
     }
     
-    private void handleCollisions() {
-        var glucoseToRemove = new ArrayList<Glucose>();
-        for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
-            var glucose = getGlucoseManager().getGlucoseArray().get(i);
-            if (playerCell.getCircle().overlaps(glucose.getCircle())) {
-                glucoseToRemove.add(glucose);
-                playerCell.addCellATP(Glucose.ATP_PER_GLUCOSE);
+    // Not even being used, but keeping it here for reference.
+    // private void handleCollisions() {
+    //     var glucoseToRemove = new ArrayList<Glucose>();
+    //     for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
+    //         var glucose = getGlucoseManager().getGlucoseArray().get(i);
+    //         if (playerCell.getCircle().overlaps(glucose.getCircle())) {
+    //             glucoseToRemove.add(glucose);
+    //             playerCell.addCellATP(Glucose.ATP_PER_GLUCOSE);
                 
-                // Show the popup on the first glucose collision
-                if (!playerCell.hasShownGlucosePopup()) {
-                    game.setScreen(new PopupInfoScreen(
-                            inputProvider, assetManager,
-                            graphicsProvider, game,
-                            this, configProvider,PopupInfoScreen.Type.glucose));
-                            playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
-                }
-            }
-        }
+    //             // Show the popup on the first glucose collision
+    //             if (!playerCell.hasShownGlucosePopup()) {
+    //                 game.setScreen(new PopupInfoScreen(
+    //                         inputProvider, assetManager,
+    //                         graphicsProvider, game,
+    //                         this, configProvider,PopupInfoScreen.Type.glucose));
+    //                         playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
+    //             }
+    //         }
+    //     }
 
-        getGlucoseManager().getGlucoseArray().removeAll(glucoseToRemove);
-    }
+    //     getGlucoseManager().getGlucoseArray().removeAll(glucoseToRemove);
+    // }
 
     /**
      * Renders the start screen.
@@ -386,11 +384,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         drawBackground(shapeRenderer);
         drawGameObjects(batch, shapeRenderer);
         hud.draw(viewport);
-        
-        batch.begin();
-        batch.setProjectionMatrix(graphicsProvider.getScreenProjectionMatrix());
-        notificationSystem.render(batch);
-        batch.end();
 
         if (DEBUG_DRAW_ENABLED) {
             drawChunks(shapeRenderer);
@@ -556,26 +549,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * For example, "WARNING: Out of energy, losing health!".
      */
     public void showEnergyWarning() {
-        notificationSystem.addNotification("WARNING: Out of energy, losing health!", 3f, Color.YELLOW);
-    }
-
-    /**
-     * Shows a warning that the cell is in an acid zone.
-     * This is used for displaying the acid zone warning.
-     * For example, "DANGER: Acid zone! Taking damage!".
-     */
-    public void showAcidZoneWarning() {
-        notificationSystem.addNotification("DANGER: Acid zone! Taking damage!", 3f, Color.RED);
-    }
-
-    /**
-     * Shows a notification with a generic message.
-     * This is used for displaying messages that are not specific to any event.
-     * For example, "Game is now playing..." or "Press Q to access the shop screen."
-     * @param message
-     */
-    public void showGenericNotification(String message) {
-        notificationSystem.addNotification(message, 2f, Color.WHITE);
+        hud.showEnergyWarning();
     }
 
     /**
@@ -587,19 +561,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @return true if the cell is in an acid zone, false otherwise.
      */
     private boolean isInAcidZone(float x, float y) {
-        Optional<Double> distance = zoneManager.distanceToNearestAcidZone(x, y);
-        return distance.isPresent() && distance.get() <= Zone.ZONE_RADIUS;
-    }
-
-    /**
-     * Get the notification system.
-     * This is used for getting the notification system.
-     * For example, if the notification system is not null, it will be used to
-     * @return the notification system.
-     * @see NotificationManager
-     */
-    public NotificationManager getNotificationSystem() {
-        return this.notificationSystem;
+        return zoneManager.distanceToNearestAcidZone(x, y)
+            .map(d -> d <= Zone.ZONE_RADIUS)
+            .orElse(false);
     }
 
     /**
@@ -621,28 +585,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public boolean getWasInAcidZone() {
         return wasInAcidZone;
-    }
-
-    /**
-     * Check if the energy warning has been shown.
-     * This is used for checking if the energy warning has been shown.
-     * For example, if the energy warning has been shown, it will not be shown again.
-     * @return true if the energy warning has been shown, false otherwise.
-     * @see #hasShownEnergyWarning
-     */
-    public boolean isHasShownEnergyWarning() {
-        return hasShownEnergyWarning;
-    }
-
-    /**
-     * Set the hasShownEnergyWarning flag.
-     * This is used for checking if the energy warning has been shown.
-     * For example, if the energy warning has been shown, it will not be shown again.
-     * @param hasShownEnergyWarning
-     * @see #hasShownEnergyWarning
-     */
-    public void setHasShownEnergyWarning(boolean hasShownEnergyWarning) {
-        this.hasShownEnergyWarning = hasShownEnergyWarning;
     }
 
     /**

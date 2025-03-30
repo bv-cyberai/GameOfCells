@@ -19,9 +19,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.Notification;
+import cellcorp.gameofcells.objects.NotificationManager;
 import cellcorp.gameofcells.runner.GameRunner;
-import cellcorp.gameofcells.ui.Notification;
-import cellcorp.gameofcells.ui.NotificationManager;
 
 public class TestGamePlayScreenNotifications {
 
