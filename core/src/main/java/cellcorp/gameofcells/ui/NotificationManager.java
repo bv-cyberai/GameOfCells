@@ -37,7 +37,11 @@ public class NotificationManager {
         float y = Gdx.graphics.getHeight() - 50; // Start from the top of the screen
 
         for (Notification notification : notifications) {
-            font.setColor(notification.getColor());
+            Color color = notification.getColor();
+            if (color == null) {
+                color = Color.WHITE; // Default color if none is set
+            }
+            font.setColor(color);
             // Calculate text width properly for centering
             glyphLayout.setText(font, notification.getMessage());
             float x = (Gdx.graphics.getWidth() - glyphLayout.width) / 2; // Center the message horizontally

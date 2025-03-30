@@ -15,7 +15,7 @@ public class Notification {
         this.message = message;
         this.duration = duration;
         this.elapsedTime = 0;
-        this.color = color;
+        this.color = color != null ? color : Color.WHITE; // Default to white if no color is provided
         this.alpha = 0; // Start transparent for fade-in effect
     }
 
