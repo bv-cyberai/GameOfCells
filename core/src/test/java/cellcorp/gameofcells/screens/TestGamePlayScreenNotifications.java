@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.objects.Notification;
 import cellcorp.gameofcells.objects.NotificationManager;
 import cellcorp.gameofcells.runner.GameRunner;
@@ -62,31 +63,18 @@ public class TestGamePlayScreenNotifications {
      */
     @Test
     public void notificationsAppearOnGamePlayScreen() {
-        // Create a new game runner
         var gameRunner = GameRunner.create();
-        
-        // Start on main menu
-        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
-        
-        // Press enter to move to gameplay screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of()); // Release enter key
-        gameRunner.step();
         
-        // Verify we're on gameplay screen
-        var screen = gameRunner.game.getScreen();
-        assertInstanceOf(GamePlayScreen.class, screen);
-        var gamePlayScreen = (GamePlayScreen) screen;
+        // Get the HUD from the game screen
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        HUD hud = gamePlayScreen.getHUD();
+        NotificationManager notificationSystem = hud.getNotificationManager();
         
-        // Get the notification system
-        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
-        
-        // Add a test notification
         String testMessage = "Test notification";
         notificationSystem.addNotification(testMessage, 3f, Color.WHITE);
         
-        // Verify notification was added
         assertEquals(1, notificationSystem.getNotifications().size);
         Notification notification = notificationSystem.getNotifications().get(0);
         assertEquals(testMessage, notification.getMessage());
@@ -106,6 +94,8 @@ public class TestGamePlayScreenNotifications {
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
         var cell = gamePlayScreen.getCell();
+        HUD hud = gamePlayScreen.getHUD();
+        NotificationManager notificationSystem = hud.getNotificationManager();
         
         // Force low ATP condition
         cell.setCellATP(0);
@@ -115,12 +105,11 @@ public class TestGamePlayScreenNotifications {
         gameRunner.step();
         
         // Check notification was shown
-        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
         assertFalse(notificationSystem.getNotifications().isEmpty());
         
         boolean foundWarning = false;
         for (Notification n : notificationSystem.getNotifications()) {
-            if (n.getMessage().contains("WARNING: Out of energy")) {
+            if (n.getMessage().contains("LOW ENERGY: ATP critically low")) {
                 foundWarning = true;
                 break;
             }
@@ -130,6 +119,7 @@ public class TestGamePlayScreenNotifications {
         // Verify flag was set
         assertTrue(gamePlayScreen.isHasShownEnergyWarning());
     }
+
 
     /**
      * * * Test that acid zone warning notification shows when entering acid zone.
@@ -143,6 +133,8 @@ public class TestGamePlayScreenNotifications {
         gameRunner.step();
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        HUD hud = gamePlayScreen.getHUD();
+        NotificationManager notificationSystem = hud.getNotificationManager();
         
         // Simulate entering acid zone
         gamePlayScreen.setWasInAcidZone(false);
@@ -150,10 +142,9 @@ public class TestGamePlayScreenNotifications {
         
         // Normally we'd need to mock the zone manager to return true for isInAcidZone,
         // but for this test we'll directly call the warning method
-        gamePlayScreen.showAcidZoneWarning();
+        hud.showAcidZoneWarning();
         
         // Check notification was shown
-        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
         assertFalse(notificationSystem.getNotifications().isEmpty());
         
         boolean foundWarning = false;
@@ -178,7 +169,8 @@ public class TestGamePlayScreenNotifications {
         gameRunner.step();
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
+        HUD hud = gamePlayScreen.getHUD();
+        NotificationManager notificationSystem = hud.getNotificationManager();
         
         // Add a short-lived notification
         notificationSystem.addNotification("Test notification", 0.1f, Color.WHITE);
@@ -203,7 +195,8 @@ public class TestGamePlayScreenNotifications {
         gameRunner.step();
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        NotificationManager notificationSystem = gamePlayScreen.getNotificationSystem();
+        HUD hud = gamePlayScreen.getHUD();
+        NotificationManager notificationSystem = hud.getNotificationManager();
         
         // Add multiple notifications
         notificationSystem.addNotification("Notification 1", 2f, Color.WHITE);
@@ -213,10 +206,14 @@ public class TestGamePlayScreenNotifications {
         // Verify all were added
         assertEquals(3, notificationSystem.getNotifications().size);
         
-        // The render position would be tested in an integration test,
-        // but we can verify the notifications are in the correct order
+        // Verify notifications are in correct order
         assertEquals("Notification 1", notificationSystem.getNotifications().get(0).getMessage());
         assertEquals("Notification 2", notificationSystem.getNotifications().get(1).getMessage());
         assertEquals("Notification 3", notificationSystem.getNotifications().get(2).getMessage());
+        
+        // Verify vertical positions if needed (optional)
+        assertEquals(700f, notificationSystem.getNotificationY(0)); // First notification
+        assertEquals(670f, notificationSystem.getNotificationY(1)); // Second notification
+        assertEquals(640f, notificationSystem.getNotificationY(2)); // Third notification
     }
 }

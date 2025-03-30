@@ -1,4 +1,4 @@
-package cellcorp.gameofcells.ui;
+package cellcorp.gameofcells.objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 

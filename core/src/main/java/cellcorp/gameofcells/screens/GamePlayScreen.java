@@ -145,7 +145,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public boolean hasMitochondria = false;
     private boolean isPaused = false; // Whether the game is paused
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
-    private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
+    private boolean hasShownEnergyWarning; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
 
 
@@ -493,7 +493,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      *
      * @return The Screen Hud.
      */
-    public HUD getHud() {
+    public HUD getHUD() {
         return hud;
     }
 
@@ -550,6 +550,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public void showEnergyWarning() {
         hud.showEnergyWarning();
+    }
+
+    /**
+     * Shows a warning that the cell is in an acid zone.
+     * This is used for displaying the acid zone warning.
+     * For example, "WARNING: Acid zone detected!".
+     */
+    public void showAcidZoneWarning() {
+        hud.showAcidZoneWarning();
     }
 
     /**
@@ -640,5 +649,27 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    /**
+     * Set the hasShownEnergyWarning flag.
+     * This is used for checking if the energy warning has been shown.
+     * For example, if the energy warning has been shown, it will not show it again.
+     * @see #hasShownEnergyWarning
+     * @param hasShownEnergyWarning
+     */
+    public void setHasShownEnergyWarning(boolean hasShownEnergyWarning) {
+        this.hasShownEnergyWarning = hasShownEnergyWarning;
+    }
+    
+    /**
+     * Get the hasShownEnergyWarning flag.
+     * This is used for checking if the energy warning has been shown.
+     * For example, if the energy warning has been shown, it will not show it again.
+     * @see #hasShownEnergyWarning
+     * @return
+     */
+    public boolean isHasShownEnergyWarning() {
+        return hasShownEnergyWarning;
     }
 }

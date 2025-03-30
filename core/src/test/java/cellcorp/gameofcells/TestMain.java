@@ -196,7 +196,7 @@ public class TestMain {
 
         // Verify timer before switching screens
         var gameplayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        assertEquals("Timer: 2", gameplayScreen.getHud().getTimerString());
+        assertEquals("Timer: 2", gameplayScreen.getHUD().getTimerString());
 
         // 4. Press S to go to shop screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
@@ -221,7 +221,7 @@ public class TestMain {
 
         // 8. Verify timer is still at 2 (shouldn't increment while in shop)
         gameplayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        assertEquals("Timer: 2", gameplayScreen.getHud().getTimerString());
+        assertEquals("Timer: 2", gameplayScreen.getHUD().getTimerString());
     }
 
     @Test

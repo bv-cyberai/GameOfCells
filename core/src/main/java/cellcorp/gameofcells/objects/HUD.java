@@ -332,4 +332,12 @@ public class HUD {
     public String getCellHealthString() {
         return cellHealthString;
     }
+
+    /**
+     * Get the Notification Manager
+     * @return
+     */
+    public NotificationManager getNotificationManager() {
+        return notificationManager;
+    }
 }
