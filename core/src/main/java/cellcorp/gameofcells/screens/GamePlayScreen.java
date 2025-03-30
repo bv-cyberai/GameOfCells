@@ -666,4 +666,37 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void setIsPaused(boolean isPaused) {
         this.isPaused = isPaused;
     }
+
+    /**
+     * Get the zone manager.
+     * This is used for getting the zone manager.
+     * For example, if the zone manager is not null, it will be used to spawn
+     * objects.
+     * @return the zone manager.
+     */
+    public ZoneManager getZoneManager() {
+        return zoneManager;
+    }
+
+    /**
+     * Get the spawn manager.
+     * This is used for getting the spawn manager.
+     * For example, if the spawn manager is not null, it will be used to spawn
+     * objects.
+     * @return the spawn manager.
+     */
+    public SpawnManager getSpawnManager() {
+        return spawnManager;
+    }
+
+    /**
+     * Get the asset manager.
+     * This is used for getting the asset manager.
+     * For example, if the asset manager is not null, it will be used to load
+     * assets.
+     * @return the asset manager.
+     */
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
 }
