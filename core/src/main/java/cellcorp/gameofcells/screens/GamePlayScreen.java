@@ -324,6 +324,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
             zoneManager.update(deltaTimeSeconds);
             glucoseManager.update();
             spawnManager.update();
+            playerCell.update(deltaTimeSeconds);
         }
     }
 

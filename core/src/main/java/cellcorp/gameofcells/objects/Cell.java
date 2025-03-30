@@ -30,8 +30,8 @@ import static java.lang.Math.abs;
  * @assignment GameOfCells
  */
 public class Cell {
-    public static  int MAX_HEALTH = 100;
-    public static  int MAX_ATP = 100;
+    public static int MAX_HEALTH = 100;
+    public static int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
     float cellSize;
 
@@ -70,9 +70,19 @@ public class Cell {
     // Energy Use tracking
     private float lastX;
     private float lastY;
+
+    private float totalDistanceMoved;
+    private float distanceSinceLastATPUse;
+
+    private float currentATPLoss;
+    private float ATPLossThreshold;
+    private float cellSizeATPLossFactor;
+    private float upgradeReductionToCellSizeATPLossFactor;
+
+
     private float xMovementSinceLastTick;
     private float yMovementSInceLastTick;
-    private float totalDistnaceMoved;
+
     private float distanceMovedSinceLastTick;
     private float distanceMovedSinceLastThreshold;
     private float timeThreshold;
@@ -85,11 +95,19 @@ public class Cell {
 
         setUserConfigOrDefault();
         cellSize = 100;
+
         //Move into Config
-        distanceMovedSinceLastTick = 0f;
-        distanceMovedSinceLastThreshold =0f;
-        timeThreshold = 1f;
+//        distanceMovedSinceLastTick = 0f;
+//        distanceMovedSinceLastThreshold =0f;
+//        timeThreshold = 1f;
         timePassedSinceLastATPUse = 0f;
+
+        currentATPLoss = 0f;
+        ATPLossThreshold = 1f;
+        //should be based/set when boolean changes.
+        cellSizeATPLossFactor = 1f;
+        upgradeReductionToCellSizeATPLossFactor = 0f;
+
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
     }
@@ -120,10 +138,28 @@ public class Cell {
             cellCircle.y -= CELL_SPEED * deltaTime;
 
 
+        totalDistanceMoved += abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
+        distanceMovedSinceLastTick += totalDistanceMoved;
 
-        totalDistnaceMoved += abs(lastX-cellCircle.x) + abs(lastY-cellCircle.y);
+        calculateATPLoss(deltaTime);
+        distanceMovedSinceLastTick = 0f;
 
-        System.out.println(totalDistnaceMoved);
+//        System.out.println(totalDistanceMoved);
+    }
+
+    private void calculateATPLoss(float deltaTime) {
+//        currentATPLoss = deltaTime *
+//            (
+//            (1 -
+//                (1 / (1 + (distanceMovedSinceLastTick))))
+//                * ((1 / cellSizeATPLossFactor)
+//                - (1 / upgradeReductionToCellSizeATPLossFactor)));
+
+        currentATPLoss += deltaTime * (
+            (1-(1/(1+distanceMovedSinceLastTick)))
+        *((cellSizeATPLossFactor - upgradeReductionToCellSizeATPLossFactor)));
+        System.out.println(currentATPLoss);
+//        currentATPLoss = deltaTime * (1);
     }
 
     /**
@@ -175,10 +211,18 @@ public class Cell {
             nucleusPulse += delta; // Adjust pulse speed as needed
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
+
+        if(currentATPLoss>=1) {
+            if(cellATP >0) {
+                cellATP -= 1;
+            }
+
+            currentATPLoss =0;
+        }
     }
 
     private void drawOrganelles(SpriteBatch batch) {
-        float cellRadius = cellSize/2f;
+        float cellRadius = cellSize / 2f;
         float centerX = cellCircle.x;
         float centerY = cellCircle.y;
 
@@ -187,9 +231,9 @@ public class Cell {
             var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
             float mitochondriaSize = cellSize * 0.3f; // Adjust size as needed
             batch.draw(mitochondriaTexture,
-                    centerX - cellRadius * 0.6f,
-                    centerY - cellRadius * 0.6f,
-                    mitochondriaSize, mitochondriaSize);
+                centerX - cellRadius * 0.6f,
+                centerY - cellRadius * 0.6f,
+                mitochondriaSize, mitochondriaSize);
         }
 
         // Draw ribosomes (top-left quadrant)
@@ -197,23 +241,23 @@ public class Cell {
             var ribosomeTexture = assetManager.get(AssetFileNames.RIBOSOME_ICON, Texture.class);
             float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
             batch.draw(ribosomeTexture,
-                    centerX - cellRadius * 0.7f,
-                    centerY + cellRadius * 0.3f,
-                    ribosomeSize, ribosomeSize);
+                centerX - cellRadius * 0.7f,
+                centerY + cellRadius * 0.3f,
+                ribosomeSize, ribosomeSize);
         }
 
         // Draw flagella (right edge)
         if (hasFlagella) {
             var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
             batch.draw(flagellaTexture,
-                    centerX + cellRadius * 0.8f, centerY - 5,
-                    10, 5, // Origin for rotation
-                    40, 10, // Size
-                    1, 1, // Scale
-                    flagellaRotation,
-                    0, 0,
-                    flagellaTexture.getWidth(), flagellaTexture.getHeight(),
-                    false, false);
+                centerX + cellRadius * 0.8f, centerY - 5,
+                10, 5, // Origin for rotation
+                40, 10, // Size
+                1, 1, // Scale
+                flagellaRotation,
+                0, 0,
+                flagellaTexture.getWidth(), flagellaTexture.getHeight(),
+                false, false);
         }
 
         // Draw nucleus (center with pulse effect)
@@ -221,9 +265,9 @@ public class Cell {
             var nucleusTexture = assetManager.get(AssetFileNames.NUCLEUS_ICON, Texture.class);
             float nucleusSize = cellSize * 0.4f * pulseScale; // Adjust size and pulse effect
             batch.draw(nucleusTexture,
-                    centerX - nucleusSize / 2,
-                    centerY - nucleusSize / 2,
-                    nucleusSize, nucleusSize);
+                centerX - nucleusSize / 2,
+                centerY - nucleusSize / 2,
+                nucleusSize, nucleusSize);
         }
 
 
@@ -336,6 +380,7 @@ public class Cell {
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
     }
+
     /**
      *
      *
@@ -343,6 +388,7 @@ public class Cell {
     public Circle getCircle() {
         return cellCircle;
     }
+
     /**
      * Adds ATP
      *
@@ -351,6 +397,7 @@ public class Cell {
     public void addCellATP(int increaseAmount) {
         cellATP = Math.min(cellATP + increaseAmount, MAX_ATP);
     }
+
     /**
      * Adds ATP
      * decreases ATP
@@ -364,7 +411,7 @@ public class Cell {
         cellCircle.radius += sizeIncrease / 2;
     }
 
-      /**
+    /**
      * Check if the glucose popup has been shown
      */
     public boolean hasShownGlucosePopup() {
