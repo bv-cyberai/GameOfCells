@@ -74,6 +74,9 @@ public class Cell {
     private float totalDistanceMoved;
     private float distanceSinceLastATPUse;
 
+    private int sizeUpgradeLevel;
+    private int organelleUpgradeLevel;
+
     private float currentATPLost;
     private float ATPLossThreshold;
     private float cellSizeATPLossFactor;
@@ -108,12 +111,15 @@ public class Cell {
         idleATPLossFactor = 0.1f;
         movingATPLossFactor = 0.2f;
 
+        sizeUpgradeLevel = 1;
+        organelleUpgradeLevel =0;
+
         timePassedSinceLastATPUse = 0f;
 
         currentATPLost = 0f;
         ATPLossThreshold = 1f;
         //should be based/set when boolean changes.
-        cellSizeATPLossFactor = 1f;
+        cellSizeATPLossFactor = 2f;
         upgradeReductionToCellSizeATPLossFactor = 0f;
 
 
@@ -158,13 +164,58 @@ public class Cell {
     private void calculateATPLoss(float deltaTime) {
 
         //If Size Loss == Upgrade loss set effective loss to near zero.
-        effectiveLossFactor = Math.max(cellSizeATPLossFactor - upgradeReductionToCellSizeATPLossFactor,0.001f);
+//        effectiveLossFactor = Math.max(cellSizeATPLossFactor - upgradeReductionToCellSizeATPLossFactor,0.00001f);
 
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
 
-        currentATPLost += deltaTime * (idleATPLossFactor + movementMultiplier * movingATPLossFactor) * effectiveLossFactor;
+        if(movementMultiplier > 0) {
+            currentATPLost += deltaTime * (movementMultiplier * movingATPLossFactor);
+        } else {
+            currentATPLost += deltaTime * idleATPLossFactor;
+        }
 
     }
+
+    private float setIdleATPLossFactor() {
+        /* Since all upgrades are sequential we have 8 cases for ATP burn.
+        Case 3 represents a size upgrade with mitochondira, case 4 is the next
+        size upgrade etc... Values can be changed by doing 1/desired time.
+        * */
+        switch (sizeUpgradeLevel) {
+            case 1: return 0.1f; // No upgrade (1 ATP -> 10 sec idle)
+            case 2: return 0.1667f; // 1 ATP -> 6 sec
+            case 3: return 0.125f; // 1 ATP -> 8 sec
+            case 4: return 0.25f; // 1 ATP -> 4 sec
+            case 5: return 0.1667f; // 1 ATP -> 6 sec
+            case 6: return 0.133f; // 1 ATP -> 3 sec
+            case 7: return 0.5f; // 1 ATP -> 2 sec
+            case 8: return 1.0f; // 1 ATP -> 1 sec
+            default: return 0.1f;
+        }
+    }
+
+    private float setMovementATPLossFactor() {
+        /* Since all upgrades are sequential we have 8 cases for ATP burn.
+        Case 3 represents a size upgrade with mitochondria, case 4 is the next
+        size upgrade etc... Values can be changed by doing 1/desired time.
+
+        My logic for ATP burn was essentially as you get organelles like
+        the flagellum they require ATP, but you're more efficient at moving
+        * */
+        switch (sizeUpgradeLevel) {
+            case 1: return 0.2f; // No upgrade (1 ATP -> 5 sec idle)
+            case 2: return 0.3333f; // 1 ATP -> 3 sec
+            case 3: return 0.25f; // 1 ATP -> 4 sec
+            case 4: return 0.2f; // 1 ATP -> 2 sec
+            case 5: return .3333f; // 1 ATP -> 3 sec
+            case 6: return 1.0f; // 1 ATP -> 1 sec
+            case 7: return 0.2f; // 1 ATP -> 5 sec
+            case 8: return 0.14f; // 1 ATP -> 7 sec
+            default: return 0.2f;
+        }
+    }
+
+
 
     /**
      * Moves the cell to a specific position
@@ -223,6 +274,9 @@ public class Cell {
 
             currentATPLost =0;
         }
+
+        idleATPLossFactor =setIdleATPLossFactor();
+        movingATPLossFactor = setMovementATPLossFactor();
     }
 
     private void drawOrganelles(SpriteBatch batch) {
@@ -434,6 +488,7 @@ public class Cell {
      */
     public void setHasMitochondria(boolean hasMitochondria) {
         this.hasMitochondria = hasMitochondria;
+        organelleUpgradeLevel++;
     }
 
     /**
@@ -462,6 +517,7 @@ public class Cell {
      */
     public void setHasRibosomes(boolean hasRibosomes) {
         this.hasRibosomes = hasRibosomes;
+        organelleUpgradeLevel++;
     }
 
     /**
@@ -476,6 +532,7 @@ public class Cell {
      */
     public void setHasFlagella(boolean hasFlagella) {
         this.hasFlagella = hasFlagella;
+        organelleUpgradeLevel++;
     }
 
     /**
@@ -490,6 +547,7 @@ public class Cell {
      */
     public void setHasNucleus(boolean hasNucleus) {
         this.hasNucleus = hasNucleus;
+        organelleUpgradeLevel++;
     }
 
     /**
@@ -512,6 +570,7 @@ public class Cell {
      */
     public void setSmallSizeUpgrade(boolean hasSmallSizeUpgrade) {
         this.hasSmallSizeUpgrade = hasSmallSizeUpgrade;
+        sizeUpgradeLevel++;
     }
 
     /**
@@ -526,6 +585,7 @@ public class Cell {
      */
     public void setMediumSizeUpgrade(boolean hasMediumSizeUpgrade) {
         this.hasMediumSizeUpgrade = hasMediumSizeUpgrade;
+        sizeUpgradeLevel++;
     }
 
     /**
@@ -533,6 +593,7 @@ public class Cell {
      */
     public boolean hasLargeSizeUpgrade() {
         return hasLargeSizeUpgrade;
+
     }
 
     /**
@@ -540,6 +601,7 @@ public class Cell {
      */
     public void setLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
         this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
+        sizeUpgradeLevel++;
     }
 
     /**
@@ -553,6 +615,7 @@ public class Cell {
      * Set whether the cell has the massive size upgrade
      */
     public void setMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
+        sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
     }
 
