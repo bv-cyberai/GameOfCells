@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,14 +22,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.objects.Organelle.OrganelleUpgrade;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -86,7 +85,7 @@ public class ShopScreen implements GameOfCellsScreen {
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    public static final int VIEW_RECT_WIDTH = 1200;
+    public static final int VIEW_RECT_WIDTH = 1280;
     /**
      * Height of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
@@ -94,8 +93,10 @@ public class ShopScreen implements GameOfCellsScreen {
     public static final int VIEW_RECT_HEIGHT = 800;
 
     private int selectedOptionIndex = 0; // Tracks the currently selected option
-    private Table sizeUpgradeTable; // Table containing the size upgrade cards
     private List<Table> optionCards; // List of individual option card tables
+
+    private int width; // Width of the screen
+    private int height; // Height of the screen
 
     /**
      * Constructs the GamePlayScreen.
@@ -265,6 +266,8 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -611,5 +614,51 @@ public class ShopScreen implements GameOfCellsScreen {
             return true; // Highlighted if the glowing border is visible
         }
         return false; // Not highlighted if no glowing border is visible
+    }
+
+    /**
+     * Clear the options in the shop screen.
+     * This is used to clear the options in the shop screen.
+     * This is useful when transitioning to a new screen or resetting the shop.
+     */
+    public void clearOptions() {
+        this.optionCards.clear();
+    }
+
+    public boolean isTransitioning() {
+        // Check if the stage is currently transitioning (fading out)
+        return stage.getRoot().getActions().size > 0 && stage.getRoot().getActions().peek() instanceof AlphaAction;
+    }
+
+    public boolean isPaused() {
+        // Check if the game is paused
+        return previousScreen instanceof GamePlayScreen && ((GamePlayScreen) previousScreen).isPaused();
+    }
+
+    /**
+     * Get the particles object.
+     * This is used to get the particles object for rendering.
+     * @return
+     */
+    public Particles getParticles() {
+        return particles;
+    }
+
+    /**
+     * Get the viewport for the shop screen.
+     * This is used to get the viewport for rendering.
+     * @return
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Get the height of the shop screen.
+     * This is used to get the height of the shop screen.
+     * @return
+     */
+    public int getHeight() {
+        return height;
     }
 }

@@ -708,4 +708,26 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void setLowEnergyWarningCooldown(float lowEnergyWarningCooldown) {
         this.lowEnergyWarningCooldown = lowEnergyWarningCooldown;
     }
+
+    /**
+     * Get the isPaused flag.
+     * This is used for checking if the game is paused.
+     * For example, if the game is paused, it will not update the game state.
+     * @see #isPaused
+     * @return true if the game is paused, false otherwise.
+     */
+    public boolean isPaused() {
+        return isPaused;
+    }
+    
+    /**
+     * Set the paused state of the game.
+     * This is used for checking if the game is paused.
+     * @param paused
+     * @see #isPaused
+     * @return true if the game is paused, false otherwise.
+     */
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
 }

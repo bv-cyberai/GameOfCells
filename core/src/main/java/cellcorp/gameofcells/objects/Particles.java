@@ -75,4 +75,12 @@ public class Particles {
             batch.draw(texture, x, y, size, size); // Draw the particle
         }
     }
+
+    /**
+     * Checks if the particles are active
+     * @return true if particles are active, false otherwise
+     */
+    public boolean isActive() {
+        return !particles.isEmpty();
+    }
 }
