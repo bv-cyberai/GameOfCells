@@ -9,6 +9,8 @@ public class Notification {
     private Color color;
     private float alpha;
 
+    private boolean manuallyExpired = false; // Flag to indicate if the notification was manually expired
+
     public Notification(String message, float duration, Color color) {
         this.message = message;
         this.duration = duration;
@@ -23,6 +25,11 @@ public class Notification {
      * @return
     */
     public boolean update(float deltaTime) {
+        if (manuallyExpired) {
+            alpha = Math.max(0, alpha - deltaTime * 2); // Fade out if manually expired
+            return alpha <= 0; // If manually expired, return true immediately
+        }
+
         elapsedTime += deltaTime;
 
         // Fade in/out logic
@@ -80,5 +87,13 @@ public class Notification {
      */
     public float getDuration() {
         return duration;
+    }
+
+    /**
+     * * * Check if the notification has been manually expired.
+     * This method checks if the notification has been manually expired by the user.
+     */
+    public void expire() {
+        this.manuallyExpired = true; // Set the flag to indicate manual expiration
     }
 }

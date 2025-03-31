@@ -300,6 +300,7 @@ public class HUD {
      * Show Acid Zone Warning
      */
     public void showAcidZoneWarning() {
+        // Check if warning already exists
         boolean warningExists = false;
         for (Notification notification : notificationManager.getNotifications()) {
             if (notification.getMessage().equals("DANGER: Acid zone! You're taking damage!")) {
@@ -315,17 +316,12 @@ public class HUD {
     }
 
     public void clearAcidZoneWarning() {
-        Array<Notification> toRemove = new Array<>();
-
         // Find all acid zone warnings
         for (Notification notification : notificationManager.getNotifications()) {
             if (notification.getMessage().equals("DANGER: Acid zone! You're taking damage!")) {
-                toRemove.add(notification);
+                notification.expire(); // Trigger manual fade out
             }
         }
-
-        // Remove them
-        notificationManager.getNotifications().removeAll(toRemove, true);
     }
 
     /**
