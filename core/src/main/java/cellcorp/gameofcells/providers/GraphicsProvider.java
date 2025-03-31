@@ -99,7 +99,7 @@ public interface GraphicsProvider {
     /**
      * Create a texture from the given pixmap.
      */
-    Texture createTexture();
+    Texture createWhitePixelTexture();
 
     /**
      * Create a pixmap with the given width, height, and format.

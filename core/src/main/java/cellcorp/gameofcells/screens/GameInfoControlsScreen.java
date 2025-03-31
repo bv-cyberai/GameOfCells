@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -44,6 +45,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private final Camera camera;
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
+    private final Texture whitePixelTexture;
 
     private Particles particles;
 
@@ -71,7 +73,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
-        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
+        this.whitePixelTexture = graphicsProvider.createWhitePixelTexture();
         particles = new Particles(whitePixelTexture);
 
         layout = new GlyphLayout();

@@ -15,9 +15,6 @@ import com.badlogic.gdx.utils.viewport.*;
 
 import cellcorp.gameofcells.Main;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 /**
  * GamePlay Screen
  * <p>
@@ -55,7 +52,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Set to true to enable debug drawing.
      */
     public static final boolean DEBUG_DRAW_ENABLED = false;
-    public static final float GLUCOSE_SIZE = 15f;
 
     private final Stage stage;
     private final Main game;

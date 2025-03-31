@@ -85,7 +85,7 @@ public class ShopScreen implements GameOfCellsScreen {
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    public static final int VIEW_RECT_WIDTH = 1200;
+    public static final int VIEW_RECT_WIDTH = 1280;
     /**
      * Height of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
@@ -95,6 +95,13 @@ public class ShopScreen implements GameOfCellsScreen {
     private int selectedOptionIndex = 0; // Tracks the currently selected option
     private Table sizeUpgradeTable; // Table containing the size upgrade cards
     private List<Table> optionCards; // List of individual option card tables
+
+    /**
+     * The width and height of the screen.
+     * These are used to set the size of the viewport.
+     */
+    private int width;
+    private int height;
 
     /**
      * Constructs the GamePlayScreen.
@@ -264,6 +271,9 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -519,5 +529,117 @@ public class ShopScreen implements GameOfCellsScreen {
                 }
             }
         }
+    }
+
+    /**
+     * Get the list of option cards.
+     *
+     * @return The list of option cards.
+     */
+    public List<Table> getOptionCards() {
+        return optionCards;
+    }
+
+    public Table getOptionCards(int index) {
+        return optionCards.get(index);
+    }
+
+    /**
+     * Get the selected option index.
+     *
+     * @return The selected option index.
+     */
+    public int getSelectedOptionIndex() {
+        return selectedOptionIndex;
+    }
+
+    public boolean isHighlighted(Table index) {
+        for (int i = 0; i < optionCards.size(); i++) {
+            Table card = optionCards.get(i);
+            Image glowingBorder = (Image) card.findActor("glowingBorder"); // Find the glowing border by name
+
+            if (glowingBorder != null && card == index) { // Check if the glowing border exists and matches the index
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Clear the options.
+     * <p>
+     * This method clears the options in the shop screen.
+     * It is used to reset the options when navigating back to the shop screen.
+     */
+    public void clearOptions() {
+        for (Table card : optionCards) {
+            card.clear();
+        }
+    }
+
+    /**
+     * Check if the screen is transitioning.
+     * <p>
+     * This method checks if the screen is currently transitioning.
+     * It is used to determine if the screen is in a state of transition.
+     * @return true if the screen is transitioning, false otherwise.
+     */
+    public boolean isTransitioning() {
+        return stage.getRoot().getActions().size > 0;
+    }
+    
+    /**
+     * Check if the screen is paused.
+     * <p>
+     * This method checks if the screen is currently paused.
+     * It is used to determine if the screen is in a paused state.
+     * @return true if the screen is paused, false otherwise.
+     */
+    public boolean isPaused() {
+        return previousScreen.getIsPaused();
+    }
+
+    public Particles getParticles() {
+        return particles;
+    }
+
+    /**
+     * Get the width of the screen.
+     * <p>
+     * This method returns the width of the screen.
+     * @return
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Get the height of the screen.
+     * <p>
+     * This method returns the height of the screen.
+     * @return
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * Get the option background texture.
+     * <p>
+     * This method returns the option background texture.
+     * @return
+     */
+    public Texture getOptionBackgroundTexture() {
+        return createOptionBackgroundTexture();
+    }
+
+    /**
+     * Get the glowing border texture.
+     * <p>
+     * This method returns the glowing border texture.
+     * @return
+     */
+    public Texture getGlowingBorderTexture() {
+        return createGlowingBorderTexture();
     }
 }

@@ -75,4 +75,14 @@ public class Particles {
             batch.draw(texture, x, y, size, size); // Draw the particle
         }
     }
+
+    public boolean isActive() {
+        // Check if any particles are active (not off-screen)
+        for (Particle particle : particles) {
+            if (particle.y > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -97,6 +97,9 @@ public class HUD {
     private static final float HEALTH_BAR_Y = 770f;
     private static final float ATP_BAR_Y = 740f;
     private static final float NOTIFICATION_DURATION = 3f;
+    private static final float NOTIFICATION_VERTICAL_SPACING = 30f;
+    private static final float NOTIFICATION_Y_POSITION = 700f;
+    
 
     /**
      * HUD Class
@@ -125,7 +128,7 @@ public class HUD {
 
         this.notificationFont = graphicsProvider.createBitmapFont();
         this.notificationFont.getData().setScale(hudFontScale);
-        this.notificationManager = new NotificationManager(notificationFont);
+        this.notificationManager = new NotificationManager(notificationFont, NOTIFICATION_VERTICAL_SPACING, NOTIFICATION_Y_POSITION);
 
         // Initialize strings
         this.atpString = "ATP: " + maxATP + "/" + maxATP;

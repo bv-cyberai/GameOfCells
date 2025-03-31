@@ -33,6 +33,7 @@ public class AttractScreen implements GameOfCellsScreen {
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
     private final ShapeRenderer shapeRenderer;
+    private final Texture whitePixelTexture;
 
     /**
      * Width of the HUD view rectangle.
@@ -82,7 +83,7 @@ public class AttractScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.random = new Random();
 
-        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
+        this.whitePixelTexture = graphicsProvider.createWhitePixelTexture();
         this.particles = new Particles(whitePixelTexture);
 
         // Initialize game objects

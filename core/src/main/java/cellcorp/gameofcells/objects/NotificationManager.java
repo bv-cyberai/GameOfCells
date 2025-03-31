@@ -14,10 +14,10 @@ public class NotificationManager {
     private Map<String, Float> notificationCooldowns; // Cooldowns for notifications
     private float cooldownDuration = 1f; // Cooldown duration for notifications (in seconds)
 
-    public NotificationManager(BitmapFont rubikFont) {
+    public NotificationManager(BitmapFont rubikFont, float verticalSpacing, float baseYPosition) {
         this.notifications = new Array<>();
-        this.verticalSpacing = 30f; // Adjust this value as needed
-        this.baseYPosition = 700f; // Should match NOTIFICATION_Y in HUD
+        this.verticalSpacing = verticalSpacing; // Adjust this value as needed
+        this.baseYPosition = baseYPosition; // Should match NOTIFICATION_Y in HUD
         this.notificationCooldowns = new HashMap<>(); // Initialize cooldowns map
     }
 
