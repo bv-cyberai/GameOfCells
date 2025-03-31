@@ -473,7 +473,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Draw a glowing border around the selected upgrade card.
      */
-    private Texture createGlowingBorderTexture() {
+    public Texture createGlowingBorderTexture() {
         int width = (int) OPTION_CARD_WIDTH;
         int height = (int) OPTION_CARD_HEIGHT;
         Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
@@ -660,5 +660,25 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * Get the option background texture.
+     * This is used to get the background texture for the option cards.
+     * This is useful for creating a custom background for the option cards.
+     * @return
+     */
+    public Texture getOptionBackgroundTexture() {
+        return createOptionBackgroundTexture();
+    }
+
+    /**
+     * Get the glowing border texture.
+     * This is used to get the glowing border texture for the option cards.
+     * This is useful for creating a glowing effect around the selected option card.
+     * @return
+     */
+    public Texture getGlowingBorderTexture() {
+        return createGlowingBorderTexture();
     }
 }

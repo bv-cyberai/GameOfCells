@@ -490,4 +490,37 @@ public class TestShopScreen {
         assertEquals(800, shopScreen.getWidth());
         assertEquals(600, shopScreen.getHeight());
     }
+
+    @Test
+    public void textureCreationMethodsWorkCorrectly() {
+        // Create game and move to shop screen
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step(); 
+
+        var shopScreen = (ShopScreen) gameRunner.game.getScreen();
+
+        // Test option background texture creation
+        var optionBackgroundTexture = shopScreen.getOptionBackgroundTexture();
+        assertNotNull(optionBackgroundTexture);
+
+        // Test glowing border texture creation
+        var glowingBorderTexture = shopScreen.getGlowingBorderTexture();
+        assertNotNull(glowingBorderTexture);
+
+        // Verify textures are different
+        assertNotEquals(optionBackgroundTexture, glowingBorderTexture);
+
+        // Test texture disposal (should not throw exceptions)
+        assertDoesNotThrow(() -> {
+            optionBackgroundTexture.dispose();
+            glowingBorderTexture.dispose();
+        });
+    }
 }
