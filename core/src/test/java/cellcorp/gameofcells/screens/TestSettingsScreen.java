@@ -1,4 +1,4 @@
-package cellcorp.gameofcells.objects;
+package cellcorp.gameofcells.screens;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +19,6 @@ import com.badlogic.gdx.graphics.GL20;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.runner.GameRunner;
-import cellcorp.gameofcells.screens.GameInfoControlsScreen;
-import cellcorp.gameofcells.screens.SettingsScreen;
 
 public class TestSettingsScreen {
     

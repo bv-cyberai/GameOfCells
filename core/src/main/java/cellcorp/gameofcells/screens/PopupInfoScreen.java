@@ -91,7 +91,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      * @param type             - The type of popup to create -- See type enum.
      */
     public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
-                           Main game, GameOfCellsScreen previousScreen,ConfigProvider configProvider, Type type) {
+        Main game, GameOfCellsScreen previousScreen,ConfigProvider configProvider, Type type) {
 
         this.type = type;
 

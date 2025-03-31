@@ -1,9 +1,7 @@
 package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

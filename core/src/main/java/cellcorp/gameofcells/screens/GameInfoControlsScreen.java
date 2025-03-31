@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -166,5 +167,31 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         spriteBatch.begin();
         whiteFont.draw(spriteBatch, layout, startX, startY);
         spriteBatch.end();
+    }
+
+    /**
+     * Get the control message.
+     * @return The control message.
+     * This message contains information about the game and its controls.
+     * It is displayed on the screen when the game info controls screen is shown.
+     */
+    public String getMessage() {
+        return controlMessage;
+    }
+
+    /**
+     * Get the sprite batch.
+     * @return The sprite batch used for rendering.
+     */
+    public SpriteBatch getSpriteBatch() {
+        return spriteBatch;
+    }
+
+    /**
+     * Get the white pixel texture.
+     * @return The white pixel texture used for rendering particles.
+     */
+    public Particles getParticles() {
+        return particles;
     }
 }
