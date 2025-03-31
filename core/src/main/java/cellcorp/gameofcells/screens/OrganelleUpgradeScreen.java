@@ -645,4 +645,8 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
     public boolean hasNucleus() {
         return playerCell.hasNucleus();
     }
+
+    public List<OrganelleUpgrade> getUpgrades() {
+        return upgrades;
+    }
 }

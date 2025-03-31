@@ -28,6 +28,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
+import cellcorp.gameofcells.objects.Organelle.OrganelleUpgrade;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -519,5 +520,96 @@ public class ShopScreen implements GameOfCellsScreen {
                 }
             }
         }
+    }
+
+    /**
+     * Get the list of option cards.
+     * This is used to update the option cards in the shop screen.
+     * The list contains the size and organelle upgrade cards.
+     * @return 
+     */
+    public List<Table> getOptionCards() {
+        return optionCards;
+    }
+
+    /**
+     * Get the option card at the specified index.
+     * This is used to get the selected option in the shop screen.
+     * The index corresponds to the size and organelle upgrade options.
+     * @param selectedOptionIndex
+     * @return
+     */
+    public Table getOptionCards(int selectedOptionIndex) {
+        return optionCards.get(selectedOptionIndex);
+    }
+
+    /**
+     * Set the list of option cards.
+     * This is used to update the option cards in the shop screen.
+     * @param optionCards
+     */
+    public void setOptionCards(List<Table> optionCards) {
+        this.optionCards = optionCards;
+    }
+
+    /**
+     * Get the selected option index.
+     * This is used to get the selected option in the shop screen.
+     * The index corresponds to the size and organelle upgrade options.
+     * 0 = Size upgrade
+     * 1 = Organelle upgrade
+     * @return 
+     */
+    public int getSelectedOptionIndex() {
+        return selectedOptionIndex;
+    }
+
+    /**
+     * Set the selected option index.
+     * This is used to update the selected option in the shop screen.
+     * @param selectedOptionIndex
+     */
+    public void setSelectedOptionIndex(int selectedOptionIndex) {
+        this.selectedOptionIndex = selectedOptionIndex;
+    }
+
+    /**
+     * Get the player cell size tracker.
+     * This is used to get the size of the player cell.
+     * @return
+     */
+    public int getSizeTracker() {
+        return playerCell.getcellSize();
+    }
+
+    /**
+     * Get the ATP tracker.
+     * This is used to get the ATP of the player cell.
+     * @return 
+     */
+    public int getATPTracker() {
+        return playerCell.getCellATP();
+    }
+
+    /**
+     * Get the player cell.
+     * This is used to get the player cell object.
+     * @return playerCell
+     */
+    public Cell getPlayerCell() {
+        return playerCell;
+    }
+
+    /**
+     * Check if the option card is highlighted.
+     * This is used to check if the option card is highlighted.
+     * @return true if the option card is highlighted, false otherwise.
+     */
+    public boolean isHighlighted(Table card) {
+        Image glowingBorder = (Image) card.findActor("glowingBorder");
+        if (glowingBorder != null && glowingBorder.isVisible()) {
+            return true; // Highlighted if the glowing border is visible
+        }
+        return false; // Not highlighted if no glowing border is visible
     }
 }
