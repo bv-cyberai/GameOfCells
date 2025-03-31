@@ -82,7 +82,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.spriteBatch = graphicsProvider.createSpriteBatch();
         
         // Load white pixel texture and initialize particles
-        this.whitePixelTexture = graphicsProvider.createTexture();
+        this.whitePixelTexture = graphicsProvider.createWhitePixelTexture();
         this.particles = new Particles(whitePixelTexture);
 
         //Config provider can be 'constructed' anywhere, this is useful as game objects will need access

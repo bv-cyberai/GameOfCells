@@ -44,6 +44,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private final Camera camera;
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
+    private final Texture whitePixelTexture;
 
     private Particles particles;
 
@@ -71,8 +72,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
-        Texture whitePixelTexture = new Texture(AssetFileNames.WHITE_PIXEL);
-        particles = new Particles(whitePixelTexture);
+        this.whitePixelTexture = graphicsProvider.createWhitePixelTexture();
+        this.particles = new Particles(whitePixelTexture);
 
         layout = new GlyphLayout();
         controlMessage = "Game Info:\n" +

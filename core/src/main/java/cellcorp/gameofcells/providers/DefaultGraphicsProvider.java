@@ -60,7 +60,7 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
-    public Texture createTexture() {
+    public Texture createWhitePixelTexture() {
         Pixmap whitePixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         whitePixmap.setColor(Color.WHITE);
         whitePixmap.fill();

@@ -67,7 +67,7 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
-    public Texture createTexture() {
+    public Texture createWhitePixelTexture() {
         return Mockito.mock(Texture.class);
     }
 

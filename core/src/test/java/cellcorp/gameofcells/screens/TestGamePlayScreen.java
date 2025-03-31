@@ -212,4 +212,52 @@ public class TestGamePlayScreen {
         // Resize should not throw
         assertDoesNotThrow(() -> gamePlayScreen.resize(testWidth, testHeight));
     }
+
+    @Test
+    public void gamePlayScreenDisposeDoesNotThrow() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+        
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        
+        // Dispose should not throw
+        assertDoesNotThrow(() -> gamePlayScreen.dispose());
+    }
+
+    @Test
+    public void gamePlayScreenPauseDoesNotThrow() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+        
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        
+        // Pause should not throw
+        assertDoesNotThrow(() -> gamePlayScreen.pause());
+    }
+
+    @Test
+    public void gamePlayScreenResumeDoesNotThrow() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+        
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        
+        // Resume should not throw
+        assertDoesNotThrow(() -> gamePlayScreen.resume());
+    }
+
+    @Test
+    public void gamePlayScreenShowDoesNotThrow() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+        
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        
+        // Show should not throw
+        assertDoesNotThrow(() -> gamePlayScreen.show());
+    }
 }

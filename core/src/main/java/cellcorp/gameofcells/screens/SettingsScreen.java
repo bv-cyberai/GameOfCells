@@ -75,7 +75,7 @@ public class SettingsScreen implements GameOfCellsScreen {
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
         // Load white pixel texture and initialize particles
-        this.whitePixelTexture = graphicsProvider.createTexture();
+        this.whitePixelTexture = graphicsProvider.createWhitePixelTexture();
         this.particles = new Particles(whitePixelTexture);
 
         layout = new GlyphLayout();
@@ -196,4 +196,12 @@ public class SettingsScreen implements GameOfCellsScreen {
         spriteBatch.end();
     }
 
+    
+    /**
+     * Get the index of the currently selected option.
+     * @return
+     */
+    public int getSelectedOption() {
+        return selectedOption;
+    }
 }
