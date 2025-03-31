@@ -79,8 +79,6 @@ public class HUD {
     private BitmapFont notificationFont;
     private float hudFontScale = 0.25f;
     private float barFontScale = 0.2f;
-    private boolean acidWarningActive = false;
-    private float acidWarningDuration = 5f; // Duration of the acid warning
 
     // glyph
     private GlyphLayout healthLayout;
@@ -302,9 +300,17 @@ public class HUD {
      * Show Acid Zone Warning
      */
     public void showAcidZoneWarning() {
-        if (!acidWarningActive) {
-            addNotification("DANGER: Acid zone! You're taking damage!", acidWarningDuration, Color.RED);
-            acidWarningActive = true;
+        boolean warningExists = false;
+        for (Notification notification : notificationManager.getNotifications()) {
+            if (notification.getMessage().equals("DANGER: Acid zone! You're taking damage!")) {
+                warningExists = true;
+                break;
+            }
+        }
+
+        if (!warningExists) {
+            // Add the notification with a very long duration (effectively infinite)
+            addNotification("DANGER: Acid zone! You're taking damage!", Float.MAX_VALUE, Color.RED);
         }
     }
 

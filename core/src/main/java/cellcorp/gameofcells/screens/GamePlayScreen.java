@@ -325,13 +325,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
             if (inAcidZone) {
                 hud.showAcidZoneWarning();
-
             } else if (wasInAcidZone) {
-                // If the cell was in an acid zone last frame, and is not in one now,
+                // If the cell was in an acid zone last frame, but not this frame,
                 // remove the warning
                 hud.clearAcidZoneWarning();
             }
-            wasInAcidZone = inAcidZone;
+            wasInAcidZone = inAcidZone; // Update the wasInAcidZone flag
 
             // Check for low energy (20 or below)
             if (playerCell.getCellATP() <= 20 && playerCell.getCellATP() > 0 && lowEnergyWarningCooldown <= 0 && !hasShownEnergyWarning) {
