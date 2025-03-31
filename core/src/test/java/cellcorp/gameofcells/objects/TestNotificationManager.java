@@ -16,8 +16,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.objects.Notification;
-import cellcorp.gameofcells.objects.NotificationManager;
 
 import org.mockito.Mockito;
 
@@ -61,7 +59,7 @@ public class TestNotificationManager {
     @Test
     public void systemStartsEmpty() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont);
+        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
         
         assertTrue(system.getNotifications().isEmpty());
     }
@@ -73,7 +71,7 @@ public class TestNotificationManager {
     @Test
     public void addNotificationWorks() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont);
+        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
         
         system.addNotification("Test", 1f, Color.RED);
         assertEquals(1, system.getNotifications().size);
@@ -90,7 +88,7 @@ public class TestNotificationManager {
     @Test
     public void updateRemovesExpiredNotifications() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont);
+        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
         
         // Add a short-lived notification
         system.addNotification("Temp", 0.1f, Color.WHITE);
@@ -108,7 +106,7 @@ public class TestNotificationManager {
     @Test
     public void updatePreservesActiveNotifications() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont);
+        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
         
         system.addNotification("Long", 2f, Color.GREEN);
         system.update(1f);
@@ -124,7 +122,7 @@ public class TestNotificationManager {
     @Test
     public void multipleNotificationsStackInOrder() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont);
+        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
         
         system.addNotification("First", 1f, Color.RED);
         system.addNotification("Second", 1f, Color.GREEN);
