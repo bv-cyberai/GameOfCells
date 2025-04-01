@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -91,6 +92,7 @@ public class Cell {
     private float yMovementSInceLastTick;
 
     private float distanceMovedSinceLastTick;
+    private float atpLossTimer;
     private float distanceMovedSinceLastThreshold;
     private float timeThreshold;
     private float timePassedSinceLastATPUse;
@@ -108,6 +110,8 @@ public class Cell {
 //        distanceMovedSinceLastThreshold =0f;
 //        timeThreshold = 1f;
 
+
+
         idleATPLossFactor = 0.1f;
         movingATPLossFactor = 0.2f;
 
@@ -117,6 +121,7 @@ public class Cell {
         timePassedSinceLastATPUse = 0f;
 
         currentATPLost = 0f;
+        atpLossTimer = 0f;
         ATPLossThreshold = 1f;
         //should be based/set when boolean changes.
         cellSizeATPLossFactor = 2f;
@@ -141,15 +146,45 @@ public class Cell {
         lastY = cellCircle.y;
         timePassedSinceLastATPUse += deltaTime;
 
+        float dx = 0;
+        float dy = 0;
 
-        if (moveLeft)
-            cellCircle.x -= CELL_SPEED * deltaTime;
-        if (moveRight)
-            cellCircle.x += CELL_SPEED * deltaTime;
-        if (moveUp)
-            cellCircle.y += CELL_SPEED * deltaTime;
-        if (moveDown)
-            cellCircle.y -= CELL_SPEED * deltaTime;
+        if (moveLeft)  {
+            dx -= 1;
+        }
+        if (moveRight)  {
+            dx += 1;
+        }
+        if (moveUp) {
+            dy += 1;
+        }
+        if (moveDown)  {
+            dy -= 1;
+        }
+
+        // Normalize movement along diagonal
+        float length = (float) Math.sqrt(dx * dx + dy * dy);
+        if (length > 0) {
+            dx /= length;
+            dy /= length;
+        }
+
+        cellCircle.x += dx * CELL_SPEED * deltaTime;
+        cellCircle.y += dy * CELL_SPEED * deltaTime;
+
+
+//        if (moveLeft) {
+//            cellCircle.x -= CELL_SPEED * deltaTime;
+//        }
+//        else if (moveRight) {
+//            cellCircle.x += CELL_SPEED * deltaTime;
+//        }
+//        else if (moveUp) {
+//            cellCircle.y += CELL_SPEED * deltaTime;
+//        }
+//        else if (moveDown) {
+//            cellCircle.y -= CELL_SPEED * deltaTime;
+//        }
 
 
         totalDistanceMoved += abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
@@ -181,6 +216,7 @@ public class Cell {
         Case 3 represents a size upgrade with mitochondira, case 4 is the next
         size upgrade etc... Values can be changed by doing 1/desired time.
         * */
+        System.out.println("sizeupgradelevel: " + sizeUpgradeLevel);
         switch (sizeUpgradeLevel) {
             case 1: return 0.1f; // No upgrade (1 ATP -> 10 sec idle)
             case 2: return 0.1667f; // 1 ATP -> 6 sec
@@ -248,6 +284,7 @@ public class Cell {
         batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellSize, cellSize);
 
         drawOrganelles(batch);
+
         batch.end();
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -257,6 +294,7 @@ public class Cell {
     }
 
     public void update(float delta) {
+        atpLossTimer += delta;
         // Update animations
         if (hasFlagella) {
             flagellaRotation += 100 * delta; // Adjust rotation speed as needed

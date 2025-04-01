@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.providers.GraphicsProvider;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,7 +17,7 @@ import cellcorp.gameofcells.providers.GraphicsProvider;
  * Hud Class
  *
  * Provides HUD functionality
- * 
+ *
  * @author Brendon Vinyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -93,12 +94,12 @@ public class HUD {
 
     /**
      * HUD Class
-     * 
+     *
      * Provides HUD Functionality for the game.
-     * 
+     *
      * This font is built using size 100 font. Scaling down looks nice,
      * scaling up is ugly and should be avoided.
-     * 
+     *
      * This font cant be changed if you have other preferences.
      */
     public HUD(GraphicsProvider graphicsProvider, AssetManager assetManager, int maxHealth, int maxATP) {
@@ -185,6 +186,7 @@ public class HUD {
         if (timerString != null) {
             font.draw(batch, timerString, 10, 730);
         }
+        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
     }
 
@@ -194,13 +196,13 @@ public class HUD {
 
     /**
      * Draw EnergyBarText
-     * 
+     *
      * This draws "Health" and "ATP" over the energy bars.
-     * 
+     *
      * NOTE: This is separated due HUD utilizing Spritebatch, and
      * Energybars using ShapeRenderer. Additionally it felt correct to keep
      * text rendering within the HUD class.
-     * 
+     *
      * @param batch - The Game SpriteBatch
      */
     public void drawBarText(SpriteBatch batch) {
@@ -237,9 +239,9 @@ public class HUD {
 
     /**
      * Updater
-     * 
+     *
      * Updates time, and associated cell attributes (Health/ATP) for the HUD.
-     * 
+     *
      * @param delta - time since last render.
      */
     public void update(float delta, int cellHealth, int cellATP) {
@@ -255,7 +257,7 @@ public class HUD {
 
     /**
      * Time Rounder
-     * 
+     *
      * Rounds time to 1 second intervals
      */
     private void roundTime() {
@@ -279,7 +281,7 @@ public class HUD {
 
     /**
      * Timer String getter
-     * 
+     *
      * @return The timing string
      */
     public String getTimerString() {
@@ -288,7 +290,7 @@ public class HUD {
 
     /**
      * ATP String getter
-     * 
+     *
      * @return the ATP String
      */
     public String getAtpString() {
@@ -297,7 +299,7 @@ public class HUD {
 
     /**
      * Health String Getter
-     * 
+     *
      * @return - the Health String
      */
     public String getCellHealthString() {
