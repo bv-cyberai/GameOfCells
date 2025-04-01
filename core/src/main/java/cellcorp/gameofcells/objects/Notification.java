@@ -96,4 +96,13 @@ public class Notification {
     public void expire() {
         this.manuallyExpired = true; // Set the flag to indicate manual expiration
     }
+
+    /**
+     * * Set the manually expired flag.
+     * This method is used to set the manually expired flag for the notification.
+     * @param manuallyExpired The value to set for the manually expired flag.
+     */
+    public void setManuallyExpired(boolean manuallyExpired) {
+        this.manuallyExpired = manuallyExpired; // Set the flag to indicate manual expiration
+    }
 }
