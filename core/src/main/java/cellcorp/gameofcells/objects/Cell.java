@@ -1,6 +1,5 @@
 package cellcorp.gameofcells.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -84,7 +83,7 @@ public class Cell {
     private float upgradeReductionToCellSizeATPLossFactor;
 
     private float idleATPLossFactor;
-    private float movingATPLossFactor;
+    private float upgradeATPLossFactor;
     private float effectiveLossFactor;
 
 
@@ -113,9 +112,9 @@ public class Cell {
 
 
         idleATPLossFactor = 0.1f;
-        movingATPLossFactor = 0.2f;
+        upgradeATPLossFactor = 0.2f;
 
-        sizeUpgradeLevel = 1;
+        sizeUpgradeLevel = 0;
         organelleUpgradeLevel =0;
 
         timePassedSinceLastATPUse = 0f;
@@ -141,7 +140,7 @@ public class Cell {
      * @param moveDown  - If the cell should move down
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
-
+        //track these values to calculate ATP Burn.
         lastX = cellCircle.x;
         lastY = cellCircle.y;
         timePassedSinceLastATPUse += deltaTime;
@@ -173,81 +172,47 @@ public class Cell {
         cellCircle.y += dy * CELL_SPEED * deltaTime;
 
 
-//        if (moveLeft) {
-//            cellCircle.x -= CELL_SPEED * deltaTime;
-//        }
-//        else if (moveRight) {
-//            cellCircle.x += CELL_SPEED * deltaTime;
-//        }
-//        else if (moveUp) {
-//            cellCircle.y += CELL_SPEED * deltaTime;
-//        }
-//        else if (moveDown) {
-//            cellCircle.y -= CELL_SPEED * deltaTime;
-//        }
-
-        float distanceThisTicket =  abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
-        totalDistanceMoved += abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
-        System.out.println("totalDistanceMoved:" + totalDistanceMoved);
-        distanceMovedSinceLastTick += distanceThisTicket ;
-
+        distanceMovedSinceLastTick =  abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
+        totalDistanceMoved += distanceMovedSinceLastTick;
         calculateATPLoss(deltaTime);
         distanceMovedSinceLastTick = 0f;
 
-//        System.out.println(totalDistanceMoved);
     }
 
     private void calculateATPLoss(float deltaTime) {
-
-        //If Size Loss == Upgrade loss set effective loss to near zero.
-//        effectiveLossFactor = Math.max(cellSizeATPLossFactor - upgradeReductionToCellSizeATPLossFactor,0.00001f);
-
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
-        System.out.println("movementMultipler: " + movementMultiplier);
+
         if(movementMultiplier > 0) {
-            currentATPLost += deltaTime * (movementMultiplier * movingATPLossFactor);
+//            currentATPLost += deltaTime * (movementMultiplier *  (idleATPLossFactor + upgradeATPLossFactor));
+            currentATPLost += deltaTime * (1.5f * (idleATPLossFactor + upgradeATPLossFactor));
         } else {
-            currentATPLost += deltaTime * idleATPLossFactor;
+            currentATPLost += deltaTime * (idleATPLossFactor + upgradeATPLossFactor);
         }
 
     }
 
     private float setIdleATPLossFactor() {
-        /* Since all upgrades are sequential we have 8 cases for ATP burn.
-        Case 3 represents a size upgrade with mitochondira, case 4 is the next
-        size upgrade etc... Values can be changed by doing 1/desired time.
-        * */
         System.out.println("sizeupgradelevel: " + sizeUpgradeLevel);
         switch (sizeUpgradeLevel) {
-            case 1: return 0.1f; // No upgrade (1 ATP -> 10 sec idle)
-            case 2: return 0.1667f; // 1 ATP -> 6 sec
-            case 3: return 0.125f; // 1 ATP -> 8 sec
-            case 4: return 0.25f; // 1 ATP -> 4 sec
-            case 5: return 0.1667f; // 1 ATP -> 6 sec
-            case 6: return 0.133f; // 1 ATP -> 3 sec
-            case 7: return 0.5f; // 1 ATP -> 2 sec
-            case 8: return 1.0f; // 1 ATP -> 1 sec
+            case 0: return 1f / 11f; // No upgrade (1 ATP -> 11 sec idle)
+            case 1: return 1f/ 10f; // 1 ATP -> 10 sec
+            case 2: return 1f/9f; // 1 ATP -> 9 sec
+            case 3: return 1f/8f; // 1 ATP -> 8 sec
+            case 4: return 1f/7f; // 1 ATP -> 7 sec
+            //should never be hit.
             default: return 0.1f;
         }
     }
 
-    private float setMovementATPLossFactor() {
-        /* Since all upgrades are sequential we have 8 cases for ATP burn.
-        Case 3 represents a size upgrade with mitochondria, case 4 is the next
-        size upgrade etc... Values can be changed by doing 1/desired time.
+    private float setUpgradeLossFactor() {
+        switch (organelleUpgradeLevel) {
+            case 0: return 0f; // No upgrade (Only Size Burn)
+            case 1: return 1f; // Mit Upgrade 1 Extra ATP
+            case 2: return 2f; // Ribo Upgrade 2 Extra ATP
+            case 3: return 3f; // Flag Upgrade 3 Extra ATP
+            case 4: return 4f; // Nuke Upgrade 4 Extra ATP
 
-        My logic for ATP burn was essentially as you get organelles like
-        the flagellum they require ATP, but you're more efficient at moving
-        * */
-        switch (sizeUpgradeLevel) {
-            case 1: return 0.2f; // No upgrade (1 ATP -> 5 sec idle)
-            case 2: return 0.3333f; // 1 ATP -> 3 sec
-            case 3: return 0.25f; // 1 ATP -> 4 sec
-            case 4: return 0.2f; // 1 ATP -> 2 sec
-            case 5: return .3333f; // 1 ATP -> 3 sec
-            case 6: return 1.0f; // 1 ATP -> 1 sec
-            case 7: return 0.2f; // 1 ATP -> 5 sec
-            case 8: return 0.14f; // 1 ATP -> 7 sec
+            //Should never be hit.
             default: return 0.2f;
         }
     }
@@ -306,7 +271,7 @@ public class Cell {
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
 
-        System.out.println("CURRATPLOST: " + currentATPLost);
+//        System.out.println("CURRATPLOST: " + currentATPLost);
         if(currentATPLost >=1) {
             if(cellATP >0) {
                 cellATP -= 1;
@@ -316,8 +281,8 @@ public class Cell {
         }
 
         idleATPLossFactor =setIdleATPLossFactor();
-        System.out.println("IDLEATPLOSSFACTOR: " + idleATPLossFactor);
-        movingATPLossFactor = setMovementATPLossFactor();
+//        System.out.println("IDLEATPLOSSFACTOR: " + idleATPLossFactor);
+        upgradeATPLossFactor = setUpgradeLossFactor();
     }
 
     private void drawOrganelles(SpriteBatch batch) {
