@@ -186,7 +186,8 @@ public class HUD {
         if (timerString != null) {
             font.draw(batch, timerString, 10, 730);
         }
-        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+        //Was using to track time, but will likely be useful when tracking down our stutter bug.
+//        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
     }
 

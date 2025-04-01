@@ -96,7 +96,8 @@ public class Cell {
     }
 
     /**
-     * Moves the cell based on input direction as well as its collision circle
+     * Moves the cell based on input direction as well as its collision circle,
+     * diagonal movment is normalized.
      *
      * @param deltaTime - The time passed since the last frame
      * @param moveLeft  - If the cell should move left
@@ -133,14 +134,15 @@ public class Cell {
 
         cellCircle.x += dx * CELL_SPEED * deltaTime;
         cellCircle.y += dy * CELL_SPEED * deltaTime;
-
-//        calculateATPLoss(deltaTime);
-//
-//        //tracked for ATP and game over stats.
-//        totalDistanceMoved += distanceMovedSinceLastTick;
-//        distanceMovedSinceLastTick = 0f;
     }
 
+    /**
+     * ATP Loss Calculation
+     *
+     * Returns ATPburn based on movement upgrades and size.
+     *
+     * @param deltaTime time since last render
+     */
     private void calculateATPLoss(float deltaTime) {
         distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
 
@@ -154,6 +156,18 @@ public class Cell {
 
     }
 
+    /**
+     * TotalLossFactor Settor
+     *
+     * Sets the loss factor based on cell size, and number of upgrades.
+     *
+     * Case = Size of Cell
+     *
+     * Idle burn rate are given for each case.
+     * Moving burn rates are half of these values.
+     * Organelles lower the base burn rate by the upgrade level.
+     * @return The total loss factor.
+     */
     private float setTotalLossFactor() {
         switch (sizeUpgradeLevel) {
             case 0:
@@ -237,6 +251,8 @@ public class Cell {
             }
             currentATPLost = 0;
         }
+
+        //Recalculate loss factor.
         totalATPLossFactor = setTotalLossFactor();
 
     }
