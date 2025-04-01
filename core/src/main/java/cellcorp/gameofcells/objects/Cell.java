@@ -124,7 +124,6 @@ public class Cell {
         if (moveDown) {
             dy -= 1;
         }
-
         // Normalize movement along diagonal
         float length = (float) Math.sqrt(dx * dx + dy * dy);
         if (length > 0) {
@@ -135,14 +134,11 @@ public class Cell {
         cellCircle.x += dx * CELL_SPEED * deltaTime;
         cellCircle.y += dy * CELL_SPEED * deltaTime;
 
-
-//        distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
-
-        calculateATPLoss(deltaTime);
-
-        totalDistanceMoved += distanceMovedSinceLastTick;
-        distanceMovedSinceLastTick = 0f;
-
+//        calculateATPLoss(deltaTime);
+//
+//        //tracked for ATP and game over stats.
+//        totalDistanceMoved += distanceMovedSinceLastTick;
+//        distanceMovedSinceLastTick = 0f;
     }
 
     private void calculateATPLoss(float deltaTime) {
@@ -158,7 +154,6 @@ public class Cell {
 
     }
 
-
     private float setTotalLossFactor() {
         switch (sizeUpgradeLevel) {
             case 0:
@@ -173,10 +168,9 @@ public class Cell {
                 return 1f / (7f - organelleUpgradeLevel); // 1 ATP -> 7 sec
             //should never be hit.
             default:
-                return 0.1f;
+                return 0.0f;
         }
     }
-
 
     /**
      * Moves the cell to a specific position
@@ -219,7 +213,13 @@ public class Cell {
     }
 
     public void update(float delta) {
-//        atpLossTimer += delta;
+
+        calculateATPLoss(delta);
+
+        //tracked for ATP and game over stats.
+        totalDistanceMoved += distanceMovedSinceLastTick;
+        distanceMovedSinceLastTick = 0f;
+
         // Update animations
         if (hasFlagella) {
             flagellaRotation += 100 * delta; // Adjust rotation speed as needed
@@ -230,11 +230,11 @@ public class Cell {
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
 
+        //When ATP loss accumulates above 1, subtract and reset currentATPLost.
         if (currentATPLost >= 1) {
             if (cellATP > 0) {
                 cellATP -= 1;
             }
-
             currentATPLost = 0;
         }
         totalATPLossFactor = setTotalLossFactor();
