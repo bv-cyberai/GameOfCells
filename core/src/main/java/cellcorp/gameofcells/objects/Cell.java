@@ -110,12 +110,11 @@ public class Cell {
 //        timeThreshold = 1f;
 
 
-
         idleATPLossFactor = 0.1f;
         upgradeATPLossFactor = 0.2f;
 
         sizeUpgradeLevel = 0;
-        organelleUpgradeLevel =0;
+        organelleUpgradeLevel = 0;
 
         timePassedSinceLastATPUse = 0f;
 
@@ -148,16 +147,16 @@ public class Cell {
         float dx = 0;
         float dy = 0;
 
-        if (moveLeft)  {
+        if (moveLeft) {
             dx -= 1;
         }
-        if (moveRight)  {
+        if (moveRight) {
             dx += 1;
         }
         if (moveUp) {
             dy += 1;
         }
-        if (moveDown)  {
+        if (moveDown) {
             dy -= 1;
         }
 
@@ -172,7 +171,7 @@ public class Cell {
         cellCircle.y += dy * CELL_SPEED * deltaTime;
 
 
-        distanceMovedSinceLastTick =  abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
+        distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
         totalDistanceMoved += distanceMovedSinceLastTick;
         calculateATPLoss(deltaTime);
         distanceMovedSinceLastTick = 0f;
@@ -182,41 +181,73 @@ public class Cell {
     private void calculateATPLoss(float deltaTime) {
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
 
-        if(movementMultiplier > 0) {
+        if (movementMultiplier > 0) {
 //            currentATPLost += deltaTime * (movementMultiplier *  (idleATPLossFactor + upgradeATPLossFactor));
-            currentATPLost += deltaTime * (1.5f * (idleATPLossFactor + upgradeATPLossFactor));
+//            currentATPLost += deltaTime * (1.2f * (idleATPLossFactor + upgradeATPLossFactor));
+            currentATPLost += deltaTime * (2 * movementMultiplier* (idleATPLossFactor));
         } else {
-            currentATPLost += deltaTime * (idleATPLossFactor + upgradeATPLossFactor);
+//            currentATPLost += deltaTime * (idleATPLossFactor + upgradeATPLossFactor);
+            currentATPLost += deltaTime * (idleATPLossFactor);
         }
 
     }
 
     private float setIdleATPLossFactor() {
-        System.out.println("sizeupgradelevel: " + sizeUpgradeLevel);
+//        System.out.println("sizeupgradelevel: " + sizeUpgradeLevel);
         switch (sizeUpgradeLevel) {
-            case 0: return 1f / 11f; // No upgrade (1 ATP -> 11 sec idle)
-            case 1: return 1f/ 10f; // 1 ATP -> 10 sec
-            case 2: return 1f/9f; // 1 ATP -> 9 sec
-            case 3: return 1f/8f; // 1 ATP -> 8 sec
-            case 4: return 1f/7f; // 1 ATP -> 7 sec
+            case 0:
+                return 1f / 11f; // No upgrade (1 ATP -> 11 sec idle)
+            case 1:
+                return 1f / 10f; // 1 ATP -> 10 sec
+            case 2:
+                return 1f / 9f; // 1 ATP -> 9 sec
+            case 3:
+                return 1f / 8f; // 1 ATP -> 8 sec
+            case 4:
+                return 1f / 7f; // 1 ATP -> 7 sec
             //should never be hit.
-            default: return 0.1f;
+            default:
+                return 0.1f;
+        }
+    }
+
+    private float setTotalLossFactor() {
+//        System.out.println("sizeupgradelevel: " + sizeUpgradeLevel);
+        switch (sizeUpgradeLevel) {
+            case 0:
+                return 1f / (11f - organelleUpgradeLevel); // No upgrade (1 ATP -> 11 sec idle)
+            case 1:
+                return 1f / (10f - organelleUpgradeLevel); // 1 ATP -> 10 sec
+            case 2:
+                return 1f / (9f - organelleUpgradeLevel); // 1 ATP -> 9 sec
+            case 3:
+                return 1f / (8f - organelleUpgradeLevel); // 1 ATP -> 8 sec
+            case 4:
+                return 1f / (7f - organelleUpgradeLevel); // 1 ATP -> 7 sec
+            //should never be hit.
+            default:
+                return 0.1f;
         }
     }
 
     private float setUpgradeLossFactor() {
         switch (organelleUpgradeLevel) {
-            case 0: return 0f; // No upgrade (Only Size Burn)
-            case 1: return 1f; // Mit Upgrade 1 Extra ATP
-            case 2: return 2f; // Ribo Upgrade 2 Extra ATP
-            case 3: return 3f; // Flag Upgrade 3 Extra ATP
-            case 4: return 4f; // Nuke Upgrade 4 Extra ATP
+            case 0:
+                return 0f; // No upgrade (Only Size Burn)
+            case 1:
+                return .01f; // Mit Upgrade 1 Extra ATP
+            case 2:
+                return .02f; // Ribo Upgrade 2 Extra ATP
+            case 3:
+                return .03f; // Flag Upgrade 3 Extra ATP
+            case 4:
+                return .04f; // Nuke Upgrade 4 Extra ATP
 
             //Should never be hit.
-            default: return 0.2f;
+            default:
+                return 0.2f;
         }
     }
-
 
 
     /**
@@ -272,15 +303,16 @@ public class Cell {
         }
 
 //        System.out.println("CURRATPLOST: " + currentATPLost);
-        if(currentATPLost >=1) {
-            if(cellATP >0) {
+        if (currentATPLost >= 1) {
+            if (cellATP > 0) {
                 cellATP -= 1;
             }
 
-            currentATPLost =0;
+            currentATPLost = 0;
         }
 
-        idleATPLossFactor =setIdleATPLossFactor();
+//        idleATPLossFactor = setIdleATPLossFactor();
+        idleATPLossFactor = setTotalLossFactor();
 //        System.out.println("IDLEATPLOSSFACTOR: " + idleATPLossFactor);
         upgradeATPLossFactor = setUpgradeLossFactor();
     }
