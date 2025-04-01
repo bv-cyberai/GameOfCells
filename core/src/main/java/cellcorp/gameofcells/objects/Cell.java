@@ -33,6 +33,10 @@ public class Cell {
     public static int MAX_HEALTH = 100;
     public static int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
+
+    // May change, but used to ensure that invalid case selection is not hit.
+    private static final int MAX_SIZE_UPGRADES = 4;
+    private static final int MAX_OGRANELLE_UPGRADES = 4;
     float cellSize;
 
     private final AssetManager assetManager;
@@ -466,7 +470,7 @@ public class Cell {
      */
     public void setHasMitochondria(boolean hasMitochondria) {
         this.hasMitochondria = hasMitochondria;
-        organelleUpgradeLevel++;
+        if ((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasMitochondria) organelleUpgradeLevel++;
     }
 
     /**
@@ -495,7 +499,7 @@ public class Cell {
      */
     public void setHasRibosomes(boolean hasRibosomes) {
         this.hasRibosomes = hasRibosomes;
-        organelleUpgradeLevel++;
+        if ((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasRibosomes) organelleUpgradeLevel++;
     }
 
     /**
@@ -510,7 +514,7 @@ public class Cell {
      */
     public void setHasFlagella(boolean hasFlagella) {
         this.hasFlagella = hasFlagella;
-        organelleUpgradeLevel++;
+        if((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
     }
 
     /**
@@ -525,7 +529,7 @@ public class Cell {
      */
     public void setHasNucleus(boolean hasNucleus) {
         this.hasNucleus = hasNucleus;
-        organelleUpgradeLevel++;
+        if((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasNucleus) organelleUpgradeLevel++;
     }
 
     /**
@@ -548,7 +552,7 @@ public class Cell {
      */
     public void setSmallSizeUpgrade(boolean hasSmallSizeUpgrade) {
         this.hasSmallSizeUpgrade = hasSmallSizeUpgrade;
-        sizeUpgradeLevel++;
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasSmallSizeUpgrade ) sizeUpgradeLevel++;
     }
 
     /**
@@ -563,7 +567,7 @@ public class Cell {
      */
     public void setMediumSizeUpgrade(boolean hasMediumSizeUpgrade) {
         this.hasMediumSizeUpgrade = hasMediumSizeUpgrade;
-        sizeUpgradeLevel++;
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMediumSizeUpgrade) sizeUpgradeLevel++;
     }
 
     /**
@@ -579,7 +583,7 @@ public class Cell {
      */
     public void setLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
         this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
-        sizeUpgradeLevel++;
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasLargeSizeUpgrade) sizeUpgradeLevel++;
     }
 
     /**
@@ -593,7 +597,7 @@ public class Cell {
      * Set whether the cell has the massive size upgrade
      */
     public void setMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
-        sizeUpgradeLevel++;
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES)&& hasMassiveSizeUpgrade ) sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
     }
 
@@ -643,5 +647,21 @@ public class Cell {
      */
     public void setCanSplit(boolean canSplit) {
         this.canSplit = canSplit;
+    }
+
+    /**
+     * Get Size Upgrade level
+     * @return size upgrade level
+     */
+    public int getSizeUpgradeLevel() {
+        return sizeUpgradeLevel;
+    }
+
+    /**
+     * Get Organelle Upgrade level
+     * @return Organelle upgrade level
+     */
+    public int getOrganelleUpgradeLevel() {
+        return organelleUpgradeLevel;
     }
 }
