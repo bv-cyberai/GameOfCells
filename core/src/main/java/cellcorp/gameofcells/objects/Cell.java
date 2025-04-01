@@ -70,31 +70,14 @@ public class Cell {
     // Energy Use tracking
     private float lastX;
     private float lastY;
-
-    private float totalDistanceMoved;
-    private float distanceSinceLastATPUse;
-
-    private int sizeUpgradeLevel;
-    private int organelleUpgradeLevel;
-
-    private float currentATPLost;
-    private float ATPLossThreshold;
-    private float cellSizeATPLossFactor;
-    private float upgradeReductionToCellSizeATPLossFactor;
-
-    private float idleATPLossFactor;
-    private float upgradeATPLossFactor;
-    private float effectiveLossFactor;
-
-
-    private float xMovementSinceLastTick;
-    private float yMovementSInceLastTick;
-
+    private int sizeUpgradeLevel; // size upgrades 0-4
+    private int organelleUpgradeLevel; //organelle upgrades 0-4
+    private float currentATPLost; // used to track atp loss up to 1
+    private float totalATPLossFactor; //tracks total atp burn to use
     private float distanceMovedSinceLastTick;
-    private float atpLossTimer;
-    private float distanceMovedSinceLastThreshold;
-    private float timeThreshold;
-    private float timePassedSinceLastATPUse;
+
+    //potential gameOverStat
+    private float totalDistanceMoved;
 
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
@@ -104,27 +87,10 @@ public class Cell {
         setUserConfigOrDefault();
         cellSize = 100;
 
-        //Move into Config
-//        distanceMovedSinceLastTick = 0f;
-//        distanceMovedSinceLastThreshold =0f;
-//        timeThreshold = 1f;
-
-
-        idleATPLossFactor = 0.1f;
-        upgradeATPLossFactor = 0.2f;
-
+        totalATPLossFactor = 0f;
         sizeUpgradeLevel = 0;
         organelleUpgradeLevel = 0;
-
-        timePassedSinceLastATPUse = 0f;
-
         currentATPLost = 0f;
-        atpLossTimer = 0f;
-        ATPLossThreshold = 1f;
-        //should be based/set when boolean changes.
-        cellSizeATPLossFactor = 2f;
-        upgradeReductionToCellSizeATPLossFactor = 0f;
-
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
     }
@@ -142,7 +108,6 @@ public class Cell {
         //track these values to calculate ATP Burn.
         lastX = cellCircle.x;
         lastY = cellCircle.y;
-        timePassedSinceLastATPUse += deltaTime;
 
         float dx = 0;
         float dy = 0;
@@ -171,48 +136,30 @@ public class Cell {
         cellCircle.y += dy * CELL_SPEED * deltaTime;
 
 
-        distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
-        totalDistanceMoved += distanceMovedSinceLastTick;
+//        distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
+
         calculateATPLoss(deltaTime);
+
+        totalDistanceMoved += distanceMovedSinceLastTick;
         distanceMovedSinceLastTick = 0f;
 
     }
 
     private void calculateATPLoss(float deltaTime) {
+        distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
+
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
 
         if (movementMultiplier > 0) {
-//            currentATPLost += deltaTime * (movementMultiplier *  (idleATPLossFactor + upgradeATPLossFactor));
-//            currentATPLost += deltaTime * (1.2f * (idleATPLossFactor + upgradeATPLossFactor));
-            currentATPLost += deltaTime * (2 * movementMultiplier* (idleATPLossFactor));
+            currentATPLost += deltaTime * (2 * movementMultiplier * (totalATPLossFactor));
         } else {
-//            currentATPLost += deltaTime * (idleATPLossFactor + upgradeATPLossFactor);
-            currentATPLost += deltaTime * (idleATPLossFactor);
+            currentATPLost += deltaTime * (totalATPLossFactor);
         }
 
     }
 
-    private float setIdleATPLossFactor() {
-//        System.out.println("sizeupgradelevel: " + sizeUpgradeLevel);
-        switch (sizeUpgradeLevel) {
-            case 0:
-                return 1f / 11f; // No upgrade (1 ATP -> 11 sec idle)
-            case 1:
-                return 1f / 10f; // 1 ATP -> 10 sec
-            case 2:
-                return 1f / 9f; // 1 ATP -> 9 sec
-            case 3:
-                return 1f / 8f; // 1 ATP -> 8 sec
-            case 4:
-                return 1f / 7f; // 1 ATP -> 7 sec
-            //should never be hit.
-            default:
-                return 0.1f;
-        }
-    }
 
     private float setTotalLossFactor() {
-//        System.out.println("sizeupgradelevel: " + sizeUpgradeLevel);
         switch (sizeUpgradeLevel) {
             case 0:
                 return 1f / (11f - organelleUpgradeLevel); // No upgrade (1 ATP -> 11 sec idle)
@@ -227,25 +174,6 @@ public class Cell {
             //should never be hit.
             default:
                 return 0.1f;
-        }
-    }
-
-    private float setUpgradeLossFactor() {
-        switch (organelleUpgradeLevel) {
-            case 0:
-                return 0f; // No upgrade (Only Size Burn)
-            case 1:
-                return .01f; // Mit Upgrade 1 Extra ATP
-            case 2:
-                return .02f; // Ribo Upgrade 2 Extra ATP
-            case 3:
-                return .03f; // Flag Upgrade 3 Extra ATP
-            case 4:
-                return .04f; // Nuke Upgrade 4 Extra ATP
-
-            //Should never be hit.
-            default:
-                return 0.2f;
         }
     }
 
@@ -291,7 +219,7 @@ public class Cell {
     }
 
     public void update(float delta) {
-        atpLossTimer += delta;
+//        atpLossTimer += delta;
         // Update animations
         if (hasFlagella) {
             flagellaRotation += 100 * delta; // Adjust rotation speed as needed
@@ -302,7 +230,6 @@ public class Cell {
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
 
-//        System.out.println("CURRATPLOST: " + currentATPLost);
         if (currentATPLost >= 1) {
             if (cellATP > 0) {
                 cellATP -= 1;
@@ -310,11 +237,8 @@ public class Cell {
 
             currentATPLost = 0;
         }
+        totalATPLossFactor = setTotalLossFactor();
 
-//        idleATPLossFactor = setIdleATPLossFactor();
-        idleATPLossFactor = setTotalLossFactor();
-//        System.out.println("IDLEATPLOSSFACTOR: " + idleATPLossFactor);
-        upgradeATPLossFactor = setUpgradeLossFactor();
     }
 
     private void drawOrganelles(SpriteBatch batch) {
