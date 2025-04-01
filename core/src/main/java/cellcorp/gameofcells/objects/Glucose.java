@@ -1,14 +1,11 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
-
-import java.util.Objects;
 
 /**
  * Glucose Object

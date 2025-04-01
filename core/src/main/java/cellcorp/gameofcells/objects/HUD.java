@@ -2,8 +2,6 @@ package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.providers.GraphicsProvider;
 
-import cellcorp.gameofcells.objects.NotificationManager;
-
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

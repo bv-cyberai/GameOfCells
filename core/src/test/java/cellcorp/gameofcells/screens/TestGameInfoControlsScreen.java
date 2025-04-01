@@ -15,9 +15,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.runner.GameRunner;
@@ -131,6 +129,11 @@ public class TestGameInfoControlsScreen {
         assertNotEquals(gameInfoControlsScreen2, gameRunner.game.getScreen());
     }
 
+    /**
+     * Test that the GameInfoControlsScreen is disposed correctly.
+     * This test checks that when the screen is disposed, it releases resources properly.
+     * It verifies that the sprite batch and particles are disposed without throwing exceptions.
+     */
     @Test
     public void TestGameInfoControlsScreenDispose() {
         GameRunner gameRunner = GameRunner.create();
@@ -162,7 +165,29 @@ public class TestGameInfoControlsScreen {
         assertDoesNotThrow(() -> {
             gameInfoControlsScreen2.getParticles().dispose();
         });
-
     }
-    
+
+    /**
+     * Test that the GameInfoControlsScreen is not null after creation.
+     * This test checks that the screen is created successfully and is not null.
+     */
+    @Test
+    public void TestGameInfoControlsScreenNotNull() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var gameInfoControlsScreen = gameRunner.game.getScreen();
+        assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
+    }
 }

@@ -122,7 +122,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     @Override
     public void show() {
-        // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'show'");
     }
 
@@ -195,7 +194,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     @Override
     public void pause() {
-        // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'pause'");
     }
 
@@ -204,7 +202,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     @Override
     public void resume() {
-        // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'resume'");
     }
 
@@ -213,7 +210,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     @Override
     public void hide() {
-        // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'hide'");
     }
 
@@ -244,7 +240,6 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 

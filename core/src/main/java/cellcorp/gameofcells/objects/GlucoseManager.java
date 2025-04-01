@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
  * Spawns, despawns, and draws glucose.
  * Unlike zone manager, doesn't care about reproducibility after despawning.
  *
- * @author Brendon Vinyard / vineyabn207
+ * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206

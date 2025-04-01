@@ -15,9 +15,6 @@ import com.badlogic.gdx.utils.viewport.*;
 
 import cellcorp.gameofcells.Main;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 /**
  * GamePlay Screen
  * <p>
