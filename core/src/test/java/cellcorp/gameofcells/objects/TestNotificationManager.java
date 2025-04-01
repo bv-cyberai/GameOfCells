@@ -132,4 +132,19 @@ public class TestNotificationManager {
         assertEquals("Second", system.getNotifications().get(1).getMessage());
     }
 
+    /**
+     * * Test that the notification system can be cleared.
+     * This test checks that when the clear method is called, all notifications are removed from the system.
+     */
+    @Test
+    public void clearRemovesAllNotifications() {
+        BitmapFont mockFont = Mockito.mock(BitmapFont.class);
+        NotificationManager system = new NotificationManager(mockFont);
+        
+        system.addNotification("ToClear", 1f, Color.BLUE);
+        assertEquals(1, system.getNotifications().size);
+        
+        system.clearNotifications();
+        assertTrue(system.getNotifications().isEmpty());
+    }
 }
