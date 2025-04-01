@@ -308,4 +308,34 @@ public class TestMain {
         }
         assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
     }
+
+    @Test
+    void testATPDeduction() {
+
+        float epsilon = 1e-4f;
+
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        Cell gameCell = gamePlayScreen.getCell();
+
+        float startingATP = gameCell.getCellATP();
+
+        float expectedATPLost = 0f;
+
+        assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
+
+        gameRunner.runForSeconds(12);
+
+        float expectedCellATP = startingATP-1;
+
+        System.out.println(gameCell.getCellATP());
+
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+    }
 }

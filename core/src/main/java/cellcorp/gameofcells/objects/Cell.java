@@ -664,4 +664,20 @@ public class Cell {
     public int getOrganelleUpgradeLevel() {
         return organelleUpgradeLevel;
     }
+
+    /**
+     * Current ATP Lost Getter
+     * @return the Current ammount of atp lost.
+     */
+    public float getCurrentATPLost() {
+        return currentATPLost;
+    }
+
+    /**
+     * Loss Factor getter
+     * @return The loss factor.
+     */
+    public float getTotalATPLossFactor() {
+        return totalATPLossFactor;
+    }
 }
