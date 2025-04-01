@@ -186,9 +186,10 @@ public class Cell {
 //            cellCircle.y -= CELL_SPEED * deltaTime;
 //        }
 
-
+        float distanceThisTicket =  abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
         totalDistanceMoved += abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
-        distanceMovedSinceLastTick += totalDistanceMoved;
+        System.out.println("totalDistanceMoved:" + totalDistanceMoved);
+        distanceMovedSinceLastTick += distanceThisTicket ;
 
         calculateATPLoss(deltaTime);
         distanceMovedSinceLastTick = 0f;
@@ -202,7 +203,7 @@ public class Cell {
 //        effectiveLossFactor = Math.max(cellSizeATPLossFactor - upgradeReductionToCellSizeATPLossFactor,0.00001f);
 
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
-
+        System.out.println("movementMultipler: " + movementMultiplier);
         if(movementMultiplier > 0) {
             currentATPLost += deltaTime * (movementMultiplier * movingATPLossFactor);
         } else {
@@ -305,6 +306,7 @@ public class Cell {
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
 
+        System.out.println("CURRATPLOST: " + currentATPLost);
         if(currentATPLost >=1) {
             if(cellATP >0) {
                 cellATP -= 1;
@@ -314,6 +316,7 @@ public class Cell {
         }
 
         idleATPLossFactor =setIdleATPLossFactor();
+        System.out.println("IDLEATPLOSSFACTOR: " + idleATPLossFactor);
         movingATPLossFactor = setMovementATPLossFactor();
     }
 
