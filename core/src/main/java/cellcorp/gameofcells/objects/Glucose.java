@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Circle;
 
 public class Glucose {
     public static final int RADIUS = 15;
-    public static final int ATP_PER_GLUCOSE = 20;
+    public static int ATP_PER_GLUCOSE = 2;
 
     private final AssetManager assetManager;
     private final Circle boundCircle;

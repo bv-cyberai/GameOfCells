@@ -2,7 +2,7 @@ package cellcorp.gameofcells.objects.Organelle;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
-
+import cellcorp.gameofcells.objects.Glucose;
 /**
  * Mitochondria upgrade.
  */
@@ -27,6 +27,7 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
     @Override
     public void applyUpgrade(Cell cell) {
         cell.setHasMitochondria(true);
+        Glucose.ATP_PER_GLUCOSE = 10;
         cell.removeCellATP(cost);
         // Increase ATP production
     }
