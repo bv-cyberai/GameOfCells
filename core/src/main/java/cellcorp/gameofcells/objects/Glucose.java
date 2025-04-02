@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * Represents a glucose molecule which a cell converts
  * to ATP.
- * 
+ *
  * @author Brendon Vinyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -28,7 +28,10 @@ import java.util.Objects;
 
 public class Glucose {
     public static final int RADIUS = 30;
-    public static final int ATP_PER_GLUCOSE = 20;
+
+    //Removed final due to need to set to 0 for testing.
+    //This is also likely to be set in config anyway.
+    public static int ATP_PER_GLUCOSE = 20;
 
     private final AssetManager assetManager;
     private final Circle boundCircle;
@@ -47,9 +50,9 @@ public class Glucose {
 
     /**
      * Draw
-     * 
+     *
      * Draws a cell.
-     * 
+     *
      * @param batch The gamePlayScreen Spritebatch
      */
     public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
@@ -73,7 +76,7 @@ public class Glucose {
 
     /**
      * xGetter
-     * 
+     *
      * @return x Coordinate of the hitbox.
      */
     public float getX() {
@@ -82,7 +85,7 @@ public class Glucose {
 
     /**
      * yGetter
-     * 
+     *
      * @return y Coordinate of the hitbox.
      */
     public float getY() {
@@ -95,11 +98,19 @@ public class Glucose {
 
     /**
      * Radius Getter
-     * 
+     *
      * @return The radius of the hitbox.
      */
     public float getRadius() {
         return boundCircle.radius;
+    }
+
+    /**
+     * Sets ATP per Glucose to zero to test ATP burn rates
+     * during movement.
+     */
+    public static void setAtpPerGlucoseDoNotUseForTestingOnly() {
+        ATP_PER_GLUCOSE = 0;
     }
 
     // opensource assets

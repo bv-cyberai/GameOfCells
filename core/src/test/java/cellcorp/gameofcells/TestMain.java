@@ -401,30 +401,32 @@ public class TestMain {
 
         GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
         Cell gameCell = gamePlayScreen.getCell();
+        Glucose.setAtpPerGlucoseDoNotUseForTestingOnly();
 
         float startingATP = gameCell.getCellATP();
 
         float expectedATPLost = 0f;
 
         assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
-        int prevATP = gameCell.getCellATP();
-//        gameRunner.runForSeconds(12);
-        for(int i = 0; i < 12 * GameRunner.TICKS_PER_SECOND; i++){
-            int currentATP = gameCell.getCellATP();
-            if(currentATP > prevATP) {
-                gameCell.setCellATP(prevATP);
+        for(int i = 0; i < 8 * GameRunner.TICKS_PER_SECOND; i++){
+            System.out.println(gameCell.getCurrentATPLost());
 
+            //This creates back and forth movement instead of hitting
+            // the end of the screen which happens during testing only.
+            if (i%2 == 0) {
+                gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
+            }else {
+                gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
             }
-            prevATP = gameCell.getCellATP();
             gameRunner.step();
 
-            gameCell.move(gameRunner.getTicksElapsed(),true,false,false,false);
+
         }
 
         System.out.println(gameCell.getCellATP());
 
 
-        float expectedCellATP = startingATP-2;
+        float expectedCellATP = startingATP-1;
         System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
         assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
 

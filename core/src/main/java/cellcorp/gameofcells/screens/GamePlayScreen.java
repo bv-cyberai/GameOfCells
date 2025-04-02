@@ -526,4 +526,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
             playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
         }
     }
+
+
 }

@@ -151,9 +151,11 @@ public class Cell {
         distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
 
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
+//        System.out.println("movementM: " +movementMultiplier);
 
         if (movementMultiplier > 0) {
             currentATPLost += deltaTime * (2 * movementMultiplier * (totalATPLossFactor));
+//            System.out.println("MOVMENTBURNDETECTED!");
         } else {
             currentATPLost += deltaTime * (totalATPLossFactor);
         }
