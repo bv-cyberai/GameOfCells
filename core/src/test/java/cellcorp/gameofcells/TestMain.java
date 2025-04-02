@@ -410,21 +410,44 @@ public class TestMain {
         assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
         //If we assume +1 second to atp, like in idle then this would be 5.5 +1 = 6.5 ~ 7.
         runModifiedStep(7,gameRunner);
+        movementTestHelper(startingATP,1,gameCell,epsilon);
 
 //        System.out.println(gameCell.getCellATP()-gameCell.getCurrentATPLost());
 
 
-        float expectedCellATP = startingATP-1;
-        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
-        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
+//        float expectedCellATP = startingATP-1;
+//        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+//        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
 
         gameCell.setSmallSizeUpgrade(true);
         runModifiedStep(6,gameRunner);
+        movementTestHelper(startingATP,2,gameCell,epsilon);
 
-        expectedCellATP = startingATP-2;
-        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
-        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
+//        expectedCellATP = startingATP-2;
+//        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+//        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
 
+//
+//        gameCell.setMediumSizeUpgrade(true);
+//        runModifiedStep(6,gameRunner);
+//
+//        expectedCellATP = startingATP-3;
+//        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+//        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
+//
+//        gameCell.setLargeSizeUpgrade(true);
+//        runModifiedStep(5,gameRunner);
+
+//        expectedCellATP = startingATP-4;
+//        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+//        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
+//
+//        gameCell.setMassiveSizeUpgrade(true);
+//        runModifiedStep(5,gameRunner);
+//
+//        expectedCellATP = startingATP-5;
+//        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+//        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
 //
 //        expectedCellATP = startingATP-2;
 //        gameRunner.runForSeconds(11);
@@ -492,5 +515,12 @@ public class TestMain {
 
 
         }
+
+    }
+
+    private void movementTestHelper(float startingATP, int expectedLoss, Cell gameCell, float epsilon){
+        float expectedCellATP = startingATP-expectedLoss;
+        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
     }
 }
