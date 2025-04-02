@@ -680,4 +680,8 @@ public class Cell {
     public float getTotalATPLossFactor() {
         return totalATPLossFactor;
     }
+
+    public void setCellATP(int cellATP) {
+        this.cellATP = cellATP;
+    }
 }

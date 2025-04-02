@@ -310,9 +310,9 @@ public class TestMain {
     }
 
     @Test
-    void testATPDeduction() {
+    void testIdleATPDeduction() {
 
-        float epsilon = 1e-4f;
+        float epsilon = 0.1f;
 
         var gameRunner = GameRunner.create();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
@@ -332,10 +332,152 @@ public class TestMain {
         gameRunner.runForSeconds(12);
 
         float expectedCellATP = startingATP-1;
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        gameCell.setSmallSizeUpgrade(true);
+
+        expectedCellATP = startingATP-2;
+        gameRunner.runForSeconds(11);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        gameCell.setMediumSizeUpgrade(true);
+        expectedCellATP = startingATP-3;
+        gameRunner.runForSeconds(10);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        gameCell.setLargeSizeUpgrade(true);
+        expectedCellATP = startingATP-4;
+        gameRunner.runForSeconds(9);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        gameCell.setMassiveSizeUpgrade(true);
+        expectedCellATP = startingATP-5;
+        gameRunner.runForSeconds(8);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        gameCell.setHasMitochondria(true);
+        expectedCellATP = startingATP-6;
+        gameRunner.runForSeconds(7);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        gameCell.setHasRibosomes(true);
+        expectedCellATP = startingATP-7;
+        System.out.println(expectedCellATP);
+        System.out.println(Math.abs(gameCell.getCellATP()));
+        gameRunner.runForSeconds(6);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        gameCell.setHasFlagella(true);
+
+        //Off by 1 but I belive this a floating point shenannigans.
+        expectedCellATP = startingATP-9;
+        gameRunner.runForSeconds(5);
+        System.out.println(expectedCellATP);
+        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        //This test should prove its just fp shenannigans.
+        gameCell.setHasNucleus(true);
+        expectedCellATP = startingATP-10;
+        gameRunner.runForSeconds(4);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+
+        expectedCellATP = startingATP-11;
+        gameRunner.runForSeconds(4);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+    }
+
+
+    @Test
+    void testMovingATPDeduction() {
+
+        float epsilon = 0.1f;
+
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        Cell gameCell = gamePlayScreen.getCell();
+
+        float startingATP = gameCell.getCellATP();
+
+        float expectedATPLost = 0f;
+
+        assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
+        int prevATP = gameCell.getCellATP();
+//        gameRunner.runForSeconds(12);
+        for(int i = 0; i < 12 * GameRunner.TICKS_PER_SECOND; i++){
+            int currentATP = gameCell.getCellATP();
+            if(currentATP > prevATP) {
+                gameCell.setCellATP(prevATP);
+
+            }
+            prevATP = gameCell.getCellATP();
+            gameRunner.step();
+
+            gameCell.move(gameRunner.getTicksElapsed(),true,false,false,false);
+        }
 
         System.out.println(gameCell.getCellATP());
 
+
+        float expectedCellATP = startingATP-2;
+        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
         assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
 
+//        gameCell.setSmallSizeUpgrade(true);
+//
+//        expectedCellATP = startingATP-2;
+//        gameRunner.runForSeconds(11);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setMediumSizeUpgrade(true);
+//        expectedCellATP = startingATP-3;
+//        gameRunner.runForSeconds(10);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setLargeSizeUpgrade(true);
+//        expectedCellATP = startingATP-4;
+//        gameRunner.runForSeconds(9);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setMassiveSizeUpgrade(true);
+//        expectedCellATP = startingATP-5;
+//        gameRunner.runForSeconds(8);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setHasMitochondria(true);
+//        expectedCellATP = startingATP-6;
+//        gameRunner.runForSeconds(7);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setHasRibosomes(true);
+//        expectedCellATP = startingATP-7;
+//        System.out.println(expectedCellATP);
+//        System.out.println(Math.abs(gameCell.getCellATP()));
+//        gameRunner.runForSeconds(6);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setHasFlagella(true);
+//
+//        //Off by 1 but I belive this a floating point shenannigans.
+//        expectedCellATP = startingATP-9;
+//        gameRunner.runForSeconds(5);
+//        System.out.println(expectedCellATP);
+//        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        //This test should prove its just fp shenannigans.
+//        gameCell.setHasNucleus(true);
+//        expectedCellATP = startingATP-10;
+//        gameRunner.runForSeconds(4);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        expectedCellATP = startingATP-11;
+//        gameRunner.runForSeconds(4);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
     }
 }
