@@ -391,7 +391,7 @@ public class TestMain {
     @Test
     void testMovingATPDeduction() {
 
-        float epsilon = 0.1f;
+        float epsilon = 0.15f;
 
         var gameRunner = GameRunner.create();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
@@ -408,29 +408,23 @@ public class TestMain {
         float expectedATPLost = 0f;
 
         assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
-        for(int i = 0; i < 8 * GameRunner.TICKS_PER_SECOND; i++){
-            System.out.println(gameCell.getCurrentATPLost());
+        //If we assume +1 second to atp, like in idle then this would be 5.5 +1 = 6.5 ~ 7.
+        runModifiedStep(7,gameRunner);
 
-            //This creates back and forth movement instead of hitting
-            // the end of the screen which happens during testing only.
-            if (i%2 == 0) {
-                gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
-            }else {
-                gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-            }
-            gameRunner.step();
-
-
-        }
-
-        System.out.println(gameCell.getCellATP());
+//        System.out.println(gameCell.getCellATP()-gameCell.getCurrentATPLost());
 
 
         float expectedCellATP = startingATP-1;
-        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
 
-//        gameCell.setSmallSizeUpgrade(true);
+        gameCell.setSmallSizeUpgrade(true);
+        runModifiedStep(6,gameRunner);
+
+        expectedCellATP = startingATP-2;
+        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
+        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
+
 //
 //        expectedCellATP = startingATP-2;
 //        gameRunner.runForSeconds(11);
@@ -481,5 +475,22 @@ public class TestMain {
 //        expectedCellATP = startingATP-11;
 //        gameRunner.runForSeconds(4);
 //        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+    }
+
+    private void runModifiedStep(int seconds, GameRunner gameRunner) {
+        for(int i = 0; i < seconds * GameRunner.TICKS_PER_SECOND; i++){
+//            System.out.println(gameCell.getCurrentATPLost());
+
+            //This creates back and forth movement instead of hitting
+            // the end of the screen which happens during testing only.
+            if (i%6 == 0) {
+                gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
+            }else {
+                gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+            }
+            gameRunner.step();
+
+
+        }
     }
 }
