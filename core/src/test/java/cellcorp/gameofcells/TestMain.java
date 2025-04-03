@@ -327,65 +327,40 @@ public class TestMain {
 
         assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
 
-//        gameRunner.runForSeconds(12);
         runModifiedStep(12,11f,gameRunner,gameCell, false);
         idleTestHelperAndAsserter(gameCell,12f,11f,startingATP,1,epsilon,gameRunner,"1" );
 
-//        float expectedCellATP = startingATP-1;
-//        idleTestHelperAndAsserter(gameCell,12f,11f,startingATP,expectedATPLost,epsilon,gameRunner);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+        gameCell.setSmallSizeUpgrade(true);
+        runModifiedStep(11,10f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,11f,10f,startingATP,2,epsilon,gameRunner,"2" );
 
-//        gameCell.setSmallSizeUpgrade(true);
-//
-//        expectedCellATP = startingATP-2;
-//        gameRunner.runForSeconds(11);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        gameCell.setMediumSizeUpgrade(true);
-//        expectedCellATP = startingATP-3;
-//        gameRunner.runForSeconds(10);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        gameCell.setLargeSizeUpgrade(true);
-//        expectedCellATP = startingATP-4;
-//        gameRunner.runForSeconds(9);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        gameCell.setMassiveSizeUpgrade(true);
-//        expectedCellATP = startingATP-5;
-//        gameRunner.runForSeconds(8);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        gameCell.setHasMitochondria(true);
-//        expectedCellATP = startingATP-6;
-//        gameRunner.runForSeconds(7);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        gameCell.setHasRibosomes(true);
-//        expectedCellATP = startingATP-7;
-//        System.out.println(expectedCellATP);
-//        System.out.println(Math.abs(gameCell.getCellATP()));
-//        gameRunner.runForSeconds(6);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        gameCell.setHasFlagella(true);
-//
-//        //Off by 1 but I belive this a floating point shenannigans.
-//        expectedCellATP = startingATP-9;
-//        gameRunner.runForSeconds(5);
-//        System.out.println(expectedCellATP);
-//        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        //This test should prove its just fp shenannigans.
-//        gameCell.setHasNucleus(true);
-//        expectedCellATP = startingATP-10;
-//        gameRunner.runForSeconds(4);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//
-//        expectedCellATP = startingATP-11;
-//        gameRunner.runForSeconds(4);
-//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+        gameCell.setMediumSizeUpgrade(true);
+        runModifiedStep(10,9f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,10f,9f,startingATP,3,epsilon,gameRunner,"3" );
+
+        gameCell.setLargeSizeUpgrade(true);
+        runModifiedStep(9,8f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,9f,8f,startingATP,4,epsilon,gameRunner,"4" );
+
+        gameCell.setMassiveSizeUpgrade(true);
+        runModifiedStep(8,7f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,8f,7f,startingATP,5,epsilon,gameRunner,"5" );
+
+        gameCell.setHasMitochondria(true);
+        runModifiedStep(7,6,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,7f,6f,startingATP,6,epsilon,gameRunner,"6" );
+
+        gameCell.setHasRibosomes(true);
+        runModifiedStep(6,5f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,6f,5f,startingATP,7,epsilon,gameRunner,"7" );
+
+        gameCell.setHasFlagella(true);
+        runModifiedStep(5,4f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,5f,4f,startingATP,8,epsilon,gameRunner,"8" );
+
+        gameCell.setHasNucleus(true);
+        runModifiedStep(4,3f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,14f,3f,startingATP,9,epsilon,gameRunner,"9" );
     }
 
 
