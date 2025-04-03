@@ -310,7 +310,7 @@ public class TestMain {
     @Test
     void testIdleATPDeduction() {
 
-        float epsilon = 0.25f;
+        float epsilon = 0.1f;
 
         var gameRunner = GameRunner.create();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
@@ -327,47 +327,47 @@ public class TestMain {
 
         assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
 
-        runModifiedStep(12,11f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,12f,11f,startingATP,1,epsilon,gameRunner,"1" );
+        runModifiedStep(12, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 11f,startingATP,1,epsilon, "1" );
 
         gameCell.setSmallSizeUpgrade(true);
-        runModifiedStep(11,10f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,11f,10f,startingATP,2,epsilon,gameRunner,"2" );
+        runModifiedStep(11, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 10f,startingATP,2,epsilon, "2" );
 
         gameCell.setMediumSizeUpgrade(true);
-        runModifiedStep(10,9f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,10f,9f,startingATP,3,epsilon,gameRunner,"3" );
+        runModifiedStep(10, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 9f,startingATP,3,epsilon, "3" );
 
         gameCell.setLargeSizeUpgrade(true);
-        runModifiedStep(9,8f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,9f,8f,startingATP,4,epsilon,gameRunner,"4" );
+        runModifiedStep(9, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 8f,startingATP,4,epsilon, "4" );
 
         gameCell.setMassiveSizeUpgrade(true);
-        runModifiedStep(8,7f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,8f,7f,startingATP,5,epsilon,gameRunner,"5" );
+        runModifiedStep(8, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 7f,startingATP,5,epsilon, "5" );
 
         gameCell.setHasMitochondria(true);
-        runModifiedStep(7,6,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,7f,6f,startingATP,6,epsilon,gameRunner,"6" );
+        runModifiedStep(7, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 6f,startingATP,6,epsilon, "6" );
 
         gameCell.setHasRibosomes(true);
-        runModifiedStep(6,5f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,6f,5f,startingATP,7,epsilon,gameRunner,"7" );
+        runModifiedStep(6, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 5f,startingATP,7,epsilon, "7" );
 
         gameCell.setHasFlagella(true);
-        runModifiedStep(5,4f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,5f,4f,startingATP,8,epsilon,gameRunner,"8" );
+        runModifiedStep(5, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 4f,startingATP,8,epsilon, "8" );
 
         gameCell.setHasNucleus(true);
-        runModifiedStep(4,3f,gameRunner,gameCell, false);
-        idleTestHelperAndAsserter(gameCell,14f,3f,startingATP,9,epsilon,gameRunner,"9" );
+        runModifiedStep(4, gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell, 3f,startingATP,9,epsilon, "9" );
     }
 
 
     @Test
     void testMovingATPDeduction() {
 
-        float epsilon = 0.25f;
+        float epsilon = 0.1f;
 
         var gameRunner = GameRunner.create();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
@@ -385,42 +385,42 @@ public class TestMain {
 
         float expectedATPLost = 0f;
 
-        runModifiedStep(6, 5.5f, gameRunner,gameCell, true);
+        runModifiedStep(6, gameRunner,gameCell, true);
         System.out.println("ATP: " +gameCell.getCellATP());
         System.out.println("ATPLOST: " +gameCell.getCurrentATPLost());
         movementTestHelperAndAsserter(startingATP,1,gameCell,epsilon,"0",5.5f );
 
 
         gameCell.setSmallSizeUpgrade(true);
-        runModifiedStep(6,5f, gameRunner,gameCell,true );
+        runModifiedStep(6, gameRunner,gameCell,true );
         movementTestHelperAndAsserter(startingATP,2,gameCell,epsilon,"1",5f );
 
         gameCell.setMediumSizeUpgrade(true);
-        runModifiedStep(5, 4.5f, gameRunner,gameCell, true);
+        runModifiedStep(5, gameRunner,gameCell, true);
         movementTestHelperAndAsserter(startingATP,3,gameCell,epsilon,"2",4.5f );
 
         gameCell.setLargeSizeUpgrade(true);
-        runModifiedStep(5,4f, gameRunner,gameCell,true );
+        runModifiedStep(5, gameRunner,gameCell,true );
         movementTestHelperAndAsserter(startingATP,4,gameCell,epsilon,"3",4f );
 
         gameCell.setMassiveSizeUpgrade(true);
-        runModifiedStep(4,3.5f, gameRunner,gameCell,true );
+        runModifiedStep(4, gameRunner,gameCell,true );
         movementTestHelperAndAsserter(startingATP,5,gameCell,epsilon,"4",3.5f );
 
         gameCell.setHasMitochondria(true);
-        runModifiedStep(4, 3f, gameRunner,gameCell,true );
+        runModifiedStep(4, gameRunner,gameCell,true );
         movementTestHelperAndAsserter(startingATP,6,gameCell,epsilon,"5", 3f);
 
         gameCell.setHasRibosomes(true);
-        runModifiedStep(4,2.5f,gameRunner,gameCell,true );
+        runModifiedStep(4, gameRunner,gameCell,true );
         movementTestHelperAndAsserter(startingATP,7,gameCell,epsilon,"6", 2.5f);
 
         gameCell.setHasFlagella(true);
-        runModifiedStep(3,2.0f,gameRunner,gameCell,true );
+        runModifiedStep(3, gameRunner,gameCell,true );
         movementTestHelperAndAsserter(startingATP,8,gameCell,epsilon,"7",2.0f );
 
         gameCell.setHasNucleus(true);
-        runModifiedStep(2,1.5f, gameRunner,gameCell, true);
+        runModifiedStep(2, gameRunner,gameCell, true);
         movementTestHelperAndAsserter(startingATP,9,gameCell,epsilon,"8",1.5f );
 
         // RESET GLUCOSE TO DEFAULT VALUE - SUPER IMPORANT THIS METHOD IS DANGEROUS.
@@ -432,13 +432,12 @@ public class TestMain {
      * <p>
      * Alows keys to be held down while stepping the game further. Used to test movment deduction.
      *
-     * @param loopSeconds    How many seconds to run for.
-     * @param correctSeconds When ATP burn is expected to happen.
-     * @param gameRunner     The game Runner.
-     * @param gameCell       The Cell.
-     * @param cellMovement
+     * @param loopSeconds  How many seconds to run for.
+     * @param gameRunner   The game Runner.
+     * @param gameCell     The Cell.
+     * @param cellMovement True toggles the cell to move back and forth.
      */
-    private void runModifiedStep(int loopSeconds, float correctSeconds, GameRunner gameRunner, Cell gameCell, boolean cellMovement) {
+    private void runModifiedStep(int loopSeconds, GameRunner gameRunner, Cell gameCell, boolean cellMovement) {
         boolean plusOne = false;
         for(int i = 0; i < loopSeconds * GameRunner.TICKS_PER_SECOND; i++){
             if(plusOne) {
@@ -462,10 +461,18 @@ public class TestMain {
 
     }
 
-    private void idleTestHelperAndAsserter(Cell gameCell, float secondsToRun, float expectedSeconds, int startingATP, float expectedLoss, float epsilon, GameRunner gameRunner, String callSign) {
+    /**
+     *  Checks that ATP deductions and time match expected values
+     * @param gameCell - The Cell
+     * @param expectedSeconds - THe expected seconds for ATP loss
+     * @param startingATP - The starting ATP
+     * @param expectedLoss - The expected ammount of ATP loss
+     * @param epsilon - Error threshold
+     * @param callSign - 'name' of the function for tracking debug issues.
+     */
+    private void idleTestHelperAndAsserter(Cell gameCell, float expectedSeconds, int startingATP, float expectedLoss, float epsilon, String callSign) {
         System.out.println(callSign);
         float expectedCellATP = startingATP-expectedLoss;
-//        gameRunner.runForSeconds(secondsToRun);
         System.out.println(gameCell.getCellATP());
         System.out.println(expectedCellATP);
         assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
@@ -482,9 +489,9 @@ public class TestMain {
      * @param startingATP     The game staring atp
      * @param expectedLoss    THe expected ATP lost
      * @param gameCell        The Cell
-     * @param epsilon         Threshold for bad floats
-     * @param callNumber      The order this method is called in, usefull for debugging
-     * @param expectedSeconds
+     * @param epsilon         error threshold
+     * @param callNumber      The order this method is called in, useful for debugging
+     * @param expectedSeconds The expected seconds for ATP loss.
      */
     private void movementTestHelperAndAsserter(float startingATP, int expectedLoss, Cell gameCell, float epsilon, String callNumber, float expectedSeconds){
         System.out.println(callNumber);
