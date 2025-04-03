@@ -33,6 +33,11 @@ public class Cell {
     public static int MAX_HEALTH = 100;
     public static int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
+    public static int ZERO_ATP_DAMAGE_PER_SECOND = 10;
+    /**
+     * Time between applications of zero-ATP damage, in seconds.
+     */
+    private static final int ZERO_ATP_DAMAGE_INCREMENT_SECONDS = 1;
 
     // May change, but used to ensure that invalid case selection is not hit.
     private static final int MAX_SIZE_UPGRADES = 4;
@@ -70,6 +75,16 @@ public class Cell {
     private float proteinSynthesisMultiplier = 1.0f;
     private float movementSpeedMultiplier = 1.0f;
     private boolean canSplit = false;
+
+    /**
+     * Times how long the cell has been taking zero-ATP damage.
+     * Used to group damage, instead of applying a tiny amount each tick.
+     */
+    private float damageTimer = 0f;
+    /**
+     * Zero-ATP damage accumulated since last damage application.
+     */
+    private float damageCounter = 0f;
 
     // Energy Use tracking
     private float lastX;
@@ -261,10 +276,12 @@ public class Cell {
         }
     }
 
-    public void update(float delta) {
+    public void update(float deltaTimeSeconds) {
+        damageIfZeroATP(deltaTimeSeconds);
+
         //Recalculate loss factor.
         totalATPLossFactor = setTotalLossFactor();
-        calculateATPLoss(delta);
+        calculateATPLoss(deltaTimeSeconds);
 
         //Used for testing. Set when 1 ATP burn has occurred.
         if(wasAtpBurnedThisFrame) {
@@ -277,11 +294,11 @@ public class Cell {
 
         // Update animations
         if (hasFlagella) {
-            flagellaRotation += 100 * delta; // Adjust rotation speed as needed
+            flagellaRotation += 10 * deltaTimeSeconds; // Adjust rotation speed as needed
         }
 
         if (hasNucleus) {
-            nucleusPulse += delta; // Adjust pulse speed as needed
+            nucleusPulse += deltaTimeSeconds; // Adjust pulse speed as needed
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
 
@@ -295,10 +312,22 @@ public class Cell {
             }
             currentATPLost = 0;
         }
+    }
 
-
-
-
+    private void damageIfZeroATP(float deltaTimeSeconds) {
+        var damage = ZERO_ATP_DAMAGE_PER_SECOND * deltaTimeSeconds;
+        if (getCellATP() > 0) {
+            // Reset damage counter if we ever have > 0 ATP
+            damageTimer = 0f;
+            damageCounter = 0f;
+        } else if (damageTimer > ZERO_ATP_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
+            applyDamage((int)damageCounter);
+            damageTimer = deltaTimeSeconds;
+            damageCounter = damage;
+        } else {
+            damageTimer += deltaTimeSeconds;
+            damageCounter += damage;
+        }
     }
 
     private void drawOrganelles(SpriteBatch batch) {

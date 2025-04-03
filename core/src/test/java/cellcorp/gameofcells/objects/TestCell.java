@@ -1,8 +1,15 @@
 package cellcorp.gameofcells.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.TestMain;
+import cellcorp.gameofcells.runner.GameRunner;
+import cellcorp.gameofcells.screens.SettingsScreen;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL20;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -11,7 +18,17 @@ import com.badlogic.gdx.assets.AssetManager;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestCell {
+
+    @BeforeAll
+    public static void setup() {
+        TestMain.setUpLibGDX();
+    }
+
     @Test
     public void constructingCellDoesNotCrash() {
         // Make sure we can construct a Cell without crashing.
@@ -37,6 +54,23 @@ public class TestCell {
         cell.applyDamage(Cell.MAX_HEALTH + 1);
         assertTrue(cell.getCellHealth() > 0);
         Mockito.verify(gamePlayScreen, Mockito.atLeastOnce()).endGame();
+    }
+
+    @Test
+    public void cellTakesDamagePerSecondAtZeroATP() {
+        var runner = GameRunner.create();
+        runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+        assertInstanceOf(GamePlayScreen.class, runner.game.getScreen());
+        var gamePlay = (GamePlayScreen) runner.game.getScreen();
+
+        var cell = gamePlay.getCell();
+        var startHealth = cell.getCellHealth();
+        gamePlay.getCell().setCellATP(0);
+        runner.runForSeconds(1.1f);
+        assertEquals(startHealth - Cell.ZERO_ATP_DAMAGE_PER_SECOND, cell.getCellHealth());
+        runner.runForSeconds(1);
+        assertEquals(startHealth - 2 * Cell.ZERO_ATP_DAMAGE_PER_SECOND, cell.getCellHealth());
     }
 
     @Test

@@ -57,7 +57,7 @@ public class GameRunner {
     }
 
     public void runForSeconds(float seconds) {
-        int steps = (int)seconds * TICKS_PER_SECOND;
+        int steps = (int)(seconds * TICKS_PER_SECOND);
         for (int i = 0; i < steps; i++) {
             step();
         }
