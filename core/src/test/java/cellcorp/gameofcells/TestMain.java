@@ -399,9 +399,6 @@ public class TestMain {
 
         GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
         Cell gameCell = gamePlayScreen.getCell();
-//        System.out.println("S: " +gameCell.getSizeUpgradeLevel());
-//        System.out.println("O: " +gameCell.getOrganelleUpgradeLevel());
-//        System.out.println("L: " +gameCell.getTotalATPLossFactor());
 
         // RESET GLUCOSE TO DEFAULT VALUE - SUPER IMPORANT THIS METHOD IS DANGEROUS.
         Glucose.setAtpPerGlucoseDoNotUseForTestingOnly(true);
@@ -410,79 +407,67 @@ public class TestMain {
 
         float expectedATPLost = 0f;
 
-//        assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
-        //If we assume +1 second to atp, like in idle then this would be 5.5 +1 = 6.5 ~ 7.
         runModifiedStep(6, 5.5f, gameRunner,gameCell);
         System.out.println("ATP: " +gameCell.getCellATP());
         System.out.println("ATPLOST: " +gameCell.getCurrentATPLost());
-        movementTestHelper(startingATP,1,gameCell,epsilon,"0", gameRunner );
+        movementTestHelper(startingATP,1,gameCell,epsilon,"0",5.5f );
 
-//        System.out.println(gameCell.getCellATP()-gameCell.getCurrentATPLost());
-
-
-//        float expectedCellATP = startingATP-1;
-//        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
-//        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
 
         gameCell.setSmallSizeUpgrade(true);
         runModifiedStep(6,5f, gameRunner,gameCell);
-//        System.out.println("ATP: " +gameCell.getCellATP());
-//        System.out.println("ATPLOST: " +gameCell.getCurrentATPLost());
-        movementTestHelper(startingATP,2,gameCell,epsilon,"1", gameRunner);
-//
+        movementTestHelper(startingATP,2,gameCell,epsilon,"1",5f );
+
         gameCell.setMediumSizeUpgrade(true);
         runModifiedStep(5, 4.5f, gameRunner,gameCell);
-//        System.out.println("ATP: " +gameCell.getCellATP());
-//        System.out.println("ATPLOST: " +gameCell.getCurrentATPLost());
-        movementTestHelper(startingATP,3,gameCell,epsilon,"2", gameRunner );
-//
+        movementTestHelper(startingATP,3,gameCell,epsilon,"2",4.5f );
+
         gameCell.setLargeSizeUpgrade(true);
         runModifiedStep(5,4f, gameRunner,gameCell);
-//        System.out.println("ATP: " +gameCell.getCellATP());
-//        System.out.println("ATPLOST: " +gameCell.getCurrentATPLost());
-        movementTestHelper(startingATP,4,gameCell,epsilon,"3", gameRunner );
-//
+        movementTestHelper(startingATP,4,gameCell,epsilon,"3",4f );
+
         gameCell.setMassiveSizeUpgrade(true);
         runModifiedStep(4,3.5f, gameRunner,gameCell);
-        movementTestHelper(startingATP,5,gameCell,epsilon,"4", gameRunner );
-//
+        movementTestHelper(startingATP,5,gameCell,epsilon,"4",3.5f );
+
         gameCell.setHasMitochondria(true);
         runModifiedStep(4, 3f, gameRunner,gameCell);
-        movementTestHelper(startingATP,6,gameCell,epsilon,"5", gameRunner);
-//
+        movementTestHelper(startingATP,6,gameCell,epsilon,"5", 3f);
+
         gameCell.setHasRibosomes(true);
         runModifiedStep(4,2.5f,gameRunner,gameCell);
-        movementTestHelper(startingATP,7,gameCell,epsilon,"6",gameRunner );
-//
+        movementTestHelper(startingATP,7,gameCell,epsilon,"6", 2.5f);
+
         gameCell.setHasFlagella(true);
         runModifiedStep(3,2.0f,gameRunner,gameCell);
-        movementTestHelper(startingATP,8,gameCell,epsilon,"7", gameRunner );
-//
+        movementTestHelper(startingATP,8,gameCell,epsilon,"7",2.0f );
+
         gameCell.setHasNucleus(true);
         runModifiedStep(2,1.5f, gameRunner,gameCell);
-        movementTestHelper(startingATP,9,gameCell,epsilon,"8", gameRunner );
+        movementTestHelper(startingATP,9,gameCell,epsilon,"8",1.5f );
 
         // RESET GLUCOSE TO DEFAULT VALUE - SUPER IMPORANT THIS METHOD IS DANGEROUS.
         Glucose.setAtpPerGlucoseDoNotUseForTestingOnly(false);
     }
 
+    /**
+     * Modifed Step
+     *
+     * Alows keys to be held down while stepping the game further. Used to test movment deduction.
+     *
+     * @param loopSeconds How many seconds to run for.
+     * @param correctSeconds When ATP burn is expected to happen.
+     * @param gameRunner The game Runner.
+     * @param gameCell The Cell.
+     */
     private void runModifiedStep(int loopSeconds, float correctSeconds, GameRunner gameRunner,Cell gameCell) {
-//        while (time)
         boolean plusOne = false;
         for(int i = 0; i < loopSeconds * GameRunner.TICKS_PER_SECOND; i++){
-//            System.out.println("CURRATPLOSS:  " + gameCell.getCurrentATPLost() + " i: " + i);
-//            if((i >= (correctSeconds * GameRunner.TICKS_PER_SECOND)) && (gameCell.getCurrentATPLost() >= 1.0 ) ) {
-//                //Due to sloppy floats, this tries to prevent going to many extra render cycles, throwing off the next calculations.
-//                System.out.println("STUPID FLOATS!");
-//                break;
-//            }
             if(plusOne) {
                 break;
             }
 
             if(gameCell.isAtpTickFlag()) {
-                System.out.println("ATPTICKDETECTED i: " + i);
-                System.out.println("TIMEBEEPBOOP: "+ gameCell.getLastTimeTakenforATPLoss());
+                System.out.println("TIME for loss: "+ gameCell.getLastTimeTakenforATPLoss());
                 plusOne = true;
             }
             //This creates back and forth movement instead of hitting
@@ -499,22 +484,22 @@ public class TestMain {
 
     }
 
-    private void movementTestHelper(float startingATP, int expectedLoss, Cell gameCell, float epsilon, String callNumber, GameRunner gameRunner){
+    /**
+     * Movement Test Helper
+     * <p>
+     * Check that Cell atp is  = to expected cell atp.
+     *
+     * @param startingATP     The game staring atp
+     * @param expectedLoss    THe expected ATP lost
+     * @param gameCell        The Cell
+     * @param epsilon         Threshold for bad floats
+     * @param callNumber      The order this method is called in, usefull for debugging
+     * @param expectedSeconds
+     */
+    private void movementTestHelper(float startingATP, int expectedLoss, Cell gameCell, float epsilon, String callNumber, float expectedSeconds){
         System.out.println(callNumber);
         float expectedCellATP = startingATP-expectedLoss;
-//        System.out.println(Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP));
-//        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
-//        gameCell.setCellATP((int) (gameCell.getCellATP()-gameCell.getCurrentATPLost()));
-//        gameCell.setCurrentATPLost(0);
-        System.out.println("ATP: " + gameCell.getCellATP());
-        System.out.println("Expected: " + expectedCellATP);
-        System.out.println("LOSS: " + gameCell.getCurrentATPLost());
         assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-//        assertTrue((Math.abs((gameCell.getCellATP()-gameCell.getCurrentATPLost()) - expectedCellATP)) < epsilon);
-
-//        if(gameCell.getCurrentATPLost() >= .75) {
-//            gameCell.setCellATP(gameCell.getCellATP()-1);
-//            gameCell.setCurrentATPLost(0f);
-//        }
+        assertTrue(Math.abs(gameCell.getLastTimeTakenforATPLoss()) - expectedSeconds < epsilon);
     }
 }

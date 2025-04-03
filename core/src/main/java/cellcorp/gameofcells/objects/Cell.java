@@ -722,22 +722,45 @@ public class Cell {
         return totalATPLossFactor;
     }
 
+    /**
+     * ATP Setter
+     * @param cellATP - The new ATP value
+     */
     public void setCellATP(int cellATP) {
         this.cellATP = cellATP;
     }
 
-    public void setCurrentATPLost(float currentATPLost) {
-        this.currentATPLost = currentATPLost;
-    }
+//    public void setCurrentATPLost(float currentATPLost) {
+//        this.currentATPLost = currentATPLost;
+//    }
 
+    /**
+     * ATP flag getter
+     *
+     * Tracks if ATP burn occured this render cycle.
+     *
+     * @return the state of the ATP flag
+     */
     public boolean isAtpTickFlag() {
         return atpTickFlag;
     }
 
+    /**
+     * CurrTimeTaken Getter
+     *
+     * Tracks time taken for the current ATP loss.
+     * @return The time taken for atp loss.
+     */
     public float getCurrTimeTakenforATPLoss() {
         return currTimeTakenforATPLoss;
     }
 
+    /**
+     * LastTimeTaken Getter
+     *
+     * The time taken for the previous ATP loss.
+     * @return THe previous time taken for atp loss.
+     */
     public float getLastTimeTakenforATPLoss() {
         return lastTimeTakenforATPLoss;
     }

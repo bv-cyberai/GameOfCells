@@ -106,8 +106,11 @@ public class Glucose {
     }
 
     /**
+     * DANGER: ONLY USE FOR TESTING!!
      * Sets ATP per Glucose to zero to test ATP burn rates
      * during movement.
+     *
+     * @param setToZero If ture set ATP_PER_GLUCOSE to 0.
      */
     public static void setAtpPerGlucoseDoNotUseForTestingOnly(boolean setToZero) {
         if(setToZero) {
