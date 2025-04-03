@@ -79,6 +79,9 @@ public class Cell {
     private float currentATPLost; // used to track atp loss up to 1
     private float totalATPLossFactor; //tracks total atp burn to use
     private float distanceMovedSinceLastTick;
+    private boolean atpTickFlag;
+    private float currTimeTakenforATPLoss;
+    private float lastTimeTakenforATPLoss;
 
     //potential gameOverStat
     private float totalDistanceMoved;
@@ -95,6 +98,9 @@ public class Cell {
         sizeUpgradeLevel = 0;
         organelleUpgradeLevel = 0;
         currentATPLost = 0f;
+        currTimeTakenforATPLoss = 0f;
+        lastTimeTakenforATPLoss = 0f;
+        atpTickFlag = false;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
     }
@@ -149,15 +155,19 @@ public class Cell {
      */
     private void calculateATPLoss(float deltaTime) {
         distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
+        currTimeTakenforATPLoss += deltaTime;
 
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
 //        System.out.println("movementM: " +movementMultiplier);
 
         if (movementMultiplier > 0) {
-            currentATPLost += deltaTime * (2 * movementMultiplier * (totalATPLossFactor));
-//            System.out.println("MOVMENTBURNDETECTED!");
+            currentATPLost += deltaTime * ((2*totalATPLossFactor));
+//            currentATPLost += deltaTime * ( movementMultiplier * (2*totalATPLossFactor));
+//            System.out.println("MOVMENT: " +(deltaTime * ( movementMultiplier * (2*totalATPLossFactor))));
+//            System.out.println("NONE: " +(deltaTime * (totalATPLossFactor)));
         } else {
             currentATPLost += deltaTime * (totalATPLossFactor);
+//            System.out.println("NONE: " +(deltaTime * (totalATPLossFactor)));
         }
 
     }
@@ -233,8 +243,14 @@ public class Cell {
     }
 
     public void update(float delta) {
-
+        //Recalculate loss factor.
+        totalATPLossFactor = setTotalLossFactor();
         calculateATPLoss(delta);
+
+        if(atpTickFlag) {
+            atpTickFlag = false;
+        }
+
 
         //tracked for ATP and game over stats.
         totalDistanceMoved += distanceMovedSinceLastTick;
@@ -254,12 +270,16 @@ public class Cell {
         if (currentATPLost >= 1) {
             if (cellATP > 0) {
                 cellATP -= 1;
+                atpTickFlag = true;
+//                System.out.println("TIME: " + timeTakenforATPLoss);
+                lastTimeTakenforATPLoss = currTimeTakenforATPLoss;
+                currTimeTakenforATPLoss = 0f;
             }
             currentATPLost = 0;
         }
 
-        //Recalculate loss factor.
-        totalATPLossFactor = setTotalLossFactor();
+
+
 
     }
 
@@ -685,5 +705,21 @@ public class Cell {
 
     public void setCellATP(int cellATP) {
         this.cellATP = cellATP;
+    }
+
+    public void setCurrentATPLost(float currentATPLost) {
+        this.currentATPLost = currentATPLost;
+    }
+
+    public boolean isAtpTickFlag() {
+        return atpTickFlag;
+    }
+
+    public float getCurrTimeTakenforATPLoss() {
+        return currTimeTakenforATPLoss;
+    }
+
+    public float getLastTimeTakenforATPLoss() {
+        return lastTimeTakenforATPLoss;
     }
 }
