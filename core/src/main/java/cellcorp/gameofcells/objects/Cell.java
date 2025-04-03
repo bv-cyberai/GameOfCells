@@ -77,9 +77,9 @@ public class Cell {
     private int sizeUpgradeLevel; // size upgrades 0-4
     private int organelleUpgradeLevel; //organelle upgrades 0-4
     private float currentATPLost; // used to track atp loss up to 1
-    private float totalATPLossFactor; //tracks total atp burn to use
+    private float totalATPLossFactor; //tracks total atp burn
     private float distanceMovedSinceLastTick;
-    private boolean atpTickFlag;
+    private boolean atpTickFlag; //tracks if ATP has been burnt, mostly for testing
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
 
@@ -151,6 +151,9 @@ public class Cell {
      *
      * Returns ATPburn based on movement upgrades and size.
      *
+     * When moving burn rate is twice the base burn. See
+     * setTotalLossFactor() for more detailed burn rates.
+     *
      * @param deltaTime time since last render
      */
     private void calculateATPLoss(float deltaTime) {
@@ -158,16 +161,10 @@ public class Cell {
         currTimeTakenforATPLoss += deltaTime;
 
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
-//        System.out.println("movementM: " +movementMultiplier);
-
         if (movementMultiplier > 0) {
             currentATPLost += deltaTime * ((2*totalATPLossFactor));
-//            currentATPLost += deltaTime * ( movementMultiplier * (2*totalATPLossFactor));
-//            System.out.println("MOVMENT: " +(deltaTime * ( movementMultiplier * (2*totalATPLossFactor))));
-//            System.out.println("NONE: " +(deltaTime * (totalATPLossFactor)));
         } else {
             currentATPLost += deltaTime * (totalATPLossFactor);
-//            System.out.println("NONE: " +(deltaTime * (totalATPLossFactor)));
         }
 
     }
@@ -180,9 +177,25 @@ public class Cell {
      * Case = Size of Cell
      *
      * Idle burn rate are given for each case.
-     * Moving burn rates are half of these values.
+     * Moving burn rates are half of these values and calculated in the
+     * calculate ATP Loss function.
      * Organelles lower the base burn rate by the upgrade level.
      * @return The total loss factor.
+     */
+    /**
+     +----+---------+------+-----+-----+------+------+------+
+     |    | Type    | Size | BBR | Mit | Ribo | Flag | Nuke |
+     +====+=========+======+=====+=====+======+======+======+
+     |  0 | none    |  0   |  11 |  -  |  -   |  -   |  -   |
+     +----+---------+------+-----+-----+------+------+------+
+     |  1 | small   |  1   |  10 |  9  |  -   |  -   |  -   |
+     +----+---------+------+-----+-----+------+------+------+
+     |  2 | medium  |  2   |  9  |  8  |  7   |  -   |  -   |
+     +----+---------+------+-----+-----+------+------+------+
+     |  3 | large   |  3   |  8  |  7  |  6   |  5   |  -   |
+     +----+---------+------+-----+-----+------+------+------+
+     |  4 | massive |  4   |  7  |  6  |  5   |  4   |  3   |
+     +----+---------+------+-----+-----+------+------+------+
      */
     private float setTotalLossFactor() {
         switch (sizeUpgradeLevel) {
@@ -247,10 +260,10 @@ public class Cell {
         totalATPLossFactor = setTotalLossFactor();
         calculateATPLoss(delta);
 
+        //Used for testing. Set when 1 ATP burn has occurred.
         if(atpTickFlag) {
             atpTickFlag = false;
         }
-
 
         //tracked for ATP and game over stats.
         totalDistanceMoved += distanceMovedSinceLastTick;
@@ -271,7 +284,6 @@ public class Cell {
             if (cellATP > 0) {
                 cellATP -= 1;
                 atpTickFlag = true;
-//                System.out.println("TIME: " + timeTakenforATPLoss);
                 lastTimeTakenforATPLoss = currTimeTakenforATPLoss;
                 currTimeTakenforATPLoss = 0f;
             }
@@ -335,6 +347,10 @@ public class Cell {
 
     }
 
+    /**
+     * Sets Cell values based on the config file if it can be
+     * found/read. Other wise default values are used.
+     */
     private void setUserConfigOrDefault() {
         try {
             cellHealth = configProvider.getIntValue("cellHealth");
@@ -444,8 +460,7 @@ public class Cell {
     }
 
     /**
-     *
-     *
+     *Returns the Cell BoundingCircle
      */
     public Circle getCircle() {
         return cellCircle;
@@ -468,6 +483,10 @@ public class Cell {
         cellATP = Math.max(cellATP - decreaseAmount, 0);
     }
 
+    /**
+     * Increases the cell size
+     * @param sizeIncrease - The amount to increase the cell by.
+     */
     public void increasecellSize(float sizeIncrease) {
         this.cellSize += sizeIncrease;
         cellCircle.radius += sizeIncrease / 2;
