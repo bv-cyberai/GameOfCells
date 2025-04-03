@@ -279,8 +279,16 @@ public class GlucoseManager {
         if (!collisions.isEmpty()) {
             gamePlayScreen.reportGlucoseCollision();
         }
+
+        int atpPerGlucose;
+        if (cell.hasMitochondria()) {
+            atpPerGlucose = Glucose.ATP_PER_GLUCOSE_WITH_MITOCHONDRIA;
+        } else {
+            atpPerGlucose = Glucose.ATP_PER_GLUCOSE;
+        }
+
         for (var ignored : collisions) {
-            cell.addCellATP(Glucose.ATP_PER_GLUCOSE);
+            cell.addCellATP(atpPerGlucose);
         }
         glucoseList.removeAll(collisions);
     }
