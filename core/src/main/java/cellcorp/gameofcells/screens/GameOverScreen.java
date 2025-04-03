@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.objects.Stats;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
@@ -65,6 +66,7 @@ public class GameOverScreen implements GameOfCellsScreen {
     private float yCenter = 0;
 
     private String gameOverString;
+    private final Stats stats;
 
     /**
      * Constructor
@@ -80,7 +82,8 @@ public class GameOverScreen implements GameOfCellsScreen {
     public GameOverScreen(InputProvider inputProvider,
                           AssetManager assetManager,
                           GraphicsProvider graphicsProvider,
-                          Main game, ConfigProvider configProvider) {
+                          Main game, ConfigProvider configProvider,
+                          Stats stats) {
 
         this.game = game;
 
@@ -96,6 +99,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
         // Change at your own risk, re-centering is painful.
         gameOverString = "               !Game Over!" + '\n' + "Press \'Space\' to try again!";
+        this.stats = stats;
     }
 
     /**
@@ -146,10 +150,32 @@ public class GameOverScreen implements GameOfCellsScreen {
         textWidth = layout.width;
         textHeight = layout.height;
         xResetCenter = (VIEW_RECT_WIDTH - textWidth) / 2;
-        yCenter = (VIEW_RECT_HEIGHT + textHeight) / 2;
+        yCenter = 700;
 
         spriteBatch.begin();
         font.draw(spriteBatch, gameOverString, xResetCenter, yCenter);
+        spriteBatch.end();
+
+        drawStats();
+    }
+
+    private void drawStats() {
+        var timerString = "Seconds survived: " + Math.round(stats.gameTimer);
+        var glucoseString = "Glucose collected: " + stats.glucoseCollected;
+        var atpString = "ATP generated: " + stats.atpGenerated;
+        var distanceString = "Distance moved: " + Math.round(stats.distanceMoved / 10) + " units";
+        var sizeString = "Max size: " + stats.sizeDescription();
+        var organellesString = "Organelles purchased: " + stats.organellesPurchased;
+
+        font.getData().setScale(0.25f);
+        var x = 300;
+        spriteBatch.begin();
+        font.draw(spriteBatch, timerString, x, 500);
+        font.draw(spriteBatch, glucoseString, x, 450);
+        font.draw(spriteBatch, atpString, x, 400);
+        font.draw(spriteBatch, distanceString, x, 350);
+        font.draw(spriteBatch, sizeString, x, 300);
+        font.draw(spriteBatch, organellesString, x, 250);
         spriteBatch.end();
     }
 

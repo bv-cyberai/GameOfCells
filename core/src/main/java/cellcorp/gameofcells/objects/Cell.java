@@ -12,6 +12,8 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
+import java.util.List;
+
 import static java.lang.Math.abs;
 
 /**
@@ -160,6 +162,10 @@ public class Cell {
 
         cellCircle.x += dx * CELL_SPEED * deltaTime;
         cellCircle.y += dy * CELL_SPEED * deltaTime;
+
+        if (moveLeft || moveRight || moveUp || moveDown) {
+            gamePlayScreen.stats.distanceMoved += CELL_SPEED * deltaTime;
+        }
     }
 
     /**
@@ -312,6 +318,24 @@ public class Cell {
             }
             currentATPLost = 0;
         }
+
+        // Update stats
+        var organellesPurchased = List.of(hasMitochondria, hasFlagella, hasNucleus, hasRibosomes)
+                .stream().filter(Boolean::booleanValue).count();
+        gamePlayScreen.stats.organellesPurchased = (int)organellesPurchased;
+        int maxSize;
+        if (hasMassiveSizeUpgrade) {
+            maxSize = 4;
+        } else if (hasLargeSizeUpgrade) {
+            maxSize = 3;
+        } else if (hasMediumSizeUpgrade) {
+            maxSize = 2;
+        } else if (hasSmallSizeUpgrade) {
+            maxSize = 1;
+        } else {
+            maxSize = 0;
+        }
+        gamePlayScreen.stats.maxSize = maxSize;
     }
 
     private void damageIfZeroATP(float deltaTimeSeconds) {

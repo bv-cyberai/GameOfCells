@@ -288,6 +288,8 @@ public class GlucoseManager {
         }
 
         for (var ignored : collisions) {
+            gamePlayScreen.stats.glucoseCollected += 1;
+            gamePlayScreen.stats.atpGenerated += atpPerGlucose;
             cell.addCellATP(atpPerGlucose);
         }
         glucoseList.removeAll(collisions);

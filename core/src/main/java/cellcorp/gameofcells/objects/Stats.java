@@ -1,0 +1,31 @@
+package cellcorp.gameofcells.objects;
+
+public class Stats {
+    public float gameTimer = 0;
+    public int glucoseCollected = 0;
+    public int atpGenerated = 0;
+    public float distanceMoved = 0;
+    /**
+     * Size in range (0, ..=
+     */
+    public int maxSize = 0;
+    public int organellesPurchased = 0;
+
+    /**
+     * Generate a string describing the current max size.
+     */
+    public String sizeDescription() {
+        switch (maxSize) {
+            case 0:
+                return "Tiny";
+            case 1:
+                return "Small";
+            case 2:
+                return "Medium";
+            case 3:
+                return "Large";
+            default:
+                return "Massive";
+        }
+    }
+}

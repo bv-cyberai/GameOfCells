@@ -147,6 +147,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
 
+    public final Stats stats = new Stats();
 
     /**
      * Constructs the GamePlayScreen.
@@ -355,6 +356,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
             } else if (playerCell.getCellATP() > 20) {
                 hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
             }
+
+            stats.gameTimer += deltaTimeSeconds;
         }
     }
 
@@ -521,7 +524,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 inputProvider,
                 assetManager,
                 graphicsProvider,
-                game,configProvider));
+                game, configProvider, stats));
     }
 
     /**
