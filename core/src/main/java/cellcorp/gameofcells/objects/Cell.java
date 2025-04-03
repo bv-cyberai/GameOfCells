@@ -36,7 +36,7 @@ public class Cell {
 
     // May change, but used to ensure that invalid case selection is not hit.
     private static final int MAX_SIZE_UPGRADES = 4;
-    private static final int MAX_OGRANELLE_UPGRADES = 4;
+    private static final int MAX_ORGANELLE_UPGRADES = 4;
     float cellSize;
 
     private final AssetManager assetManager;
@@ -79,7 +79,7 @@ public class Cell {
     private float currentATPLost; // used to track atp loss up to 1
     private float totalATPLossFactor; //tracks total atp burn
     private float distanceMovedSinceLastTick;
-    private boolean atpTickFlag; //tracks if ATP has been burnt, mostly for testing
+    private boolean wasAtpBurnedThisFrame; //tracks if ATP has been burnt, mostly for testing
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
 
@@ -100,7 +100,8 @@ public class Cell {
         currentATPLost = 0f;
         currTimeTakenforATPLoss = 0f;
         lastTimeTakenforATPLoss = 0f;
-        atpTickFlag = false;
+        wasAtpBurnedThisFrame = false;
+        totalDistanceMoved = 0f;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
     }
@@ -181,21 +182,27 @@ public class Cell {
      * calculate ATP Loss function.
      * Organelles lower the base burn rate by the upgrade level.
      * @return The total loss factor.
+     *
+     * TODO: make values static and implement into config.
      */
     /**
-     +----+---------+------+-----+-----+------+------+------+
-     |    | Type    | Size | BBR | Mit | Ribo | Flag | Nuke |
-     +====+=========+======+=====+=====+======+======+======+
-     |  0 | none    |  0   |  11 |  -  |  -   |  -   |  -   |
-     +----+---------+------+-----+-----+------+------+------+
-     |  1 | small   |  1   |  10 |  9  |  -   |  -   |  -   |
-     +----+---------+------+-----+-----+------+------+------+
-     |  2 | medium  |  2   |  9  |  8  |  7   |  -   |  -   |
-     +----+---------+------+-----+-----+------+------+------+
-     |  3 | large   |  3   |  8  |  7  |  6   |  5   |  -   |
-     +----+---------+------+-----+-----+------+------+------+
-     |  4 | massive |  4   |  7  |  6  |  5   |  4   |  3   |
-     +----+---------+------+-----+-----+------+------+------+
+     * Base Burn Rate(BBR) - Rate burned when idle at given size
+     * Each Organelle upgrade reduces this value by 1
+     * Each Size upgrade reduces this value by 1
+     *
+     +----+---------+------+-----+------+------+------+
+     |    | Type    | BBR  | Mit | Ribo | Flag | Nuke |
+     +====+=========+======+=====+=====+======+======+=
+     |  0 | none    |  11  |  -  |  -   |  -   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  1 | small   |  10  |  9  |  -   |  -   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  2 | medium  |  9   |  8  |  7   |  -   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  3 | large   |  8   |  7  |  6   |  5   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  4 | massive |  7   |  6  |  5   |  4   |  3   |
+     +----+---------+------+-----+-----+------+-------+
      */
     private float setTotalLossFactor() {
         switch (sizeUpgradeLevel) {
@@ -261,8 +268,8 @@ public class Cell {
         calculateATPLoss(delta);
 
         //Used for testing. Set when 1 ATP burn has occurred.
-        if(atpTickFlag) {
-            atpTickFlag = false;
+        if(wasAtpBurnedThisFrame) {
+            wasAtpBurnedThisFrame = false;
         }
 
         //tracked for ATP and game over stats.
@@ -283,7 +290,7 @@ public class Cell {
         if (currentATPLost >= 1) {
             if (cellATP > 0) {
                 cellATP -= 1;
-                atpTickFlag = true;
+                wasAtpBurnedThisFrame = true;
                 lastTimeTakenforATPLoss = currTimeTakenforATPLoss;
                 currTimeTakenforATPLoss = 0f;
             }
@@ -511,7 +518,7 @@ public class Cell {
      */
     public void setHasMitochondria(boolean hasMitochondria) {
         this.hasMitochondria = hasMitochondria;
-        if ((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasMitochondria) organelleUpgradeLevel++;
+        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasMitochondria) organelleUpgradeLevel++;
     }
 
     /**
@@ -540,7 +547,7 @@ public class Cell {
      */
     public void setHasRibosomes(boolean hasRibosomes) {
         this.hasRibosomes = hasRibosomes;
-        if ((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasRibosomes) organelleUpgradeLevel++;
+        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasRibosomes) organelleUpgradeLevel++;
     }
 
     /**
@@ -555,7 +562,7 @@ public class Cell {
      */
     public void setHasFlagella(boolean hasFlagella) {
         this.hasFlagella = hasFlagella;
-        if((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
+        if((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
     }
 
     /**
@@ -570,7 +577,7 @@ public class Cell {
      */
     public void setHasNucleus(boolean hasNucleus) {
         this.hasNucleus = hasNucleus;
-        if((organelleUpgradeLevel < MAX_OGRANELLE_UPGRADES) && hasNucleus) organelleUpgradeLevel++;
+        if((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasNucleus) organelleUpgradeLevel++;
     }
 
     /**
@@ -737,8 +744,8 @@ public class Cell {
      *
      * @return the state of the ATP flag
      */
-    public boolean isAtpTickFlag() {
-        return atpTickFlag;
+    public boolean isWasAtpBurnedThisFrame() {
+        return wasAtpBurnedThisFrame;
     }
 
     /**

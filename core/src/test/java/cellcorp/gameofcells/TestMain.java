@@ -461,7 +461,7 @@ public class TestMain {
                 break;
             }
 
-            if (gameCell.isAtpTickFlag()) {
+            if (gameCell.isWasAtpBurnedThisFrame()) {
                 System.out.println("TIME for loss: " + gameCell.getLastTimeTakenforATPLoss());
                 plusOne = true;
             }
