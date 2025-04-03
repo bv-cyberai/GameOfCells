@@ -730,10 +730,6 @@ public class Cell {
         this.cellATP = cellATP;
     }
 
-//    public void setCurrentATPLost(float currentATPLost) {
-//        this.currentATPLost = currentATPLost;
-//    }
-
     /**
      * ATP flag getter
      *
