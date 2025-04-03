@@ -138,7 +138,8 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
                 selectedUpgradeIndex++;
                 updateUpgradeSelection();
             }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             SizeUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
             if (selectedUpgrade.canPurchase(playerCell, null)) {
                 selectedUpgrade.applyUpgrade(playerCell);

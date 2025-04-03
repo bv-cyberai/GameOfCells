@@ -182,7 +182,8 @@ public class ShopScreen implements GameOfCellsScreen {
                 selectedOptionIndex++;
                 updateOptionSelection();
             }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             // Handle selection of the current option
             if (selectedOptionIndex == 0) {
                 // Size option selected

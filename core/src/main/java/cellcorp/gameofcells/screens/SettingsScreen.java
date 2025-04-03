@@ -122,8 +122,20 @@ public class SettingsScreen implements GameOfCellsScreen {
             selectedOption = (selectedOption + 1) % SETTINGS_OPTIONS.length;
         }
 
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.setScreen(new MainMenuScreen(
+                    inputProvider,
+                    graphicsProvider,
+                    game,
+                    assetManager,
+                    viewport.getCamera(),
+                    viewport, configProvider));
+            return;
+        }
+
         // Confirm selection with Enter key
-        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             switch (selectedOption) {
                 case 0: // Game Info & Controls
                     game.setScreen(new GameInfoControlsScreen(

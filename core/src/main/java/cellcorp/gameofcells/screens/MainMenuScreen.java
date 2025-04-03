@@ -145,7 +145,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
         }
 
         // Confirm selection with Enter key
-        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             switch (selectedOption) {
                 case 0:
                     // Start the game

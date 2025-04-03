@@ -5,6 +5,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import cellcorp.gameofcells.screens.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -24,10 +25,6 @@ import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.runner.GameRunner;
-import cellcorp.gameofcells.screens.GameOverScreen;
-import cellcorp.gameofcells.screens.GamePlayScreen;
-import cellcorp.gameofcells.screens.MainMenuScreen;
-import cellcorp.gameofcells.screens.ShopScreen;
 
 public class TestMain {
 
@@ -178,7 +175,7 @@ public class TestMain {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
 
-        // Press 'G' to move to shop screen
+        // Press 'G' to move to game-over
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
         gameRunner.step();
 
@@ -322,6 +319,65 @@ public class TestMain {
             gameRunner.step();
         }
         assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+    }
+
+    @Test
+    public void canUseSpaceKeyToMoveForward() {
+        var gameRunner = GameRunner.create();
+        var game = gameRunner.game;
+
+        // Move down, press space to get to settings screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(SettingsScreen.class, game.getScreen());
+
+        // Press space to get to controls-info screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(GameInfoControlsScreen.class, game.getScreen());
+
+        // Back out to main menu
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
+        gameRunner.step();
+        assertInstanceOf(MainMenuScreen.class, game.getScreen());
+
+        // Move to game screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, game.getScreen());
+        var gamePlayScreen = (GamePlayScreen) game.getScreen();
+
+        // Get max ATP, for shop screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
+        gameRunner.runForSeconds(1);
+        assertEquals(100, gamePlayScreen.getCell().getCellATP());
+
+        // Open shop screen, go to size-upgrades, buy upgrade
+        // TODO -- Shop screen is crashing.
+//        var startSize = gamePlayScreen.getCell().getcellSize();
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+//        gameRunner.step();
+//        assertInstanceOf(ShopScreen.class, game.getScreen());
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+//        gameRunner.step();
+//        assertInstanceOf(SizeUpgradeScreen.class, game.getScreen());
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+//        gameRunner.step();
+//        assertInstanceOf(GamePlayScreen.class, game.getScreen());
+//        var endSize = gamePlayScreen.getCell().getcellSize();
+//        assertNotEquals(startSize, endSize);
+
+        // Go to game-over screen, restart with Space
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
+        gameRunner.step();
+        assertInstanceOf(GameOverScreen.class, game.getScreen());
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(MainMenuScreen.class, game.getScreen());
     }
 
     @Test

@@ -159,7 +159,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                     message = configProvider.getStringValue("glucosePopupMessage");
                 }catch (NullPointerException e) {
                     message = "You've collected glucose!" + "\n" + "\n" + "Cells convert glucose into ATP for energy."
-                        + "\n" + "\n" + "Press 'C' to continue!";
+                        + "\n" + "\n" + "Press 'Space' to continue!";
                 }
                 break;
             case danger:
@@ -168,7 +168,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
                 }catch (NullPointerException e) {
                     message = "You're in danger!" + "\n\n" + "Gradient color 'X' damages cell health" + "\n\n"
-                        + "Press 'C' to continue!";
+                        + "Press 'Space' to continue!";
                 }
                 break;
             default:
@@ -230,7 +230,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyPressed(Input.Keys.C)) {
+        if (inputProvider.isKeyPressed(Input.Keys.C)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             game.setScreen(previousScreen);
         }
     }

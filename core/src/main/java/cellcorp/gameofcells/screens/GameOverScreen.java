@@ -95,25 +95,26 @@ public class GameOverScreen implements GameOfCellsScreen {
         layout = new GlyphLayout();
 
         // Change at your own risk, re-centering is painful.
-        gameOverString = "           !Game Over!" + '\n' + "Press \'R\' to try again!";
+        gameOverString = "               !Game Over!" + '\n' + "Press \'Space\' to try again!";
     }
 
     /**
      * Handle Input
      *
-     * Resets the game with 'R'.
+     * Resets the game with 'Space'.
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // This perhaps should be the main menu screen, but is most likely up to the
         // client.
-        if (inputProvider.isKeyJustPressed(Input.Keys.R)) {
-            game.setScreen(new MainMenuScreen(inputProvider, 
-            graphicsProvider, 
-            game, 
-            assetManager, 
-            null, 
-            viewport, 
+        if (inputProvider.isKeyJustPressed(Input.Keys.SPACE)
+            || inputProvider.isKeyJustPressed(Input.Keys.R)) {
+            game.setScreen(new MainMenuScreen(inputProvider,
+            graphicsProvider,
+            game,
+            assetManager,
+            null,
+            viewport,
             configProvider));
         }
     }
