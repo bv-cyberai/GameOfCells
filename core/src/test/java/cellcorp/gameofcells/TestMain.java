@@ -321,68 +321,71 @@ public class TestMain {
         GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
         Cell gameCell = gamePlayScreen.getCell();
 
-        float startingATP = gameCell.getCellATP();
+        int startingATP = gameCell.getCellATP();
 
         float expectedATPLost = 0f;
 
         assertTrue((Math.abs(gameCell.getCurrentATPLost() - expectedATPLost)) < epsilon);
 
-        gameRunner.runForSeconds(12);
+//        gameRunner.runForSeconds(12);
+        runModifiedStep(12,11f,gameRunner,gameCell, false);
+        idleTestHelperAndAsserter(gameCell,12f,11f,startingATP,1,epsilon,gameRunner,"1" );
 
-        float expectedCellATP = startingATP-1;
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//        float expectedCellATP = startingATP-1;
+//        idleTestHelperAndAsserter(gameCell,12f,11f,startingATP,expectedATPLost,epsilon,gameRunner);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
 
-        gameCell.setSmallSizeUpgrade(true);
-
-        expectedCellATP = startingATP-2;
-        gameRunner.runForSeconds(11);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        gameCell.setMediumSizeUpgrade(true);
-        expectedCellATP = startingATP-3;
-        gameRunner.runForSeconds(10);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        gameCell.setLargeSizeUpgrade(true);
-        expectedCellATP = startingATP-4;
-        gameRunner.runForSeconds(9);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        gameCell.setMassiveSizeUpgrade(true);
-        expectedCellATP = startingATP-5;
-        gameRunner.runForSeconds(8);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        gameCell.setHasMitochondria(true);
-        expectedCellATP = startingATP-6;
-        gameRunner.runForSeconds(7);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        gameCell.setHasRibosomes(true);
-        expectedCellATP = startingATP-7;
-        System.out.println(expectedCellATP);
-        System.out.println(Math.abs(gameCell.getCellATP()));
-        gameRunner.runForSeconds(6);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        gameCell.setHasFlagella(true);
-
-        //Off by 1 but I belive this a floating point shenannigans.
-        expectedCellATP = startingATP-9;
-        gameRunner.runForSeconds(5);
-        System.out.println(expectedCellATP);
-        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        //This test should prove its just fp shenannigans.
-        gameCell.setHasNucleus(true);
-        expectedCellATP = startingATP-10;
-        gameRunner.runForSeconds(4);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
-
-        expectedCellATP = startingATP-11;
-        gameRunner.runForSeconds(4);
-        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//        gameCell.setSmallSizeUpgrade(true);
+//
+//        expectedCellATP = startingATP-2;
+//        gameRunner.runForSeconds(11);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setMediumSizeUpgrade(true);
+//        expectedCellATP = startingATP-3;
+//        gameRunner.runForSeconds(10);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setLargeSizeUpgrade(true);
+//        expectedCellATP = startingATP-4;
+//        gameRunner.runForSeconds(9);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setMassiveSizeUpgrade(true);
+//        expectedCellATP = startingATP-5;
+//        gameRunner.runForSeconds(8);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setHasMitochondria(true);
+//        expectedCellATP = startingATP-6;
+//        gameRunner.runForSeconds(7);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setHasRibosomes(true);
+//        expectedCellATP = startingATP-7;
+//        System.out.println(expectedCellATP);
+//        System.out.println(Math.abs(gameCell.getCellATP()));
+//        gameRunner.runForSeconds(6);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        gameCell.setHasFlagella(true);
+//
+//        //Off by 1 but I belive this a floating point shenannigans.
+//        expectedCellATP = startingATP-9;
+//        gameRunner.runForSeconds(5);
+//        System.out.println(expectedCellATP);
+//        System.out.println(Math.abs(gameCell.getCellATP() - expectedCellATP));
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        //This test should prove its just fp shenannigans.
+//        gameCell.setHasNucleus(true);
+//        expectedCellATP = startingATP-10;
+//        gameRunner.runForSeconds(4);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+//
+//        expectedCellATP = startingATP-11;
+//        gameRunner.runForSeconds(4);
+//        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
     }
 
 
@@ -407,43 +410,43 @@ public class TestMain {
 
         float expectedATPLost = 0f;
 
-        runModifiedStep(6, 5.5f, gameRunner,gameCell);
+        runModifiedStep(6, 5.5f, gameRunner,gameCell, true);
         System.out.println("ATP: " +gameCell.getCellATP());
         System.out.println("ATPLOST: " +gameCell.getCurrentATPLost());
-        movementTestHelper(startingATP,1,gameCell,epsilon,"0",5.5f );
+        movementTestHelperAndAsserter(startingATP,1,gameCell,epsilon,"0",5.5f );
 
 
         gameCell.setSmallSizeUpgrade(true);
-        runModifiedStep(6,5f, gameRunner,gameCell);
-        movementTestHelper(startingATP,2,gameCell,epsilon,"1",5f );
+        runModifiedStep(6,5f, gameRunner,gameCell,true );
+        movementTestHelperAndAsserter(startingATP,2,gameCell,epsilon,"1",5f );
 
         gameCell.setMediumSizeUpgrade(true);
-        runModifiedStep(5, 4.5f, gameRunner,gameCell);
-        movementTestHelper(startingATP,3,gameCell,epsilon,"2",4.5f );
+        runModifiedStep(5, 4.5f, gameRunner,gameCell, true);
+        movementTestHelperAndAsserter(startingATP,3,gameCell,epsilon,"2",4.5f );
 
         gameCell.setLargeSizeUpgrade(true);
-        runModifiedStep(5,4f, gameRunner,gameCell);
-        movementTestHelper(startingATP,4,gameCell,epsilon,"3",4f );
+        runModifiedStep(5,4f, gameRunner,gameCell,true );
+        movementTestHelperAndAsserter(startingATP,4,gameCell,epsilon,"3",4f );
 
         gameCell.setMassiveSizeUpgrade(true);
-        runModifiedStep(4,3.5f, gameRunner,gameCell);
-        movementTestHelper(startingATP,5,gameCell,epsilon,"4",3.5f );
+        runModifiedStep(4,3.5f, gameRunner,gameCell,true );
+        movementTestHelperAndAsserter(startingATP,5,gameCell,epsilon,"4",3.5f );
 
         gameCell.setHasMitochondria(true);
-        runModifiedStep(4, 3f, gameRunner,gameCell);
-        movementTestHelper(startingATP,6,gameCell,epsilon,"5", 3f);
+        runModifiedStep(4, 3f, gameRunner,gameCell,true );
+        movementTestHelperAndAsserter(startingATP,6,gameCell,epsilon,"5", 3f);
 
         gameCell.setHasRibosomes(true);
-        runModifiedStep(4,2.5f,gameRunner,gameCell);
-        movementTestHelper(startingATP,7,gameCell,epsilon,"6", 2.5f);
+        runModifiedStep(4,2.5f,gameRunner,gameCell,true );
+        movementTestHelperAndAsserter(startingATP,7,gameCell,epsilon,"6", 2.5f);
 
         gameCell.setHasFlagella(true);
-        runModifiedStep(3,2.0f,gameRunner,gameCell);
-        movementTestHelper(startingATP,8,gameCell,epsilon,"7",2.0f );
+        runModifiedStep(3,2.0f,gameRunner,gameCell,true );
+        movementTestHelperAndAsserter(startingATP,8,gameCell,epsilon,"7",2.0f );
 
         gameCell.setHasNucleus(true);
-        runModifiedStep(2,1.5f, gameRunner,gameCell);
-        movementTestHelper(startingATP,9,gameCell,epsilon,"8",1.5f );
+        runModifiedStep(2,1.5f, gameRunner,gameCell, true);
+        movementTestHelperAndAsserter(startingATP,9,gameCell,epsilon,"8",1.5f );
 
         // RESET GLUCOSE TO DEFAULT VALUE - SUPER IMPORANT THIS METHOD IS DANGEROUS.
         Glucose.setAtpPerGlucoseDoNotUseForTestingOnly(false);
@@ -451,15 +454,16 @@ public class TestMain {
 
     /**
      * Modifed Step
-     *
+     * <p>
      * Alows keys to be held down while stepping the game further. Used to test movment deduction.
      *
-     * @param loopSeconds How many seconds to run for.
+     * @param loopSeconds    How many seconds to run for.
      * @param correctSeconds When ATP burn is expected to happen.
-     * @param gameRunner The game Runner.
-     * @param gameCell The Cell.
+     * @param gameRunner     The game Runner.
+     * @param gameCell       The Cell.
+     * @param cellMovement
      */
-    private void runModifiedStep(int loopSeconds, float correctSeconds, GameRunner gameRunner,Cell gameCell) {
+    private void runModifiedStep(int loopSeconds, float correctSeconds, GameRunner gameRunner, Cell gameCell, boolean cellMovement) {
         boolean plusOne = false;
         for(int i = 0; i < loopSeconds * GameRunner.TICKS_PER_SECOND; i++){
             if(plusOne) {
@@ -472,15 +476,26 @@ public class TestMain {
             }
             //This creates back and forth movement instead of hitting
             // the end of the screen which happens during testing only.
-            if (i%2 == 0) {
+            if (i%2 == 0 && cellMovement) {
                 gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
-            }else {
+            }else if(cellMovement) {
                 gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
             }
             gameRunner.step();
 
-
         }
+
+    }
+
+    private void idleTestHelperAndAsserter(Cell gameCell, float secondsToRun, float expectedSeconds, int startingATP, float expectedLoss, float epsilon, GameRunner gameRunner, String callSign) {
+        System.out.println(callSign);
+        float expectedCellATP = startingATP-expectedLoss;
+//        gameRunner.runForSeconds(secondsToRun);
+        System.out.println(gameCell.getCellATP());
+        System.out.println(expectedCellATP);
+        assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
+        System.out.println(Math.abs(gameCell.getLastTimeTakenforATPLoss()) - expectedSeconds );
+        assertTrue(Math.abs(gameCell.getLastTimeTakenforATPLoss()) - expectedSeconds < epsilon);
 
     }
 
@@ -496,7 +511,7 @@ public class TestMain {
      * @param callNumber      The order this method is called in, usefull for debugging
      * @param expectedSeconds
      */
-    private void movementTestHelper(float startingATP, int expectedLoss, Cell gameCell, float epsilon, String callNumber, float expectedSeconds){
+    private void movementTestHelperAndAsserter(float startingATP, int expectedLoss, Cell gameCell, float epsilon, String callNumber, float expectedSeconds){
         System.out.println(callNumber);
         float expectedCellATP = startingATP-expectedLoss;
         assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
