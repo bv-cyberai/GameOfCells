@@ -305,6 +305,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
             );
         }
+        // Returns the player to the main Menu Screen
+        if (inputProvider.isKeyJustPressed(Input.Keys.M)) {
+            game.setScreen(new MainMenuScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport, configProvider));
+        }
     }
 
     /**
