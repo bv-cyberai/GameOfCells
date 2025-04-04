@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import cellcorp.gameofcells.Main;
@@ -66,6 +65,11 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
     public Texture createWhitePixelTexture() {
         return Mockito.mock(Texture.class);
+    }
+
+    @Override
+    public BitmapFont createWhiteFont() {
+        return Mockito.mock(BitmapFont.class);
     }
 
     @Override

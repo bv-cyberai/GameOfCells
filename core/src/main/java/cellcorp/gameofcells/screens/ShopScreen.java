@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,7 +22,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import cellcorp.gameofcells.AssetFileNames;
@@ -94,7 +94,6 @@ public class ShopScreen implements GameOfCellsScreen {
     public static final int VIEW_RECT_HEIGHT = 800;
 
     private int selectedOptionIndex = 0; // Tracks the currently selected option
-    private Table sizeUpgradeTable; // Table containing the size upgrade cards
     private List<Table> optionCards; // List of individual option card tables
 
     /**
@@ -271,7 +270,6 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-
         this.width = width;
         this.height = height;
     }
@@ -479,7 +477,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Draw a glowing border around the selected upgrade card.
      */
-    private Texture createGlowingBorderTexture() {
+    public Texture createGlowingBorderTexture() {
         int width = (int) OPTION_CARD_WIDTH;
         int height = (int) OPTION_CARD_HEIGHT;
         Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
@@ -533,72 +531,119 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Get the list of option cards.
-     *
-     * @return The list of option cards.
+     * This is used to update the option cards in the shop screen.
+     * The list contains the size and organelle upgrade cards.
+     * @return 
      */
     public List<Table> getOptionCards() {
         return optionCards;
     }
 
-    public Table getOptionCards(int index) {
-        return optionCards.get(index);
+    /**
+     * Get the option card at the specified index.
+     * This is used to get the selected option in the shop screen.
+     * The index corresponds to the size and organelle upgrade options.
+     * @param selectedOptionIndex
+     * @return
+     */
+    public Table getOptionCards(int selectedOptionIndex) {
+        return optionCards.get(selectedOptionIndex);
+    }
+
+    /**
+     * Set the list of option cards.
+     * This is used to update the option cards in the shop screen.
+     * @param optionCards
+     */
+    public void setOptionCards(List<Table> optionCards) {
+        this.optionCards = optionCards;
     }
 
     /**
      * Get the selected option index.
-     *
-     * @return The selected option index.
+     * This is used to get the selected option in the shop screen.
+     * The index corresponds to the size and organelle upgrade options.
+     * 0 = Size upgrade
+     * 1 = Organelle upgrade
+     * @return 
      */
     public int getSelectedOptionIndex() {
         return selectedOptionIndex;
     }
 
-    public boolean isHighlighted(Table index) {
-        for (int i = 0; i < optionCards.size(); i++) {
-            Table card = optionCards.get(i);
-            Image glowingBorder = (Image) card.findActor("glowingBorder"); // Find the glowing border by name
-
-            if (glowingBorder != null && card == index) { // Check if the glowing border exists and matches the index
-                return true;
-            }
-        }
-        return false;
+    /**
+     * Set the selected option index.
+     * This is used to update the selected option in the shop screen.
+     * @param selectedOptionIndex
+     */
+    public void setSelectedOptionIndex(int selectedOptionIndex) {
+        this.selectedOptionIndex = selectedOptionIndex;
     }
 
     /**
-     * Clear the options.
-     * <p>
-     * This method clears the options in the shop screen.
-     * It is used to reset the options when navigating back to the shop screen.
+     * Get the player cell size tracker.
+     * This is used to get the size of the player cell.
+     * @return
+     */
+    public int getSizeTracker() {
+        return playerCell.getcellSize();
+    }
+
+    /**
+     * Get the ATP tracker.
+     * This is used to get the ATP of the player cell.
+     * @return 
+     */
+    public int getATPTracker() {
+        return playerCell.getCellATP();
+    }
+
+    /**
+     * Get the player cell.
+     * This is used to get the player cell object.
+     * @return playerCell
+     */
+    public Cell getPlayerCell() {
+        return playerCell;
+    }
+
+    /**
+     * Check if the option card is highlighted.
+     * This is used to check if the option card is highlighted.
+     * @return true if the option card is highlighted, false otherwise.
+     */
+    public boolean isHighlighted(Table card) {
+        Image glowingBorder = (Image) card.findActor("glowingBorder");
+        if (glowingBorder != null && glowingBorder.isVisible()) {
+            return true; // Highlighted if the glowing border is visible
+        }
+        return false; // Not highlighted if no glowing border is visible
+    }
+
+    /**
+     * Clear the options in the shop screen.
+     * This is used to clear the options in the shop screen.
+     * This is useful when transitioning to a new screen or resetting the shop.
      */
     public void clearOptions() {
-        for (Table card : optionCards) {
-            card.clear();
-        }
+        this.optionCards.clear();
     }
 
-    /**
-     * Check if the screen is transitioning.
-     * <p>
-     * This method checks if the screen is currently transitioning.
-     * It is used to determine if the screen is in a state of transition.
-     * @return true if the screen is transitioning, false otherwise.
-     */
     public boolean isTransitioning() {
-        return stage.getRoot().getActions().size > 0;
+        // Check if the stage is currently transitioning (fading out)
+        return stage.getRoot().getActions().size > 0 && stage.getRoot().getActions().peek() instanceof AlphaAction;
+    }
+
+    public boolean isPaused() {
+        // Check if the game is paused
+        return previousScreen instanceof GamePlayScreen && ((GamePlayScreen) previousScreen).isPaused();
     }
 
     /**
-     * Check if the screen is paused.
-     * <p>
-     * This method checks if the screen is currently paused.
-     * It is used to determine if the screen is in a paused state.
-     * @return true if the screen is paused, false otherwise.
+     * Get the particles object.
+     * This is used to get the particles object for rendering.
+     * @return
      */
-    public boolean isPaused() {
-        return previousScreen.getIsPaused();
-    }
-
     public Particles getParticles() {
         return particles;
     }
@@ -607,17 +652,15 @@ public class ShopScreen implements GameOfCellsScreen {
      * Get the width of the screen.
      * <p>
      * This method returns the width of the screen.
-     * @return
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Get the height of the screen.
-     * <p>
-     * This method returns the height of the screen.
-     * @return
+     * Get the height of the shop screen.
+     * This is used to get the height of the shop screen.
+     * @return 
      */
     public int getHeight() {
         return height;
@@ -625,8 +668,8 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Get the option background texture.
-     * <p>
-     * This method returns the option background texture.
+     * This is used to get the background texture for the option cards.
+     * This is useful for creating a custom background for the option cards.
      * @return
      */
     public Texture getOptionBackgroundTexture() {
@@ -635,8 +678,8 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Get the glowing border texture.
-     * <p>
-     * This method returns the glowing border texture.
+     * This is used to get the glowing border texture for the option cards.
+     * This is useful for creating a glowing effect around the selected option card.
      * @return
      */
     public Texture getGlowingBorderTexture() {

@@ -76,13 +76,19 @@ public class Particles {
         }
     }
 
+    /**
+     * Checks if the particles are active
+     * @return true if particles are active, false otherwise
+     */
     public boolean isActive() {
-        // Check if any particles are active (not off-screen)
-        for (Particle particle : particles) {
-            if (particle.y > 0) {
-                return true;
-            }
-        }
-        return false;
+        return !particles.isEmpty();
+    }
+
+    /**
+     * Get the white pixel texture.
+     * @return The white pixel texture used for rendering particles.
+     */
+    public Texture getWhitePixelTexture() {
+        return whitePixelTexture;
     }
 }

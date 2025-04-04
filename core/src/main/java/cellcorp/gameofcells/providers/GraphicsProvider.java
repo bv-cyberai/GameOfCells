@@ -102,6 +102,12 @@ public interface GraphicsProvider {
     Texture createWhitePixelTexture();
 
     /**
+     * Create a bitmap font with the given parameters.
+     * @return
+     */
+    BitmapFont createWhiteFont();
+
+    /**
      * Create a pixmap with the given width, height, and format.
      * @param width
      * @param height

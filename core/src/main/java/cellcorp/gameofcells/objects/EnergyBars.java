@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import cellcorp.gameofcells.Main;
-
 /**
  * Energy Bar Class
  * <p>
@@ -145,5 +143,14 @@ public class EnergyBars {
      */
     public float getATPPercentage() {
         return ATPPercentage;
+    }
+
+    /**
+     * AssetManager Getter (TEST METHOD)
+     *
+     * @return AssetManager
+     */
+    public AssetManager getAssetManager() {
+        return assetManager;
     }
 }

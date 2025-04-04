@@ -64,7 +64,6 @@ public class NotificationManager {
     /**
      * * * Render the notifications on the screen.
      * This method is used to render the notifications on the screen using a specified SpriteBatch.
-     * @param spriteBatch
      */
     public void render() {}
 
@@ -85,5 +84,68 @@ public class NotificationManager {
      */
     public float getNotificationY(int index) {
         return baseYPosition - (index * verticalSpacing); // Calculate Y position for each notification
+    }
+
+    /**
+     * * Get the vertical spacing between notifications.
+     * This method is used to retrieve the vertical spacing between notifications.
+     * @return
+     */
+    public float getVerticalSpacing() {
+        return verticalSpacing; // Get vertical spacing
+    }
+
+    /**
+     * * Set the vertical spacing between notifications.
+     * This method is used to set the vertical spacing between notifications.
+     * @param verticalSpacing
+     */
+    public void setVerticalSpacing(float verticalSpacing) {
+        this.verticalSpacing = verticalSpacing; // Set vertical spacing
+    }
+
+    /**
+     * * Get the base Y position for notifications.
+     * This method is used to retrieve the base Y position for notifications.
+     * @return
+     */
+    public float getBaseYPosition() {
+        return baseYPosition; // Get base Y position
+    }
+
+    /**
+     * * Set the base Y position for notifications.
+     * This method is used to set the base Y position for notifications.
+     * @param baseYPosition
+     */
+    public void setBaseYPosition(float baseYPosition) {
+        this.baseYPosition = baseYPosition; // Set base Y position
+    }
+
+    /**
+     * * Clear all notifications.
+     * This method is used to clear all notifications from the notification system.
+     */
+    public void clearNotifications() {
+        notifications.clear(); // Clear all notifications
+        notificationCooldowns.clear(); // Clear cooldowns
+    }
+
+    /**
+     * * Get the cooldown duration for notifications.
+     * This method is used to retrieve the cooldown duration for notifications.
+     * @return
+     */
+    public float getCooldownDuration() {
+        return cooldownDuration; // Get cooldown duration
+    }
+
+    /**
+     * * Set the cooldown duration for notifications.
+     * This method is used to set the cooldown duration for notifications.
+     * @param cooldownDuration
+     */
+    public void setCooldownDuration(float cooldownDuration) {
+        this.cooldownDuration = cooldownDuration; // Set cooldown duration
     }
 }

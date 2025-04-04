@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import cellcorp.gameofcells.AssetFileNames;
@@ -74,7 +73,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
         this.whitePixelTexture = graphicsProvider.createWhitePixelTexture();
-        particles = new Particles(whitePixelTexture);
+        this.particles = new Particles(whitePixelTexture);
 
         layout = new GlyphLayout();
         controlMessage = "Game Info:\n" +
@@ -167,5 +166,67 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         spriteBatch.begin();
         whiteFont.draw(spriteBatch, layout, startX, startY);
         spriteBatch.end();
+    }
+
+    /**
+     * Get the control message.
+     * @return The control message.
+     * This message contains information about the game and its controls.
+     * It is displayed on the screen when the game info controls screen is shown.
+     */
+    public String getMessage() {
+        return controlMessage;
+    }
+
+    /**
+     * Get the sprite batch.
+     * @return The sprite batch used for rendering.
+     */
+    public SpriteBatch getSpriteBatch() {
+        return spriteBatch;
+    }
+
+    /**
+     * Get the white pixel texture.
+     * @return The white pixel texture used for rendering particles.
+     */
+    public Particles getParticles() {
+        return particles;
+    }
+
+    /**
+     * Get the position of the message.
+     * @return The x coordinate of the message.
+     */
+    public float getMessagePositionX() {
+        return startX;
+    }
+
+    /**
+     * Get the position of the message.
+     * @return The y coordinate of the message.
+     */
+    public float getMessagePositionY() {
+        return startY;
+    }
+
+    /**
+     * Get the white font.
+     * @return
+     */
+    public BitmapFont getWhiteFont() {
+        return whiteFont;
+    }
+    
+    public Texture getWhitePixelTexture() {
+        return whitePixelTexture;
+    }
+
+    /**
+     * Get the viewport.
+     * @return The viewport used for rendering.
+     */
+    public Viewport getViewport() {
+        return viewport;
     }
 }

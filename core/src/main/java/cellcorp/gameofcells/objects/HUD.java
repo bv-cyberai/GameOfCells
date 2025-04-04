@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.providers.GraphicsProvider;
-
 import cellcorp.gameofcells.objects.NotificationManager;
 
 import com.badlogic.gdx.Gdx;

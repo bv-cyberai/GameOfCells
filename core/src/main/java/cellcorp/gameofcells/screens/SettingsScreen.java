@@ -196,4 +196,12 @@ public class SettingsScreen implements GameOfCellsScreen {
         spriteBatch.end();
     }
 
+    
+    /**
+     * Get the index of the currently selected option.
+     * @return
+     */
+    public int getSelectedOption() {
+        return selectedOption;
+    }
 }

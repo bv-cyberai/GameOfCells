@@ -63,6 +63,7 @@ public class AttractScreen implements GameOfCellsScreen {
     private static final int NUM_GLUCOSE = 10; // Adjust this number as needed
 
     private Particles particles;
+    private Texture whitePixelTexture;
 
     public AttractScreen(
             InputProvider inputProvider,
@@ -94,7 +95,6 @@ public class AttractScreen implements GameOfCellsScreen {
         for (int i = 0; i < NUM_GLUCOSE; i++) {
             float x = random.nextFloat() * viewport.getWorldWidth(); // Random x position
             float y = random.nextFloat() * viewport.getWorldHeight(); // Random y position
-            float radius = 20; // Smaller radius for glucose
             glucoseList.add(new Glucose(assetManager, x, y));
         }
 
@@ -212,6 +212,16 @@ public class AttractScreen implements GameOfCellsScreen {
         for (Glucose glucose : glucoseList) {
             glucose.draw(spriteBatch, shapeRenderer);
         }
+    }
+
+    /**
+     * Get the current animation time.
+     * This is used to track the time elapsed since the simulation started.
+     * It can be used for animations or other time-based calculations.
+     * @return
+     */
+    public float getAnimationTime() {
+        return animationTime;
     }
 
 }
