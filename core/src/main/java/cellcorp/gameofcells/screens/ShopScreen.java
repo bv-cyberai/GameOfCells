@@ -30,6 +30,7 @@ import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 
 /**
  * Shop Screen
@@ -110,7 +111,6 @@ public class ShopScreen implements GameOfCellsScreen {
      * @param inputProvider  Handles user input.
      * @param assetManager   Manages game assets.
      * @param previousScreen The current screen gameplayscreen
-     * @param playerCell           The cell object
      */
     public ShopScreen(
             Main game,
@@ -160,7 +160,7 @@ public class ShopScreen implements GameOfCellsScreen {
         // Handle the input first
         handleInput(delta);
 
-        // Update the ATP and size labels 
+        // Update the ATP and size labels
         updateTrackers();
 
         // Update the game state
@@ -189,25 +189,25 @@ public class ShopScreen implements GameOfCellsScreen {
                 // Size option selected
                 // Navigate to the size upgrade screen
                 game.setScreen(new SizeUpgradeScreen(
-                    game, 
-                    inputProvider, 
-                    graphicsProvider, 
-                    assetManager, 
-                    this, 
+                    game,
+                    inputProvider,
+                    graphicsProvider,
+                    assetManager,
+                    this,
                     playerCell));
             } else if (selectedOptionIndex == 1) {
                 // Organelle option selected
                 // Navigate to the organelle upgrade screen
                 game.setScreen(new OrganelleUpgradeScreen(
-                    game, 
-                    inputProvider, 
-                    graphicsProvider, 
-                    assetManager, 
-                    this, 
+                    game,
+                    inputProvider,
+                    graphicsProvider,
+                    assetManager,
+                    this,
                     playerCell));
             }
         }
-        
+
         if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             // Fade put before exiting the shop screen
             stage.getRoot().addAction(Actions.sequence(
@@ -388,7 +388,7 @@ public class ShopScreen implements GameOfCellsScreen {
     private Label createLabel(String text,float scale) {
         BitmapFont font = graphicsProvider.createBitmapFont();
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        Label label = new Label(text, labelStyle);        
+        Label label = new Label(text, labelStyle);
         label.setFontScale(scale);
         return label;
     }
@@ -491,7 +491,7 @@ public class ShopScreen implements GameOfCellsScreen {
                 if (x < 10 || x >= width - 10 || y < 10 || y >= height - 10) {
                     // Create a gradient effect for the border
                     float alpha = Math.max(
-                        Math.max(10 - x, x - (width - 10)), 
+                        Math.max(10 - x, x - (width - 10)),
                         Math.max(10 - y, y - (height - 10))
                     ) / 10f; // Normalize to 0..1
                     pixmap.setColor(1, 1, 0, alpha); // Yellow with transparency
@@ -516,11 +516,11 @@ public class ShopScreen implements GameOfCellsScreen {
                     if (child instanceof Label) {
                         Label label = (Label)child;
                         String text = label.getText().toString();
-                        
+
                         // Update ATP label for your custom Cell
                         if (text.startsWith("ATP:")) {
                             label.setText("ATP: " + playerCell.getCellATP());
-                        } 
+                        }
                         // Update Size label for your custom Cell
                         else if (text.startsWith("Size:")) {
                             label.setText("Size: " + ((playerCell.getcellSize() - 100) / 100));
@@ -587,7 +587,7 @@ public class ShopScreen implements GameOfCellsScreen {
     public boolean isTransitioning() {
         return stage.getRoot().getActions().size > 0;
     }
-    
+
     /**
      * Check if the screen is paused.
      * <p>

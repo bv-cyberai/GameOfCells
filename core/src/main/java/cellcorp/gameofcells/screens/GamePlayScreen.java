@@ -13,16 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.actions.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.*;
 
-import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * GamePlay Screen
