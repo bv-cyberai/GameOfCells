@@ -171,7 +171,7 @@ public class TestMain {
 
     @Test
 
-    public void canMoveToGamePlayScreenFromGameOver() {
+    public void canMoveToMainMenuScreenFromGameOver() {
         var gameRunner = GameRunner.create();
 
         // Press space to move to game screen
@@ -187,7 +187,7 @@ public class TestMain {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.R));
         gameRunner.step();
 
-        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
     }
 
     @Test
