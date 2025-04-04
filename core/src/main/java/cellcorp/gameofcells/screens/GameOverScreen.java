@@ -108,11 +108,13 @@ public class GameOverScreen implements GameOfCellsScreen {
         // This perhaps should be the main menu screen, but is most likely up to the
         // client.
         if (inputProvider.isKeyJustPressed(Input.Keys.R)) {
-            game.setScreen(new GamePlayScreen(
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager, configProvider));
+            game.setScreen(new MainMenuScreen(inputProvider, 
+            graphicsProvider, 
+            game, 
+            assetManager, 
+            null, 
+            viewport, 
+            configProvider));
         }
     }
 
