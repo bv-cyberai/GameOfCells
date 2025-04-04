@@ -68,6 +68,11 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
+    public BitmapFont createWhiteFont() {
+        return Mockito.mock(BitmapFont.class);
+    }
+
+    @Override
     public Pixmap createPixmap(int width, int height, Pixmap.Format format) {
         return Mockito.mock(Pixmap.class);
     }

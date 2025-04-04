@@ -70,6 +70,14 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
+    public BitmapFont createWhiteFont() {
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(1.0f);
+        font.setColor(Color.WHITE);
+        return font;
+    }
+
+    @Override
     public Pixmap createPixmap(int width, int height, Pixmap.Format format) {
         return new Pixmap(width, height, format);
     }

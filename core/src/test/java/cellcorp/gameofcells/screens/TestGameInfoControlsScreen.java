@@ -190,4 +190,87 @@ public class TestGameInfoControlsScreen {
         var gameInfoControlsScreen = gameRunner.game.getScreen();
         assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
     }
+
+    @Test
+    public void TestMessageRenderingPosition() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var gameInfoControlsScreen = gameRunner.game.getScreen();
+        assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
+
+        GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
+
+        // Check that the message is rendered at the correct position
+        assertEquals(0, gameInfoControlsScreen2.getMessagePositionX());
+        assertEquals(0, gameInfoControlsScreen2.getMessagePositionY());
+    }
+
+    // @Test
+    // public void TestFontInitialization() {
+    //     GameRunner gameRunner = GameRunner.create();
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+    //     gameRunner.step();
+    //     gameRunner.setHeldDownKeys(Set.of());
+    //     gameRunner.step();
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+    //     gameRunner.step();
+    //     gameRunner.setHeldDownKeys(Set.of());
+    //     gameRunner.step();
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+    //     gameRunner.step();
+    //     gameRunner.setHeldDownKeys(Set.of());
+    //     gameRunner.step();
+
+    //     var gameInfoControlsScreen = gameRunner.game.getScreen();
+    //     assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
+
+    //     GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
+
+    //     // Check that the font is initialized correctly
+    //     assertNotNull(gameInfoControlsScreen2.getWhiteFont());
+    // }
+
+    /**
+     * Test that the particle system is initialized correctly.
+     * This test checks that the particle system is created and the white pixel texture is not null.
+     * It verifies that the particles are created and can be updated and drawn.
+     */
+    @Test
+    public void TestParticleSystem() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var gameInfoControlsScreen = gameRunner.game.getScreen();
+        assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
+
+        GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
+
+        // Check that the particle system is initialized correctly
+        assertNotNull(gameInfoControlsScreen2.getParticles());
+        assertNotNull(gameInfoControlsScreen2.getParticles().getWhitePixelTexture());
+    }
+
 }

@@ -192,4 +192,40 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     public Particles getParticles() {
         return particles;
     }
+
+    /**
+     * Get the position of the message.
+     * @return The x coordinate of the message.
+     */
+    public float getMessagePositionX() {
+        return startX;
+    }
+
+    /**
+     * Get the position of the message.
+     * @return The y coordinate of the message.
+     */
+    public float getMessagePositionY() {
+        return startY;
+    }
+
+    /**
+     * Get the white font.
+     * @return
+     */
+    public BitmapFont getWhiteFont() {
+        return whiteFont;
+    }
+    
+    public Texture getWhitePixelTexture() {
+        return whitePixelTexture;
+    }
+
+    /**
+     * Get the viewport.
+     * @return The viewport used for rendering.
+     */
+    public Viewport getViewport() {
+        return viewport;
+    }
 }

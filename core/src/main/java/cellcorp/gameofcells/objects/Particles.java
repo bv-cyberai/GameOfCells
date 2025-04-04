@@ -83,4 +83,12 @@ public class Particles {
     public boolean isActive() {
         return !particles.isEmpty();
     }
+
+    /**
+     * Get the white pixel texture.
+     * @return The white pixel texture used for rendering particles.
+     */
+    public Texture getWhitePixelTexture() {
+        return whitePixelTexture;
+    }
 }
