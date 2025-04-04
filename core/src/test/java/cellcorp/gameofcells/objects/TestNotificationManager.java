@@ -139,7 +139,7 @@ public class TestNotificationManager {
     @Test
     public void clearRemovesAllNotifications() {
         BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont);
+        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
         
         system.addNotification("ToClear", 1f, Color.BLUE);
         assertEquals(1, system.getNotifications().size);

@@ -33,7 +33,6 @@ public class AttractScreen implements GameOfCellsScreen {
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
     private final ShapeRenderer shapeRenderer;
-    private final Texture whitePixelTexture;
 
     /**
      * Width of the HUD view rectangle.
