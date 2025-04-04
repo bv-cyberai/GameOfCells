@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,12 +8,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 
+import java.util.Objects;
+
 /**
  * Glucose Object
  *
  * Represents a glucose molecule which a cell converts
  * to ATP.
- * 
+ *
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -25,7 +28,7 @@ import com.badlogic.gdx.math.Circle;
 
 public class Glucose {
     public static final int RADIUS = 15;
-    public static final int ATP_PER_GLUCOSE = 2;
+    public static int ATP_PER_GLUCOSE = 2;
     public static final int ATP_PER_GLUCOSE_WITH_MITOCHONDRIA = 10;
 
     private final AssetManager assetManager;
@@ -45,9 +48,9 @@ public class Glucose {
 
     /**
      * Draw
-     * 
+     *
      * Draws a cell.
-     * 
+     *
      * @param batch The gamePlayScreen Spritebatch
      */
     public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
@@ -71,7 +74,7 @@ public class Glucose {
 
     /**
      * xGetter
-     * 
+     *
      * @return x Coordinate of the hitbox.
      */
     public float getX() {
@@ -80,7 +83,7 @@ public class Glucose {
 
     /**
      * yGetter
-     * 
+     *
      * @return y Coordinate of the hitbox.
      */
     public float getY() {
@@ -93,12 +96,29 @@ public class Glucose {
 
     /**
      * Radius Getter
-     * 
+     *
      * @return The radius of the hitbox.
      */
     public float getRadius() {
         return boundCircle.radius;
     }
+
+    /**
+     * DANGER: ONLY USE FOR TESTING!!
+     * Sets ATP per Glucose to zero to test ATP burn rates
+     * during movement.
+     *
+     * @param setToZero If ture set ATP_PER_GLUCOSE to 0.
+     */
+    public static void setAtpPerGlucoseDoNotUseForTestingOnly(boolean setToZero) {
+        if(setToZero) {
+            ATP_PER_GLUCOSE = 0;
+        }else {
+            ATP_PER_GLUCOSE = 20;
+        }
+
+    }
+
 
     // opensource assets
     // https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png

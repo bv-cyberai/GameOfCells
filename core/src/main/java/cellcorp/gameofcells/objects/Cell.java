@@ -12,6 +12,8 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
+import static java.lang.Math.abs;
+
 /**
  * Cell Class
  *
@@ -28,9 +30,13 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
  * @assignment GameOfCells
  */
 public class Cell {
-    public static  int MAX_HEALTH = 100;
-    public static  int MAX_ATP = 100;
+    public static int MAX_HEALTH = 100;
+    public static int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
+
+    // May change, but used to ensure that invalid case selection is not hit.
+    private static final int MAX_SIZE_UPGRADES = 4;
+    private static final int MAX_ORGANELLE_UPGRADES = 4;
     float cellSize;
 
     private final AssetManager assetManager;
@@ -65,18 +71,44 @@ public class Cell {
     private float movementSpeedMultiplier = 1.0f;
     private boolean canSplit = false;
 
+    // Energy Use tracking
+    private float lastX;
+    private float lastY;
+    private int sizeUpgradeLevel; // size upgrades 0-4
+    private int organelleUpgradeLevel; //organelle upgrades 0-4
+    private float currentATPLost; // used to track atp loss up to 1
+    private float totalATPLossFactor; //tracks total atp burn
+    private float distanceMovedSinceLastTick;
+    private boolean wasAtpBurnedThisFrame; //tracks if ATP has been burnt, mostly for testing
+    private float currTimeTakenforATPLoss;
+    private float lastTimeTakenforATPLoss;
+
+    //potential gameOverStat
+    private float totalDistanceMoved;
+
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
         this.configProvider = configProvider;
+
         setUserConfigOrDefault();
         cellSize = 100;
+
+        totalATPLossFactor = 0f;
+        sizeUpgradeLevel = 0;
+        organelleUpgradeLevel = 0;
+        currentATPLost = 0f;
+        currTimeTakenforATPLoss = 0f;
+        lastTimeTakenforATPLoss = 0f;
+        wasAtpBurnedThisFrame = false;
+        totalDistanceMoved = 0f;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
     }
 
     /**
-     * Moves the cell based on input direction as well as its collision circle
+     * Moves the cell based on input direction as well as its collision circle,
+     * diagonal movment is normalized.
      *
      * @param deltaTime - The time passed since the last frame
      * @param moveLeft  - If the cell should move left
@@ -85,14 +117,109 @@ public class Cell {
      * @param moveDown  - If the cell should move down
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
-        if (moveLeft)
-            cellCircle.x -= CELL_SPEED * deltaTime;
-        if (moveRight)
-            cellCircle.x += CELL_SPEED * deltaTime;
-        if (moveUp)
-            cellCircle.y += CELL_SPEED * deltaTime;
-        if (moveDown)
-            cellCircle.y -= CELL_SPEED * deltaTime;
+        //track these values to calculate ATP Burn.
+        lastX = cellCircle.x;
+        lastY = cellCircle.y;
+
+        float dx = 0;
+        float dy = 0;
+
+        if (moveLeft) {
+            dx -= 1;
+        }
+        if (moveRight) {
+            dx += 1;
+        }
+        if (moveUp) {
+            dy += 1;
+        }
+        if (moveDown) {
+            dy -= 1;
+        }
+        // Normalize movement along diagonal
+        float length = (float) Math.sqrt(dx * dx + dy * dy);
+        if (length > 0) {
+            dx /= length;
+            dy /= length;
+        }
+
+        cellCircle.x += dx * CELL_SPEED * deltaTime;
+        cellCircle.y += dy * CELL_SPEED * deltaTime;
+    }
+
+    /**
+     * ATP Loss Calculation
+     *
+     * Returns ATPburn based on movement upgrades and size.
+     *
+     * When moving burn rate is twice the base burn. See
+     * setTotalLossFactor() for more detailed burn rates.
+     *
+     * @param deltaTime time since last render
+     */
+    private void calculateATPLoss(float deltaTime) {
+        distanceMovedSinceLastTick = abs(lastX - cellCircle.x) + abs(lastY - cellCircle.y);
+        currTimeTakenforATPLoss += deltaTime;
+
+        float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
+        if (movementMultiplier > 0) {
+            currentATPLost += deltaTime * ((2*totalATPLossFactor));
+        } else {
+            currentATPLost += deltaTime * (totalATPLossFactor);
+        }
+
+    }
+
+    /**
+     * TotalLossFactor Settor
+     *
+     * Sets the loss factor based on cell size, and number of upgrades.
+     *
+     * Case = Size of Cell
+     *
+     * Idle burn rate are given for each case.
+     * Moving burn rates are half of these values and calculated in the
+     * calculate ATP Loss function.
+     * Organelles lower the base burn rate by the upgrade level.
+     * @return The total loss factor.
+     *
+     * TODO: make values static and implement into config.
+     */
+    /**
+     * Base Burn Rate(BBR) - Rate burned when idle at given size
+     * Each Organelle upgrade reduces this value by 1
+     * Each Size upgrade reduces this value by 1
+     *
+     +----+---------+------+-----+------+------+------+
+     |    | Type    | BBR  | Mit | Ribo | Flag | Nuke |
+     +====+=========+======+=====+=====+======+======+=
+     |  0 | none    |  11  |  -  |  -   |  -   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  1 | small   |  10  |  9  |  -   |  -   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  2 | medium  |  9   |  8  |  7   |  -   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  3 | large   |  8   |  7  |  6   |  5   |  -   |
+     +----+---------+------+-----+-----+------+-------+
+     |  4 | massive |  7   |  6  |  5   |  4   |  3   |
+     +----+---------+------+-----+-----+------+-------+
+     */
+    private float setTotalLossFactor() {
+        switch (sizeUpgradeLevel) {
+            case 0:
+                return 1f / (11f - organelleUpgradeLevel); // No upgrade (1 ATP -> 11 sec idle)
+            case 1:
+                return 1f / (10f - organelleUpgradeLevel); // 1 ATP -> 10 sec
+            case 2:
+                return 1f / (9f - organelleUpgradeLevel); // 1 ATP -> 9 sec
+            case 3:
+                return 1f / (8f - organelleUpgradeLevel); // 1 ATP -> 8 sec
+            case 4:
+                return 1f / (7f - organelleUpgradeLevel); // 1 ATP -> 7 sec
+            //should never be hit.
+            default:
+                return 0.0f;
+        }
     }
 
     /**
@@ -135,6 +262,19 @@ public class Cell {
     }
 
     public void update(float delta) {
+        //Recalculate loss factor.
+        totalATPLossFactor = setTotalLossFactor();
+        calculateATPLoss(delta);
+
+        //Used for testing. Set when 1 ATP burn has occurred.
+        if(wasAtpBurnedThisFrame) {
+            wasAtpBurnedThisFrame = false;
+        }
+
+        //tracked for ATP and game over stats.
+        totalDistanceMoved += distanceMovedSinceLastTick;
+        distanceMovedSinceLastTick = 0f;
+
         // Update animations
         if (hasFlagella) {
             flagellaRotation += 100 * delta; // Adjust rotation speed as needed
@@ -144,10 +284,25 @@ public class Cell {
             nucleusPulse += delta; // Adjust pulse speed as needed
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
+
+        //When ATP loss accumulates above 1, subtract and reset currentATPLost.
+        if (currentATPLost >= 1) {
+            if (cellATP > 0) {
+                cellATP -= 1;
+                wasAtpBurnedThisFrame = true;
+                lastTimeTakenforATPLoss = currTimeTakenforATPLoss;
+                currTimeTakenforATPLoss = 0f;
+            }
+            currentATPLost = 0;
+        }
+
+
+
+
     }
 
     private void drawOrganelles(SpriteBatch batch) {
-        float cellRadius = cellSize/2f;
+        float cellRadius = cellSize / 2f;
         float centerX = cellCircle.x;
         float centerY = cellCircle.y;
 
@@ -156,9 +311,9 @@ public class Cell {
             var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
             float mitochondriaSize = cellSize * 0.3f; // Adjust size as needed
             batch.draw(mitochondriaTexture,
-                    centerX - cellRadius * 0.6f,
-                    centerY - cellRadius * 0.6f,
-                    mitochondriaSize, mitochondriaSize);
+                centerX - cellRadius * 0.6f,
+                centerY - cellRadius * 0.6f,
+                mitochondriaSize, mitochondriaSize);
         }
 
         // Draw ribosomes (top-left quadrant)
@@ -166,9 +321,9 @@ public class Cell {
             var ribosomeTexture = assetManager.get(AssetFileNames.RIBOSOME_ICON, Texture.class);
             float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
             batch.draw(ribosomeTexture,
-                    centerX - cellRadius * 0.7f,
-                    centerY + cellRadius * 0.3f,
-                    ribosomeSize, ribosomeSize);
+                centerX - cellRadius * 0.7f,
+                centerY + cellRadius * 0.3f,
+                ribosomeSize, ribosomeSize);
         }
 
         // Draw flagella (right edge)
@@ -203,14 +358,18 @@ public class Cell {
             var nucleusTexture = assetManager.get(AssetFileNames.NUCLEUS_ICON, Texture.class);
             float nucleusSize = cellSize * 0.4f * pulseScale; // Adjust size and pulse effect
             batch.draw(nucleusTexture,
-                    centerX - nucleusSize / 2,
-                    centerY - nucleusSize / 2,
-                    nucleusSize, nucleusSize);
+                centerX - nucleusSize / 2,
+                centerY - nucleusSize / 2,
+                nucleusSize, nucleusSize);
         }
 
 
     }
 
+    /**
+     * Sets Cell values based on the config file if it can be
+     * found/read. Other wise default values are used.
+     */
     private void setUserConfigOrDefault() {
         try {
             cellHealth = configProvider.getIntValue("cellHealth");
@@ -336,12 +495,12 @@ public class Cell {
         assetManager.unload(AssetFileNames.CELL);
     }
     /**
-     *
-     *
+     *Returns the Cell BoundingCircle
      */
     public Circle getCircle() {
         return cellCircle;
     }
+
     /**
      * Adds ATP
      *
@@ -350,6 +509,7 @@ public class Cell {
     public void addCellATP(int increaseAmount) {
         cellATP = Math.min(cellATP + increaseAmount, MAX_ATP);
     }
+
     /**
      * Adds ATP
      * decreases ATP
@@ -358,12 +518,16 @@ public class Cell {
         cellATP = Math.max(cellATP - decreaseAmount, 0);
     }
 
+    /**
+     * Increases the cell size
+     * @param sizeIncrease - The amount to increase the cell by.
+     */
     public void increasecellSize(float sizeIncrease) {
         this.cellSize += sizeIncrease;
         cellCircle.radius += sizeIncrease / 2;
     }
 
-      /**
+    /**
      * Check if the glucose popup has been shown
      */
     public boolean hasShownGlucosePopup() {
@@ -382,6 +546,7 @@ public class Cell {
      */
     public void setHasMitochondria(boolean hasMitochondria) {
         this.hasMitochondria = hasMitochondria;
+        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasMitochondria) organelleUpgradeLevel++;
     }
 
     /**
@@ -410,6 +575,7 @@ public class Cell {
      */
     public void setHasRibosomes(boolean hasRibosomes) {
         this.hasRibosomes = hasRibosomes;
+        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasRibosomes) organelleUpgradeLevel++;
     }
 
     /**
@@ -424,6 +590,7 @@ public class Cell {
      */
     public void setHasFlagella(boolean hasFlagella) {
         this.hasFlagella = hasFlagella;
+        if((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
     }
 
     /**
@@ -438,6 +605,7 @@ public class Cell {
      */
     public void setHasNucleus(boolean hasNucleus) {
         this.hasNucleus = hasNucleus;
+        if((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasNucleus) organelleUpgradeLevel++;
     }
 
     /**
@@ -460,6 +628,7 @@ public class Cell {
      */
     public void setSmallSizeUpgrade(boolean hasSmallSizeUpgrade) {
         this.hasSmallSizeUpgrade = hasSmallSizeUpgrade;
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasSmallSizeUpgrade ) sizeUpgradeLevel++;
     }
 
     /**
@@ -474,6 +643,7 @@ public class Cell {
      */
     public void setMediumSizeUpgrade(boolean hasMediumSizeUpgrade) {
         this.hasMediumSizeUpgrade = hasMediumSizeUpgrade;
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMediumSizeUpgrade) sizeUpgradeLevel++;
     }
 
     /**
@@ -481,6 +651,7 @@ public class Cell {
      */
     public boolean hasLargeSizeUpgrade() {
         return hasLargeSizeUpgrade;
+
     }
 
     /**
@@ -488,6 +659,7 @@ public class Cell {
      */
     public void setLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
         this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasLargeSizeUpgrade) sizeUpgradeLevel++;
     }
 
     /**
@@ -501,6 +673,7 @@ public class Cell {
      * Set whether the cell has the massive size upgrade
      */
     public void setMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
+        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES)&& hasMassiveSizeUpgrade ) sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
     }
 
@@ -550,5 +723,68 @@ public class Cell {
      */
     public void setCanSplit(boolean canSplit) {
         this.canSplit = canSplit;
+    }
+
+    /**
+     * Get Size Upgrade level
+     * @return size upgrade level
+     */
+    public int getSizeUpgradeLevel() {
+        return sizeUpgradeLevel;
+    }
+
+    /**
+     * Get Organelle Upgrade level
+     * @return Organelle upgrade level
+     */
+    public int getOrganelleUpgradeLevel() {
+        return organelleUpgradeLevel;
+    }
+
+    /**
+     * Current ATP Lost Getter
+     * @return the Current ammount of atp lost.
+     */
+    public float getCurrentATPLost() {
+        return currentATPLost;
+    }
+
+    /**
+     * Loss Factor getter
+     * @return The loss factor.
+     */
+    public float getTotalATPLossFactor() {
+        return totalATPLossFactor;
+    }
+
+    /**
+     * ATP flag getter
+     *
+     * Tracks if ATP burn occured this render cycle.
+     *
+     * @return the state of the ATP flag
+     */
+    public boolean isWasAtpBurnedThisFrame() {
+        return wasAtpBurnedThisFrame;
+    }
+
+    /**
+     * CurrTimeTaken Getter
+     *
+     * Tracks time taken for the current ATP loss.
+     * @return The time taken for atp loss.
+     */
+    public float getCurrTimeTakenforATPLoss() {
+        return currTimeTakenforATPLoss;
+    }
+
+    /**
+     * LastTimeTaken Getter
+     *
+     * The time taken for the previous ATP loss.
+     * @return THe previous time taken for atp loss.
+     */
+    public float getLastTimeTakenforATPLoss() {
+        return lastTimeTakenforATPLoss;
     }
 }

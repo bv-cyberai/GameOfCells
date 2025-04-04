@@ -4,6 +4,7 @@ import cellcorp.gameofcells.providers.GraphicsProvider;
 
 import cellcorp.gameofcells.objects.NotificationManager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,12 +16,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.utils.Array;
 
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.providers.GraphicsProvider;
 
 /**
  * Hud Class
  *
  * Provides HUD functionality
- * 
+ *
  * @author Brendon Vinyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -56,14 +58,14 @@ public class HUD {
     // let's give HUD its own sprite batch and shape renderer.
     // Draw calls will be less efficient (I think?), but it shouldn't matter much.
     private final SpriteBatch batch;
-    
+
     // ShapeRenderer shapeRenderer;
     // ShapeRenderer is used to draw the energy bars.
     // It is not used for the HUD text, which is drawn using a SpriteBatch.
     // This is because the energy bars are drawn using a shape renderer,
     // which requires a different projection matrix than the sprite batch.
     private final ShapeRenderer shapeRenderer;
-    
+
     // Energy Bars
     // This is a separate class that handles the drawing of the energy bars.
     private final EnergyBars energyBars;
@@ -99,16 +101,16 @@ public class HUD {
     private static final float NOTIFICATION_DURATION = 3f;
     private static final float NOTIFICATION_VERTICAL_SPACING = 30f;
     private static final float NOTIFICATION_Y_POSITION = 700f;
-    
+
 
     /**
      * HUD Class
-     * 
+     *
      * Provides HUD Functionality for the game.
-     * 
+     *
      * This font is built using size 100 font. Scaling down looks nice,
      * scaling up is ugly and should be avoided.
-     * 
+     *
      * This font cant be changed if you have other preferences.
      */
     public HUD(GraphicsProvider graphicsProvider, AssetManager assetManager, int maxHealth, int maxATP) {
@@ -184,7 +186,8 @@ public class HUD {
         font.draw(batch, cellHealthString, 10, 790);
         font.draw(batch, atpString, 10, 760);
         font.draw(batch, timerString, 10, 730);
-        
+        //Was using to track time, but will likely be useful when tracking down our stutter bug.
+//        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
     }
 
@@ -194,13 +197,13 @@ public class HUD {
 
     /**
      * Draw EnergyBarText
-     * 
+     *
      * This draws "Health" and "ATP" over the energy bars.
-     * 
+     *
      * NOTE: This is separated due HUD utilizing Spritebatch, and
      * Energybars using ShapeRenderer. Additionally it felt correct to keep
      * text rendering within the HUD class.
-     * 
+     *
      * @param batch - The Game SpriteBatch
      */
     public void drawBarText(SpriteBatch batch) {
@@ -216,7 +219,7 @@ public class HUD {
         barFont.getData().setScale(barFontScale); // Ensure the font scale is correct
 
         batch.begin();
-        barFont.draw(batch, "HEALTH", (VIEW_RECT_WIDTH - healthLayout.width) / 2, 
+        barFont.draw(batch, "HEALTH", (VIEW_RECT_WIDTH - healthLayout.width) / 2,
                     HEALTH_BAR_Y + 20);
         barFont.draw(batch, "ATP", (VIEW_RECT_WIDTH - atpLayout.width) / 2, ATP_BAR_Y + 20);
         batch.end();
@@ -224,7 +227,7 @@ public class HUD {
 
     private void drawNotifications(SpriteBatch batch) {
         if (notificationFont == null) { return; }
-            
+
         batch.begin();
         Array<Notification> notifications = notificationManager.getNotifications();
         for (int i = 0; i < notifications.size; i++) {
@@ -237,23 +240,23 @@ public class HUD {
 
             // Set the color and alpha for the notification
             Color notificationColor = notification.getColor();
-            
-            notificationFont.setColor(notificationColor.r, 
-                notificationColor.g, 
-                notificationColor.b, 
+
+            notificationFont.setColor(notificationColor.r,
+                notificationColor.g,
+                notificationColor.b,
                 notification.getAlpha());
             notificationFont.draw(batch, notification.getMessage(), x, y);
             notificationFont.setColor(oldColor);
         }
         batch.end();
-        
+
     }
 
     /**
      * Updater
-     * 
+     *
      * Updates time, and associated cell attributes (Health/ATP) for the HUD.
-     * 
+     *
      * @param delta - time since last render.
      */
     public void update(float delta, int cellHealth, int cellATP) {
@@ -339,7 +342,7 @@ public class HUD {
 
     /**
      * Timer String getter
-     * 
+     *
      * @return The timing string
      */
     public String getTimerString() {
@@ -348,7 +351,7 @@ public class HUD {
 
     /**
      * ATP String getter
-     * 
+     *
      * @return the ATP String
      */
     public String getAtpString() {
@@ -357,7 +360,7 @@ public class HUD {
 
     /**
      * Health String Getter
-     * 
+     *
      * @return - the Health String
      */
     public String getCellHealthString() {
