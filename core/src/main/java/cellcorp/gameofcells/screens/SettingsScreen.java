@@ -44,7 +44,6 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     private final Main game;
     private final AssetManager assetManager;
-    private final Camera camera;
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
     private final Texture whitePixelTexture;
@@ -61,8 +60,6 @@ public class SettingsScreen implements GameOfCellsScreen {
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
-            Camera camera,
-            Viewport viewport,
             ConfigProvider configProvider
     ) {
         this.inputProvider = inputProvider;
@@ -70,7 +67,6 @@ public class SettingsScreen implements GameOfCellsScreen {
         this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
-        this.camera = camera;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
 
@@ -135,7 +131,7 @@ public class SettingsScreen implements GameOfCellsScreen {
                             graphicsProvider,
                             game,
                             assetManager,
-                            camera,
+                            viewport.getCamera(),
                             viewport,configProvider ));
                     break;
                 case 1: // Back
@@ -144,7 +140,7 @@ public class SettingsScreen implements GameOfCellsScreen {
                             graphicsProvider,
                             game,
                             assetManager,
-                            camera,
+                            viewport.getCamera(),
                             viewport, configProvider));
                     break;
             }
@@ -172,8 +168,7 @@ public class SettingsScreen implements GameOfCellsScreen {
         }
 
         viewport.apply(true);
-        camera.update();
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
         // Draw particles
         particles.draw(spriteBatch);

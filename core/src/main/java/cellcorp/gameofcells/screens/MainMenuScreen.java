@@ -162,8 +162,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             graphicsProvider,
                             game,
                             assetManager,
-                            camera,
-                            viewport,configProvider ));
+                            configProvider ));
                     break;
                 case 2:
                     // Exit the game

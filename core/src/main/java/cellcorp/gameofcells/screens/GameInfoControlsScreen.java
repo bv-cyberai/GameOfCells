@@ -129,8 +129,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
                     graphicsProvider,
                     game,
                     assetManager,
-                    camera,
-                    viewport, configProvider ));
+                    configProvider ));
         }
     }
 
