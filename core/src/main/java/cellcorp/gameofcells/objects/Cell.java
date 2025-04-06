@@ -853,4 +853,8 @@ public class Cell {
         forceCircle.setX(newX);
         forceCircle.setY(newY);
     }
+
+    public Circle getForceCircle() {
+        return forceCircle;
+    }
 }

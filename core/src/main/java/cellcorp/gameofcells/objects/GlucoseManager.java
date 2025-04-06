@@ -227,6 +227,14 @@ public class GlucoseManager {
         handleCollisions();
     }
 
+    private void handleMovement() {
+
+    }
+
+    private void handleMovmentInChucnk() {
+
+    }
+
     /**
      * Checks for collisions between the cell and each glucose in adjacent chunks.
      */
