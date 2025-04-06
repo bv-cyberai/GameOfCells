@@ -1,6 +1,6 @@
 package cellcorp.gameofcells.screens;
 
-import cellcorp.gameofcells.providers.ConfigProvider;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -16,6 +18,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.objects.Cell;
 
 public class PopupInfoScreen implements GameOfCellsScreen {
@@ -26,16 +29,17 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    public static final int VIEW_RECT_WIDTH = 400;
+    public static final int VIEW_RECT_WIDTH = 1200;
     /**
      * Height of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    public static final int VIEW_RECT_HEIGHT = 300;
+    public static final int VIEW_RECT_HEIGHT = 800;
     private static final float POPUP_WIDTH = 300f;
     private static final float POPUP_HEIGHT = 200f;
-    private static final float PADDING = 10f;
-    private static final float FONT_SCALE = 0.25f;
+    private static final float PADDING = 15f;
+    private static final float FONT_SCALE = 0.2f;
+    private static final float CELL_OFFSET = 20f;
 
     private final Type type;
     private final Main game;
@@ -44,6 +48,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
+    private final GamePlayScreen gamePlayScreen;
 
     private final FitViewport viewport;
     private final SpriteBatch spriteBatch;
@@ -52,9 +57,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private final GlyphLayout layout = new GlyphLayout();
 
     private String message;
-    private float messageX, messageY;
-    private GamePlayScreen gamePlayScreen;
-
+    
     public PopupInfoScreen(
             InputProvider inputProvider, 
             AssetManager assetManager, 
@@ -71,10 +74,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
         this.configProvider = configProvider;
-
-        if (previousScreen instanceof GamePlayScreen) {
-            this.gamePlayScreen = (GamePlayScreen) previousScreen;
-        }
+        this.gamePlayScreen = (previousScreen instanceof GamePlayScreen)
+                ? (GamePlayScreen) previousScreen
+                : null;
 
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.spriteBatch = graphicsProvider.createSpriteBatch();
@@ -104,8 +106,12 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     @Override
     public void render(float delta) {
-        handleInput(delta);
+        if (previousScreen != null) {
+            previousScreen.render(delta);
+        }
+
         draw();
+        handleInput(delta);
     }
 
     @Override
@@ -118,35 +124,38 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     @Override
     public void draw() {
-        ScreenUtils.clear(0, 0, 0, 0);
+        if (gamePlayScreen == null) return;
 
-        viewport.apply(true);
+        viewport.apply();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
-        float popupX = VIEW_RECT_WIDTH / 2 - POPUP_WIDTH / 2;
-        float popupY = VIEW_RECT_HEIGHT / 2 - POPUP_HEIGHT / 2;
+        Cell playerCell = gamePlayScreen.getCell();
+        float popupX = playerCell.getX() + CELL_OFFSET;
+        float popupY = playerCell.getY() + CELL_OFFSET;
 
-        if (gamePlayScreen != null) {
-            Cell cell = gamePlayScreen.getCell();
-            popupX = cell.getX() - POPUP_WIDTH / 2;
-            popupY = cell.getY() - cell.getHeight() + 20;
+        Vector2 screenPos = viewport.project(new Vector2(popupX, popupY));
+
+        popupX = Math.max(0, Math.min(screenPos.x, VIEW_RECT_WIDTH - POPUP_WIDTH));
+        popupY = Math.max(0, Math.min(screenPos.y, VIEW_RECT_HEIGHT - POPUP_HEIGHT));
+
+        if (shape == null) shape = graphicsProvider.createShapeRenderer();
+        if (font == null) {
+            font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+            font.getData().setScale(FONT_SCALE); // Set the scale of the font
         }
 
-        if (shape == null) shape = new ShapeRenderer();
-        if (font == null) font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-
         layout.setText(font, message, Color.WHITE, POPUP_WIDTH - 2*PADDING, Align.center, true);
-        messageX = popupX + POPUP_WIDTH / 2 - layout.width / 2;
-        messageY = popupY + POPUP_HEIGHT / 2 - layout.height / 2;
+        float textX = popupX + (POPUP_WIDTH - layout.width) / 2;
+        float textY = popupY + (POPUP_HEIGHT + layout.height) / 2;
 
         shape.setProjectionMatrix(viewport.getCamera().combined);
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.setColor(new Color(0.424f, 0.553f, 0.573f, 0.9f));
+        shape.setColor(new Color(0.424f, 0.553f, 0.573f, 0.7f));
         shape.rect(popupX, popupY, POPUP_WIDTH, POPUP_HEIGHT);
         shape.end();
 
         spriteBatch.begin();
-        font.draw(spriteBatch, message, messageX, messageY);
+        font.draw(spriteBatch, layout, textX, textY);
         spriteBatch.end();
     }
 

@@ -757,4 +757,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
+
+    /**
+     * Get the viewport.
+     * This is used for getting the viewport.
+     * For example, if the viewport is not null, it will be used to set the camera
+     * position.
+     * @return the viewport.
+     */
+    public Viewport getViewport() {
+        return viewport;
+    }
 }
