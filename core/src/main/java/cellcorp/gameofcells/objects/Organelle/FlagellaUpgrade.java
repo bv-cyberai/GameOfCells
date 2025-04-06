@@ -1,4 +1,4 @@
-package cellcorp.gameofcells.objects.Organelle;
+package cellcorp.gameofcells.objects.organelle;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;

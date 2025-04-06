@@ -19,6 +19,7 @@ import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import cellcorp.gameofcells.screens.SettingsScreen;
 
 /**
  * The screen for displaying game info and controls.

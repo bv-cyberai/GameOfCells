@@ -1,4 +1,4 @@
-package cellcorp.gameofcells.objects.Size;
+package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Upgrade;

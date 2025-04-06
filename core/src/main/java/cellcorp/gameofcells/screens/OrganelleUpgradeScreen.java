@@ -26,11 +26,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.objects.Organelle.FlagellaUpgrade;
-import cellcorp.gameofcells.objects.Organelle.MitochondriaUpgrade;
-import cellcorp.gameofcells.objects.Organelle.NucleusUpgrade;
-import cellcorp.gameofcells.objects.Organelle.OrganelleUpgrade;
-import cellcorp.gameofcells.objects.Organelle.RibosomeUpgrade;
+import cellcorp.gameofcells.objects.organelle.*;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 

@@ -26,11 +26,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.objects.Size.LargeSizeUpgrade;
-import cellcorp.gameofcells.objects.Size.MassiveSizeUpgrade;
-import cellcorp.gameofcells.objects.Size.MediumSizeUpgrade;
-import cellcorp.gameofcells.objects.Size.SizeUpgrade;
-import cellcorp.gameofcells.objects.Size.SmallSizeUpgrade;
+import cellcorp.gameofcells.objects.size.*;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
