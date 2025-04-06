@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -30,7 +30,6 @@ import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
-import cellcorp.gameofcells.screens.GamePlayScreen;
 
 /**
  * Shop Screen
@@ -51,31 +50,10 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
  * First screen of the application. Displayed after the application is created.
  */
 public class ShopScreen implements GameOfCellsScreen {
-    private final Stage stage;
-    private final cellcorp.gameofcells.objects.Cell playerCell;
-    private final Main game;
-    /// Gets information about inputs, like held-down keys.
-    /// Use this instead of `Gdx.input`, to avoid crashing tests.
-    private final InputProvider inputProvider;
-    private final GraphicsProvider graphicsProvider;
-    private final AssetManager assetManager;
-
-    // Camera/Viewport
-    private final Viewport viewport;
-
-    // Keeps track of the initial screen prior to transition
-    private final GamePlayScreen previousScreen;
-
-    // For rendering text
-    private final SpriteBatch batch;  // Define the batch for drawing text
-    private final ShapeRenderer shapeRenderer;  // For drawing custom backgrounds
-    private final Particles particles; // For drawing particles
-
     private static final float SHOP_TEXT_SIZE = 0.3f;
     private static final float OPTION_NAME_TEXT_SIZE = 0.2f;
     private static final float OPTION_INFO_TEXT_SIZE = 0.15f;
     private static final float INSTRUCTION_TEXT_SIZE = 0.18f;
-
     private final static float OPTION_CARD_WIDTH = 400;
     private final static float OPTION_CARD_HEIGHT = 450;
     private final static float SELECTED_CARD_SCALE = 1.4f; // Scale of the selected card
@@ -93,15 +71,22 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
+    private final Stage stage;
+    private final Cell playerCell;
+    private final Main game;
+    private final InputProvider inputProvider;
+    private final GraphicsProvider graphicsProvider;
+    private final AssetManager assetManager;
+    private final Viewport viewport;
+    private final SpriteBatch batch;
+    private final ShapeRenderer shapeRenderer;
+    private final Particles particles;
+    private final MenuSystem menuSystem;
+    
     private int selectedOptionIndex = 0; // Tracks the currently selected option
     private List<Table> optionCards; // List of individual option card tables
-
-    /**
-     * The width and height of the screen.
-     * These are used to set the size of the viewport.
-     */
-    private int width;
-    private int height;
+    private Table optionsTable; // Table for displaying the options
+    private GamePlayScreen previousScreen;
 
     /**
      * Constructs the GamePlayScreen.
@@ -129,10 +114,11 @@ public class ShopScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
         this.shapeRenderer = graphicsProvider.createShapeRenderer(); // Initialize the shape renderer for custom backgrounds
+        this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
 
-        Texture whitePixelTexture = assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class);
-        this.particles = new Particles(whitePixelTexture);
-        this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
+        this.stage = new Stage(viewport, batch);
+
+        this.menuSystem = new MenuSystem(stage, assetManager, graphicsProvider);
 
         // Pre load textures
         Texture optionBgTexture = createOptionBackgroundTexture();
@@ -143,216 +129,28 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Render the screen.
-     *
-     * @param delta The time since the last frame in seconds.
-     */
-    @Override
-    public void render(float delta) {
-        // Clear the screen with a semi-transparent black color
-        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Clear the screen with a dark color
-
-        // Update and draw the particles
-        particles.update(delta, VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
-        particles.draw(batch);
-
-        // Handle the input first
-        handleInput(delta);
-
-        // Update the ATP and size labels
-        updateTrackers();
-
-        // Update the game state
-        update(delta);
-
-        // Draw the state (UI elements)
-        stage.act(delta);
-        stage.draw();
-    }
-
-    @Override
-    public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
-            if (selectedOptionIndex > 0) {
-                selectedOptionIndex--;
-                updateOptionSelection();
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
-            if (selectedOptionIndex < optionCards.size() - 1) {
-                selectedOptionIndex++;
-                updateOptionSelection();
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
-            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
-            // Handle selection of the current option
-            if (selectedOptionIndex == 0) {
-                // Size option selected
-                // Navigate to the size upgrade screen
-                game.setScreen(new SizeUpgradeScreen(
-                    game,
-                    inputProvider,
-                    graphicsProvider,
-                    assetManager,
-                    this,
-                    playerCell));
-            } else if (selectedOptionIndex == 1) {
-                // Organelle option selected
-                // Navigate to the organelle upgrade screen
-                game.setScreen(new OrganelleUpgradeScreen(
-                    game,
-                    inputProvider,
-                    graphicsProvider,
-                    assetManager,
-                    this,
-                    playerCell));
-            }
-        }
-
-        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            // Fade put before exiting the shop screen
-            stage.getRoot().addAction(Actions.sequence(
-                Actions.fadeOut(1f), // Fade out over 1 seconds
-                Actions.run(() -> {
-                    // Unpause the game state (resume the cell movement)
-                    if (previousScreen instanceof GamePlayScreen) {
-                        ((GamePlayScreen) previousScreen).resumeGame();
-                    }
-
-                    // Transition back to the previous screen
-                    game.setScreen(previousScreen);
-                })
-            ));
-        }
-    }
-
-    /**
-     * Update the screen.
-     *
-     * @param deltaTimeSeconds The time since the last frame in seconds.
-     */
-    @Override
-    public void update(float deltaTimeSeconds) {
-        stage.act(deltaTimeSeconds);
-    }
-
-    /**
-     * Draw the screen.
-     */
-    @Override
-    public void draw() {
-        // This method is no longer needed as rendering is handled in `render`.
-    }
-
-    /**
-     * Show the screen.
-     */
-    @Override
-    public void show() {
-        // This method is called when the screen becomes the current screen for the game.
-
-        // Set the stage's root actor to be transparent initially
-        stage.getRoot().getColor().a = 0; // Full transparent
-
-        // Fade in the shop screen
-        stage.getRoot().addAction(Actions.fadeIn(2f)); // Fade in over 1 seconds
-
-        // Pause the game state (stop the cell from moving)
-        if (previousScreen instanceof GamePlayScreen) {
-            ((GamePlayScreen) previousScreen).pauseGame();
-        }
-    }
-
-    /**
-     * Resize the screen.
-     *
-     * @param width  The new width of the screen.
-     * @param height The new height of the screen.
-     */
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-        this.width = width;
-        this.height = height;
-    }
-
-    /**
-     * Pause the screen.
-     */
-    @Override
-    public void pause() {
-        // No action neede
-    }
-
-    /**
-     * Resume the screen.
-     */
-    @Override
-    public void resume() {
-        // No action needed
-    }
-
-    /**
-     * Hide the screen.
-     */
-    @Override
-    public void hide() {
-        // No action needed
-    }
-
-    /**
-     * Get the batch for rendering.
-     *
-     * @return The batch for rendering.
-     */
-    public SpriteBatch getBatch() {
-        return batch;
-    }
-
-    /**
-     * Get the stage for rendering.
-     * @return
-     */
-    public Stage getStage() {
-        return stage;
-    }
-
-    /**
-     * Dispose of the screen's assets.
-     */
-    @Override
-    public void dispose() {
-        // Destroy screen's assets here.
-        batch.dispose();  // Dispose of the batch
-        stage.dispose();
-        shapeRenderer.dispose();
-        particles.dispose();
-    }
-
-    public GamePlayScreen getPreviousScreen() {
-        return this.previousScreen;
-    }
-
-    /**
      * Create the UI for the shop screen.
      */
     private void createUI(Texture optionBgTexture, Texture glowingBorderTexture) {
-        Table mainTable = new Table();
-        mainTable.setFillParent(true);
+        menuSystem.initialize("Organelle Shop", new String[]{}, "");
 
-        // Title
-        Label titleLabel = createLabel("Organelle Shop", SHOP_TEXT_SIZE);
-        mainTable.add(titleLabel).padTop(20).row();
+        Table rootTable = menuSystem.getStage(). getRoot().findActor("mainTable");
+        if (rootTable == null) {
+            rootTable = new Table();
+            rootTable.setFillParent(true);
+            menuSystem.getStage().addActor(rootTable);
+        }
 
         // ATP Tracker
         Label atpLabel = createLabel("ATP: " + playerCell.getCellATP(), SHOP_TEXT_SIZE - 0.1f);
-        mainTable.add(atpLabel).padTop(10).row();
+        rootTable.add(atpLabel).padTop(10).row();
 
         // Size Tracker
         Label sizeLabel = createLabel("Size: " + (playerCell.getcellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
-        mainTable.add(sizeLabel).padTop(10).row();
+        rootTable.add(sizeLabel).padTop(10).row();
 
         // Table for Size and Organelle
-        Table optionsTable = new Table();
+        optionsTable = new Table();
         optionCards = new ArrayList<>();
 
         Table sizeCard = createOptionCard("Size", "Increase the size of the cell", optionBgTexture, glowingBorderTexture);
@@ -365,14 +163,12 @@ public class ShopScreen implements GameOfCellsScreen {
         optionsTable.add(organelleCard).pad(10);
 
         // Add the main table to the stage
-        mainTable.add(optionsTable).padTop(50).row();
+        rootTable.add(optionsTable).padTop(50).row();
 
         // Exit instructions
         Label exitLabel = createLabel("Press ESC to exit | Arrow keys to navigate | Enter to select", INSTRUCTION_TEXT_SIZE);
         exitLabel.setAlignment(Align.center); // Center the text
-        mainTable.add(exitLabel).padBottom(20).row();
-
-        stage.addActor(mainTable);
+        rootTable.add(exitLabel).padBottom(20).row();
 
         // Highlight the initially selected option (size)
         updateOptionSelection();
@@ -506,6 +302,9 @@ public class ShopScreen implements GameOfCellsScreen {
         return texture;
     }
 
+    /**
+     * Update the ATP and Size labels in the shop screen.
+     */
     private void updateTrackers() {
         // Get all actors from the stage
         for (Actor actor : stage.getActors()) {
@@ -528,6 +327,163 @@ public class ShopScreen implements GameOfCellsScreen {
                 }
             }
         }
+    }
+
+    /**
+     * Render the screen.
+     *
+     * @param delta The time since the last frame in seconds.
+     */
+    @Override
+    public void render(float delta) {
+        // Clear the screen with a semi-transparent black color
+        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Clear the screen with a dark color
+
+        // Update and draw the particles
+        particles.update(delta, VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        particles.draw(batch);
+
+        // Handle the input first
+        handleInput(delta);
+        update(delta);
+
+        stage.act(delta);
+        stage.draw();
+    }
+
+    @Override
+    public void handleInput(float deltaTimeSeconds) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
+            if (selectedOptionIndex > 0) {
+                selectedOptionIndex--;
+                updateOptionSelection();
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
+            if (selectedOptionIndex < optionCards.size() - 1) {
+                selectedOptionIndex++;
+                updateOptionSelection();
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+            handleShopSelection();
+        }
+
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            exitShop();
+        }
+    }
+
+    private void handleShopSelection() {
+        if (selectedOptionIndex == 0) {
+            game.setScreen(new SizeUpgradeScreen(
+                game, inputProvider, graphicsProvider, assetManager, this, playerCell));
+            } else if (selectedOptionIndex == 1) {
+            game.setScreen(new OrganelleUpgradeScreen(
+                game, inputProvider, graphicsProvider, assetManager, this, playerCell
+            ));
+        }
+    }
+
+    private void exitShop() {
+        menuSystem.getStage().getRoot().addAction(Actions.sequence(
+            Actions.fadeOut(1f),
+            Actions.run(() -> {
+                if (previousScreen instanceof GamePlayScreen) {
+                    ((GamePlayScreen) previousScreen).resumeGame();
+                }
+                game.setScreen(previousScreen);
+            })
+        ));
+    }
+
+    /**
+     * Update the screen.
+     *
+     * @param deltaTimeSeconds The time since the last frame in seconds.
+     */
+    @Override
+    public void update(float deltaTimeSeconds) {
+        // Update the ATP and Size labels
+        updateTrackers();
+        stage.act(deltaTimeSeconds);
+    }
+
+    /**
+     * Draw the screen.
+     */
+    @Override
+    public void draw() {
+        // This method is no longer needed as rendering is handled in `render`.
+    }
+
+    /**
+     * Show the screen.
+     */
+    @Override
+    public void show() {
+        // This method is called when the screen becomes the current screen for the game.
+
+        // Set the stage's root actor to be transparent initially
+        stage.getRoot().getColor().a = 0; // Full transparent
+
+        // Fade in the shop screen
+        stage.getRoot().addAction(Actions.fadeIn(2f)); // Fade in over 1 seconds
+
+        // Pause the game state (stop the cell from moving)
+        if (previousScreen instanceof GamePlayScreen) {
+            ((GamePlayScreen) previousScreen).pauseGame();
+        }
+    }
+
+    /**
+     * Resize the screen.
+     *
+     * @param width  The new width of the screen.
+     * @param height The new height of the screen.
+     */
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+    }
+
+    /**
+     * Pause the screen.
+     */
+    @Override
+    public void pause() {
+        // No action needed
+    }
+
+    /**
+     * Resume the screen.
+     */
+    @Override
+    public void resume() {
+        // No action needed
+    }
+
+    /**
+     * Hide the screen.
+     */
+    @Override
+    public void hide() {
+        // No action needed
+    }
+
+    /**
+     * Dispose of the screen's assets.
+     */
+    @Override
+    public void dispose() {
+        // Destroy screen's assets here.
+        batch.dispose();  // Dispose of the batch
+        stage.dispose(); // Dispose of the stage
+        shapeRenderer.dispose(); // Dispose of the shape renderer
+        particles.dispose(); // Dispose of the particles
+    }
+
+    public GamePlayScreen getPreviousScreen() {
+        return this.previousScreen;
     }
 
     /**
@@ -615,10 +571,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     public boolean isHighlighted(Table card) {
         Image glowingBorder = (Image) card.findActor("glowingBorder");
-        if (glowingBorder != null && glowingBorder.isVisible()) {
-            return true; // Highlighted if the glowing border is visible
-        }
-        return false; // Not highlighted if no glowing border is visible
+        return glowingBorder != null && glowingBorder.isVisible();
     }
 
     /**
@@ -647,24 +600,6 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     public Particles getParticles() {
         return particles;
-    }
-
-    /**
-     * Get the width of the screen.
-     * <p>
-     * This method returns the width of the screen.
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Get the height of the shop screen.
-     * This is used to get the height of the shop screen.
-     * @return 
-     */
-    public int getHeight() {
-        return height;
     }
 
     /**

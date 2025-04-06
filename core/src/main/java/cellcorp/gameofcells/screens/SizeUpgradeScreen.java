@@ -6,9 +6,9 @@ import java.util.List;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
@@ -34,9 +34,17 @@ import cellcorp.gameofcells.providers.InputProvider;
  * Screen for purchasing size upgrades
  */
 public class SizeUpgradeScreen implements GameOfCellsScreen {
+    private static final float SHOP_TEXT_SIZE = 0.3f;
+    private static final float UPGRADE_NAME_TEXT_SIZE = 0.2f;
+    private static final float UPGRADE_INFO_TEXT_SIZE = 0.15f;
+    private static final float INSTRUCTION_TEXT_SIZE = 0.18f;
+    private static final float UPGRADE_CARD_WIDTH = 250;
+    private static final float UPGRADE_CARD_HEIGHT = 350;
+    private static final float SELECTED_CARD_SCALE = 1.4f;
+
     private final Stage stage;
     private final List<SizeUpgrade> upgrades;
-    private final cellcorp.gameofcells.objects.Cell playerCell;
+    private final Cell playerCell;
     private final Main game;
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -46,30 +54,12 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
     private final Particles particles;
-
-    // UI Constants
-    private static final float SHOP_TEXT_SIZE = 0.3f;
-    private static final float UPGRADE_NAME_TEXT_SIZE = 0.2f;
-    private static final float UPGRADE_INFO_TEXT_SIZE = 0.15f;
-    private static final float INSTRUCTION_TEXT_SIZE = 0.18f;
-
-    private static final float UPGRADE_CARD_WIDTH = 250;
-    private static final float UPGRADE_CARD_HEIGHT = 350;
-    private static final float SELECTED_CARD_SCALE = 1.4f;
+    private final MenuSystem menuSystem;
 
     private int selectedUpgradeIndex = 0;
     private Table upgradeTable;
     private List<Table> upgradeCards;
 
-    /**
-     * Constructor for the SizeUpgradeScreen
-     * @param game
-     * @param inputProvider
-     * @param graphicsProvider
-     * @param assetManager
-     * @param previousScreen
-     * @param cell
-     */
     public SizeUpgradeScreen(
             Main game,
             InputProvider inputProvider,
@@ -88,11 +78,12 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         this.viewport = graphicsProvider.createFitViewport(ShopScreen.VIEW_RECT_WIDTH, ShopScreen.VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
-        this.particles = new Particles(assetManager.get(AssetFileNames.WHITE_PIXEL, Texture.class));
+        this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.stage = new Stage(viewport, batch);
+        this.menuSystem = new MenuSystem(stage, assetManager, graphicsProvider);
 
         // Initialize size upgrades
-        upgrades = new ArrayList<>();
+        this.upgrades = new ArrayList<>();
         if (!playerCell.hasSmallSizeUpgrade()) {
             upgrades.add(new SmallSizeUpgrade()); // +1 size for 50 ATP
         }
@@ -109,106 +100,27 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         createUI();
     }
 
-    @Override
-    public void render(float delta) {
-        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
-        particles.update(delta, viewport.getWorldWidth(), viewport.getWorldHeight());
-        particles.draw(batch);
-
-        handleInput(delta);
-        update(delta);
-
-        stage.act(delta);
-        stage.draw();
-    }
-
-    @Override
-    public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
-            if (selectedUpgradeIndex > 0) {
-                selectedUpgradeIndex--;
-                updateUpgradeSelection();
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
-            if (selectedUpgradeIndex < upgrades.size() - 1) {
-                selectedUpgradeIndex++;
-                updateUpgradeSelection();
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
-            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
-            SizeUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
-            if (selectedUpgrade.canPurchase(playerCell, null)) {
-                selectedUpgrade.applyUpgrade(playerCell);
-                upgrades.remove(selectedUpgrade);
-                selectedUpgradeIndex = Math.min(selectedUpgradeIndex, upgrades.size() - 1);
-                
-                updateUpgradeDisplay();
-
-                // Close ALL shop screens and return to gameplayscreen
-                stage.getRoot().addAction(Actions.sequence(
-                    Actions.fadeOut(0.5f), Actions.run(() -> {
-                        // Resume gameplay and return to GameplayScreen
-                        GamePlayScreen gamePlayScreen = findGamePlayScreen();
-                        if (gamePlayScreen != null) {
-                            gamePlayScreen.resumeGame();
-                            game.setScreen(gamePlayScreen);
-                        }
-                    })));
-
-                checkAllUpgradesPurchased();
-            } else {
-                // Display a message indicating that the upgrade cannot be purchased
-                String message = "";
-                boolean notEnoughATP = playerCell.getCellATP() < selectedUpgrade.getRequiredATP();
-                boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
-
-                if (notEnoughATP && notEnoughSize) {
-                    message = "Not enough ATP and size to purchase this upgrade.";
-                } else if (notEnoughATP) {
-                    message = "Not enough ATP to purchase this upgrade.";
-                } else if (notEnoughSize) {
-                    message = "Not enough size to purchase this upgrade.";
-                }
-
-                showMessage(message);
-            }
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            stage.getRoot().addAction(Actions.sequence(Actions.fadeOut(1f), Actions.run(() -> game.setScreen(previousScreen))));
-        }
-    }
-
-    /**
-     * Find the GamePlayScreen instance.
-     * @return The GamePlayScreen instance.
-     */
-    private GamePlayScreen findGamePlayScreen() {
-        if (previousScreen instanceof ShopScreen) {
-            return ((ShopScreen) previousScreen).getPreviousScreen();
-        }
-        return null;
-    }
-
     private void createUI() {
-        Table mainTable = new Table();
-        mainTable.setFillParent(true);
+        menuSystem.initialize("Size Upgrades", new String[]{}, "");
 
-        // Title
-        Label titleLabel = new Label("Size Upgrades", 
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-        titleLabel.setFontScale(SHOP_TEXT_SIZE);
-        mainTable.add(titleLabel).padTop(20).row();
+        Table rootTable = menuSystem.getStage(). getRoot().findActor("mainTable");
+        if (rootTable == null) {
+            rootTable = new Table();
+            rootTable.setFillParent(true);
+            menuSystem.getStage().addActor(rootTable);
+        }
 
         // ATP Tracker
         Label atpLabel = new Label("ATP: " + playerCell.getCellATP(),
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
         atpLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
-        mainTable.add(atpLabel).padTop(10).row();
+        rootTable.add(atpLabel).padTop(10).row();
 
         // Current Size
         Label sizeLabel = new Label("Current Size: " + (playerCell.getcellSize() - 100)/100,
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
         sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
-        mainTable.add(sizeLabel).padTop(10).row();
+        rootTable.add(sizeLabel).padTop(10).row();
 
         // Upgrade Cards
         upgradeTable = new Table();
@@ -220,15 +132,13 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
             upgradeTable.add(card).pad(10);
         }
 
-        mainTable.add(upgradeTable).expand().fill().padTop(20).row();
+        rootTable.add(upgradeTable).expand().fill().padTop(20).row();
 
         // Instructions
         Label instructions = new Label("Press ESC to go back | Arrows to navigate | Enter to buy",
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
         instructions.setFontScale(INSTRUCTION_TEXT_SIZE);
-        mainTable.add(instructions).padBottom(20).row();
-
-        stage.addActor(mainTable);
+        rootTable.add(instructions).padBottom(20).row();
 
         updateUpgradeSelection();
     }
@@ -239,11 +149,11 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         card.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
 
         // Glowing border (for selected state)
-        Image border = new Image(createGlowingBorderTexture());
-        border.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
-        border.setVisible(false);
-        border.setName("glowingBorder");
-        card.addActor(border);
+        Image glowingBorder = new Image(createGlowingBorderTexture());
+        glowingBorder.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
+        glowingBorder.setVisible(false);
+        glowingBorder.setName("glowingBorder");
+        card.addActor(glowingBorder);
 
         // Card background
         card.setBackground(new TextureRegionDrawable(createOptionBackgroundTexture()));
@@ -253,15 +163,15 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.YELLOW));
         nameLabel.setFontScale(UPGRADE_NAME_TEXT_SIZE);
         nameLabel.setAlignment(Align.center);
-        card.add(nameLabel).width(UPGRADE_CARD_WIDTH - 20).row();
+        card.add(nameLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row();
 
         // Description
         Label descLabel = new Label(upgrade.getDescription(),
             new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
         descLabel.setFontScale(UPGRADE_INFO_TEXT_SIZE);
         descLabel.setWrap(true);
-        nameLabel.setAlignment(Align.center);
-        card.add(descLabel).width(UPGRADE_CARD_WIDTH - 20).row();
+        descLabel.setAlignment(Align.center);
+        card.add(descLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row();
 
         // Perks
         Label perksLabel = new Label(upgrade.getPerks(),
@@ -346,79 +256,6 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Updates the stage and all actors within it
-     * @param delta Time since last frame (in seconds)
-     */
-    @Override 
-    public void update(float delta) { 
-        stage.act(delta); 
-    }
-
-    /**
-     * Shows the screen by fading it in
-     */
-    @Override 
-    public void show() {
-        stage.getRoot().getColor().a = 0;
-        stage.getRoot().addAction(Actions.fadeIn(2f)); 
-
-        checkAllUpgradesPurchased();
-    }
-
-    /**
-     * Resizes the screen to the new width and height
-     * @param width New width of the screen
-     * @param height New height of the screen
-     */
-    @Override 
-    public void resize(int width, int height) { 
-        viewport.update(width, height); 
-    }
-
-    /**
-     * Pauses the screen
-     */
-    @Override 
-    public void pause() {
-
-    }
-
-    /**
-     * Resumes the screen
-     */
-    @Override 
-    public void resume() {
-
-    }
-
-    /**
-     * Hides the screen by fading it out
-     */
-    @Override 
-    public void hide() {
-
-    }
-
-    /**
-     * Draws the screen
-     */
-    @Override 
-    public void draw() {
-
-    }
-
-    /**
-     * Disposes of all resources used by this screen
-     */
-    @Override 
-    public void dispose() {
-        batch.dispose();
-        stage.dispose();
-        shapeRenderer.dispose();
-        particles.dispose();
-    }
-
-    /**
      * Draw a glowing border around the selected upgrade card.
      */
     private Texture createGlowingBorderTexture() {
@@ -500,6 +337,160 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Find the GamePlayScreen instance.
+     * @return The GamePlayScreen instance.
+     */
+    private GamePlayScreen findGamePlayScreen() {
+        if (previousScreen instanceof ShopScreen) {
+            return ((ShopScreen) previousScreen).getPreviousScreen();
+        }
+        return null;
+    }
+
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // Dark blue background
+        particles.update(delta, viewport.getWorldWidth(), viewport.getWorldHeight());
+        particles.draw(batch);
+
+        handleInput(delta);
+        update(delta);
+
+        stage.act(delta);
+        stage.draw();
+    }
+
+    @Override
+    public void handleInput(float deltaTimeSeconds) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
+            if (selectedUpgradeIndex > 0) {
+                selectedUpgradeIndex--;
+                updateUpgradeSelection();
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
+            if (selectedUpgradeIndex < upgrades.size() - 1) {
+                selectedUpgradeIndex++;
+                updateUpgradeSelection();
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+            SizeUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
+            if (selectedUpgrade.canPurchase(playerCell, null)) {
+                selectedUpgrade.applyUpgrade(playerCell);
+                upgrades.remove(selectedUpgrade);
+                selectedUpgradeIndex = Math.min(selectedUpgradeIndex, upgrades.size() - 1);
+                
+                updateUpgradeDisplay();
+
+                // Close ALL shop screens and return to gameplayscreen
+                stage.getRoot().addAction(Actions.sequence(
+                    Actions.fadeOut(0.5f), Actions.run(() -> {
+                        // Resume gameplay and return to GameplayScreen
+                        GamePlayScreen gamePlayScreen = findGamePlayScreen();
+                        if (gamePlayScreen != null) {
+                            gamePlayScreen.resumeGame();
+                            game.setScreen(gamePlayScreen);
+                        }
+                    })));
+
+                checkAllUpgradesPurchased();
+            } else {
+                // Display a message indicating that the upgrade cannot be purchased
+                String message = "";
+                boolean notEnoughATP = playerCell.getCellATP() < selectedUpgrade.getRequiredATP();
+                boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
+
+                if (notEnoughATP && notEnoughSize) {
+                    message = "Not enough ATP and size to purchase this upgrade.";
+                } else if (notEnoughATP) {
+                    message = "Not enough ATP to purchase this upgrade.";
+                } else if (notEnoughSize) {
+                    message = "Not enough size to purchase this upgrade.";
+                }
+
+                showMessage(message);
+            }
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            stage.getRoot().addAction(Actions.sequence(
+                Actions.fadeOut(1f), 
+                Actions.run(() -> game.setScreen(previousScreen))));
+        }
+    }
+
+    /**
+     * Updates the stage and all actors within it
+     * @param delta Time since last frame (in seconds)
+     */
+    @Override 
+    public void update(float delta) { 
+        stage.act(delta); 
+    }
+
+    /**
+     * Shows the screen by fading it in
+     */
+    @Override 
+    public void show() {
+        stage.getRoot().getColor().a = 0;
+        stage.getRoot().addAction(Actions.fadeIn(2f)); 
+
+        checkAllUpgradesPurchased();
+    }
+
+    /**
+     * Resizes the screen to the new width and height
+     * @param width New width of the screen
+     * @param height New height of the screen
+     */
+    @Override 
+    public void resize(int width, int height) { 
+        viewport.update(width, height); 
+    }
+
+    /**
+     * Pauses the screen
+     */
+    @Override 
+    public void pause() {
+
+    }
+
+    /**
+     * Resumes the screen
+     */
+    @Override 
+    public void resume() {
+
+    }
+
+    /**
+     * Hides the screen by fading it out
+     */
+    @Override 
+    public void hide() {
+
+    }
+
+    /**
+     * Draws the screen
+     */
+    @Override 
+    public void draw() {
+
+    }
+
+    /**
+     * Disposes of all resources used by this screen
+     */
+    @Override 
+    public void dispose() {
+        batch.dispose();
+        stage.dispose();
+        shapeRenderer.dispose();
+        particles.dispose();
+    }
+
+    /**
      * Check if the player has the small size upgrade
      * @return true if the player has the small size upgrade, false otherwise
      */
@@ -529,5 +520,13 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
      */
     public boolean hasMassiveSizeUpgrade() {
         return playerCell.hasMassiveSizeUpgrade();
+    }
+
+    /**
+     * Get the list of size upgrades
+     * @return List of size upgrades
+     */
+    public List<SizeUpgrade> getUpgrades() {
+        return upgrades;
     }
 }
