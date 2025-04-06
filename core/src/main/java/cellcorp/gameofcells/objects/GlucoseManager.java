@@ -8,6 +8,7 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -224,15 +225,39 @@ public class GlucoseManager {
      * Checks for cell <-> glucose collisions
      */
     public void update() {
+        handleMovement();
         handleCollisions();
     }
 
     private void handleMovement() {
+        var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
+        var adjacentChunks = currentChunk.adjacentChunks();
 
+        for (var chunk : adjacentChunks) {
+            handleMovementInChunk(chunk);
+        }
     }
 
-    private void handleMovmentInChucnk() {
-
+    private void handleMovementInChunk(Chunk chunk) {
+        List<Glucose> glucoseList = glucoses.get(chunk);
+        if (glucoseList == null) {
+            return;
+        }
+//        System.out.println("# of gluclose: " + glucoseList.size());
+        Circle cellForceCircle = cell.getForceCircle();
+        for (Glucose g : glucoseList) {
+            Circle glucoseCircle = g.getCircle();
+            if(cellForceCircle.overlaps(glucoseCircle)) {
+//                System.out.println("overlapDetected");
+                float xDiff = cellForceCircle.x - g.getX();
+                float yDiff = cellForceCircle.y - g.getY();
+                System.out.println("GLUCOSE: " + glucoseCircle + " FORCE: " + cellForceCircle);
+                System.out.println("XDIFF: " + xDiff + " YDIFF: "+ yDiff);
+                System.out.println("NEWX: " + (glucoseCircle.x + xDiff) + " NEWY: " + (glucoseCircle.y + yDiff));
+                glucoseCircle.setX(glucoseCircle.x - (xDiff/2));
+                glucoseCircle.setY(glucoseCircle.y - (yDiff/2));
+            }
+        }
     }
 
     /**
