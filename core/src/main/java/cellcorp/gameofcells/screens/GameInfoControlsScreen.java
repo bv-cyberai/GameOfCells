@@ -5,11 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -19,7 +19,6 @@ import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
-import cellcorp.gameofcells.screens.SettingsScreen;
 
 /**
  * The screen for displaying game info and controls.
@@ -36,26 +35,22 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
+    private static final String BACK_OPTION = "Back";
+    private static final String INSTRUCTION = "Press any key to return...";
+
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
-    private ConfigProvider configProvider;
-
+    private final ConfigProvider configProvider;
     private final Main game;
     private final AssetManager assetManager;
-    private final Camera camera;
     private final Viewport viewport;
-    private final SpriteBatch spriteBatch;
-    private final Texture whitePixelTexture;
+    private final Particles particles;
+    private final MenuSystem menuSystem;
 
-    private Particles particles;
-
-    private BitmapFont whiteFont;
-
-    private final GlyphLayout layout;
-    private String controlMessage;
-
+    private final String controlMessage;
     private float startX;
     private float startY;
+    private GlyphLayout layout;
 
     public GameInfoControlsScreen(
             InputProvider inputProvider,
@@ -63,32 +58,45 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
             Main game,
             AssetManager assetManager,
             Camera camera,
-            Viewport viewport, ConfigProvider configProvider) {
+            Viewport viewport, 
+            ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
-        this.camera = camera;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
-        this.spriteBatch = graphicsProvider.createSpriteBatch();
 
-        this.whitePixelTexture = graphicsProvider.createWhitePixelTexture();
-        this.particles = new Particles(whitePixelTexture);
+        this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
+        this.menuSystem = new MenuSystem(
+            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)),
+            assetManager,
+            graphicsProvider
+        );
 
-        layout = new GlyphLayout();
-        controlMessage = "Game Info:\n" +
+        this.controlMessage = "Game Info:\n" +
                 "Welcome to Game of Cells!\n" +
                 "Control a cell and explore the microscopic world.\n" +
                 "Controls:\n" +
                 "Arrow Keys - Move the cell\n" +
                 "Enter - Select/Confirm\n" +
-                "Escape - Pause/Return to Menu\n\n" +
-                "Press any key to return...";
+                "Escape - Pause/Return to Menu";
+        this.layout = new GlyphLayout();
     }
 
     @Override
     public void show() {
+        // Initialize simple back menu
+        menuSystem.initialize("", new String[]{BACK_OPTION}, INSTRUCTION);
+
+        // Calculate text position
+        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        font.getData().setScale(0.375f);
+        layout.setText(font, controlMessage, Color.WHITE, 800, Align.left, true);
+
+        // Center the text
+        startX = (VIEW_RECT_WIDTH / 2) - (layout.width / 2);
+        startY = (VIEW_RECT_HEIGHT / 2) + (layout.height / 2);
     }
 
     @Override
@@ -117,8 +125,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     @Override
     public void dispose() {
-        spriteBatch.dispose();
         particles.dispose();
+        menuSystem.clear();
     }
 
     @Override
@@ -130,6 +138,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
                     graphicsProvider,
                     game,
                     assetManager,
+                    null,
+                    viewport,
                     configProvider ));
         }
     }
@@ -143,29 +153,21 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     public void draw() {
         // Clear the screen with a gradient background
         ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark blue background
-
         viewport.apply(true);
-        camera.update();
-        spriteBatch.setProjectionMatrix(camera.combined);
 
-        particles.draw(spriteBatch);
+        // Draw particles
+        particles.draw(graphicsProvider.createSpriteBatch());
 
-        // Font Setup
-        if (whiteFont == null) {
-            whiteFont = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-            whiteFont.getData().setScale(0.375f);
-            CharSequence cs = controlMessage;
-            layout.setText(whiteFont, cs, 0, cs.length(), Color.WHITE, 800, Align.left, true, null);
-            // Center the text
-            startX = (VIEW_RECT_WIDTH / 2) - (layout.width / 2);
-            startY = (VIEW_RECT_HEIGHT / 2) + (layout.height / 2);
+        // Draw info text
+        menuSystem.getStage().getBatch().begin();
+        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        font.getData().setScale(0.375f);
+        font.draw(menuSystem.getStage().getBatch(), layout, startX, startY);
+        menuSystem.getStage().getBatch().end();
 
-        }
-
-        // Draw game info and controls
-        spriteBatch.begin();
-        whiteFont.draw(spriteBatch, layout, startX, startY);
-        spriteBatch.end();
+        // Draw menu (back option)
+        menuSystem.getStage().act();
+        menuSystem.getStage().draw();
     }
 
     /**
@@ -176,22 +178,6 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public String getMessage() {
         return controlMessage;
-    }
-
-    /**
-     * Get the sprite batch.
-     * @return The sprite batch used for rendering.
-     */
-    public SpriteBatch getSpriteBatch() {
-        return spriteBatch;
-    }
-
-    /**
-     * Get the white pixel texture.
-     * @return The white pixel texture used for rendering particles.
-     */
-    public Particles getParticles() {
-        return particles;
     }
 
     /**
@@ -208,25 +194,5 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public float getMessagePositionY() {
         return startY;
-    }
-
-    /**
-     * Get the white font.
-     * @return
-     */
-    public BitmapFont getWhiteFont() {
-        return whiteFont;
-    }
-    
-    public Texture getWhitePixelTexture() {
-        return whitePixelTexture;
-    }
-
-    /**
-     * Get the viewport.
-     * @return The viewport used for rendering.
-     */
-    public Viewport getViewport() {
-        return viewport;
     }
 }

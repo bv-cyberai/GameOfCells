@@ -1,42 +1,30 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.Config;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
-/**
- * The screen for adjusting game settings and viewing game info/controls.
- */
-public class SettingsScreen implements GameOfCellsScreen {
+public class PauseScreen implements GameOfCellsScreen {
+    private static final String[] PAUSE_OPTIONS = {
+            "Resume",
+            "Settings",
+            "Quit to Menu"
+    };
+    private static final String INSTRUCTIONS = "Arrow keys to navigate | Enter to select";
 
-    // Change as is most convenient.
-    /**
-     * Width of the HUD view rectangle.
-     * (the rectangular region of the world which the camera will display)
-     */
-    public static final int VIEW_RECT_WIDTH = 1200;
-    /**
-     * Height of the HUD view rectangle.
-     * (the rectangular region of the world which the camera will display)
-     */
-    public static final int VIEW_RECT_HEIGHT = 800;
-
-    // Settings options
-    private static final String[] SETTINGS_OPTIONS = { "Game Info & Controls", "Back" };
-    private static final String INSTRUCTIONS = "Use the arrow keys to navigate | Enter to select";
-
-    private int selectedOption = 0; // Index of the currently selected option
-
+    private final GamePlayScreen gamePlayScreen;
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
@@ -45,36 +33,42 @@ public class SettingsScreen implements GameOfCellsScreen {
     private final Viewport viewport;
     private final Particles particles;
     private final MenuSystem menuSystem;
+    private final SpriteBatch batch;
 
-
-    public SettingsScreen(
+    public PauseScreen(
+            GamePlayScreen gamePlayScreen,
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
-            Camera camera,
-            Viewport viewport,
             ConfigProvider configProvider) {
 
+        this.gamePlayScreen = gamePlayScreen;
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
-        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        this.viewport = graphicsProvider.createFitViewport(
+            GamePlayScreen.VIEW_RECT_WIDTH,
+            GamePlayScreen.VIEW_RECT_HEIGHT
+        );
 
-        // Load white pixel texture and initialize particles
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
-            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)),
+            new Stage(graphicsProvider.createFitViewport(
+                GamePlayScreen.VIEW_RECT_WIDTH,
+                GamePlayScreen.VIEW_RECT_HEIGHT
+            )),
             assetManager,
             graphicsProvider
         );
+        this.batch = graphicsProvider.createSpriteBatch();
     }
 
     @Override
     public void show() {
-        menuSystem.initialize("Settings", SETTINGS_OPTIONS, INSTRUCTIONS);
+        menuSystem.initialize("Paused", PAUSE_OPTIONS, INSTRUCTIONS);
     }
 
     @Override
@@ -91,25 +85,29 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     @Override
     public void pause() {
+        // Pause logic if needed
     }
 
     @Override
     public void resume() {
+        // Resume logic if needed
     }
 
     @Override
     public void hide() {
+        // Hide logic if needed
     }
 
     @Override
     public void dispose() {
-        particles.dispose();
         menuSystem.clear();
+        particles.dispose();
+        batch.dispose();
     }
 
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        // Navigate settings options with arrow keys
+        // Navigate menu options
         if (inputProvider.isKeyJustPressed(Input.Keys.UP)) {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() - 1);
         }
@@ -117,42 +115,43 @@ public class SettingsScreen implements GameOfCellsScreen {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() + 1);
         }
 
-        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(new MainMenuScreen(
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager,
-                    viewport.getCamera(),
-                    viewport, configProvider));
-            return;
-        }
-
-        // Confirm selection with Enter key
-        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
-            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+        // Confirm selection
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
             switch (menuSystem.getSelectedOptionIndex()) {
-                case 0: // Game Info & Controls
-                    game.setScreen(new GameInfoControlsScreen(
+                case 0: // Resume
+                    gamePlayScreen.resumeGame();
+                    game.setScreen(gamePlayScreen);
+                    break;
+                case 1: // Settings
+                    game.setScreen(new SettingsScreen(
                             inputProvider,
                             graphicsProvider,
                             game,
                             assetManager,
                             null,
                             viewport,
-                            configProvider));
+                            configProvider
+                    ));
                     break;
-                case 1: // Back
+                case 2: // Quit to Menu
+                    gamePlayScreen.resumeGame();
                     game.setScreen(new MainMenuScreen(
-                            inputProvider,
-                            graphicsProvider,
-                            game,
-                            assetManager,
+                            inputProvider, 
+                            graphicsProvider, 
+                            game, 
+                            assetManager, 
                             null,
                             viewport, 
-                            configProvider));
+                            configProvider
+                    ));
                     break;
             }
+        }
+
+        // Handle ESC key to resume game
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            gamePlayScreen.resumeGame();
+            game.setScreen(gamePlayScreen);
         }
     }
 
@@ -163,23 +162,21 @@ public class SettingsScreen implements GameOfCellsScreen {
 
     @Override
     public void draw() {
-        // Clear the screen with a gradient background
-        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark blue background
+        // Semi-transparent background overlay
+        ScreenUtils.clear(0, 0, 0, 0.5f); // Semi-transparent black background
+
+        // First draw the gameplay screen (paused)
+        gamePlayScreen.draw();
+
+        // Then draw our pause menu overlay
         viewport.apply(true);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
         // Draw the particles
-        particles.draw(graphicsProvider.createSpriteBatch());
+        particles.draw(batch);
 
-        // Draw the menu system
+        // Draw the menu
         menuSystem.getStage().act();
         menuSystem.getStage().draw();
-    }
-
-    /**
-     * Get the index of the currently selected option.
-     * @return
-     */
-    public int getSelectedOption() {
-        return menuSystem.getSelectedOptionIndex();
     }
 }

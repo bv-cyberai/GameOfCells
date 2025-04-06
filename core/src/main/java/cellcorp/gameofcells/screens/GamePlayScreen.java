@@ -51,6 +51,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press Q to access the shop screen.";
+    public static final String MESSAGE_PAUSE = "Press ESC to pause";
     private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
 
     /**
@@ -142,10 +143,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
-    private boolean isPaused = false; // Whether the game is paused
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
     private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
+
+    private boolean isPaused = false; // Whether the game is paused
 
     public final Stats stats = new Stats();
 
@@ -313,6 +315,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Returns the player to the main Menu Screen
         if (inputProvider.isKeyJustPressed(Input.Keys.M)) {
             game.setScreen(new MainMenuScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport, configProvider));
+        }
+
+        // Pause the game when the ESC key is pressed
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            pauseGame();
+            game.setScreen(new PauseScreen(
+                this,
+                inputProvider,
+                graphicsProvider,
+                game,
+                assetManager,
+                configProvider
+            ));
         }
     }
 
