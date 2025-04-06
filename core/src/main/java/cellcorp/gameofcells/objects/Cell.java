@@ -542,6 +542,14 @@ public class Cell {
     }
 
     /**
+     * Get Cell Height
+     * @return
+     */
+    public int getHeight() {
+        return (int) cellSize;
+    }
+
+    /**
      * Dispose
      */
     public void dispose() {
