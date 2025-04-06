@@ -56,7 +56,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Set to true to enable debug drawing.
      */
-    public static final boolean DEBUG_DRAW_ENABLED = false;
+    public static final boolean DEBUG_DRAW_ENABLED = true;
 
     private final Stage stage;
     private final Main game;
@@ -731,7 +731,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public boolean isPaused() {
         return isPaused;
     }
-    
+
     /**
      * Set the paused state of the game.
      * This is used for checking if the game is paused.

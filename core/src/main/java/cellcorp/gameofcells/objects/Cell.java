@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.objects;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -78,6 +79,8 @@ public class Cell {
     private float movementSpeedMultiplier = 1.0f;
     private boolean canSplit = false;
 
+    private final Circle forceCircle;
+
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -121,6 +124,7 @@ public class Cell {
         totalDistanceMoved = 0f;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
+        forceCircle = new Circle(new Vector2(0, 0), cellSize *2);
     }
 
     /**
@@ -162,6 +166,8 @@ public class Cell {
 
         cellCircle.x += dx * CELL_SPEED * deltaTime;
         cellCircle.y += dy * CELL_SPEED * deltaTime;
+
+        setCellForceCircle(cellCircle.x, cellCircle.y);
 
         if (moveLeft || moveRight || moveUp || moveDown) {
             gamePlayScreen.stats.distanceMoved += CELL_SPEED * deltaTime;
@@ -278,6 +284,8 @@ public class Cell {
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.circle(cellCircle.x, cellCircle.y, cellCircle.radius);
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.circle(forceCircle.x, forceCircle.y, forceCircle.radius);
             shapeRenderer.end();
         }
     }
@@ -839,5 +847,10 @@ public class Cell {
      */
     public float getLastTimeTakenforATPLoss() {
         return lastTimeTakenforATPLoss;
+    }
+
+    private void setCellForceCircle(float newX, float newY) {
+        forceCircle.setX(newX);
+        forceCircle.setY(newY);
     }
 }

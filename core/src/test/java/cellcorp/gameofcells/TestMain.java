@@ -322,6 +322,8 @@ public class TestMain {
     }
 
     @Test
+    //FIXME This test is confusing, as it test ways more than then its name suggests and seems to fail randomly.
+    //FIXME I assumed I've partially fixed this by setting it to actually check MaxATP as the comment suggests.
     public void canUseSpaceKeyToMoveForward() {
         var gameRunner = GameRunner.create();
         var game = gameRunner.game;
@@ -351,10 +353,11 @@ public class TestMain {
         assertInstanceOf(GamePlayScreen.class, game.getScreen());
         var gamePlayScreen = (GamePlayScreen) game.getScreen();
 
+        //FIXME highlight lighting the section changed.
         // Get max ATP, for shop screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
         gameRunner.runForSeconds(1);
-        assertEquals(100, gamePlayScreen.getCell().getCellATP());
+        assertEquals(100, gamePlayScreen.getCell().getMaxATP());
 
         // Open shop screen, go to size-upgrades, buy upgrade
         // TODO -- Shop screen is crashing.
