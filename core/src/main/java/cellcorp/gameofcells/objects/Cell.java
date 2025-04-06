@@ -80,6 +80,8 @@ public class Cell {
     private boolean canSplit = false;
 
     private final Circle forceCircle;
+    private float forceCircleSizeScalar;
+    private float forceCircleSizeMultiplier;
 
     /**
      * Times how long the cell has been taking zero-ATP damage.
@@ -103,6 +105,8 @@ public class Cell {
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
 
+
+
     //potential gameOverStat
     private float totalDistanceMoved;
 
@@ -122,9 +126,11 @@ public class Cell {
         lastTimeTakenforATPLoss = 0f;
         wasAtpBurnedThisFrame = false;
         totalDistanceMoved = 0f;
+        forceCircleSizeMultiplier = 1.375f;
+        forceCircleSizeScalar = 1f;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
-        forceCircle = new Circle(new Vector2(0, 0), cellSize *1.375f);
+        forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
     }
 
     /**
@@ -585,7 +591,9 @@ public class Cell {
      */
     public void increasecellSize(float sizeIncrease) {
         this.cellSize += sizeIncrease;
+        forceCircleSizeScalar += .125f;
         cellCircle.radius += sizeIncrease / 2;
+        forceCircle.radius = cellCircle.radius *  forceCircleSizeMultiplier * forceCircleSizeScalar;
     }
 
     /**
