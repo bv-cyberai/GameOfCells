@@ -124,7 +124,7 @@ public class Cell {
         totalDistanceMoved = 0f;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
-        forceCircle = new Circle(new Vector2(0, 0), cellSize *2);
+        forceCircle = new Circle(new Vector2(0, 0), cellSize *1.375f);
     }
 
     /**

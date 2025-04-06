@@ -249,13 +249,19 @@ public class GlucoseManager {
             Circle glucoseCircle = g.getCircle();
             if(cellForceCircle.overlaps(glucoseCircle)) {
 //                System.out.println("overlapDetected");
-                float xDiff = cellForceCircle.x - g.getX();
-                float yDiff = cellForceCircle.y - g.getY();
-                System.out.println("GLUCOSE: " + glucoseCircle + " FORCE: " + cellForceCircle);
-                System.out.println("XDIFF: " + xDiff + " YDIFF: "+ yDiff);
-                System.out.println("NEWX: " + (glucoseCircle.x + xDiff) + " NEWY: " + (glucoseCircle.y + yDiff));
-                glucoseCircle.setX(glucoseCircle.x - (xDiff/2));
-                glucoseCircle.setY(glucoseCircle.y - (yDiff/2));
+                Vector2 vector = new Vector2(cellForceCircle.x - g.getX(),cellForceCircle.y - g.getY());
+                vector.nor();
+                vector.scl(0.75f);
+//                float xDiff = cellForceCircle.x - g.getX();
+//                float yDiff = cellForceCircle.y - g.getY();
+//                System.out.println("GLUCOSE: " + glucoseCircle + " FORCE: " + cellForceCircle);
+//                System.out.println("XDIFF: " + xDiff + " YDIFF: "+ yDiff);
+//                System.out.println("NEWX: " + (glucoseCircle.x + xDiff) + " NEWY: " + (glucoseCircle.y + yDiff));
+
+                glucoseCircle.setX(glucoseCircle.x - (vector.x));
+                glucoseCircle.setY(glucoseCircle.y - (vector.y));
+//                glucoseCircle.setX(glucoseCircle.x - (xDiff/2));
+//                glucoseCircle.setY(glucoseCircle.y - (yDiff/2));
             }
         }
     }
