@@ -7,13 +7,15 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
@@ -35,11 +37,31 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
-    private static final String[] CONTROL_MESSAGE = {"Welcome to Game of Cells!\n" + "Control a cell and explore the microscopic world.\n" +
-                "Controls:\n" +
-                "Arrow / WASD Keys - Move the cell\n" +
-                "Enter / Space - Select/Confirm\n" +
-                "Escape / P - Pause/Return to Menu"};
+    private static final String[] GAME_INFO = {
+        "Welcome to Game of Cells!",
+        "",
+        "Embark on a microscopic adventure",
+        "where you control a living cell",
+        "in a vibrant biological world.",
+        "",
+        "Your mission is to explore",
+        "collect glucose, and survive."
+    };
+
+    private static final String[] CONTROLS = {
+        "CONTROLS",
+        "----------------------",
+        "Movement:",
+        "Arrow keys or WASD",
+        "",
+        "Actions:",
+        "ENTER/SPACE - Select",
+        "ESC/P - Pause Menu",
+        "",
+        "Gameplay:",
+        "WIP"
+    };
+
     private static final String INSTRUCTION = "Press any key to return...";
 
     private final InputProvider inputProvider;
@@ -54,7 +76,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     private float startX;
     private float startY;
-    private GlyphLayout layout;
+    private Texture cellTexture;
 
     public GameInfoControlsScreen(
             InputProvider inputProvider,
@@ -80,13 +102,18 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
             graphicsProvider
         );
 
-        this.layout = new GlyphLayout();
-    }
+        this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+
+        }
 
     @Override
     public void show() {
         // Initialize simple back menu
-        menuSystem.initialize("Game Info and Contols", CONTROL_MESSAGE, INSTRUCTION);
+        menuSystem.initializeSplitLayout(
+            "GAME INFORMATION", 
+            GAME_INFO, 
+            CONTROLS,
+            INSTRUCTION);
     }
 
     @Override
@@ -134,20 +161,26 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     @Override
     public void draw() {
-        // Clear the screen with a gradient background
-        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark purple background
+        // Clear with a biological-themed color
+        ScreenUtils.clear(.1f, .2f, .25f, 1f);
 
         viewport.apply(true);
 
+        // Draw background elements
+        SpriteBatch batch = graphicsProvider.createSpriteBatch();
+        batch.begin();
+
+        // Draw cell texture in background with low opacity
+        batch.setColor(1, 1, 1, 0.1f);
+        batch.draw(cellTexture,
+                VIEW_RECT_WIDTH/2 -200,
+                VIEW_RECT_HEIGHT/2 -200,
+                400, 400);
+        batch.setColor(1, 1, 1, 1); // Reset color to white
+        batch.end();
+
         // Draw particles
         particles.draw(graphicsProvider.createSpriteBatch());
-
-        // Draw info text
-        menuSystem.getStage().getBatch().begin();
-        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-        font.getData().setScale(0.375f);
-        font.draw(menuSystem.getStage().getBatch(), layout, startX, startY);
-        menuSystem.getStage().getBatch().end();
 
         // Draw menu (back option)
         menuSystem.getStage().act();

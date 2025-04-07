@@ -74,6 +74,56 @@ public class MenuSystem {
         stage.addActor(mainTable);
     }
 
+    public void initializeSplitLayout(String title, String[] leftText, String[] rightText, String instructions) {
+        clear();
+
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.pad(40);
+
+        // Title
+        Label titleLabel = createLabel(title, TITLE_TEXT_SIZE);
+        titleLabel.setAlignment(Align.center);
+        mainTable.add(titleLabel).colspan(2).padBottom(30).row();
+
+        // Content tables
+        Table leftTable = new Table();
+        Table rightTable = new Table();
+
+        // Left column (game info)
+        for (String line : leftText) {
+            Label label = createLabel(line, MENU_OPTION_TEXT_SIZE);
+            label.setAlignment(Align.left);
+            leftTable.add(label).padBottom(5).left().row();
+        }
+
+        // Right column (controls)
+        for (String line : rightText) {
+            Label label = createLabel(line, MENU_OPTION_TEXT_SIZE);
+            label.setAlignment(Align.left);
+            if (line.equals("CONTROLS")) {
+                label.setColor(Color.CYAN);
+            } else if (line.contains(":")) {
+                label.setColor(Color.YELLOW);
+            }
+            rightTable.add(label).padBottom(5).left().row();
+        }
+
+        // Add the left and right tables to the main table
+        mainTable.add(leftTable).width(500).padRight(50);
+        mainTable.add(rightTable).width(500);
+        mainTable.row();
+
+        // Instructions
+        if (instructions != null && !instructions.isEmpty()) {
+            Label instructionsLabel = createLabel(instructions, INSTRUCTION_TEXT_SIZE);
+            instructionsLabel.setAlignment(Align.center);
+            mainTable.add(instructionsLabel).colspan(2).padTop(50).row();
+        }
+
+        getStage().addActor(mainTable);
+    }
+
     /**
      * Updates the menu selection
      * 
@@ -130,5 +180,5 @@ public class MenuSystem {
         Label label = new Label(text, labelStyle);
         label.setFontScale(delta);
         return label;
-    }
+    } 
 }
