@@ -152,6 +152,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             graphicsProvider,
                             game,
                             assetManager,
+                            this,
                             null,
                             viewport,
                             configProvider ));

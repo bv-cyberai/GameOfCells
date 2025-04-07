@@ -35,13 +35,11 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
-    private static final String[] CONTROL_MESSAGE = {"Game Info:\n" +
-                "Welcome to Game of Cells!\n" +
-                "Control a cell and explore the microscopic world.\n" +
+    private static final String[] CONTROL_MESSAGE = {"Welcome to Game of Cells!\n" + "Control a cell and explore the microscopic world.\n" +
                 "Controls:\n" +
-                "Arrow Keys - Move the cell\n" +
-                "Enter - Select/Confirm\n" +
-                "Escape - Pause/Return to Menu"};
+                "Arrow / WASD Keys - Move the cell\n" +
+                "Enter / Space - Select/Confirm\n" +
+                "Escape / P - Pause/Return to Menu"};
     private static final String INSTRUCTION = "Press any key to return...";
 
     private final InputProvider inputProvider;
@@ -49,6 +47,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private final ConfigProvider configProvider;
     private final Main game;
     private final AssetManager assetManager;
+    private final GameOfCellsScreen previousScreen;
     private final Viewport viewport;
     private final Particles particles;
     private final MenuSystem menuSystem;
@@ -62,6 +61,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
+            GameOfCellsScreen previousScreen,
             Camera camera,
             Viewport viewport,
             ConfigProvider configProvider) {
@@ -70,6 +70,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
+        this.previousScreen = previousScreen;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
 
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
@@ -122,14 +123,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     public void handleInput(float deltaTimeSeconds) {
         // Return to the settings screen if any key is pressed
         if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            game.setScreen(new MainMenuScreen(
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager,
-                    null,
-                    viewport,
-                    configProvider ));
+            game.setScreen(previousScreen);
         }
     }
 

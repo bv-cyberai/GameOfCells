@@ -139,6 +139,7 @@ public class PauseScreen implements GameOfCellsScreen {
                             graphicsProvider,
                             game,
                             assetManager,
+                            this,
                             null,
                             viewport,
                             configProvider
