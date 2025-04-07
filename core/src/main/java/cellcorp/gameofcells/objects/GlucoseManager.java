@@ -224,21 +224,21 @@ public class GlucoseManager {
     /**
      * Checks for cell <-> glucose collisions
      */
-    public void update() {
-        handleMovement();
+    public void update(float deltaTime) {
+        handleMovement(deltaTime);
         handleCollisions();
     }
 
-    private void handleMovement() {
+    private void handleMovement(float deltaTime) {
         var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
         var adjacentChunks = currentChunk.adjacentChunks();
 
         for (var chunk : adjacentChunks) {
-            handleMovementInChunk(chunk);
+            handleMovementInChunk(chunk,deltaTime);
         }
     }
 
-    private void handleMovementInChunk(Chunk chunk) {
+    private void handleMovementInChunk(Chunk chunk, float deltaTime) {
         List<Glucose> glucoseList = glucoses.get(chunk);
         if (glucoseList == null) {
             return;
@@ -251,7 +251,7 @@ public class GlucoseManager {
 
                 Vector2 vector = new Vector2(cellForceCircle.x - g.getX(),cellForceCircle.y - g.getY());
                 vector.nor();
-                vector.scl(0.75f);
+                vector.scl(cell.getGlucoseVectorScaleFactor()*deltaTime);
 
                 glucoseCircle.setX(glucoseCircle.x - (vector.x));
                 glucoseCircle.setY(glucoseCircle.y - (vector.y));

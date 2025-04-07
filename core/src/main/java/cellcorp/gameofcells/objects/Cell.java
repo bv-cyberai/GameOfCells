@@ -82,6 +82,7 @@ public class Cell {
     private final Circle forceCircle;
     private float forceCircleSizeScalar;
     private float forceCircleSizeMultiplier;
+    private float glucoseVectorScaleFactor;
 
     /**
      * Times how long the cell has been taking zero-ATP damage.
@@ -128,6 +129,7 @@ public class Cell {
         totalDistanceMoved = 0f;
         forceCircleSizeMultiplier = 1.375f;
         forceCircleSizeScalar = 1f;
+        glucoseVectorScaleFactor = 50f;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
         forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
@@ -592,6 +594,7 @@ public class Cell {
     public void increasecellSize(float sizeIncrease) {
         this.cellSize += sizeIncrease;
         forceCircleSizeScalar += .125f;
+        glucoseVectorScaleFactor +=10f;
         cellCircle.radius += sizeIncrease / 2;
         forceCircle.radius = cellCircle.radius *  forceCircleSizeMultiplier * forceCircleSizeScalar;
     }
@@ -864,5 +867,9 @@ public class Cell {
 
     public Circle getForceCircle() {
         return forceCircle;
+    }
+
+    public float getGlucoseVectorScaleFactor() {
+        return glucoseVectorScaleFactor;
     }
 }

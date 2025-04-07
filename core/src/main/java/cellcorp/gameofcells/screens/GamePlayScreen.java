@@ -328,7 +328,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (!isPaused) {
             hud.update(deltaTimeSeconds, playerCell.getCellHealth(), playerCell.getCellATP());
             zoneManager.update(deltaTimeSeconds);
-            glucoseManager.update();
+            glucoseManager.update(deltaTimeSeconds);
             spawnManager.update();
 
             // Check for acid zone
