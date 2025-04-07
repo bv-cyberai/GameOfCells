@@ -175,7 +175,7 @@ public class PauseScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Semi-transparent background overlay
-        ScreenUtils.clear(0, 0, 0, 0.5f); // Semi-transparent black background
+        ScreenUtils.clear(157f, 115f, 181f, 0.5f); // Dark purple background
 
         // First draw the gameplay screen (paused)
         gamePlayScreen.draw();

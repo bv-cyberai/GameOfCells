@@ -135,7 +135,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear the screen with a gradient background
-        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark blue background
+        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark purple background
+
         viewport.apply(true);
 
         // Draw particles

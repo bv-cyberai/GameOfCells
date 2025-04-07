@@ -22,8 +22,8 @@ public class MenuSystem {
 
     // Constants for text sizes
     private static final float TITLE_TEXT_SIZE = 0.4f;
-    private static final float MENU_OPTION_TEXT_SIZE = 0.28f;
-    private static final float INSTRUCTION_TEXT_SIZE = 0.22f;
+    private static final float MENU_OPTION_TEXT_SIZE = 0.25f;
+    private static final float INSTRUCTION_TEXT_SIZE = 0.2f;
 
     /**
      * Creates a new MenuSystem.
