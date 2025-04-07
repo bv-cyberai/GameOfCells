@@ -1,10 +1,14 @@
 package cellcorp.gameofcells;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import cellcorp.gameofcells.objects.Chunk;
+import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.screens.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -575,5 +579,50 @@ public class TestMain {
         float expectedCellATP = startingATP - expectedLoss;
         assertTrue((Math.abs(gameCell.getCellATP() - expectedCellATP)) < epsilon);
         assertTrue(Math.abs(gameCell.getLastTimeTakenforATPLoss()) - expectedSeconds < epsilon);
+    }
+
+    @Test
+    public void testGlucoseMovement() {
+        float epsilon = 0.1f;
+        var gameRunner = GameRunner.create();
+        var fakeAssetManager = Mockito.mock(AssetManager.class);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        Cell gameCell = gamePlayScreen.getCell();
+        GlucoseManager gm = gamePlayScreen.getGlucoseManager();
+        Chunk currentChunk = Chunk.fromWorldCoords(gameCell.getX(), gameCell.getY());
+//        private final Map<Chunk, List<Glucose>> glucoses;
+        Map<Chunk, List<Glucose>> chunkList = gm.getGlucoses();
+        List<Glucose> currList = chunkList.get(currentChunk);
+//        List<Glucose> glucoseList = gm.getGlucoseArray();
+        // add a glucose to the list to test.
+        // add a little padding so as not to trigger immediately.
+        Glucose testGlucose = new Glucose(fakeAssetManager,(gameCell.getX() + gameCell.getForceCircle().radius +50),gameCell.getY());
+//        glucoseList.add(testGlucose);
+        currList.add(testGlucose);
+        while(!gameCell.getForceCircle().overlaps(testGlucose.getCircle())){
+            gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+            gameRunner.step();
+            System.out.println("NO GLUC DETECTED!");
+
+        }
+        for(int i = 0; i<60; i++) {
+            System.out.println(gameCell.getCircle());
+            System.out.println(gameCell.getForceCircle());
+            System.out.println(testGlucose.getCircle());
+            gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+            gameRunner.step();
+        }
+
+
+
+
+
+
+
     }
 }

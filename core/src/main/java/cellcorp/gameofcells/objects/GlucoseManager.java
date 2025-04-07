@@ -338,4 +338,8 @@ public class GlucoseManager {
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     }
+
+    public Map<Chunk, List<Glucose>> getGlucoses() {
+        return glucoses;
+    }
 }
