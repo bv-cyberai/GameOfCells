@@ -5,10 +5,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
@@ -36,9 +39,17 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * The instructional message displayed on the main menu
      */
-    private static final String[] MENU_OPTIONS = { "Start Game", "Game Info", "Exit" };
-    private static final String INSTRUCTIONS = "Use arrow keys or WASD to navigate the menu.\nPress Enter or Space to select an option.";
-    private static final float INACTIVITY_TIMEOUT = 10f; // 10 seconds of inactivity
+    private static final String[] MENU_OPTIONS = {
+        "START GAME", 
+        "GAME INFO", 
+        "EXIT"
+    };
+    /**
+     * The instructions for the main menu
+     */
+    private static final String INSTRUCTIONS = "Use arrow keys or WASD to navigate\nPress Enter or Space to select";
+
+    private static final float INACTIVITY_TIMEOUT = 20f; // 20 seconds of inactivity
     
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -48,6 +59,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final Viewport viewport;
     private final Particles particles;
     private final MenuSystem menuSystem;
+    private final Texture cellTexture;
+    private final Texture wasdArrowsIcon;
+    private final Texture spaceEnterIcon;
 
     private float inactivityTimer = 0f;
 
@@ -75,6 +89,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
                 graphicsProvider
         );
 
+        this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+        this.wasdArrowsIcon = assetManager.get(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
+        this.spaceEnterIcon = assetManager.get(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
+
         //Config provider can be 'constructed' anywhere, this is useful as game objects will need access
         //to it.
 //        configProvider = ConfigProvider.getInstance();
@@ -86,7 +104,13 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     @Override
     public void show() {
-        menuSystem.initialize("Game of Cells", MENU_OPTIONS, INSTRUCTIONS);
+        menuSystem.initializeMainMenu(
+            "GAME OF CELLS", 
+            MENU_OPTIONS, 
+            INSTRUCTIONS,
+            wasdArrowsIcon,
+            spaceEnterIcon
+        );
     }
 
     @Override
@@ -190,9 +214,21 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     @Override
     public void draw() {
-        // Clear the screen with a gradient background
-        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark purple background
+        // New background color
+        ScreenUtils.clear(.05f, .15f, .2f, 1f); // Deep teal background
         viewport.apply(true);
+
+        // Draw background elements
+        SpriteBatch batch = graphicsProvider.createSpriteBatch();
+        batch.begin();
+        // Draw sem-transparent cell texture
+        batch.setColor(1, 1, 1, 0.15f);
+        batch.draw(cellTexture,
+                VIEW_RECT_WIDTH / 2 - 250,
+                VIEW_RECT_HEIGHT / 2 - 250,
+                500, 500);
+        batch.setColor(1, 1, 1, 1); // Reset color to white
+        batch.end();
 
         // Draw the particles
         particles.draw(graphicsProvider.createSpriteBatch());

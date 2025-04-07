@@ -84,4 +84,14 @@ public class AssetFileNames {
      * change.
      */
     public static String TEST_CONFIG = "test_config.txt";
+
+    /**
+     * The file name for the WASD and arrow keys icon.
+     */
+    public static String WASD_ARROWS_ICON = "keys_stroke_1.png";
+
+    /**
+     * The file name for the space and enter keys icon.
+     */
+    public static String SPACE_ENTER_ICON = "space_enter_stroke_1.png";
 }

@@ -4,9 +4,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.graphics.Texture;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.GraphicsProvider;
@@ -38,6 +40,7 @@ public class MenuSystem {
         this.graphicsProvider = graphicsProvider;
     }
 
+    // This method will be the default method for initializing a menu
     /**
      * Initializes the menu with the given options.
      * 
@@ -74,10 +77,77 @@ public class MenuSystem {
         stage.addActor(mainTable);
     }
 
+    public void initializeMainMenu(String title, String[] menuOptions, String instructions, Texture wasdArrowsIcon, Texture spaceEnterIcon) {
+        clear();
+        this.menuOptions = menuOptions;
+        this.selectedOptionIndex = 0;
+
+        mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.pad(50);
+
+        // Title
+        Label titleLabel = createLabel(title, TITLE_TEXT_SIZE);
+        titleLabel.setColor(new Color(0.4f, 0.8f, 1f, 1f));
+        titleLabel.setAlignment(Align.center);
+        mainTable.add(titleLabel).padBottom(60).row();
+
+        // Menu options
+        for (int i = 0; i < menuOptions.length; i++) {
+            Label optionLabel = createLabel(menuOptions[i], MENU_OPTION_TEXT_SIZE);
+            optionLabel.setColor(i == getSelectedOptionIndex() ? Color.YELLOW : Color.LIGHT_GRAY);
+            mainTable.add(optionLabel).padBottom(25).row();
+        }
+
+        // Control icons at bottom
+        Table controlsTable = new Table();
+        controlsTable.defaults().pad(15);
+
+        // WASD/Arrow keys icon with label
+        Table movementTable = new Table();
+        movementTable.add(new Image(wasdArrowsIcon)).size(120);
+        movementTable.row();
+        movementTable.add(createLabel("Move", 0.25f)).padTop(5);
+
+        // Space/Enter icon with label
+        Table actionTable = new Table();
+        actionTable.add(new Image(spaceEnterIcon)).size(120);
+        actionTable.row();
+        actionTable.add(createLabel("Select", 0.25f)).padTop(5);
+
+        // Add the movement and action tables to the controls table
+        controlsTable.add(movementTable);
+        controlsTable.add(actionTable);
+
+        // Add the controls table to the main table
+        mainTable.add(controlsTable).padTop(50).row();
+
+        // Instructions
+        Label instructionLabel = createLabel(instructions, INSTRUCTION_TEXT_SIZE);
+        instructionLabel.setColor(new Color(0.7f, 0.7f, 0.7f, 1f));
+        instructionLabel.setAlignment(Align.center);
+        mainTable.add(instructionLabel).padTop(40).row();
+
+        // Add the main table to the stage
+        stage.addActor(mainTable);
+    }
+
+    // This method creates a split layout with two columns: left for game info and right for controls
+    // It doesn't necessarily need to be for info and controls, but that's the current use case
+    // I thought it would be better to have a separate method for this
+    // to avoid confusion with the regular menu initialization
+    /**
+     * Initializes the split layout with the given title, left text, right text, and instructions.
+     * @param title
+     * @param leftText
+     * @param rightText
+     * @param instructions
+     */
     public void initializeSplitLayout(String title, String[] leftText, String[] rightText, String instructions) {
         clear();
 
-        Table mainTable = new Table();
+        // Create a new table for the split layout
+        mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.pad(40);
 
@@ -121,7 +191,7 @@ public class MenuSystem {
             mainTable.add(instructionsLabel).colspan(2).padTop(50).row();
         }
 
-        getStage().addActor(mainTable);
+        stage.addActor(mainTable);
     }
 
     /**
@@ -174,6 +244,12 @@ public class MenuSystem {
         }
     }
 
+    /**
+     * Creates a label with the given text and font size.
+     * @param text
+     * @param delta
+     * @return A Label object with the specified text and font size
+     */
     private Label createLabel(String text, float delta) {
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);

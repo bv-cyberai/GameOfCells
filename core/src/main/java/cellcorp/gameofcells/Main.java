@@ -145,6 +145,8 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.WHITE_PIXEL, Texture.class);
         assetManager.load(AssetFileNames.ACID_ZONE, Texture.class);
         assetManager.load(AssetFileNames.BASIC_ZONE, Texture.class);
+        assetManager.load(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
+        assetManager.load(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
         assetManager.finishLoading();
         // I know. I know.
         // HeadlessFiles isn't available to GWT, cause the headless backend isn't.

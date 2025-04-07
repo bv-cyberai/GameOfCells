@@ -37,6 +37,9 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
+    /**
+     * Game information and controls text.
+     */
     private static final String[] GAME_INFO = {
         "Welcome to Game of Cells!",
         "",
@@ -48,6 +51,9 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         "collect glucose, and survive."
     };
 
+    /**
+     * Controls text.
+     */
     private static final String[] CONTROLS = {
         "CONTROLS",
         "----------------------",
