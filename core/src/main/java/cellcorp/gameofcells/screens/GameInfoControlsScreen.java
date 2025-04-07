@@ -35,7 +35,13 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
-    private static final String BACK_OPTION = "Back";
+    private static final String[] CONTROL_MESSAGE = {"Game Info:\n" +
+                "Welcome to Game of Cells!\n" +
+                "Control a cell and explore the microscopic world.\n" +
+                "Controls:\n" +
+                "Arrow Keys - Move the cell\n" +
+                "Enter - Select/Confirm\n" +
+                "Escape - Pause/Return to Menu"};
     private static final String INSTRUCTION = "Press any key to return...";
 
     private final InputProvider inputProvider;
@@ -47,7 +53,6 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private final Particles particles;
     private final MenuSystem menuSystem;
 
-    private final String controlMessage;
     private float startX;
     private float startY;
     private GlyphLayout layout;
@@ -58,7 +63,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
             Main game,
             AssetManager assetManager,
             Camera camera,
-            Viewport viewport, 
+            Viewport viewport,
             ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
@@ -74,29 +79,13 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
             graphicsProvider
         );
 
-        this.controlMessage = "Game Info:\n" +
-                "Welcome to Game of Cells!\n" +
-                "Control a cell and explore the microscopic world.\n" +
-                "Controls:\n" +
-                "Arrow Keys - Move the cell\n" +
-                "Enter - Select/Confirm\n" +
-                "Escape - Pause/Return to Menu";
         this.layout = new GlyphLayout();
     }
 
     @Override
     public void show() {
         // Initialize simple back menu
-        menuSystem.initialize("", new String[]{BACK_OPTION}, INSTRUCTION);
-
-        // Calculate text position
-        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-        font.getData().setScale(0.375f);
-        layout.setText(font, controlMessage, Color.WHITE, 800, Align.left, true);
-
-        // Center the text
-        startX = (VIEW_RECT_WIDTH / 2) - (layout.width / 2);
-        startY = (VIEW_RECT_HEIGHT / 2) + (layout.height / 2);
+        menuSystem.initialize("Game Info and Contols", CONTROL_MESSAGE, INSTRUCTION);
     }
 
     @Override
@@ -133,7 +122,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     public void handleInput(float deltaTimeSeconds) {
         // Return to the settings screen if any key is pressed
         if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            game.setScreen(new SettingsScreen(
+            game.setScreen(new MainMenuScreen(
                     inputProvider,
                     graphicsProvider,
                     game,
@@ -168,16 +157,6 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         // Draw menu (back option)
         menuSystem.getStage().act();
         menuSystem.getStage().draw();
-    }
-
-    /**
-     * Get the control message.
-     * @return The control message.
-     * This message contains information about the game and its controls.
-     * It is displayed on the screen when the game info controls screen is shown.
-     */
-    public String getMessage() {
-        return controlMessage;
     }
 
     /**

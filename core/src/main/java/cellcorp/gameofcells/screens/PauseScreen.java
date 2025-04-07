@@ -17,9 +17,22 @@ import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
 public class PauseScreen implements GameOfCellsScreen {
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
+    /**
+     * Width of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_WIDTH = 1200;
+    /**
+     * Height of the HUD view rectangle.
+     * (the rectangular region of the world which the camera will display)
+     */
+    public static final int VIEW_RECT_HEIGHT = 800;
+
     private static final String[] PAUSE_OPTIONS = {
             "Resume",
-            "Settings",
+            "Controls",
             "Quit to Menu"
     };
     private static final String INSTRUCTIONS = "Arrow keys to navigate | Enter to select";
@@ -56,10 +69,7 @@ public class PauseScreen implements GameOfCellsScreen {
 
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
-            new Stage(graphicsProvider.createFitViewport(
-                GamePlayScreen.VIEW_RECT_WIDTH,
-                GamePlayScreen.VIEW_RECT_HEIGHT
-            )),
+            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH,VIEW_RECT_HEIGHT)),
             assetManager,
             graphicsProvider
         );
@@ -116,14 +126,15 @@ public class PauseScreen implements GameOfCellsScreen {
         }
 
         // Confirm selection
-        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             switch (menuSystem.getSelectedOptionIndex()) {
                 case 0: // Resume
                     gamePlayScreen.resumeGame();
                     game.setScreen(gamePlayScreen);
                     break;
-                case 1: // Settings
-                    game.setScreen(new SettingsScreen(
+                case 1: // Controls
+                    game.setScreen(new GameInfoControlsScreen(
                             inputProvider,
                             graphicsProvider,
                             game,
@@ -136,12 +147,12 @@ public class PauseScreen implements GameOfCellsScreen {
                 case 2: // Quit to Menu
                     gamePlayScreen.resumeGame();
                     game.setScreen(new MainMenuScreen(
-                            inputProvider, 
-                            graphicsProvider, 
-                            game, 
-                            assetManager, 
+                            inputProvider,
+                            graphicsProvider,
+                            game,
+                            assetManager,
                             null,
-                            viewport, 
+                            viewport,
                             configProvider
                     ));
                     break;

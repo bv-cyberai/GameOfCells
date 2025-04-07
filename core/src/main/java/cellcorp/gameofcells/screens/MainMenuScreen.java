@@ -36,7 +36,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * The instructional message displayed on the main menu
      */
-    private static final String[] MENU_OPTIONS = { "Start Game", "Settings", "Exit" };
+    private static final String[] MENU_OPTIONS = { "Start Game", "Game Info", "Exit" };
     private static final String INSTRUCTIONS = "Use arrow keys or WASD to navigate the menu.\nPress Enter or Space to select an option.";
     private static final float INACTIVITY_TIMEOUT = 10f; // 10 seconds of inactivity
     
@@ -57,7 +57,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             Main game,
             AssetManager assetManager,
             Camera camera,
-            Viewport viewport, 
+            Viewport viewport,
             ConfigProvider configProvider) {
 
         this.inputProvider = inputProvider;
@@ -147,7 +147,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     break;
                 case 1: // Settings
                     // Open the settings screen
-                    game.setScreen(new SettingsScreen(
+                    game.setScreen(new GameInfoControlsScreen(
                             inputProvider,
                             graphicsProvider,
                             game,
