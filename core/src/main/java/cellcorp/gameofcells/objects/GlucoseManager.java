@@ -78,7 +78,7 @@ public class GlucoseManager {
             if (obj == null || obj.getClass() != this.getClass()) return false;
             var that = (SubChunk) obj;
             return this.row == that.row &&
-                    this.col == that.col;
+                this.col == that.col;
         }
 
         @Override
@@ -92,18 +92,18 @@ public class GlucoseManager {
         public Rectangle rect() {
             var chunkRect = chunk.toRectangle();
             return new Rectangle(
-                    chunkRect.getX() + col * SUB_CHUNK_LENGTH,
-                    chunkRect.getY() + row * SUB_CHUNK_LENGTH,
-                    SUB_CHUNK_LENGTH,
-                    SUB_CHUNK_LENGTH
+                chunkRect.getX() + col * SUB_CHUNK_LENGTH,
+                chunkRect.getY() + row * SUB_CHUNK_LENGTH,
+                SUB_CHUNK_LENGTH,
+                SUB_CHUNK_LENGTH
             );
         }
 
         public Vector2 center() {
             var chunkRect = chunk.toRectangle();
             return new Vector2(
-                    chunkRect.getX() + col * SUB_CHUNK_LENGTH + SUB_CHUNK_LENGTH / 2,
-                    chunkRect.getY() + row * SUB_CHUNK_LENGTH + SUB_CHUNK_LENGTH / 2
+                chunkRect.getX() + col * SUB_CHUNK_LENGTH + SUB_CHUNK_LENGTH / 2,
+                chunkRect.getY() + row * SUB_CHUNK_LENGTH + SUB_CHUNK_LENGTH / 2
             );
         }
     }
@@ -189,6 +189,7 @@ public class GlucoseManager {
         }
         return BASE_SPAWN_CHANCE + additionalSpawnChance;
     }
+
     //FIXME I believe the method currently allows for glucose to be spawned on top of the cell
     //FIXME this can trigger the glucose popup upon starting.
     private Glucose spawnInSubChunk(SubChunk subChunk) {
@@ -212,12 +213,12 @@ public class GlucoseManager {
 
     public void despawnOutsideRange(int row0, int col0, int row1, int col1) {
         var keep = glucoses.
-                keySet().
-                stream().
-                filter(chunk ->
-                               row0 <= chunk.row() && chunk.row() < row1
-                                       && col0 <= chunk.col() && chunk.col() < col1
-                ).collect(Collectors.toList());
+            keySet().
+            stream().
+            filter(chunk ->
+                row0 <= chunk.row() && chunk.row() < row1
+                    && col0 <= chunk.col() && chunk.col() < col1
+            ).collect(Collectors.toList());
         glucoses.keySet().retainAll(keep);
     }
 
@@ -225,33 +226,48 @@ public class GlucoseManager {
      * Checks for cell <-> glucose collisions
      */
     public void update(float deltaTime) {
-        handleMovement(deltaTime);
+        handleGlucoseMovement(deltaTime);
         handleCollisions();
     }
 
-    private void handleMovement(float deltaTime) {
+    /**
+     * GlucoseMover
+     *
+     * Loops through the current and adjacent chunks to calculate movement of glucose.
+     *
+     * @param deltaTime time since last render cycle
+     */
+    private void handleGlucoseMovement(float deltaTime) {
         var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
         var adjacentChunks = currentChunk.adjacentChunks();
 
         for (var chunk : adjacentChunks) {
-            handleMovementInChunk(chunk,deltaTime);
+            handleGlucoseMovementInChunk(chunk, deltaTime);
         }
     }
 
-    private void handleMovementInChunk(Chunk chunk, float deltaTime) {
+    /**
+     * Glucose Mover Helper
+     *
+     * Calculates the new glucose positions after they've been pushed by the cell
+     * for a given chunk.
+     * @param chunk The current chunk
+     * @param deltaTime Time since last render cycle
+     */
+    private void handleGlucoseMovementInChunk(Chunk chunk, float deltaTime) {
         List<Glucose> glucoseList = glucoses.get(chunk);
         if (glucoseList == null) {
             return;
         }
-//        System.out.println("# of gluclose: " + glucoseList.size());
+
         Circle cellForceCircle = cell.getForceCircle();
         for (Glucose g : glucoseList) {
             Circle glucoseCircle = g.getCircle();
-            if(cellForceCircle.overlaps(glucoseCircle)) {
+            if (cellForceCircle.overlaps(glucoseCircle)) {
 
-                Vector2 vector = new Vector2(cellForceCircle.x - g.getX(),cellForceCircle.y - g.getY());
+                Vector2 vector = new Vector2(cellForceCircle.x - g.getX(), cellForceCircle.y - g.getY());
                 vector.nor();
-                vector.scl(cell.getGlucoseVectorScaleFactor()*deltaTime);
+                vector.scl(cell.getGlucoseVectorScaleFactor() * deltaTime);
 
                 glucoseCircle.setX(glucoseCircle.x - (vector.x));
                 glucoseCircle.setY(glucoseCircle.y - (vector.y));
