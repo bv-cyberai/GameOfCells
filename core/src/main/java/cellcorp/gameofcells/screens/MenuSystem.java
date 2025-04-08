@@ -23,7 +23,6 @@ public class MenuSystem {
     private Table mainTable;
     private String[] menuOptions;
     private int selectedOptionIndex = 0;
-    private List<Label> menuOptionLabels;
 
     // Constants for text sizes
     private static final float TITLE_TEXT_SIZE = 0.4f;
@@ -52,6 +51,7 @@ public class MenuSystem {
      * @param instructions The instruction text to display (optional)
      */
     public void initialize(String title, String [] menuOptions, String instructions) {
+        clear();
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
 
@@ -84,7 +84,6 @@ public class MenuSystem {
         clear();
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
-        this.menuOptionLabels = new ArrayList<>();
 
         mainTable = new Table();
         mainTable.setFillParent(true);
@@ -96,14 +95,10 @@ public class MenuSystem {
         titleLabel.setAlignment(Align.center);
         mainTable.add(titleLabel).padBottom(40).row(); // Reduced from 60
 
-        // Added empty pace above menu options to lower them
-        mainTable.add().height(40).row(); // New space to push options down
-
         // Menu options - lowered with less padding
         for (int i = 0; i < menuOptions.length; i++) {
             Label optionLabel = createLabel(menuOptions[i], 0.3f);
             optionLabel.setColor(i == getSelectedOptionIndex() ? Color.YELLOW : Color.LIGHT_GRAY);
-            menuOptionLabels.add(optionLabel);
             mainTable.add(optionLabel).padBottom(15).row(); // Reduced from 20
         }
 
@@ -206,14 +201,14 @@ public class MenuSystem {
         }
 
         // Update the color of the previously selected option
-        Label previousOptionLabel = menuOptionLabels.get(selectedOptionIndex);
+        Label previousOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
         previousOptionLabel.setColor(Color.WHITE);
 
         // Update the selected option index
         selectedOptionIndex = newIndex;
 
         // Update the color of the newly selected option
-        Label currentOptionLabel = menuOptionLabels.get(selectedOptionIndex);
+        Label currentOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
         currentOptionLabel.setColor(Color.YELLOW);
     }
 
