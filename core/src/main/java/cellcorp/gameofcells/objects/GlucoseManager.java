@@ -39,6 +39,8 @@ public class GlucoseManager {
      */
     private static final float ZONE_ADDITIONAL_SPAWN_RADIUS = 100f;
 
+    private static final float ORIGIN_NO_SPAWN_RANGE = 200f;
+
     /**
      * Sub-chunks split each chunk into a grid, letting us get a glucose spawn chance
      * for each sub-chunk.
@@ -190,6 +192,13 @@ public class GlucoseManager {
             for (int subCol = 0; subCol < SubChunk.SUB_CHUNK_ROWS; subCol++) {
                 var subChunk = new SubChunk(chunk, subRow, subCol);
                 var center = subChunk.center();
+
+                // Avoid spawning in a range around (0, 0), where the player spawns
+                var origin = new Vector2(0, 0);
+                if (center.dst(origin) <= ORIGIN_NO_SPAWN_RANGE) {
+                    continue;
+                }
+
                 float spawnChance = spawnChance(center.x, center.y);
 
                 if (rand.nextFloat() <= spawnChance) {
