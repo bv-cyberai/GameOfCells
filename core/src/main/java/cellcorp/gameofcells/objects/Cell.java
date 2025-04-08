@@ -79,10 +79,11 @@ public class Cell {
     private float movementSpeedMultiplier = 1.0f;
     private boolean canSplit = false;
 
-    private final Circle forceCircle;
+    // Values used to push glucose
+    private final Circle forceCircle; // The circle surrounding the cell pushing glucose.
     private float forceCircleSizeScalar;
-    private float forceCircleSizeMultiplier;
-    private float glucoseVectorScaleFactor;
+    private float forceCircleSizeMultiplier; // Used on forceCircle to scale up as the cell grows
+    private float glucoseVectorScaleFactor; //Used to set how far glucose moves when pushed
 
     /**
      * Times how long the cell has been taking zero-ATP damage.
@@ -127,6 +128,7 @@ public class Cell {
         lastTimeTakenforATPLoss = 0f;
         wasAtpBurnedThisFrame = false;
         totalDistanceMoved = 0f;
+
         forceCircleSizeMultiplier = 1.375f;
         forceCircleSizeScalar = 1f;
         glucoseVectorScaleFactor = 50f;
@@ -588,13 +590,18 @@ public class Cell {
     }
 
     /**
-     * Increases the cell size
+     * Increases the cell size This method also increases the values used to
+     * push glucose away.
      * @param sizeIncrease - The amount to increase the cell by.
      */
     public void increasecellSize(float sizeIncrease) {
         this.cellSize += sizeIncrease;
+
+        //increase forceCircle factors
         forceCircleSizeScalar += .125f;
         glucoseVectorScaleFactor +=10f;
+
+        //Increase radi
         cellCircle.radius += sizeIncrease / 2;
         forceCircle.radius = cellCircle.radius *  forceCircleSizeMultiplier * forceCircleSizeScalar;
     }
@@ -860,15 +867,30 @@ public class Cell {
         return lastTimeTakenforATPLoss;
     }
 
+    /**
+     * cellForceCircleUpdater
+     *
+     * Updates the position of the forceCircle with new values.
+     * @param newX The new X value
+     * @param newY The new Y value
+     */
     private void setCellForceCircle(float newX, float newY) {
         forceCircle.setX(newX);
         forceCircle.setY(newY);
     }
 
+    /**
+     * Force Circle getter
+     * @return The forceCricle
+     */
     public Circle getForceCircle() {
         return forceCircle;
     }
 
+    /**
+     * Getter For the GlucoseVectorScaleFactor
+     * @return How much to scale glucose pushing.
+     */
     public float getGlucoseVectorScaleFactor() {
         return glucoseVectorScaleFactor;
     }

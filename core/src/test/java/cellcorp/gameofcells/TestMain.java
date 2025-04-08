@@ -358,11 +358,9 @@ public class TestMain {
         assertInstanceOf(GamePlayScreen.class, game.getScreen());
         var gamePlayScreen = (GamePlayScreen) game.getScreen();
 
-        //FIXME highlight lighting the section changed.
-        // Get max ATP, for shop screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
         gameRunner.runForSeconds(1);
-        assertEquals(100, gamePlayScreen.getCell().getMaxATP());
+        assertEquals(100, gamePlayScreen.getCell().getCellATP());
 
         // Open shop screen, go to size-upgrades, buy upgrade
         // TODO -- Shop screen is crashing.
@@ -612,7 +610,6 @@ public class TestMain {
         while (!gameCell.getForceCircle().overlaps(testGlucose.getCircle())) {
             gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
             gameRunner.step();
-            System.out.println("NO GLUC DETECTED!");
         }
         //Step for 1 second.
         for (int i = 0; i < 60; i++) {

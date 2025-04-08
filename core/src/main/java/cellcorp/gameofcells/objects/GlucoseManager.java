@@ -167,7 +167,6 @@ public class GlucoseManager {
 
                 if (rand.nextFloat() <= spawnChance) {
                     var glucose = spawnInSubChunk(subChunk);
-                    //FIXME perhaps add a check here for matching cell coordinates.
                     glucoseList.add(glucose);
 
                 }
@@ -190,8 +189,6 @@ public class GlucoseManager {
         return BASE_SPAWN_CHANCE + additionalSpawnChance;
     }
 
-    //FIXME I believe the method currently allows for glucose to be spawned on top of the cell
-    //FIXME this can trigger the glucose popup upon starting.
     private Glucose spawnInSubChunk(SubChunk subChunk) {
         // This the spawn location be a few sub-chunks outside the sub-chunk,
         // to cut down on the grid-like look
