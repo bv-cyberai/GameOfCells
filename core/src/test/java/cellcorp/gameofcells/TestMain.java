@@ -327,8 +327,6 @@ public class TestMain {
     }
 
     @Test
-    //FIXME This test is confusing, as it test ways more than then its name suggests and seems to fail randomly.
-    //FIXME I assumed I've partially fixed this by setting it to actually check MaxATP as the comment suggests.
     public void canUseSpaceKeyToMoveForward() {
         var gameRunner = GameRunner.create();
         var game = gameRunner.game;
