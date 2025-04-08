@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.graphics.Texture;
+import java.util.List;
+import java.util.ArrayList;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.GraphicsProvider;
@@ -21,6 +23,7 @@ public class MenuSystem {
     private Table mainTable;
     private String[] menuOptions;
     private int selectedOptionIndex = 0;
+    private List<Label> menuOptionLabels;
 
     // Constants for text sizes
     private static final float TITLE_TEXT_SIZE = 0.4f;
@@ -81,46 +84,50 @@ public class MenuSystem {
         clear();
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
+        this.menuOptionLabels = new ArrayList<>();
 
         mainTable = new Table();
         mainTable.setFillParent(true);
-        mainTable.pad(50);
+        mainTable.pad(30);
 
-        // Title
-        Label titleLabel = createLabel(title, TITLE_TEXT_SIZE);
+        // Title - lowered with less bottom padding
+        Label titleLabel = createLabel(title, 0.6f);
         titleLabel.setColor(new Color(0.4f, 0.8f, 1f, 1f));
         titleLabel.setAlignment(Align.center);
-        mainTable.add(titleLabel).padBottom(100).row();
+        mainTable.add(titleLabel).padBottom(40).row(); // Reduced from 60
 
-        // Menu options
+        // Added empty pace above menu options to lower them
+        mainTable.add().height(40).row(); // New space to push options down
+
+        // Menu options - lowered with less padding
         for (int i = 0; i < menuOptions.length; i++) {
-            Label optionLabel = createLabel(menuOptions[i], MENU_OPTION_TEXT_SIZE);
+            Label optionLabel = createLabel(menuOptions[i], 0.3f);
             optionLabel.setColor(i == getSelectedOptionIndex() ? Color.YELLOW : Color.LIGHT_GRAY);
-            mainTable.add(optionLabel).padBottom(25).row();
+            menuOptionLabels.add(optionLabel);
+            mainTable.add(optionLabel).padBottom(15).row(); // Reduced from 20
         }
 
         // Control icons at bottom
         Table controlsTable = new Table();
-        controlsTable.defaults().pad(15);
+        controlsTable.defaults().pad(8);
 
-        Table movementTable = new Table();
-        movementTable.add(new Image(wasdArrowsIcon)).size(160);
-        movementTable.row();
-        movementTable.add(createLabel("Move", 0.22f)).padTop(5);
+        Image wasdImage = new Image(wasdArrowsIcon);
+        wasdImage.setColor(0.8f, 0.9f, 1f, 0.9f);
+        controlsTable.add(wasdImage)
+                .size(150, 150 * (428f/636f)) // Smaller size
+                .padRight(20);
 
-        Table actionTable = new Table();
-        actionTable.add(new Image(spaceEnterIcon)).size(160);
-        actionTable.row();
-        actionTable.add(createLabel("Select", 0.22f)).padTop(5);
+        Image spaceImage = new Image(spaceEnterIcon);
+        spaceImage.setColor(0.8f, 0.9f, 1f, 0.9f);
+        controlsTable.add(spaceImage)
+                .size(180, 180 * (202f/800f)); // Smaller size
 
-        // Add the movement and action tables to the controls table
-        controlsTable.setColor(0.7f, 0.9f, 0.8f, 1f);
-        controlsTable.add(movementTable);
-        controlsTable.add(actionTable);
+        mainTable.add().height(40).row(); // New space to push icons down
 
         // Add the controls table to the main table
-        mainTable.add(controlsTable).padBottom(20).row(); // Lowered position
-
+        mainTable.add(controlsTable)
+                .padBottom(20)
+                .row(); // Lowered position
 
         // Add the main table to the stage
         stage.addActor(mainTable);
@@ -199,14 +206,14 @@ public class MenuSystem {
         }
 
         // Update the color of the previously selected option
-        Label previousOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
+        Label previousOptionLabel = menuOptionLabels.get(selectedOptionIndex);
         previousOptionLabel.setColor(Color.WHITE);
 
         // Update the selected option index
         selectedOptionIndex = newIndex;
 
         // Update the color of the newly selected option
-        Label currentOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
+        Label currentOptionLabel = menuOptionLabels.get(selectedOptionIndex);
         currentOptionLabel.setColor(Color.YELLOW);
     }
 
