@@ -47,7 +47,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         "where you control a living cell",
         "in a vibrant biological world.",
         "",
-        "Your mission is to explore",
+        "Your mission is to explore,",
         "collect glucose, and survive."
     };
 
@@ -172,16 +172,25 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
         viewport.apply(true);
 
+        Camera camera = viewport.getCamera();
+
         // Draw background elements
         SpriteBatch batch = graphicsProvider.createSpriteBatch();
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        
+        // Draw sem-transparent cell texture
+        float cellWidth = 400;
+        float cellHeight = 400;
+        float cellX = camera.position.x - cellWidth / 2;
+        float cellY = camera.position.y - cellHeight / 2;
 
-        // Draw cell texture in background with low opacity
-        batch.setColor(1, 1, 1, 0.1f);
+        batch.setColor(1, 1, 1, 0.15f);
         batch.draw(cellTexture,
-                VIEW_RECT_WIDTH/2 -200,
-                VIEW_RECT_HEIGHT/2 -200,
-                400, 400);
+                cellX,
+                cellY,
+                cellWidth, 
+                cellHeight);
         batch.setColor(1, 1, 1, 1); // Reset color to white
         batch.end();
 

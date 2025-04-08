@@ -90,7 +90,7 @@ public class MenuSystem {
         Label titleLabel = createLabel(title, TITLE_TEXT_SIZE);
         titleLabel.setColor(new Color(0.4f, 0.8f, 1f, 1f));
         titleLabel.setAlignment(Align.center);
-        mainTable.add(titleLabel).padBottom(60).row();
+        mainTable.add(titleLabel).padBottom(100).row();
 
         // Menu options
         for (int i = 0; i < menuOptions.length; i++) {
@@ -103,30 +103,24 @@ public class MenuSystem {
         Table controlsTable = new Table();
         controlsTable.defaults().pad(15);
 
-        // WASD/Arrow keys icon with label
         Table movementTable = new Table();
-        movementTable.add(new Image(wasdArrowsIcon)).size(120);
+        movementTable.add(new Image(wasdArrowsIcon)).size(160);
         movementTable.row();
-        movementTable.add(createLabel("Move", 0.25f)).padTop(5);
+        movementTable.add(createLabel("Move", 0.22f)).padTop(5);
 
-        // Space/Enter icon with label
         Table actionTable = new Table();
-        actionTable.add(new Image(spaceEnterIcon)).size(120);
+        actionTable.add(new Image(spaceEnterIcon)).size(160);
         actionTable.row();
-        actionTable.add(createLabel("Select", 0.25f)).padTop(5);
+        actionTable.add(createLabel("Select", 0.22f)).padTop(5);
 
         // Add the movement and action tables to the controls table
+        controlsTable.setColor(0.7f, 0.9f, 0.8f, 1f);
         controlsTable.add(movementTable);
         controlsTable.add(actionTable);
 
         // Add the controls table to the main table
-        mainTable.add(controlsTable).padTop(50).row();
+        mainTable.add(controlsTable).padBottom(20).row(); // Lowered position
 
-        // Instructions
-        Label instructionLabel = createLabel(instructions, INSTRUCTION_TEXT_SIZE);
-        instructionLabel.setColor(new Color(0.7f, 0.7f, 0.7f, 1f));
-        instructionLabel.setAlignment(Align.center);
-        mainTable.add(instructionLabel).padTop(40).row();
 
         // Add the main table to the stage
         stage.addActor(mainTable);

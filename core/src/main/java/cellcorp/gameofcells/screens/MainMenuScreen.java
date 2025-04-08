@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import cellcorp.gameofcells.AssetFileNames;
@@ -218,15 +219,25 @@ public class MainMenuScreen implements GameOfCellsScreen {
         ScreenUtils.clear(.05f, .15f, .2f, 1f); // Deep teal background
         viewport.apply(true);
 
+        Camera camera = viewport.getCamera();
+
         // Draw background elements
         SpriteBatch batch = graphicsProvider.createSpriteBatch();
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        
         // Draw sem-transparent cell texture
+        float cellWidth = 500;
+        float cellHeight = 500;
+        float cellX = camera.position.x - cellWidth / 2;
+        float cellY = camera.position.y - cellHeight / 2;
+
         batch.setColor(1, 1, 1, 0.15f);
         batch.draw(cellTexture,
-                VIEW_RECT_WIDTH / 2 - 250,
-                VIEW_RECT_HEIGHT / 2 - 250,
-                500, 500);
+                cellX,
+                cellY,
+                cellWidth, 
+                cellHeight);
         batch.setColor(1, 1, 1, 1); // Reset color to white
         batch.end();
 
