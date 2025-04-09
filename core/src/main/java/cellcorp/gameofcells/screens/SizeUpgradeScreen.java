@@ -111,15 +111,11 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         }
 
         // ATP Tracker
-        Label atpLabel = new Label("ATP: " + playerCell.getCellATP(),
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-        atpLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        Label atpLabel = createLabel("ATP: " + playerCell.getCellATP(), SHOP_TEXT_SIZE - 0.1f);
         rootTable.add(atpLabel).padTop(10).row();
-
-        // Current Size
-        Label sizeLabel = new Label("Current Size: " + (playerCell.getcellSize() - 100)/100,
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-        sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        
+        // Size Tracker
+        Label sizeLabel = createLabel("Current Size: " + (playerCell.getcellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
         rootTable.add(sizeLabel).padTop(10).row();
 
         // Upgrade Cards
@@ -134,11 +130,11 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
 
         rootTable.add(upgradeTable).expand().fill().padTop(20).row();
 
-        // Instructions
-        Label instructions = new Label("Press ESC to go back | Arrows to navigate | Enter to buy",
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-        instructions.setFontScale(INSTRUCTION_TEXT_SIZE);
-        rootTable.add(instructions).padBottom(20).row();
+        // Exit instructions
+        Label exitLabel = createLabel("Press ESC to exit | Arrow keys to navigate | Enter to select", INSTRUCTION_TEXT_SIZE);
+        exitLabel.setAlignment(Align.center); // Center the text
+        rootTable.add(exitLabel).padBottom(20).row();
+
 
         updateUpgradeSelection();
     }
@@ -421,6 +417,14 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
                 Actions.fadeOut(1f), 
                 Actions.run(() -> game.setScreen(previousScreen))));
         }
+    }
+
+    private Label createLabel(String text, float scale) {
+        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label label = new Label(text, labelStyle);
+        label.setFontScale(scale);
+        return label;
     }
 
     /**

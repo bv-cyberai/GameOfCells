@@ -110,21 +110,16 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         if (rootTable == null) {
             rootTable = new Table();
             rootTable.setFillParent(true);
+            rootTable.top();
             menuSystem.getStage().addActor(rootTable);
         }
 
         // ATP Tracker
-        Label atpLabel = new Label("ATP: " + playerCell.getCellATP(),
-                new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, 
-                BitmapFont.class), Color.WHITE));
-        atpLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        Label atpLabel = createLabel("ATP: " + playerCell.getCellATP(), SHOP_TEXT_SIZE - 0.1f);
         rootTable.add(atpLabel).padTop(10).row();
 
         // Size Tracker
-        Label sizeLabel = new Label("Size: " + (playerCell.getcellSize() - 100) / 100,
-            new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT,
-            BitmapFont.class), Color.WHITE));
-        sizeLabel.setFontScale(SHOP_TEXT_SIZE - 0.1f);
+        Label sizeLabel = createLabel("Current Size: " + (playerCell.getcellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
         rootTable.add(sizeLabel).padTop(10).row();
 
         // Upgrade Table
@@ -139,12 +134,11 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         }
 
         // Add the upgrade table to the main table
-        rootTable.add(upgradeTable).expand().fill().padTop(10).row();
+        rootTable.add(upgradeTable).expand().fill().padTop(20).row();
 
         // Exit instructions
-        Label exitLabel = new Label("Press ESC to go back | Arrow keys to navigate | Enter to purchase",
-                new Label.LabelStyle(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class), Color.WHITE));
-        exitLabel.setFontScale(INSTRUCTION_TEXT_SIZE);
+        Label exitLabel = createLabel("Press ESC to exit | Arrow keys to navigate | Enter to select", INSTRUCTION_TEXT_SIZE);
+        exitLabel.setAlignment(Align.center); // Center the text
         rootTable.add(exitLabel).padBottom(20).row();
 
         // Display the first upgrade card
@@ -526,6 +520,14 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
                 Actions.fadeOut(1f), 
                 Actions.run(() -> game.setScreen(previousScreen))));
         }
+    }
+
+    private Label createLabel(String text, float scale) {
+        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label label = new Label(text, labelStyle);
+        label.setFontScale(scale);
+        return label;
     }
 
     /**

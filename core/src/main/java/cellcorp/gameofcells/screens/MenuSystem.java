@@ -51,29 +51,31 @@ public class MenuSystem {
      * @param instructions The instruction text to display (optional)
      */
     public void initialize(String title, String [] menuOptions, String instructions) {
-        clear();
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
 
         mainTable = new Table();
         mainTable.setFillParent(true);
+        mainTable.top();
 
         // Create title label
         Label titleLabel = createLabel(title, TITLE_TEXT_SIZE);
-        mainTable.add(titleLabel).padTop(20).row();
+        mainTable.add(titleLabel).padTop(10).row();
+
+        mainTable.add().height(20).row();
 
         // Create menu options
         for (int i = 0; i < menuOptions.length; i++) {
             Label optionLabel = createLabel(menuOptions[i], MENU_OPTION_TEXT_SIZE);
             optionLabel.setColor(i == selectedOptionIndex ? Color.YELLOW : Color.LIGHT_GRAY);
-            mainTable.add(optionLabel).padTop(10).row();
+            mainTable.add(optionLabel).padTop(5).row();
         }
 
         // instructions
         if (instructions != null && !instructions.isEmpty()) {
             Label instructionsLabel = createLabel(instructions, INSTRUCTION_TEXT_SIZE);
             instructionsLabel.setAlignment(Align.center);
-            mainTable.add(instructionsLabel).padTop(30).padBottom(20).row();
+            mainTable.add(instructionsLabel).padTop(15).padBottom(10).row();
         }
 
         // Add the main table to the stage
