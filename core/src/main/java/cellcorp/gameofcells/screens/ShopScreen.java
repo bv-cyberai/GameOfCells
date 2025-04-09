@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.math.Interpolation;
 
 import cellcorp.gameofcells.AssetFileNames;
@@ -239,8 +241,8 @@ public class ShopScreen implements GameOfCellsScreen {
             card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(5).row();
 
             // Requirements
-            Label atpLabel = createLabel("ATP:", sizeUpgrade.getRequiredATP(), UPGRADE_INFO_TEXT_SIZE);
-            Label sizeLabel = createLabel("Req Size:", sizeUpgrade.getRequiredSize(), UPGRADE_INFO_TEXT_SIZE);
+            Label atpLabel = createLabel("ATP:" + sizeUpgrade.getRequiredATP(), UPGRADE_INFO_TEXT_SIZE);
+            Label sizeLabel = createLabel("Req Size:" + sizeUpgrade.getRequiredSize(), UPGRADE_INFO_TEXT_SIZE);
 
             Table reqTable = new Table();
             reqTable.add(atpLabel).row();
@@ -260,8 +262,8 @@ public class ShopScreen implements GameOfCellsScreen {
             card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(5).row();
 
             // Requirements
-            Label atpLabel = createLabel("ATP:", organelleUpgrade.getRequiredATP(), UPGRADE_INFO_TEXT_SIZE);
-            Label sizeLabel = createLabel("Req Size:", organelleUpgrade.getRequiredSize(), UPGRADE_INFO_TEXT_SIZE);
+            Label atpLabel = createLabel("ATP:" + organelleUpgrade.getRequiredATP(), UPGRADE_INFO_TEXT_SIZE);
+            Label sizeLabel = createLabel("Req Size:" + organelleUpgrade.getRequiredSize(), UPGRADE_INFO_TEXT_SIZE);
 
             Table reqTable = new Table();
             reqTable.add(atpLabel).row();
@@ -272,13 +274,146 @@ public class ShopScreen implements GameOfCellsScreen {
         return card;
     }
 
+    private Color getDescriptionColor(OrganelleUpgrade upgrade) {
+        if (upgrade instanceof MitochondriaUpgrade) {
+            return new Color(0.0f, 0.45f, 0.7f, 1.0f); // Blue
+        }
+        if (upgrade instanceof RibosomeUpgrade) {
+            return new Color(1.0f, 0.8f, 0.0f, 1.0f); // Yellow
+        }
+        if (upgrade instanceof FlagellaUpgrade) {
+            return new Color(0.6f, 0.2f, 0.8f, 1.0f); // Purple
+        }
+        if (upgrade instanceof NucleusUpgrade) {
+            return new Color(1.0f, 0.5f, 0.0f, 1.0f); // Orange
+        }
+        return Color.WHITE; // Default color
+    }
+
+    private void updateSelection(boolean isSizeSelected) {
+        if (isSizeSelected && currentSizeCard != null) {
+            Image border = (Image) currentSizeCard.findActor("glowingBorder");
+            if (border != null) {
+                currentSizeCard.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f, Interpolation.swingOut));
+                border.setVisible(true);
+            }
+
+            if (currentOrganelleCard != null) {
+                Image borderOrganelle = (Image) currentOrganelleCard.findActor("glowingBorder");
+                if (borderOrganelle != null) {
+                    currentOrganelleCard.addAction(Actions.scaleTo(1.0f, 1.0f, 0.2f, Interpolation.swingOut));
+                    borderOrganelle.setVisible(false);
+                }
+            }
+        } else if (currentOrganelleCard != null) {
+            Image border = (Image) currentOrganelleCard.findActor("glowingBorder");
+            if (border != null) {
+                currentOrganelleCard.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f, Interpolation.swingOut));
+                border.setVisible(true);
+            }
+
+            if (currentSizeCard != null) {
+                Image borderSize = (Image) currentSizeCard.findActor("glowingBorder");
+                if (borderSize != null) {
+                    currentSizeCard.addAction(Actions.scaleTo(1.0f, 1.0f, 0.2f, Interpolation.swingOut));
+                    borderSize.setVisible(false);
+                }
+            }
+        }
+    }
+
+    private void attemptPurchase(boolean isSizeUpgrade) {
+        if (isSizeUpgrade && !sizeUpgrades.isEmpty()) {
+            SizeUpgrade upgrade = sizeUpgrades.get(0);
+            if (upgrade.canPurchase(playerCell, null)) {
+                upgrade.applyUpgrade(playerCell);
+                sizeUpgrades.remove(0);
+                updateSizeDisplay();
+                showMessage("Size upgrade purchased!");
+            } else {
+                showPurchaseError(upgrade);
+            }
+        } else if (!organelleUpgrades.isEmpty()) {
+            OrganelleUpgrade upgrade = organelleUpgrades.get(0);
+            if (upgrade.canPurchase(playerCell, null)) {
+                upgrade.applyUpgrade(playerCell);
+                organelleUpgrades.remove(0);
+                updateOrganelleDisplay();
+                showMessage("Organelle upgrade purchased!");
+            } else {
+                showPurchaseError(upgrade);
+            }
+        }
+    }
+
+    private void showPurchaseError(Object upgrade) {
+        String message = "";
+        if (upgrade instanceof SizeUpgrade) {
+            SizeUpgrade sizeUpgrade = (SizeUpgrade) upgrade;
+            boolean notEnoughATP = playerCell.getCellATP() < sizeUpgrade.getRequiredATP();
+            boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < sizeUpgrade.getRequiredSize();
+            if (notEnoughATP && notEnoughSize) {
+                message = "Not enough ATP and size!";
+            } else if (notEnoughATP) {
+                message = "Not enough ATP!";
+            } else if (notEnoughSize) {
+                message = "Not enough size!";
+            }
+        } else if (upgrade instanceof OrganelleUpgrade) {
+            OrganelleUpgrade organelleUpgrade = (OrganelleUpgrade) upgrade;
+            boolean notEnoughATP = playerCell.getCellATP() < organelleUpgrade.getRequiredATP();
+            boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < organelleUpgrade.getRequiredSize();
+            if (notEnoughATP && notEnoughSize) {
+                message = "Not enough ATP and size!";
+            } else if (notEnoughATP) {
+                message = "Not enough ATP!";
+            } else if (notEnoughSize) {
+                message = "Not enough size!";
+            }
+        }
+        showMessage(message);
+    }
+
+    private void updateSizeDisplay() {
+        sizeTable.clear();
+        if (!sizeUpgrades.isEmpty()) {
+            currentSizeCard = createUpgradeCard(sizeUpgrades.get(0), true);
+            sizeTable.add(currentSizeCard).pad(10);
+            updateSelection(true);
+        } else {
+            sizeTable.add(createLabel("All size upgrades purchased!", UPGRADE_INFO_TEXT_SIZE));
+        }
+    }
+
+    private void updateOrganelleDisplay() {
+        organelleTable.clear();
+        if (!organelleUpgrades.isEmpty()) {
+            currentOrganelleCard = createUpgradeCard(organelleUpgrades.get(0), false);
+            organelleTable.add(currentOrganelleCard).pad(10);
+            updateSelection(false);
+        } else {
+            organelleTable.add(createLabel("All organelle upgrades purchased!", UPGRADE_INFO_TEXT_SIZE));
+        }
+    }
+
+    private void showMessage(String message) {
+        Label messageLabel = createLabel(message, 0.3f);
+        messageLabel.setPosition(VIEW_RECT_WIDTH/2, messageLabel.getWidth()/2, 50);
+        stage.addActor(messageLabel);
+        messageLabel.addAction(Actions.sequence(
+                Actions.delay(2f),
+                Actions.fadeOut(0.5f),
+                Actions.removeActor()
+        ));
+    }
+
     /**
      * Create a label with the specified text and scale.
      * @param text
      * @param scale
      * @return
      */
-    protected Label createLabel(String text,float scale) {
+    protected Label createLabel(String text, float scale) {
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Label label = new Label(text, labelStyle);
@@ -287,74 +422,12 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Create a table for an option card.
-     * @param title
-     * @param description
-     * @return
-     */
-    private Table createOptionCard(String title, String description, Texture bgTexture, Texture borderTexture) {
-        Table card = new Table();
-        card.center(); // Center all elements and add padding
-
-        // Set a fixed size for the card to match the glowing border
-        card.setSize(OPTION_CARD_WIDTH, OPTION_CARD_HEIGHT); // Set the size of the card
-
-        // Create a glowing border for the card
-        Image glowingBorder = new Image(borderTexture);
-        glowingBorder.setSize(OPTION_CARD_WIDTH, OPTION_CARD_HEIGHT); // Match the card size
-        glowingBorder.setVisible(false); // Hide the border by default
-        glowingBorder.setName("glowingBorder");
-
-        // Add the glowing border to the card
-        card.addActor(glowingBorder); // Add the border as an actor (not part of the table layout)
-
-        // Set a custom background for the card
-        card.setBackground(new TextureRegionDrawable(bgTexture));
-
-        // Add padding to the top of the card
-        card.padTop(10);
-
-        // Title
-        Label titleLabel = createLabel(title, OPTION_NAME_TEXT_SIZE);
-        titleLabel.setAlignment(Align.center); // Center the text
-        card.add(titleLabel).width(OPTION_CARD_WIDTH - 20).padTop(10).row(); // Add the label to the table
-
-        // Description
-        Label descriptionLabel = createLabel(description, OPTION_INFO_TEXT_SIZE);
-        descriptionLabel.setWrap(true);
-        descriptionLabel.setAlignment(Align.center); // Center the text
-        card.add(descriptionLabel).width(OPTION_CARD_WIDTH - 20).padTop(10).row(); // Adjusted width for padding
-
-        return card;
-    }
-
-    /**
-     * Update the selected option card.
-     */
-    private void updateOptionSelection() {
-        for (int i = 0; i < optionCards.size(); i++) {
-            Table card = optionCards.get(i);
-            Image glowingBorder = (Image) card.findActor("glowingBorder"); // Find the glowing border by name
-
-            if (glowingBorder != null) { // Check if the glowing border exists
-                if (i == selectedOptionIndex) {
-                    card.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.5f, Interpolation.smooth));
-                    glowingBorder.setVisible(true); // Show the glowing border
-                } else {
-                    card.addAction(Actions.scaleTo(1.0f, 1.0f, 0.5f, Interpolation.smooth));
-                    glowingBorder.setVisible(false); // Hide the glowing border
-                }
-            }
-        }
-    }
-
-    /**
      * Create a custom background texture for the option cards.
      * @return
      */
     private Texture createOptionBackgroundTexture() {
-        int width = (int) OPTION_CARD_WIDTH;
-        int height = (int) OPTION_CARD_HEIGHT;
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
         Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
         Pixmap pixmap = graphicsProvider.createPixmap(width, height, Pixmap.Format.RGBA8888);
 
@@ -373,8 +446,8 @@ public class ShopScreen implements GameOfCellsScreen {
      * Draw a glowing border around the selected upgrade card.
      */
     public Texture createGlowingBorderTexture() {
-        int width = (int) OPTION_CARD_WIDTH;
-        int height = (int) OPTION_CARD_HEIGHT;
+        int width = (int) UPGRADE_CARD_WIDTH;
+        int height = (int) UPGRADE_CARD_HEIGHT;
         Texture texture = graphicsProvider.createTexture(width, height, Pixmap.Format.RGBA8888);
         Pixmap pixmap = graphicsProvider.createPixmap(width, height, Pixmap.Format.RGBA8888);
 
@@ -398,33 +471,6 @@ public class ShopScreen implements GameOfCellsScreen {
         pixmap.dispose(); // Clean up the pixmap
 
         return texture;
-    }
-
-    /**
-     * Update the ATP and Size labels in the shop screen.
-     */
-    private void updateTrackers() {
-        // Get all actors from the stage
-        for (Actor actor : stage.getActors()) {
-            if (actor instanceof Table) {
-                // Search through all children of the table
-                for (Actor child : ((Table)actor).getChildren()) {
-                    if (child instanceof Label) {
-                        Label label = (Label)child;
-                        String text = label.getText().toString();
-
-                        // Update ATP label for your custom Cell
-                        if (text.startsWith("ATP:")) {
-                            label.setText("ATP: " + playerCell.getCellATP());
-                        }
-                        // Update Size label for your custom Cell
-                        else if (text.startsWith("Size:")) {
-                            label.setText("Size: " + ((playerCell.getcellSize() - 100) / 100));
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -452,44 +498,27 @@ public class ShopScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         if (inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
-            if (selectedOptionIndex > 0) {
-                selectedOptionIndex--;
-                updateOptionSelection();
-            }
+            updateSelection(true);
         } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
-            if (selectedOptionIndex < optionCards.size() - 1) {
-                selectedOptionIndex++;
-                updateOptionSelection();
-            }
+            updateSelection(false);
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
             || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
-            handleShopSelection();
-        }
-
-        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            boolean isSizeSelected = currentSizeCard != null &&
+                ((Image) currentSizeCard.findActor("glowingBorder")).isVisible();
+            attemptPurchase(isSizeSelected);
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             exitShop();
         }
     }
 
-    private void handleShopSelection() {
-        if (selectedOptionIndex == 0) {
-            game.setScreen(new SizeUpgradeScreen(
-                game, inputProvider, graphicsProvider, assetManager, this, playerCell));
-            } else if (selectedOptionIndex == 1) {
-            game.setScreen(new OrganelleUpgradeScreen(
-                game, inputProvider, graphicsProvider, assetManager, this, playerCell
-            ));
-        }
-    }
-
     private void exitShop() {
-        menuSystem.getStage().getRoot().addAction(Actions.sequence(
+        stage.getRoot().addAction(Actions.sequence(
             Actions.fadeOut(1f),
             Actions.run(() -> {
-                if (previousScreen instanceof GamePlayScreen) {
-                    ((GamePlayScreen) previousScreen).resumeGame();
+                if (previousScreen != null) {
+                    previousScreen.resumeGame();
+                    game.setScreen(previousScreen);
                 }
-                game.setScreen(previousScreen);
             })
         ));
     }
@@ -501,8 +530,6 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        // Update the ATP and Size labels
-        updateTrackers();
         stage.act(deltaTimeSeconds);
     }
 
@@ -528,9 +555,10 @@ public class ShopScreen implements GameOfCellsScreen {
         stage.getRoot().addAction(Actions.fadeIn(2f)); // Fade in over 1 seconds
 
         // Pause the game state (stop the cell from moving)
-        if (previousScreen instanceof GamePlayScreen) {
-            ((GamePlayScreen) previousScreen).pauseGame();
+        if (previousScreen != null) {
+            previousScreen.pauseGame();
         }
+        updateSelection(true); // Default to selecte size upgrades
     }
 
     /**
@@ -581,58 +609,7 @@ public class ShopScreen implements GameOfCellsScreen {
     }
 
     public GamePlayScreen getPreviousScreen() {
-        return this.previousScreen;
-    }
-
-    /**
-     * Get the list of option cards.
-     * This is used to update the option cards in the shop screen.
-     * The list contains the size and organelle upgrade cards.
-     * @return 
-     */
-    public List<Table> getOptionCards() {
-        return optionCards;
-    }
-
-    /**
-     * Get the option card at the specified index.
-     * This is used to get the selected option in the shop screen.
-     * The index corresponds to the size and organelle upgrade options.
-     * @param selectedOptionIndex
-     * @return
-     */
-    public Table getOptionCards(int selectedOptionIndex) {
-        return optionCards.get(selectedOptionIndex);
-    }
-
-    /**
-     * Set the list of option cards.
-     * This is used to update the option cards in the shop screen.
-     * @param optionCards
-     */
-    public void setOptionCards(List<Table> optionCards) {
-        this.optionCards = optionCards;
-    }
-
-    /**
-     * Get the selected option index.
-     * This is used to get the selected option in the shop screen.
-     * The index corresponds to the size and organelle upgrade options.
-     * 0 = Size upgrade
-     * 1 = Organelle upgrade
-     * @return 
-     */
-    public int getSelectedOptionIndex() {
-        return selectedOptionIndex;
-    }
-
-    /**
-     * Set the selected option index.
-     * This is used to update the selected option in the shop screen.
-     * @param selectedOptionIndex
-     */
-    public void setSelectedOptionIndex(int selectedOptionIndex) {
-        this.selectedOptionIndex = selectedOptionIndex;
+        return previousScreen;
     }
 
     /**
@@ -670,15 +647,6 @@ public class ShopScreen implements GameOfCellsScreen {
     public boolean isHighlighted(Table card) {
         Image glowingBorder = (Image) card.findActor("glowingBorder");
         return glowingBorder != null && glowingBorder.isVisible();
-    }
-
-    /**
-     * Clear the options in the shop screen.
-     * This is used to clear the options in the shop screen.
-     * This is useful when transitioning to a new screen or resetting the shop.
-     */
-    public void clearOptions() {
-        this.optionCards.clear();
     }
 
     public boolean isTransitioning() {
