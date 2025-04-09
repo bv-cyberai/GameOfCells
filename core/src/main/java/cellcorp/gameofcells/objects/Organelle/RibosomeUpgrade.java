@@ -38,7 +38,7 @@ public class RibosomeUpgrade extends OrganelleUpgrade {
      * @param organelleUpgradeScreen
      */
     @Override
-    protected boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
-        return organelleUpgradeScreen.hasMitochondria();
+    protected boolean isPreviousUpgradePurchased(Cell cell) {
+        return cell.hasMitochondria();
     }
 }

@@ -2,6 +2,7 @@ package cellcorp.gameofcells.screens;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -44,7 +45,7 @@ public class MenuSystem {
 
     // This method will be the default method for initializing a menu
     /**
-     * Initializes the menu with the given options.
+     * Initializes a menu with the given options.
      * 
      * @param title The title of the menu
      * @param menuOptions The array of menu options
@@ -82,6 +83,15 @@ public class MenuSystem {
         stage.addActor(mainTable);
     }
 
+    /**
+     * Initializes a main menu-specific layout with a title, menu options, and instructions.
+     * 
+     * @param title The title of the main menu
+     * @param menuOptions The array of menu options
+     * @param instructions Bottom instructions text
+     * @param wasdArrowsIcon The texture for the WASD/Arrows icon
+     * @param spaceEnterIcon The texture for the Space/Enter icon
+     */
     public void initializeMainMenu(String title, String[] menuOptions, String instructions, Texture wasdArrowsIcon, Texture spaceEnterIcon) {
         clear();
         this.menuOptions = menuOptions;
@@ -192,6 +202,13 @@ public class MenuSystem {
         stage.addActor(mainTable);
     }
 
+    /**
+     * Initializes a pause-specific menu layout with a title, menu options, and instructions.
+     * 
+     * @param title The title of the pause menu
+     * @param menuOptions The array of menu options
+     * @param instructions The instruction text to display (optional)
+     */
     public void initializePauseMenu(String title, String[] menuOptions, String instructions) {
         clear();
         this.menuOptions = menuOptions;
@@ -223,6 +240,92 @@ public class MenuSystem {
         }
 
         stage.addActor(mainTable);
+    }
+
+    /**
+     * Initializes a shop-specific layout with three columns:
+     * Left for size upgrades, center for stats, and right for organelle upgrades.
+     * 
+     * @param title The shop title
+     * @param instructions Bottom instructions text
+     * @return An array of tables for size upgrades, stats, and organelle upgrades
+     *         (left, center, right respectively)
+     */
+    public Table[] initializeShopLayout(String title, String instructions) {
+        clear();
+        
+        // Main container table
+        mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.pad(30); // Uniform padding
+        
+        // Title setup
+        Label titleLabel = createLabel(title, 0.5f); // Slightly larger than standard
+        titleLabel.setColor(new Color(0.4f, 0.8f, 1f, 1f)); // Cyan-blue
+        titleLabel.setAlignment(Align.center);
+        mainTable.add(titleLabel).colspan(3).padBottom(40).row();
+        
+        // Create columns
+        Table leftTable = createShopColumn("SIZE UPGRADES");
+        Table centerTable = new Table();
+        Table rightTable = createShopColumn("ORGANELLE UPGRADES");
+        
+        // Column layout
+        mainTable.add(leftTable).width(350).padRight(15);
+        mainTable.add(centerTable).width(250); // Wider center for stats
+        mainTable.add(rightTable).width(350).padLeft(15);
+        mainTable.row();
+        
+        // Instructions footer
+        if (instructions != null && !instructions.isEmpty()) {
+            Label instructionsLabel = createLabel(instructions, 0.2f);
+            instructionsLabel.setAlignment(Align.center);
+            mainTable.add(instructionsLabel).colspan(3).padTop(30).row();
+        }
+        
+        stage.addActor(mainTable);
+        return new Table[]{leftTable, centerTable, rightTable};
+    }
+
+    /**
+     * Helper method to create consistent shop columns
+     * 
+     * @param headerText The header text for the column
+     * @return A Table object representing the column
+     *         with a header and separator line
+     *         (for size upgrades or organelle upgrades)
+     *         aligned to the top
+     */
+    private Table createShopColumn(String headerText) {
+        Table column = new Table();
+        column.top(); // Align content to top
+        
+        // Column header
+        Label header = createLabel(headerText, 0.3f);
+        header.setColor(Color.YELLOW);
+        column.add(header).padBottom(5).row();
+        
+        // Separator line
+        Image separator = new Image(createSeparatorLine(350, 2));
+        column.add(separator).padBottom(15).row();
+        
+        return column;
+    }
+
+    /**
+     * Creates a simple line texture for separators
+     * 
+     * @param width The width of the line
+     * @param height The height of the line
+     * @return A Texture object representing the line
+     */
+    private Texture createSeparatorLine(int width, int height) {
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.LIGHT_GRAY);
+        pixmap.fillRectangle(0, 0, width, height);
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        return texture;
     }
 
     /**

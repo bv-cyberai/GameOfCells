@@ -127,96 +127,97 @@ public class ShopScreen implements GameOfCellsScreen {
 
     private void initializeUpgrades() {
         // Initialize size upgrades
-        this.sizeUpgrades = new ArrayList<>();
+        sizeUpgrades = new ArrayList<>();
+
+        System.out.println("Initializing size upgrades...");
         if (!playerCell.hasSmallSizeUpgrade()) {
             sizeUpgrades.add(new SmallSizeUpgrade());
+            System.out.println("Added SmallSizeUpgrade");
         }
         if (!playerCell.hasMediumSizeUpgrade()) {
             sizeUpgrades.add(new MediumSizeUpgrade());
+            System.out.println("Added MediumSizeUpgrade");
         }
         if (!playerCell.hasLargeSizeUpgrade()) {
             sizeUpgrades.add(new LargeSizeUpgrade());
+            System.out.println("Added LargeSizeUpgrade");
         }
         if (!playerCell.hasMassiveSizeUpgrade()) {
             sizeUpgrades.add(new MassiveSizeUpgrade());
+            System.out.println("Added MassiveSizeUpgrade");
         }
 
         // Initialize organelle upgrades
-        this.organelleUpgrades = new ArrayList<>();
+        organelleUpgrades = new ArrayList<>();
+
+        System.out.println("Initializing organelle upgrades...");
         if (!playerCell.hasMitochondria()) {
             organelleUpgrades.add(new MitochondriaUpgrade());
+            System.out.println("Added MitochondriaUpgrade");
         }
         if (!playerCell.hasRibosomes()) {
             organelleUpgrades.add(new RibosomeUpgrade());
+            System.out.println("Added RibosomeUpgrade");
         }
         if (!playerCell.hasFlagella()) {
             organelleUpgrades.add(new FlagellaUpgrade());
+            System.out.println("Added FlagellaUpgrade");
         }
         if (!playerCell.hasNucleus()) {
             organelleUpgrades.add(new NucleusUpgrade());
+            System.out.println("Added NucleusUpgrade");
         }
     }
 
     private void createUI() {
-        String[] leftHeader = {"SIZE UPGRADES", "----------------------"};
-        String[] rightHeader = {"ORGANELLE UPGRADES", "----------------------"};
+        Table[] shopTables = menuSystem.initializeShopLayout(
+            "CELL SHOP", 
+            "Press ARROW keys to switch sides | ENTER to purchase | ESC to exit"
+        );
 
-        menuSystem.initializeSplitLayout("CELL SHOP", 
-                                        leftHeader, 
-                                        rightHeader, 
-                                        "Press ARROW keys to switch sides | ENTER to purchase | ESC to exit");
+        Table leftTable = shopTables[0];    // Size upgrades column
+        Table centerTable = shopTables[1];  // ATP/Size info column  
+        Table rightTable = shopTables[2];   // Organelle upgrades column
 
-        Table rootTable = menuSystem.getStage(). getRoot().findActor("mainTable");
-        if (rootTable == null) return;
-
-        // Get the left and right tables from the split layout
-        Table leftTable = (Table) rootTable.getCells().get(2).getActor();
-        Table rightTable = (Table) rootTable.getCells().get(3).getActor();
-
-        // Clear existing content but keep headers
-        while (leftTable.getChildren().size > 2) {
-            leftTable.getChildren().removeIndex(2);
-        }
-        while (rightTable.getChildren().size > 2) {
-            rightTable.getChildren().removeIndex(2);
-        }
-
-        // ATP and Size tracker at the top
+        // Add ATP/Size info to center column
         Label atpLabel = createLabel("ATP: " + playerCell.getCellATP(), UPGRADE_NAME_TEXT_SIZE);
-        Label sizeLabel = createLabel("Current Size: " + ((playerCell.getcellSize() - 100) / 100), UPGRADE_NAME_TEXT_SIZE);
-
-        Table centerTable = new Table();
+        Label sizeLabel = createLabel("Size: " + ((playerCell.getCellSize() - 100)/100), UPGRADE_NAME_TEXT_SIZE);
+        
         centerTable.add(atpLabel).row();
         centerTable.add(sizeLabel).padTop(10).row();
 
-        rootTable.getCells().get(2).setActor(centerTable);
-        rootTable.getCells().get(3).setActor(centerTable);
-
-        // Create size upgrade cards
+        // Create and add size upgrades
         sizeTable = new Table();
         if (!sizeUpgrades.isEmpty()) {
             currentSizeCard = createUpgradeCard(sizeUpgrades.get(0), true);
-            sizeTable.add(currentSizeCard).pad(10);
+            sizeTable.add(currentSizeCard).width(UPGRADE_CARD_WIDTH).height(UPGRADE_CARD_HEIGHT);
         } else {
             sizeTable.add(createLabel("All size upgrades purchased!", UPGRADE_INFO_TEXT_SIZE));
         }
-        leftTable.add(sizeTable).padTop(20).row();
+        leftTable.add(sizeTable).expand().fill().padTop(20);
 
-        // Create organelle upgrade cards
+        // Create and add organelle upgrades  
         organelleTable = new Table();
         if (!organelleUpgrades.isEmpty()) {
             currentOrganelleCard = createUpgradeCard(organelleUpgrades.get(0), false);
-            organelleTable.add(currentOrganelleCard).pad(10);
+            organelleTable.add(currentOrganelleCard).width(UPGRADE_CARD_WIDTH).height(UPGRADE_CARD_HEIGHT);
         } else {
             organelleTable.add(createLabel("All organelle upgrades purchased!", UPGRADE_INFO_TEXT_SIZE));
         }
-        rightTable.add(organelleTable).padTop(20).row();
+        rightTable.add(organelleTable).expand().fill().padTop(20);
+
+        // Set initial selection
+        updateSelection(true);
     }
 
     private Table createUpgradeCard(Object upgrade, boolean isSizeUpgrade) {
         Table card = new Table();
         card.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
 
+        Pixmap debugPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        debugPixmap.setColor(Color.RED);
+        debugPixmap.fill();
+        card.setBackground(new TextureRegionDrawable(new Texture(debugPixmap)));
         // Glowing border
         Image glowingBorder = new Image(createGlowingBorderTexture());
         glowingBorder.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
@@ -270,6 +271,9 @@ public class ShopScreen implements GameOfCellsScreen {
             reqTable.add(sizeLabel);
             card.add(reqTable).padTop(10).row();
         }
+
+        System.out.println("Creating card for: " +
+            (isSizeUpgrade ? ((SizeUpgrade) upgrade).getName() : ((OrganelleUpgrade) upgrade).getName()));
 
         return card;
     }
@@ -325,7 +329,7 @@ public class ShopScreen implements GameOfCellsScreen {
     private void attemptPurchase(boolean isSizeUpgrade) {
         if (isSizeUpgrade && !sizeUpgrades.isEmpty()) {
             SizeUpgrade upgrade = sizeUpgrades.get(0);
-            if (upgrade.canPurchase(playerCell, null)) {
+            if (upgrade.canPurchase(playerCell)) {
                 upgrade.applyUpgrade(playerCell);
                 sizeUpgrades.remove(0);
                 updateSizeDisplay();
@@ -335,7 +339,7 @@ public class ShopScreen implements GameOfCellsScreen {
             }
         } else if (!organelleUpgrades.isEmpty()) {
             OrganelleUpgrade upgrade = organelleUpgrades.get(0);
-            if (upgrade.canPurchase(playerCell, null)) {
+            if (upgrade.canPurchase(playerCell)) {
                 upgrade.applyUpgrade(playerCell);
                 organelleUpgrades.remove(0);
                 updateOrganelleDisplay();
@@ -351,7 +355,7 @@ public class ShopScreen implements GameOfCellsScreen {
         if (upgrade instanceof SizeUpgrade) {
             SizeUpgrade sizeUpgrade = (SizeUpgrade) upgrade;
             boolean notEnoughATP = playerCell.getCellATP() < sizeUpgrade.getRequiredATP();
-            boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < sizeUpgrade.getRequiredSize();
+            boolean notEnoughSize = (playerCell.getCellSize() - 100) / 100 < sizeUpgrade.getRequiredSize();
             if (notEnoughATP && notEnoughSize) {
                 message = "Not enough ATP and size!";
             } else if (notEnoughATP) {
@@ -362,7 +366,7 @@ public class ShopScreen implements GameOfCellsScreen {
         } else if (upgrade instanceof OrganelleUpgrade) {
             OrganelleUpgrade organelleUpgrade = (OrganelleUpgrade) upgrade;
             boolean notEnoughATP = playerCell.getCellATP() < organelleUpgrade.getRequiredATP();
-            boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < organelleUpgrade.getRequiredSize();
+            boolean notEnoughSize = (playerCell.getCellSize() - 100) / 100 < organelleUpgrade.getRequiredSize();
             if (notEnoughATP && notEnoughSize) {
                 message = "Not enough ATP and size!";
             } else if (notEnoughATP) {
@@ -398,7 +402,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     private void showMessage(String message) {
         Label messageLabel = createLabel(message, 0.3f);
-        messageLabel.setPosition(VIEW_RECT_WIDTH/2, messageLabel.getWidth()/2, 50);
+        messageLabel.setPosition(VIEW_RECT_WIDTH/2 - messageLabel.getWidth()/2, 50);
         stage.addActor(messageLabel);
         messageLabel.addAction(Actions.sequence(
                 Actions.delay(2f),
@@ -618,7 +622,7 @@ public class ShopScreen implements GameOfCellsScreen {
      * @return
      */
     public int getSizeTracker() {
-        return playerCell.getcellSize();
+        return playerCell.getCellSize();
     }
 
     /**

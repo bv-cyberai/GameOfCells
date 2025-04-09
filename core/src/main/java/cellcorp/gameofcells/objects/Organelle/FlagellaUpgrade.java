@@ -37,8 +37,8 @@ public class FlagellaUpgrade extends OrganelleUpgrade {
      * @param organelleUpgradeScreen
      */
     @Override
-    public boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
+    public boolean isPreviousUpgradePurchased(Cell cell) {
         // Flagella requires Ribosome to be purchased.
-        return organelleUpgradeScreen.hasRibosome();
+        return cell.hasRibosomes();
     }
 }

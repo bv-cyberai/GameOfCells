@@ -31,7 +31,7 @@ public class SmallSizeUpgrade extends SizeUpgrade {
     }
 
     @Override
-    protected boolean isPreviousUpgradePurchased(SizeUpgradeScreen sizeUpgradeScreen) {
+    protected boolean isPreviousUpgradePurchased(Cell cell) {
         return true;
     }
 }

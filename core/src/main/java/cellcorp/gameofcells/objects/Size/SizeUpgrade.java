@@ -2,14 +2,13 @@ package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Upgrade;
-import cellcorp.gameofcells.screens.SizeUpgradeScreen;
 
 /**
  * Size Upgrade
  * <p>
  * Represents a size upgrade that can be purchased in the shop
  */
-public abstract class SizeUpgrade implements Upgrade<SizeUpgradeScreen> {
+public abstract class SizeUpgrade implements Upgrade {
     protected final int sizeIncrease;
     protected final int atpCost;
     protected final int requiredSize;
@@ -75,11 +74,13 @@ public abstract class SizeUpgrade implements Upgrade<SizeUpgradeScreen> {
      * @param screen The screen to check
      */
     @Override
-    public boolean canPurchase(Cell cell, SizeUpgradeScreen screen) {
+    public boolean canPurchase(Cell cell) {
         // Convert shop size units to actual cell size (100 = base size)
-        int currentSizeUnits = (cell.getcellSize() - 100) / 100;
+        int currentSizeUnits = (cell.getCellSize() - 100) / 100;
         return cell.getCellATP() >= atpCost && 
-            currentSizeUnits >= requiredSize;
+            currentSizeUnits >= requiredSize &&
+            isPreviousUpgradePurchased(cell) &&
+            !isAlreadyPurchased(cell);
     }
 
     /**
@@ -89,22 +90,22 @@ public abstract class SizeUpgrade implements Upgrade<SizeUpgradeScreen> {
         return sizeIncrease;
     }
 
-    // Unique visual effect description for each tier
-    public abstract String getVisualEffect();
-
     /**
      * Applies the upgrade to the cell
      * @param cell The cell to apply the upgrade to
      */
     @Override
     public abstract void applyUpgrade(Cell cell);
+    
+    // Unique visual effect description for each tier
+    public abstract String getVisualEffect();
 
     /**
      * Check if the previous upgrade was purchased
      * @param screen
      * @return true if the previous upgrade was purchased, false otherwise
      */
-    protected abstract boolean isPreviousUpgradePurchased(SizeUpgradeScreen screen);
+    protected abstract boolean isPreviousUpgradePurchased(Cell cell);
 
     /**
      * Check if the upgrade is already purchased

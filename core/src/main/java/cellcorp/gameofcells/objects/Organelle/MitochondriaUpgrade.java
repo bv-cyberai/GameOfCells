@@ -1,14 +1,17 @@
 package cellcorp.gameofcells.objects.organelle;
 
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
-import cellcorp.gameofcells.objects.Glucose;
 /**
  * Mitochondria upgrade.
  */
 public class MitochondriaUpgrade extends OrganelleUpgrade {
     public MitochondriaUpgrade() {
-        super("Mitochondria", 30, "Powerhouse of the cell", "Increases ATP production", 30, 1);
+        super("Mitochondria", 
+            30, 
+            "Powerhouse of the cell", 
+            "Increases ATP production", 
+            30, 
+            1);
     }
 
     /**
@@ -37,7 +40,7 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
      * @param organelleUpgradeScreen
      */
     @Override
-    protected boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
+    protected boolean isPreviousUpgradePurchased(Cell cell) {
         return true;
     }
 }

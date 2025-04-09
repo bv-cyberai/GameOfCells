@@ -119,7 +119,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         rootTable.add(atpLabel).padTop(10).row();
 
         // Size Tracker
-        Label sizeLabel = createLabel("Current Size: " + (playerCell.getcellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
+        Label sizeLabel = createLabel("Current Size: " + (playerCell.getCellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
         rootTable.add(sizeLabel).padTop(10).row();
 
         // Upgrade Table
@@ -221,7 +221,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
         card.row();
 
         // Lock overlay (if the upgrade is locked)
-        if (!upgrade.canPurchase(playerCell, this)) {
+        if (!upgrade.canPurchase(playerCell)) {
             card.getColor().a = 0.4f; // Semi-transparent
 
             // Add a semi-transparent overlay to indicate that the upgrade is locked
@@ -478,7 +478,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
 
             // Purchase the selected upgrade
             OrganelleUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
-            if (selectedUpgrade.canPurchase(playerCell, this)) {
+            if (selectedUpgrade.canPurchase(playerCell)) {
                 selectedUpgrade.applyUpgrade(playerCell);
                 upgrades.remove(selectedUpgrade); // Remove the upgrade from the list
                 selectedUpgradeIndex = Math.min(selectedUpgradeIndex, upgrades.size() - 1); // Clamp the index
@@ -503,7 +503,7 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
                 // Display a message indicating that the upgrade cannot be purchased
                 String message = "";
                 boolean notEnoughATP = playerCell.getCellATP() < selectedUpgrade.getRequiredATP();
-                boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
+                boolean notEnoughSize = (playerCell.getCellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
 
                 if (notEnoughATP && notEnoughSize) {
                     message = "Not enough ATP and size to purchase this upgrade.";

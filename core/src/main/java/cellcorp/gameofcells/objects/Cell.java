@@ -484,7 +484,7 @@ public class Cell {
      *
      * @return cellSize
      */
-    public int getcellSize() {
+    public int getCellSize() {
         return (int) cellSize;
     }
 

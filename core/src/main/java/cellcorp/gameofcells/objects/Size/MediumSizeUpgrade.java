@@ -31,7 +31,7 @@ public class MediumSizeUpgrade extends SizeUpgrade {
     }
 
     @Override
-    protected boolean isPreviousUpgradePurchased(SizeUpgradeScreen sizeUpgradeScreen) {
-        return sizeUpgradeScreen.hasSmallSizeUpgrade();
+    protected boolean isPreviousUpgradePurchased(Cell cell) {
+        return cell.hasSmallSizeUpgrade();
     }
 }

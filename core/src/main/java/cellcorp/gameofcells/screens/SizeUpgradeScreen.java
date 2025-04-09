@@ -115,7 +115,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         rootTable.add(atpLabel).padTop(10).row();
         
         // Size Tracker
-        Label sizeLabel = createLabel("Current Size: " + (playerCell.getcellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
+        Label sizeLabel = createLabel("Current Size: " + (playerCell.getCellSize() - 100) / 100, SHOP_TEXT_SIZE - 0.1f);
         rootTable.add(sizeLabel).padTop(10).row();
 
         // Upgrade Cards
@@ -194,7 +194,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
         card.add(reqTable).expand().bottom().left().padBottom(10);
 
         // Lock overlay if not purchasable
-        if (!upgrade.canPurchase(playerCell, null)) {
+        if (!upgrade.canPurchase(playerCell)) {
             card.getColor().a = 0.6f;
             Image lock = new Image(assetManager.get(AssetFileNames.LOCK_ICON, Texture.class));
             lock.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
@@ -377,7 +377,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
 
             // Purchase the selected upgrade
             SizeUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
-            if (selectedUpgrade.canPurchase(playerCell, null)) {
+            if (selectedUpgrade.canPurchase(playerCell)) {
                 selectedUpgrade.applyUpgrade(playerCell);
                 upgrades.remove(selectedUpgrade);
                 selectedUpgradeIndex = Math.min(selectedUpgradeIndex, upgrades.size() - 1);
@@ -400,7 +400,7 @@ public class SizeUpgradeScreen implements GameOfCellsScreen {
                 // Display a message indicating that the upgrade cannot be purchased
                 String message = "";
                 boolean notEnoughATP = playerCell.getCellATP() < selectedUpgrade.getRequiredATP();
-                boolean notEnoughSize = (playerCell.getcellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
+                boolean notEnoughSize = (playerCell.getCellSize() - 100) / 100 < selectedUpgrade.getRequiredSize();
 
                 if (notEnoughATP && notEnoughSize) {
                     message = "Not enough ATP and size to purchase this upgrade.";
