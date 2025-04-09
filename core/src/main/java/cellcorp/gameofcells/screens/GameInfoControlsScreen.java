@@ -62,13 +62,13 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         "",
         "Actions:",
         "ENTER/SPACE - Select",
-        "ESC/P - Pause Menu",
+        "ESC/P - Pause / Go back",
         "",
         "Gameplay:",
         "WIP"
     };
 
-    private static final String INSTRUCTION = "Press any key to return...";
+    private static final String INSTRUCTION = "Press ENTER / SPACE to return...";
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -155,7 +155,9 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Return to the settings screen if any key is pressed
-        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.SPACE) ||
+            inputProvider.isKeyJustPressed(Input.Keys.ENTER) ||
+            inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)){
             game.setScreen(previousScreen);
         }
     }

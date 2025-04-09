@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.Config;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -54,6 +55,7 @@ public class PauseScreen implements GameOfCellsScreen {
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
+            Camera camera,
             ConfigProvider configProvider) {
 
         this.gamePlayScreen = gamePlayScreen;
@@ -78,7 +80,7 @@ public class PauseScreen implements GameOfCellsScreen {
 
     @Override
     public void show() {
-        menuSystem.initialize("Paused", PAUSE_OPTIONS, INSTRUCTIONS);
+        menuSystem.initializePauseMenu("Paused", PAUSE_OPTIONS, INSTRUCTIONS);
     }
 
     @Override
@@ -91,6 +93,7 @@ public class PauseScreen implements GameOfCellsScreen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        gamePlayScreen.resize(width, height);
     }
 
     @Override
@@ -118,10 +121,10 @@ public class PauseScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Navigate menu options
-        if (inputProvider.isKeyJustPressed(Input.Keys.UP)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.UP) || inputProvider.isKeyJustPressed(Input.Keys.W)) {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() - 1);
         }
-        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN) || inputProvider.isKeyJustPressed(Input.Keys.S)) {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() + 1);
         }
 
@@ -130,7 +133,7 @@ public class PauseScreen implements GameOfCellsScreen {
             || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             switch (menuSystem.getSelectedOptionIndex()) {
                 case 0: // Resume
-                    gamePlayScreen.resumeGame();
+                gamePlayScreen.resumeGame();
                     game.setScreen(gamePlayScreen);
                     break;
                 case 1: // Controls
@@ -146,7 +149,7 @@ public class PauseScreen implements GameOfCellsScreen {
                     ));
                     break;
                 case 2: // Quit to Menu
-                    gamePlayScreen.resumeGame();
+                gamePlayScreen.resumeGame();
                     game.setScreen(new MainMenuScreen(
                             inputProvider,
                             graphicsProvider,
@@ -161,7 +164,8 @@ public class PauseScreen implements GameOfCellsScreen {
         }
 
         // Handle ESC key to resume game
-        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE) ||
+            inputProvider.isKeyJustPressed(Input.Keys.P)) {
             gamePlayScreen.resumeGame();
             game.setScreen(gamePlayScreen);
         }
@@ -174,9 +178,6 @@ public class PauseScreen implements GameOfCellsScreen {
 
     @Override
     public void draw() {
-        // Semi-transparent background overlay
-        ScreenUtils.clear(157f, 115f, 181f, 0.5f); // Dark purple background
-
         // First draw the gameplay screen (paused)
         gamePlayScreen.draw();
 

@@ -65,7 +65,7 @@ public class MenuSystem {
         // Create menu options
         for (int i = 0; i < menuOptions.length; i++) {
             Label optionLabel = createLabel(menuOptions[i], MENU_OPTION_TEXT_SIZE);
-            optionLabel.setColor(i == selectedOptionIndex ? Color.YELLOW : Color.WHITE);
+            optionLabel.setColor(i == selectedOptionIndex ? Color.YELLOW : Color.LIGHT_GRAY);
             mainTable.add(optionLabel).padTop(10).row();
         }
 
@@ -190,6 +190,39 @@ public class MenuSystem {
         stage.addActor(mainTable);
     }
 
+    public void initializePauseMenu(String title, String[] menuOptions, String instructions) {
+        clear();
+        this.menuOptions = menuOptions;
+        this.selectedOptionIndex = 0;
+
+        mainTable = new Table();
+        mainTable.setFillParent(true);
+        mainTable.pad(40);
+
+        // Title
+        Label titleLabel = createLabel(title, 0.6f);
+        titleLabel.setColor(Color.CYAN);
+        titleLabel.setAlignment(Align.center);
+        mainTable.add(titleLabel).padBottom(50).row();
+
+        // Menu options
+        for (int i = 0; i < menuOptions.length; i++) {
+            Label optionLabel = createLabel(menuOptions[i], 0.4f);
+            optionLabel.setColor(i == selectedOptionIndex ? Color.YELLOW : Color.LIGHT_GRAY);
+            mainTable.add(optionLabel).padBottom(25).row();
+        }
+
+        // Instructions
+        if (instructions != null && !instructions.isEmpty()) {
+            Label instructionsLabel = createLabel(instructions, 0.25f);
+            instructionsLabel.setColor(Color.WHITE);
+            instructionsLabel.setAlignment(Align.center);
+            mainTable.add(instructionsLabel).padTop(40).row();
+        }
+
+        stage.addActor(mainTable);
+    }
+
     /**
      * Updates the menu selection
      * 
@@ -202,7 +235,7 @@ public class MenuSystem {
 
         // Update the color of the previously selected option
         Label previousOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
-        previousOptionLabel.setColor(Color.WHITE);
+        previousOptionLabel.setColor(Color.LIGHT_GRAY);
 
         // Update the selected option index
         selectedOptionIndex = newIndex;

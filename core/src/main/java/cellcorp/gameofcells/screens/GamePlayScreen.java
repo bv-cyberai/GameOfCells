@@ -318,7 +318,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
 
         // Pause the game when the ESC key is pressed
-        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE) || inputProvider.isKeyJustPressed(Input.Keys.P)) {
             pauseGame();
             game.setScreen(new PauseScreen(
                 this,
@@ -326,6 +326,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 graphicsProvider,
                 game,
                 assetManager,
+                camera,
                 configProvider
             ));
         }
@@ -767,5 +768,21 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public Viewport getViewport() {
         return viewport;
+    }
+
+    /**
+     * Get the GamePlayScreen width.
+     * @return the GamePlayScreen width.
+     */
+    public int getWorldWidth() {
+        return VIEW_RECT_WIDTH;
+    }
+
+    /**
+     * Get the GamePlayScreen height.
+     * @return the GamePlayScreen height.
+     */
+    public int getWorldHeight() {
+        return VIEW_RECT_HEIGHT;
     }
 }
