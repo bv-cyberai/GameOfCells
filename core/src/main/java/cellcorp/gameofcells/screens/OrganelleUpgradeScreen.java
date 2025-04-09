@@ -465,18 +465,24 @@ public class OrganelleUpgradeScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if(inputProvider.isKeyJustPressed(Input.Keys.LEFT)) {
+        if(inputProvider.isKeyJustPressed(Input.Keys.LEFT) || inputProvider.isKeyJustPressed(Input.Keys.A)) {
             if (selectedUpgradeIndex > 0) {
                 selectedUpgradeIndex--;
                 updateUpgradeSelection();
             }
-        } else if(inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
+        } else if(inputProvider.isKeyJustPressed(Input.Keys.RIGHT) || inputProvider.isKeyJustPressed(Input.Keys.D)) {
             if (selectedUpgradeIndex < upgrades.size() - 1) {
                 selectedUpgradeIndex++;
                 updateUpgradeSelection();
             }
         } else if(inputProvider.isKeyJustPressed(Input.Keys.ENTER)
             || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+            // Check if upgrades are empty
+            if (upgrades.isEmpty()) {
+                return;
+            }
+
+            // Purchase the selected upgrade
             OrganelleUpgrade selectedUpgrade = upgrades.get(selectedUpgradeIndex);
             if (selectedUpgrade.canPurchase(playerCell, this)) {
                 selectedUpgrade.applyUpgrade(playerCell);
