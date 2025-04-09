@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.screens.SizeUpgradeScreen;
 
 public class MassiveSizeUpgrade extends SizeUpgrade {
     public MassiveSizeUpgrade() {
