@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -128,44 +129,32 @@ public class ShopScreen implements GameOfCellsScreen {
     private void initializeUpgrades() {
         // Initialize size upgrades
         sizeUpgrades = new ArrayList<>();
-
-        System.out.println("Initializing size upgrades...");
         if (!playerCell.hasSmallSizeUpgrade()) {
             sizeUpgrades.add(new SmallSizeUpgrade());
-            System.out.println("Added SmallSizeUpgrade");
         }
         if (!playerCell.hasMediumSizeUpgrade()) {
             sizeUpgrades.add(new MediumSizeUpgrade());
-            System.out.println("Added MediumSizeUpgrade");
         }
         if (!playerCell.hasLargeSizeUpgrade()) {
             sizeUpgrades.add(new LargeSizeUpgrade());
-            System.out.println("Added LargeSizeUpgrade");
         }
         if (!playerCell.hasMassiveSizeUpgrade()) {
             sizeUpgrades.add(new MassiveSizeUpgrade());
-            System.out.println("Added MassiveSizeUpgrade");
         }
 
         // Initialize organelle upgrades
         organelleUpgrades = new ArrayList<>();
-
-        System.out.println("Initializing organelle upgrades...");
         if (!playerCell.hasMitochondria()) {
             organelleUpgrades.add(new MitochondriaUpgrade());
-            System.out.println("Added MitochondriaUpgrade");
         }
         if (!playerCell.hasRibosomes()) {
             organelleUpgrades.add(new RibosomeUpgrade());
-            System.out.println("Added RibosomeUpgrade");
         }
         if (!playerCell.hasFlagella()) {
             organelleUpgrades.add(new FlagellaUpgrade());
-            System.out.println("Added FlagellaUpgrade");
         }
         if (!playerCell.hasNucleus()) {
             organelleUpgrades.add(new NucleusUpgrade());
-            System.out.println("Added NucleusUpgrade");
         }
     }
 
@@ -234,11 +223,13 @@ public class ShopScreen implements GameOfCellsScreen {
             // Name 
             Label nameLabel = createLabel(sizeUpgrade.getName(), UPGRADE_NAME_TEXT_SIZE);
             nameLabel.setColor(Color.YELLOW);
+            nameLabel.setAlignment(Align.center);
             card.add(nameLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row();
 
             // Description
             Label descriptionLabel = createLabel(sizeUpgrade.getDescription(), UPGRADE_INFO_TEXT_SIZE);
             descriptionLabel.setWrap(true);
+            descriptionLabel.setAlignment(Align.center);
             card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(5).row();
 
             // Requirements
@@ -255,11 +246,13 @@ public class ShopScreen implements GameOfCellsScreen {
             // Name
             Label nameLabel = createLabel(organelleUpgrade.getName(), UPGRADE_NAME_TEXT_SIZE);
             nameLabel.setColor(getDescriptionColor(organelleUpgrade));
+            nameLabel.setAlignment(Align.center);
             card.add(nameLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(10).row();
 
             // Description
             Label descriptionLabel = createLabel(organelleUpgrade.getDescription(), UPGRADE_INFO_TEXT_SIZE);
             descriptionLabel.setWrap(true);
+            descriptionLabel.setAlignment(Align.center);
             card.add(descriptionLabel).width(UPGRADE_CARD_WIDTH - 20).padTop(5).row();
 
             // Requirements
@@ -402,7 +395,12 @@ public class ShopScreen implements GameOfCellsScreen {
 
     private void showMessage(String message) {
         Label messageLabel = createLabel(message, 0.3f);
-        messageLabel.setPosition(VIEW_RECT_WIDTH/2 - messageLabel.getWidth()/2, 50);
+
+        float x = (viewport.getWorldWidth() - messageLabel.getWidth()) / 2 - 40f;
+        float y = 50f;
+
+        messageLabel.setPosition(x, y);
+
         stage.addActor(messageLabel);
         messageLabel.addAction(Actions.sequence(
                 Actions.delay(2f),
