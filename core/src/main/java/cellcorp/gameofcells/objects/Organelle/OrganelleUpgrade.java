@@ -79,7 +79,7 @@ public abstract class OrganelleUpgrade implements Upgrade {
         int currentSizeUnits = (cell.getCellSize() - 100 )/ 100;
         return cell.getCellATP() >= cost &&
             currentSizeUnits >= requiredSize &&
-            isAlreadyPurchased(cell) &&
+            !isAlreadyPurchased(cell) &&
             isPreviousUpgradePurchased(cell);
     }
 

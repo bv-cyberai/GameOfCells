@@ -5,11 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import cellcorp.gameofcells.AssetFileNames;
@@ -20,8 +18,18 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
 /**
- * The screen for the main menu.
- * When the game starts this screen is loaded first.
+ * Main Menu Screen
+ * 
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 04/09/2025
+ * @course CIS 405
+ * @assignment Game of Cells
+ * @description This is the main menu screen of the game. This class handles displaying
+ *              the main menu options, handling user input, and transitioning to the game
+ *              screen or game info screen based on user selection.
  */
 public class MainMenuScreen implements GameOfCellsScreen {
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
@@ -58,14 +66,30 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final Main game;
     private final AssetManager assetManager;
     private final Viewport viewport;
+    
     private final Particles particles;
     private final MenuSystem menuSystem;
+
+    // Textures for the main menu
     private final Texture cellTexture;
     private final Texture wasdArrowsIcon;
     private final Texture spaceEnterIcon;
 
+    // Inactivity timer
+    // This timer tracks the time since the last user input
     private float inactivityTimer = 0f;
 
+    /**
+     * Constructs a new MainMenuScreen.
+     * 
+     * @param inputProvider The input provider for handling user input
+     * @param graphicsProvider The graphics provider for rendering graphics
+     * @param game The main game instance
+     * @param assetManager The asset manager for loading and managing assets
+     * @param camera The camera used for rendering
+     * @param viewport The viewport for rendering
+     * @param configProvider The configuration provider for managing game settings
+     */
     public MainMenuScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -100,9 +124,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
         //Config is loaded here to avoid issue with GDX files, it is also the first possible
         //location that would use any user defined values.
 //        configProvider.loadConfig();
-
     }
 
+    /**
+     * Show the main menu screen.
+     * This method is called when the screen is set as the current screen.
+     */
     @Override
     public void show() {
         menuSystem.initializeMainMenu(
@@ -114,6 +141,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
         );
     }
 
+    /**
+     * Render the main menu screen.
+     * This method is called every frame to update and draw the screen.
+     * 
+     * @param delta The time elapsed since the last frame
+     */
     @Override
     public void render(float delta) {
         handleInput(delta);
@@ -121,33 +154,62 @@ public class MainMenuScreen implements GameOfCellsScreen {
         draw();
     }
 
+    /**
+     * Resize the main menu screen.
+     * This method is called when the window is resized.
+     * 
+     * @param width The new width of the window
+     * @param height The new height of the window
+     */
     @Override
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
         viewport.update(width, height, true); // Update the viewport
     }
 
+    /**
+     * Pause the main menu screen.
+     * This method is called when the screen is paused.
+     */
     @Override
     public void pause() {
 
     }
 
+    /**
+     * Resume the main menu screen.
+     * This method is called when the screen is resumed.
+     */
     @Override
     public void resume() {
 
     }
 
+    /**
+     * Hide the main menu screen.
+     * This method is called when the screen is no longer visible.
+     */
     @Override
     public void hide() {
 
     }
 
+    /**
+     * Dispose of the main menu screen.
+     * This method is called when the screen is no longer needed.
+     */
     @Override
     public void dispose() {
         particles.dispose();
         menuSystem.clear();
     }
 
+    /**
+     * Handle user input for the main menu.
+     * This method processes user input and updates the menu selection accordingly.
+     * 
+     * @param deltaTimeSeconds The time elapsed since the last frame
+     */
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Navigate menu options with arrow keys
@@ -195,6 +257,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Update the main menu screen.
+     * This method updates the particles and any other game state as needed.
+     * 
+     * @param deltaTimeSeconds The time elapsed since the last frame
+     */
     @Override
     public void update(float deltaTimeSeconds) {
         // Update the inactivity timer
@@ -213,6 +281,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
         particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
+    /**
+     * Draw the main menu screen.
+     * This method draws the background, particles, and menu system to the screen.
+     */
     @Override
     public void draw() {
         // New background color

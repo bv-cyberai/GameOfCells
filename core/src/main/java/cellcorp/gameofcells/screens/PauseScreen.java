@@ -3,19 +3,34 @@ package cellcorp.gameofcells.screens;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.Config;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+
+/**
+ * Pause Screen
+ * 
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 04/09/2025
+ * @course CIS 405
+ * @assignment Game of Cells
+ * @description This is the pause screen for the game. It is displayed when the game is paused.
+ *              It allows the player to resume the game, view controls, or quit to the main menu.
+ *              The pause screen is displayed over the game screen, and the game screen is paused
+ *              while the pause screen is displayed.
+ *              The pause screen is implemented as a singleton, so that there is only one instance
+ *              of the pause screen at a time. This is to prevent multiple pause screens from
+ *              being displayed at the same time, which could cause confusion for the player.
+ */
 
 public class PauseScreen implements GameOfCellsScreen {
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
@@ -31,6 +46,7 @@ public class PauseScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
+    // The pause menu options
     private static final String[] PAUSE_OPTIONS = {
             "Resume",
             "Controls",
@@ -49,6 +65,17 @@ public class PauseScreen implements GameOfCellsScreen {
     private final MenuSystem menuSystem;
     private final SpriteBatch batch;
 
+    /**
+     * Constructor for the PauseScreen class.
+     * 
+     * @param gamePlayScreen The game play screen to pause
+     * @param inputProvider The input provider for handling user input
+     * @param graphicsProvider The graphics provider for rendering
+     * @param game The main game instance
+     * @param assetManager The asset manager for loading assets
+     * @param camera The camera for rendering
+     * @param configProvider The configuration provider for loading game settings
+     */
     public PauseScreen(
             GamePlayScreen gamePlayScreen,
             InputProvider inputProvider,
@@ -78,11 +105,21 @@ public class PauseScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
     }
 
+    /**
+     * Initializes the pause screen.
+     * This method is called when the pause screen is shown.
+     */
     @Override
     public void show() {
         menuSystem.initializePauseMenu("Paused", PAUSE_OPTIONS, INSTRUCTIONS);
     }
 
+    /**
+     * Handles input for the pause screen.
+     * This method is called every frame to handle user input.
+     * 
+     * @param deltaTimeSeconds The time since the last frame
+     */
     @Override
     public void render(float delta) {
         handleInput(delta);
@@ -90,27 +127,50 @@ public class PauseScreen implements GameOfCellsScreen {
         draw();
     }
 
+    /**
+     * Resizes the pause screen.
+     * This method is called when the window is resized.
+     * 
+     * @param width The new width of the window
+     * @param height The new height of the window
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
         gamePlayScreen.resize(width, height);
     }
 
+    /**
+     * Pauses the pause screen.
+     * This method is called when the pause screen is paused.
+     */
     @Override
     public void pause() {
         // Pause logic if needed
     }
 
+    /**
+     * Resumes the pause screen.
+     * This method is called when the pause screen is resumed.
+     */
     @Override
     public void resume() {
         // Resume logic if needed
     }
 
+    /**
+     * Hides the pause screen.
+     * This method is called when the pause screen is hidden.
+     */
     @Override
     public void hide() {
         // Hide logic if needed
     }
 
+    /**
+     * Disposes of the pause screen.
+     * This method is called when the pause screen is disposed.
+     */
     @Override
     public void dispose() {
         menuSystem.clear();
@@ -118,6 +178,12 @@ public class PauseScreen implements GameOfCellsScreen {
         batch.dispose();
     }
 
+    /**
+     * Handles input for the pause screen.
+     * This method is called every frame to handle user input.
+     * 
+     * @param deltaTimeSeconds The time since the last frame
+     */
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Navigate menu options
@@ -171,11 +237,21 @@ public class PauseScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Updates the pause screen.
+     * This method is called every frame to update the game state.
+     * 
+     * @param deltaTimeSeconds The time since the last frame
+     */
     @Override
     public void update(float deltaTimeSeconds) {
         particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
+    /**
+     * Draws the pause screen.
+     * This method is called every frame to draw the game state.
+     */
     @Override
     public void draw() {
         // First draw the gameplay screen (paused)

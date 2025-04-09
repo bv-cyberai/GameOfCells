@@ -4,16 +4,9 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import cellcorp.gameofcells.AssetFileNames;
@@ -23,7 +16,19 @@ import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
 /**
- * The screen for displaying game info and controls.
+ * Game Information and Controls Screen
+ * 
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 04/09/2025
+ * @course CIS 405
+ * @assignment Game of Cells
+ * @description This is the game information and controls screen. This class handles displaying
+ *              the game information and controls to the user. It also handles user input and 
+ *              updates the screen accordingly. The screen is displayed when the user selects 
+ *              the "Game Info" option from the main menu.
  */
 public class GameInfoControlsScreen implements GameOfCellsScreen {
     /**
@@ -84,6 +89,18 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     private float startY;
     private Texture cellTexture;
 
+    /**
+     * Constructs a new GameInfoControlsScreen.
+     * 
+     * @param inputProvider The input provider for handling user input
+     * @param graphicsProvider The graphics provider for rendering graphics
+     * @param game The main game instance
+     * @param assetManager The asset manager for loading assets
+     * @param previousScreen The previous screen to return to
+     * @param camera The camera for rendering
+     * @param viewport The viewport for rendering
+     * @param configProvider The configuration provider for loading game settings
+     */
     public GameInfoControlsScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
@@ -109,9 +126,14 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         );
 
         this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+    }
 
-        }
-
+    /**
+     * Shows the screen.
+     * This method is called when the screen is first displayed.
+     * It initializes the menu system and sets up the layout for the game information and controls.
+     * It also sets the position of the message to be displayed on the screen.
+     */
     @Override
     public void show() {
         // Initialize simple back menu
@@ -122,6 +144,12 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
             INSTRUCTION);
     }
 
+    /**
+     * Renders the screen.
+     * This method is called every frame to update and draw the screen.
+     * It handles user input, updates the game state, and draws the screen.
+     * @param delta The time elapsed since the last frame, in seconds
+     */
     @Override
     public void render(float delta) {
         handleInput(delta);
@@ -129,29 +157,62 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         draw();
     }
 
+    /**
+     * Resizes the screen.
+     * This method is called when the screen is resized.
+     * It updates the viewport to match the new screen dimensions.
+     * @param width The new width of the screen
+     * @param height The new height of the screen
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
     }
 
+    /**
+     * Pauses the screen.
+     * This method is called when the game is paused.
+     * It can be used to pause any ongoing animations or processes.
+     */
     @Override
     public void pause() {
     }
 
+    /**
+     * Resumes the screen.
+     * This method is called when the game is resumed from a paused state.
+     * It can be used to resume any paused animations or processes.
+     */
     @Override
     public void resume() {
     }
 
+    /**
+     * Hides the screen.
+     * This method is called when the screen is no longer visible.
+     * It can be used to clean up any resources or stop any ongoing processes.
+     */
     @Override
     public void hide() {
     }
 
+    /**
+     * Disposes of the screen.
+     * This method is called when the screen is no longer needed.
+     * It can be used to dispose of any resources or clean up any objects.
+     */
     @Override
     public void dispose() {
         particles.dispose();
         menuSystem.clear();
     }
 
+    /**
+     * Handles user input.
+     * This method checks for user input and updates the game state accordingly.
+     * It returns to the previous screen if any key is pressed.
+     * @param deltaTimeSeconds The time elapsed since the last frame, in seconds
+     */
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Return to the settings screen if any key is pressed
@@ -162,11 +223,20 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Updates the game state.
+     * This method updates the particles and any other game state as needed.
+     * @param deltaTimeSeconds The time elapsed since the last frame, in seconds
+     */
     @Override
     public void update(float deltaTimeSeconds) {
         particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
+    /**
+     * Draws the screen.
+     * This method draws the background, particles, and menu system to the screen.
+     */
     @Override
     public void draw() {
         // Clear with a biological-themed color

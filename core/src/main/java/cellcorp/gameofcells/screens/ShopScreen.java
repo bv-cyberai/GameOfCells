@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -22,8 +21,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Vector2;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -36,30 +35,26 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * Shop Screen
- * <p>
- * This screen allows players to evolve their cell into a new form using the shop
- *
+ * 
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
- * @date 02/18/2025
+ * @date 04/09/2025
  * @course CIS 405
- * @assignment GameOfCells
- */
-
-
-/**
- * First screen of the application. Displayed after the application is created.
+ * @assignment Game of Cells
+ * @description This is the shop screen for the game. This class handles displaying
+ *              the shop UI, including the size and organelle upgrades available for
+ *              purchase. It also handles the logic for purchasing upgrades and
+ *              updating the player's cell accordingly.
  */
 public class ShopScreen implements GameOfCellsScreen {
+    // Constants for UI layout
     private static final float UPGRADE_CARD_WIDTH = 350;
     private static final float UPGRADE_CARD_HEIGHT = 250;
     private final static float SELECTED_CARD_SCALE = 1.1F;
-    private final static float TITLE_TEXT_SIZE = 0.4f;
     private static final float UPGRADE_NAME_TEXT_SIZE = 0.25f;
     private static final float UPGRADE_INFO_TEXT_SIZE = 0.2f;
-    private static final float INSTRUCTION_TEXT_SIZE = 0.18f;
     
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
     // Change as is most convenient.
@@ -74,6 +69,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
+    // Instance variables
     private final Stage stage;
     private final Cell playerCell;
     private final Main game;
@@ -87,15 +83,24 @@ public class ShopScreen implements GameOfCellsScreen {
     private final MenuSystem menuSystem;
     private final GamePlayScreen previousScreen;
     
+    // UI elements
     private List<SizeUpgrade> sizeUpgrades;
     private List<OrganelleUpgrade> organelleUpgrades;
-    private int selectedSizeIndex = 0;
-    private int selectedOrganelleIndex = 0;
     private Table sizeTable;
     private Table organelleTable;
     private Table currentSizeCard;
     private Table currentOrganelleCard;
 
+    /**
+     * Constructor for the ShopScreen class.
+     * 
+     * @param game The main game instance
+     * @param inputProvider The input provider for handling user input
+     * @param graphicsProvider The graphics provider for rendering
+     * @param assetManager The asset manager for loading assets
+     * @param previousScreen The previous screen (GamePlayScreen) to return to
+     * @param cell The player's cell used to determine available upgrades
+     */
     public ShopScreen(
             Main game,
             InputProvider inputProvider,
@@ -113,7 +118,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
-        this.shapeRenderer = graphicsProvider.createShapeRenderer(); // Initialize the shape renderer for custom backgrounds
+        this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
 
         this.stage = new Stage(viewport, batch);
@@ -126,6 +131,10 @@ public class ShopScreen implements GameOfCellsScreen {
         createUI();
     }
 
+    // Here we initialize the size and organelle upgrades available for the player cell
+    // based on the current state of the cell.
+    // This method checks if the player cell has already purchased certain upgrades
+    // and only adds the available ones to the respective lists.
     private void initializeUpgrades() {
         // Initialize size upgrades
         sizeUpgrades = new ArrayList<>();
@@ -158,6 +167,13 @@ public class ShopScreen implements GameOfCellsScreen {
         }
     }
 
+    // Here we create the UI for the shop screen.
+    // This method sets up the layout of the shop, including the size and organelle
+    // upgrade columns, the ATP and size information, and the upgrade cards.
+    // It also handles the display of upgrade information and the selection of
+    // upgrades for purchase.
+    // The UI is created using Scene2D's Table layout system for better organization
+    // and alignment of UI elements.
     private void createUI() {
         Table[] shopTables = menuSystem.initializeShopLayout(
             "CELL SHOP", 
@@ -199,6 +215,11 @@ public class ShopScreen implements GameOfCellsScreen {
         updateSelection(true);
     }
 
+    // This method is called to create the upgrade card UI elements.
+    // It takes an upgrade object and a boolean indicating if it's a size upgrade.
+    // The method creates a table for the upgrade card, sets its background,
+    // and adds the upgrade information (name, description, requirements) to it.
+    // The upgrade card is styled with a glowing border and a background texture.
     private Table createUpgradeCard(Object upgrade, boolean isSizeUpgrade) {
         Table card = new Table();
         card.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
@@ -265,12 +286,12 @@ public class ShopScreen implements GameOfCellsScreen {
             card.add(reqTable).padTop(10).row();
         }
 
-        System.out.println("Creating card for: " +
-            (isSizeUpgrade ? ((SizeUpgrade) upgrade).getName() : ((OrganelleUpgrade) upgrade).getName()));
-
         return card;
     }
 
+    // This method returns a color based on the type of organelle upgrade.
+    // It uses different colors for different organelle types to visually distinguish them.
+    // The colors can be changed if needed.
     private Color getDescriptionColor(OrganelleUpgrade upgrade) {
         if (upgrade instanceof MitochondriaUpgrade) {
             return new Color(0.0f, 0.45f, 0.7f, 1.0f); // Blue
@@ -287,6 +308,9 @@ public class ShopScreen implements GameOfCellsScreen {
         return Color.WHITE; // Default color
     }
 
+    // This method handles user input for the shop screen.
+    // It checks for key presses to navigate between size and organelle upgrades,
+    // and to purchase the selected upgrade.
     private void updateSelection(boolean isSizeSelected) {
         if (isSizeSelected && currentSizeCard != null) {
             Image border = (Image) currentSizeCard.findActor("glowingBorder");
@@ -319,6 +343,9 @@ public class ShopScreen implements GameOfCellsScreen {
         }
     }
 
+    // Here this method checks if the user tries to purchase an upgrade.
+    // It checks if the ENTER key is pressed and calls the attemptPurchase method
+    // to handle the purchase logic.
     private void attemptPurchase(boolean isSizeUpgrade) {
         if (isSizeUpgrade && !sizeUpgrades.isEmpty()) {
             SizeUpgrade upgrade = sizeUpgrades.get(0);
@@ -327,6 +354,7 @@ public class ShopScreen implements GameOfCellsScreen {
                 sizeUpgrades.remove(0);
                 updateSizeDisplay();
                 showMessage("Size upgrade purchased!");
+                resumeGame();
             } else {
                 showPurchaseError(upgrade);
             }
@@ -337,12 +365,40 @@ public class ShopScreen implements GameOfCellsScreen {
                 organelleUpgrades.remove(0);
                 updateOrganelleDisplay();
                 showMessage("Organelle upgrade purchased!");
+                resumeGame();
             } else {
                 showPurchaseError(upgrade);
             }
         }
     }
 
+    // This method is used to resume the game after an upgrade is pruchased.
+    // An implementation that I think would be fluid and reduce excess key interaction
+    // to return back to the game after every purchase.
+    private void resumeGame() {
+        // Clear any existing actions first
+        stage.getRoot().clearActions();
+
+        // Create fade out action
+        AlphaAction fadeOutAction = Actions.fadeOut(0.5f);
+
+        RunnableAction returnAction = Actions.run(() -> {
+            if (previousScreen != null) {
+                previousScreen.resumeGame();
+                game.setScreen(previousScreen);
+            }
+        });
+
+        // Safely sequence the actions
+        stage.getRoot().addAction(Actions.sequence(
+                fadeOutAction,
+                returnAction
+        ));
+    }
+
+    // This method handles the purchase error messages. 
+    // It checks if the player has enough ATP and size to purchase the selected upgrade.
+    // If not, it shows a message indicating the specific issue (not enough ATP, size, or both).
     private void showPurchaseError(Object upgrade) {
         String message = "";
         if (upgrade instanceof SizeUpgrade) {
@@ -370,7 +426,10 @@ public class ShopScreen implements GameOfCellsScreen {
         }
         showMessage(message);
     }
-
+    
+    // This method is used to update the display of the size upgrades.
+    // It clears the current size table and adds the first available size upgrade card.
+    // If all size upgrades are purchased, it shows a message indicating that.
     private void updateSizeDisplay() {
         sizeTable.clear();
         if (!sizeUpgrades.isEmpty()) {
@@ -382,6 +441,9 @@ public class ShopScreen implements GameOfCellsScreen {
         }
     }
 
+    // This method is used to update the display of the organelle upgrades.
+    // It clears the current organelle table and adds the first available organelle upgrade card.
+    // If all organelle upgrades are purchased, it shows a message indicating that.
     private void updateOrganelleDisplay() {
         organelleTable.clear();
         if (!organelleUpgrades.isEmpty()) {
@@ -393,6 +455,8 @@ public class ShopScreen implements GameOfCellsScreen {
         }
     }
 
+    // This method is used to show a message on the screen.
+    // It creates a label with the specified message and fades it out after a delay.
     private void showMessage(String message) {
         Label messageLabel = createLabel(message, 0.3f);
 
@@ -425,7 +489,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Create a custom background texture for the option cards.
-     * @return
+     * @return The background texture.
      */
     private Texture createOptionBackgroundTexture() {
         int width = (int) UPGRADE_CARD_WIDTH;
@@ -508,11 +572,15 @@ public class ShopScreen implements GameOfCellsScreen {
             boolean isSizeSelected = currentSizeCard != null &&
                 ((Image) currentSizeCard.findActor("glowingBorder")).isVisible();
             attemptPurchase(isSizeSelected);
-        } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)
+            || inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             exitShop();
         }
     }
 
+    // This method is used to exit the shop screen.
+    // It fades out the shop screen and returns to the previous screen (GamePlayScreen).
+    // It also resumes the game state and updates the player's cell.
     private void exitShop() {
         stage.getRoot().addAction(Actions.sequence(
             Actions.fadeOut(1f),

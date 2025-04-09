@@ -10,34 +10,65 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.graphics.Texture;
-import java.util.List;
-import java.util.ArrayList;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 
+/**
+ * Menu System class
+ * 
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 04/09/2025
+ * @course CIS 405
+ * @assignment Game of Cells
+ * @description This is the menu system for the game. This class handles displaying
+ *              menus, updating menu selections, and clearing the menu when needed.
+ *              It uses Scene2D for rendering and managing UI elements.
+ *              The menu system is designed to be flexible and reusable for different
+ *              types of menus, including main menus, pause menus, and shop menus.
+ */
+
+
 public class MenuSystem {
+    // Instance variables
+    // The stage to which the menu will be added
+    // The asset manager for loading assets
+    // The graphics provider for creating UI elements
     private final Stage stage;
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
 
+    // The main table that holds the menu elements
+    // The menu options to be displayed
+    // The index of the currently selected option
     private Table mainTable;
     private String[] menuOptions;
     private int selectedOptionIndex = 0;
 
     // Constants for text sizes
+    // These constants define the font sizes for different elements in the menu
+    // They are used to ensure consistent styling across the menu
+    // The title text size, menu option text size, and instruction text size
     private static final float TITLE_TEXT_SIZE = 0.4f;
     private static final float MENU_OPTION_TEXT_SIZE = 0.25f;
     private static final float INSTRUCTION_TEXT_SIZE = 0.2f;
 
     /**
-     * Creates a new MenuSystem.
+     * Constructor for the MenuSystem class.
      * 
-     * @param stage The stage to ad menu actors to
-     * @param assetManager The asset manager for loading fonts
+     * @param stage The stage to which the menu will be added
+     * @param assetManager The asset manager for loading assets
      * @param graphicsProvider The graphics provider for creating UI elements
+     * @description This constructor initializes the MenuSystem with the provided
+     *              stage, asset manager, and graphics provider.
+     *              It sets up the necessary components for rendering the menu.
      */
-    public MenuSystem(Stage stage, AssetManager assetManager, GraphicsProvider graphicsProvider) {
+    public MenuSystem(Stage stage, 
+            AssetManager assetManager, 
+            GraphicsProvider graphicsProvider) {
         this.stage = stage;
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
@@ -52,34 +83,44 @@ public class MenuSystem {
      * @param instructions The instruction text to display (optional)
      */
     public void initialize(String title, String [] menuOptions, String instructions) {
+        // We set the menu options and selected option index
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
 
+        // Create a new table for the menu
+        // The table will fill the parent stage and be aligned to the top
         mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.top();
 
-        // Create title label
+        // Here we create a label for the title
+        // The title label is created with a specific font size
+        // and is added to the main table with padding
         Label titleLabel = createLabel(title, TITLE_TEXT_SIZE);
         mainTable.add(titleLabel).padTop(10).row();
 
+        // Here we just add a spacer to the table
+        // This is used to create space between the title and the menu options
         mainTable.add().height(20).row();
 
-        // Create menu options
+        // We loop through the menu options and create a label for each one
         for (int i = 0; i < menuOptions.length; i++) {
             Label optionLabel = createLabel(menuOptions[i], MENU_OPTION_TEXT_SIZE);
             optionLabel.setColor(i == selectedOptionIndex ? Color.YELLOW : Color.LIGHT_GRAY);
             mainTable.add(optionLabel).padTop(5).row();
         }
 
-        // instructions
+        // We check if there are any instructions to display
+        // If there are, we create a label for the instructions
+        // and add it to the main table with padding
         if (instructions != null && !instructions.isEmpty()) {
             Label instructionsLabel = createLabel(instructions, INSTRUCTION_TEXT_SIZE);
             instructionsLabel.setAlignment(Align.center);
             mainTable.add(instructionsLabel).padTop(15).padBottom(10).row();
         }
 
-        // Add the main table to the stage
+        // Finally, we add the main table to the stage
+        // This makes the table visible on the screen
         stage.addActor(mainTable);
     }
 
