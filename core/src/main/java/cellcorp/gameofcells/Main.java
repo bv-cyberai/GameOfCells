@@ -136,6 +136,7 @@ public class Main implements ApplicationListener {
         assetManager.load("rubik_yellow2.png", Texture.class);
         assetManager.load(AssetFileNames.CELL, Texture.class);
         assetManager.load(AssetFileNames.GLUCOSE, Texture.class);
+        assetManager.load(AssetFileNames.DANGER, Texture.class);
         assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.load(AssetFileNames.RIBOSOME_ICON, Texture.class);

@@ -137,6 +137,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     private final HUD hud;
 
+    private PopupInfoScreen infoPopup;
+
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
@@ -182,6 +184,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
+        this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, this::resumeGame);
 
         this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
     }
@@ -211,6 +214,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         handleInput(deltaTimeSeconds);
         update(deltaTimeSeconds);
         draw();
+
+        if (infoPopup.isVisible()) {
+            infoPopup.render(deltaTimeSeconds);
+        }
     }
 
     /**
@@ -225,6 +232,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Update the viewport with the new screen size.
         viewport.update(screenWidth, screenHeight);
         hud.resize(screenWidth, screenHeight);
+        infoPopup.resize(screenWidth, screenHeight);
     }
 
     /**
@@ -290,15 +298,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         if (inputProvider.isKeyJustPressed(Input.Keys.F)) {
             playerCell.removeCellATP(20);
-        }
-
-        // Will eventually be triggered by cell state
-        if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    this, configProvider, PopupInfoScreen.Type.danger
-            ));
         }
 
         // Only move the cell if the game is not paused
@@ -519,6 +518,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.end();
     }
 
+    public void showPopup(PopupInfoScreen.Type type) {
+        // Pause the game when showing the popup
+        pauseGame();
+        infoPopup.show(type);
+    }
+
     /**
      * Hud Getter (Testing method)
      *
@@ -565,11 +570,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public void reportGlucoseCollision() {
         if (!playerCell.hasShownGlucosePopup()) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    this, configProvider, PopupInfoScreen.Type.glucose
-            ));
+            showPopup(PopupInfoScreen.Type.glucose);
             playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
         }
     }

@@ -16,6 +16,11 @@ public class AssetFileNames {
     public static String GLUCOSE = "glucose_orange.png";
 
     /**
+     * The file name for our danger texture.
+     */
+    public static String DANGER = "danger.png";
+
+    /**
      * The file name of the default LibGDX font.
      * Loading this font is equivalent to constructing `new BitmapFont()`,
      * but won't crash test code.
