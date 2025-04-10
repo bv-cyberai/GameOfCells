@@ -135,6 +135,7 @@ public class MenuSystem {
      */
     public void initializeMainMenu(String title, String[] menuOptions, String instructions, Texture wasdArrowsIcon, Texture spaceEnterIcon) {
         clear();
+        
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
 
@@ -252,6 +253,7 @@ public class MenuSystem {
      */
     public void initializePauseMenu(String title, String[] menuOptions, String instructions) {
         clear();
+
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
 
@@ -275,7 +277,7 @@ public class MenuSystem {
         // Instructions
         if (instructions != null && !instructions.isEmpty()) {
             Label instructionsLabel = createLabel(instructions, 0.25f);
-            instructionsLabel.setColor(Color.WHITE);
+            instructionsLabel.setColor(0.8f, 0.9f, 1f, 0.9f);
             instructionsLabel.setAlignment(Align.center);
             mainTable.add(instructionsLabel).padTop(40).row();
         }

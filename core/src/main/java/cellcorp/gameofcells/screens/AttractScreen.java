@@ -109,7 +109,7 @@ public class AttractScreen implements GameOfCellsScreen {
 
     @Override
     public void show() {
-        // Initialize any resources needed for the attrack screen
+        // Initialize any resources needed for the attract screen
         isSimulationRunning = true;
         animationTime = 0f;
         menuSystem.initialize("", new String[]{}, PRESS_ANY_KEY_TEXT);
