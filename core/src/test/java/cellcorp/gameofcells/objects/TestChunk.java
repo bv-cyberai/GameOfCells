@@ -75,17 +75,17 @@ public class TestChunk {
 
     @Test
     public void testFromCoords() {
-        // At time of writing, Chunk.CHUNK_LENGTH == 1600
+        // At time of writing, Chunk.CHUNK_LENGTH == 2000
         var chunk_at_0_0 = Chunk.fromWorldCoords(0, 0);
         assertEquals(new Chunk(0, 0), chunk_at_0_0);
         chunk_at_0_0 = Chunk.fromWorldCoords(1000, 1000);
         assertEquals(new Chunk(0, 0), chunk_at_0_0);
-        chunk_at_0_0 = Chunk.fromWorldCoords(1599, 1599);
+        chunk_at_0_0 = Chunk.fromWorldCoords(1999, 1999);
         assertEquals(new Chunk(0, 0), chunk_at_0_0);
 
-        var chunk_at_1_1 = Chunk.fromWorldCoords(1600, 1600);
+        var chunk_at_1_1 = Chunk.fromWorldCoords(2000, 2000);
         assertEquals(new Chunk(1, 1), chunk_at_1_1);
-        chunk_at_1_1 = Chunk.fromWorldCoords(2000, 2000);
+        chunk_at_1_1 = Chunk.fromWorldCoords(2500, 2500);
         assertEquals(new Chunk(1, 1), chunk_at_1_1);
 
         var chunk_at_neg_1_neg_1 = Chunk.fromWorldCoords(-500, -500);
@@ -125,13 +125,13 @@ public class TestChunk {
 
     @Test
     public void testToRectangle() {
-        // At time of writing, Chunk.CHUNK_LENGTH == 1600
+        // At time of writing, Chunk.CHUNK_LENGTH == 2000
         var chunk = new Chunk(0, 0);
-        var expected = new Rectangle(0, 0, 1600, 1600);
+        var expected = new Rectangle(0, 0, 2000, 2000);
         assertEquals(expected, chunk.toRectangle());
 
         chunk = new Chunk(1000, 0);
-        expected = new Rectangle(1_600_000, 0, 1600, 1600);
+        expected = new Rectangle(2_000_000, 0, 2000, 2000);
         assertEquals(expected, chunk.toRectangle());
     }
 }

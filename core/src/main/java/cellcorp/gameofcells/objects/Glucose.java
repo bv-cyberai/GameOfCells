@@ -50,7 +50,7 @@ public class Glucose {
      *
      * @param batch The gamePlayScreen Spritebatch
      */
-    public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+    public void draw(SpriteBatch batch) {
         // other options for glucose exist within assests.
         var glucoseTexture = assetManager.get("glucose_orange.png", Texture.class);
 
@@ -58,14 +58,12 @@ public class Glucose {
         var bottomLeftY = boundCircle.y - boundCircle.radius;
         var diameter = boundCircle.radius * 2;
 
-        batch.begin();
         batch.draw(glucoseTexture, bottomLeftX, bottomLeftY, diameter, diameter);
-        batch.end();
+    }
 
+    public void draw(ShapeRenderer shapeRenderer) {
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.circle(boundCircle.x, boundCircle.y, boundCircle.radius);
-            shapeRenderer.end();
         }
     }
 

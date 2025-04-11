@@ -33,7 +33,7 @@ public class GlucoseManager {
     /**
      * Max additional spawn chance for a sub-chunk inside a basic zone
      */
-    private static final float MAX_ADDITIONAL_SPAWN_CHANCE = 0.30f;
+    private static final float MAX_ADDITIONAL_SPAWN_CHANCE = 0.10f;
 
     /**
      * Adds a little extra space for spawning around actual zone radius
@@ -324,19 +324,37 @@ public class GlucoseManager {
         // Will unnecessarily draw some glucose, but should be fine.
         var currentChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
         var adjacentChunks = currentChunk.adjacentChunks();
+        spriteBatch.begin();
         for (var chunk : adjacentChunks) {
-            drawInChunk(spriteBatch, shapeRenderer, chunk);
+            drawInChunk(spriteBatch, chunk);
         }
+        spriteBatch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (var chunk : adjacentChunks) {
+            drawInChunk(shapeRenderer, chunk);
+        }
+        shapeRenderer.end();
     }
 
-    private void drawInChunk(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer, Chunk chunk) {
+    private void drawInChunk(SpriteBatch spriteBatch, Chunk chunk) {
         var glucoseList = glucoses.get(chunk);
         if (glucoseList == null) {
             return;
         }
 
         for (var glucose : glucoseList) {
-            glucose.draw(spriteBatch, shapeRenderer);
+            glucose.draw(spriteBatch);
+        }
+    }
+
+    private void drawInChunk(ShapeRenderer shapeRenderer, Chunk chunk) {
+        var glucoseList = glucoses.get(chunk);
+        if (glucoseList == null) {
+            return;
+        }
+
+        for (var glucose : glucoseList) {
+            glucose.draw(shapeRenderer);
         }
     }
 

@@ -85,20 +85,21 @@ public class ZoneManager {
 
 
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
-        drawBasicZones(spriteBatch, shapeRenderer);
-        drawAcidZones(spriteBatch, shapeRenderer);
+        drawZoneMap(basicZones, spriteBatch, shapeRenderer);
+        drawZoneMap(acidZones, spriteBatch, shapeRenderer);
     }
 
-    private void drawAcidZones(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
-        for (var zone : acidZones.values()) {
-            zone.draw(spriteBatch, shapeRenderer);
+    private void drawZoneMap(Map<Chunk, Zone> zoneMap, SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
+        spriteBatch.begin();
+        for (var zone : zoneMap.values()) {
+            zone.draw(spriteBatch);
         }
-    }
-
-    private void drawBasicZones(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
-        for (var zone : basicZones.values()) {
-            zone.draw(spriteBatch, shapeRenderer);
+        spriteBatch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (var zone : zoneMap.values()) {
+            zone.draw(shapeRenderer);
         }
+        shapeRenderer.end();
     }
 
     /**

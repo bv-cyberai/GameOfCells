@@ -91,8 +91,8 @@ public class AttractScreen implements GameOfCellsScreen {
 
     private void initializeGameObjects() {
         this.cell = new Cell(
-            new GamePlayScreen(inputProvider, graphicsProvider, game, assetManager, configProvider), 
-                assetManager, 
+            new GamePlayScreen(inputProvider, graphicsProvider, game, assetManager, configProvider),
+                assetManager,
                 configProvider);
 
         this.glucoseList = new ArrayList<>();
@@ -155,12 +155,12 @@ public class AttractScreen implements GameOfCellsScreen {
         // Return to the main menu if any key is pressed or the screen is touched
         if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY) && !inputProvider.isKeyJustPressed(Input.Keys.ENTER)) {
             game.setScreen(new MainMenuScreen(
-                inputProvider, 
-                graphicsProvider, 
-                game, 
-                assetManager, 
-                camera, 
-                viewport, 
+                inputProvider,
+                graphicsProvider,
+                game,
+                assetManager,
+                camera,
+                viewport,
                 configProvider
             ));
         }
@@ -228,8 +228,9 @@ public class AttractScreen implements GameOfCellsScreen {
 
         // Draw game objects
         cell.draw(spriteBatch, shapeRenderer);
+        spriteBatch.begin();
         for (Glucose glucose : glucoseList) {
-            glucose.draw(spriteBatch, shapeRenderer);
+            glucose.draw(spriteBatch);
         }
 
         particles.draw(spriteBatch);
