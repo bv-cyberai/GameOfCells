@@ -551,7 +551,9 @@ public class ShopScreen implements GameOfCellsScreen {
 
         // Update and draw the particles
         particles.update(delta, VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
+        batch.begin();
         particles.draw(batch);
+        batch.end();
 
         // Handle the input first
         handleInput(delta);

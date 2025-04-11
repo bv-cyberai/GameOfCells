@@ -1,4 +1,5 @@
 package cellcorp.gameofcells.objects;
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GamePlayScreen;
@@ -10,7 +11,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.assets.AssetManager;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

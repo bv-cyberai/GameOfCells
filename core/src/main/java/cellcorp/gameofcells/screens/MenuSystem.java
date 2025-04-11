@@ -40,6 +40,7 @@ public class MenuSystem {
     private final Stage stage;
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
+    private final BitmapFont font;
 
     // The main table that holds the menu elements
     // The menu options to be displayed
@@ -72,6 +73,7 @@ public class MenuSystem {
         this.stage = stage;
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
+        this.font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
     }
 
     // This method will be the default method for initializing a menu
@@ -428,7 +430,6 @@ public class MenuSystem {
      * @return A Label object with the specified text and font size
      */
     private Label createLabel(String text, float delta) {
-        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Label label = new Label(text, labelStyle);
         label.setFontScale(delta);

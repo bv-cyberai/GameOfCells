@@ -264,10 +264,10 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
                 cellWidth, 
                 cellHeight);
         batch.setColor(1, 1, 1, 1); // Reset color to white
-        batch.end();
 
         // Draw particles
-        particles.draw(graphicsProvider.createSpriteBatch());
+        particles.draw(batch);
+        batch.end();
 
         // Draw menu (back option)
         menuSystem.getStage().act();

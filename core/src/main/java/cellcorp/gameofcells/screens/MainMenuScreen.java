@@ -109,9 +109,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Load white pixel texture and initialize particles
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
-                new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)),
-                assetManager,
-                graphicsProvider
+                new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT),
+                        graphicsProvider.createSpriteBatch()),
+                        assetManager,
+                        graphicsProvider
         );
 
         this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
@@ -296,7 +297,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Draw background elements
         SpriteBatch batch = graphicsProvider.createSpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-        batch.begin();
         
         // Draw sem-transparent cell texture
         float cellWidth = 500;
@@ -304,6 +304,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         float cellX = camera.position.x - cellWidth / 2;
         float cellY = camera.position.y - cellHeight / 2;
 
+        batch.begin();
         batch.setColor(1, 1, 1, 0.15f);
         batch.draw(cellTexture,
                 cellX,
@@ -311,10 +312,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
                 cellWidth, 
                 cellHeight);
         batch.setColor(1, 1, 1, 1); // Reset color to white
-        batch.end();
-
+        
         // Draw the particles
-        particles.draw(graphicsProvider.createSpriteBatch());
+        particles.draw(batch);
+        batch.end();
 
         // Draw the menu system
         menuSystem.getStage().act();

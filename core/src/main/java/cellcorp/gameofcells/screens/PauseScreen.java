@@ -343,8 +343,10 @@ public class PauseScreen implements GameOfCellsScreen {
 
         cell.draw(batch, shapeRenderer);
 
+        batch.begin();
         // Draw the particles
         particles.draw(batch);
+        batch.end();
 
         // Draw the menu
         menuSystem.getStage().act();

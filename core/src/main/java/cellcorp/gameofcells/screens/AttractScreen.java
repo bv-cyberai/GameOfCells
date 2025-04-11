@@ -224,6 +224,7 @@ public class AttractScreen implements GameOfCellsScreen {
         viewport.apply(true);
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
 
         // Draw game objects
         cell.draw(spriteBatch, shapeRenderer);
@@ -232,6 +233,7 @@ public class AttractScreen implements GameOfCellsScreen {
         }
 
         particles.draw(spriteBatch);
+        spriteBatch.end();
         menuSystem.getStage().draw();
     }
 

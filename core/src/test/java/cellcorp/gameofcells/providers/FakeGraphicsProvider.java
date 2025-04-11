@@ -79,7 +79,7 @@ public class FakeGraphicsProvider implements GraphicsProvider {
 
     @Override
     public BitmapFont createBitmapFont() {
-        return new BitmapFont();
+        return Mockito.mock(BitmapFont.class);
     }
 
     @Override

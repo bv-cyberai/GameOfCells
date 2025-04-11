@@ -1,28 +1,17 @@
 package cellcorp.gameofcells.screens;
 
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.Config;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 import cellcorp.gameofcells.providers.ConfigProvider;
@@ -131,15 +120,23 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     private String getMessageFromConfig(Type type) {
         try {
-            return switch (type) {
-                case glucose -> configProvider.getStringValue("glucosePopupMessage");
-                case danger -> configProvider.getStringValue("dangerPopupMessage");
-            };
+            switch (type) {
+                case glucose:
+                    return configProvider.getStringValue("glucosePopupMessage");
+                case danger:
+                    return configProvider.getStringValue("dangerPopupMessage");
+                default:
+                    throw new IllegalArgumentException("Unknown type: " + type);
+            }
         } catch (Exception e) {
-            return switch (type) {
-                case glucose -> "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
-                case danger -> "Danger! You are in a dangerous area.\n\nGradient color 'X damages cell health.";
-            };
+            switch (type) {
+                case glucose:
+                    return "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
+                case danger:
+                    return "Danger! You are in a dangerous area.\n\nGradient color 'X damages cell health.";
+                default:
+                    return "Unknown type: " + type;
+            }
         }
     }
 

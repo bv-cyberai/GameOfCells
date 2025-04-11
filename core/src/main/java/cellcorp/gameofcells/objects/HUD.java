@@ -316,7 +316,7 @@ public class HUD {
 
         if (!warningExists) {
             // Add the notification with a very long duration (effectively infinite)
-            addNotification("DANGER: Acid zone! You're taking damage!", Float.MAX_VALUE, Color.RED);
+            addNotification("DANGER: Acid zone! You're taking damage!", Float.MAX_VALUE, Color.GOLD);
         }
     }
 
