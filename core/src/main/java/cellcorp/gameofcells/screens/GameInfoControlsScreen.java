@@ -120,9 +120,11 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
-            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)),
-            assetManager,
-            graphicsProvider
+            new Stage(
+                graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), 
+                graphicsProvider.createSpriteBatch()), 
+                assetManager,
+                graphicsProvider
         );
 
         this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);

@@ -58,7 +58,7 @@ public class TestAttractScreen {
     @Test
     public void TestAttractScreenIntialState() {
         GameRunner gameRunner = GameRunner.create();
-        gameRunner.runForSeconds(10f);
+        gameRunner.runForSeconds(21f);
         
         var attractScreen = gameRunner.game.getScreen();
         assertTrue(attractScreen instanceof AttractScreen, "AttractScreen should be the current screen");

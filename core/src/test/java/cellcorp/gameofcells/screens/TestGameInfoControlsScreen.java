@@ -110,26 +110,18 @@ public class TestGameInfoControlsScreen {
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step();
 
         var gameInfoControlsScreen = gameRunner.game.getScreen();
         assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
 
-        GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
-
-        // Simulate pressing any key returns to the settings screen
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ANY_KEY));
+        // Simulate pressing ESCAPE returns to the mainmenu screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
 
         // Verify that the screen has transitioned back to the settings screen
-        assertNotEquals(gameInfoControlsScreen2, gameRunner.game.getScreen());
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
     }
 
     // /**
@@ -185,10 +177,6 @@ public class TestGameInfoControlsScreen {
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step();
 
         var gameInfoControlsScreen = gameRunner.game.getScreen();
         assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
@@ -198,10 +186,6 @@ public class TestGameInfoControlsScreen {
     public void TestMessageRenderingPosition() {
         GameRunner gameRunner = GameRunner.create();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-        gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();

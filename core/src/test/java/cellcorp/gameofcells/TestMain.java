@@ -1,5 +1,6 @@
 package cellcorp.gameofcells;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -73,7 +74,19 @@ public class TestMain {
         Gdx.gl20 = gl20;
 
         Gdx.files = Mockito.mock(Files.class);
-        Mockito.when(Gdx.files.internal(Mockito.anyString())).thenReturn(Mockito.mock(FileHandle.class));
+        FileHandle fileHandle = Mockito.mock(FileHandle.class);
+
+        // Return fake config string that has valid values
+        String mockConfig = """
+            cellHealth:100
+            cellATP:30
+            maxHealth:100
+            maxATP:100
+            [descriptions]/
+        """;
+
+        Mockito.when(fileHandle.readString()).thenReturn(mockConfig);
+        Mockito.when(Gdx.files.internal(Mockito.anyString())).thenReturn(fileHandle);
     }
 
     @AfterAll

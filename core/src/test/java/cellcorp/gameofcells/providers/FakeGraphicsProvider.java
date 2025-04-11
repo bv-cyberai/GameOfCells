@@ -79,7 +79,8 @@ public class FakeGraphicsProvider implements GraphicsProvider {
 
     @Override
     public BitmapFont createBitmapFont() {
-        return Mockito.mock(BitmapFont.class);
+        return new BitmapFont();
+        // For some reason, this works for the bitmapfont cache being null error.
     }
 
     @Override

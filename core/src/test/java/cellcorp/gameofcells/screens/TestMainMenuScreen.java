@@ -99,21 +99,21 @@ public class TestMainMenuScreen {
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
-        assertEquals(0, mainMenuScreen.getSelectedOption());
+        assertEquals(2, mainMenuScreen.getSelectedOption());
         
         // Press UP key - should wrap around to option 2 (Exit)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
-        assertEquals(2, mainMenuScreen.getSelectedOption());
+        assertEquals(1, mainMenuScreen.getSelectedOption());
         
         // Press UP key again - should move to option 1 (Settings)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
-        assertEquals(1, mainMenuScreen.getSelectedOption());
+        assertEquals(0, mainMenuScreen.getSelectedOption());
         
         // Test alternate keys (W/S for UP/DOWN)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.W));

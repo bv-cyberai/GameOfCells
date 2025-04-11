@@ -57,7 +57,6 @@ public class AssetFileNames {
      */
     public static String HUD_FONT = "rubik.fnt";
 
-
     /**
      * The file name of the font used in the HUD.
      * This is needed due to the way bitmap fonts work.

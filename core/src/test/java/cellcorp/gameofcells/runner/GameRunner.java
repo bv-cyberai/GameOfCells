@@ -8,6 +8,9 @@ import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.mockito.Mockito;
 
@@ -35,6 +38,14 @@ public class GameRunner {
         var inputProvider = new FakeInputProvider();
         var graphicsProvider = new FakeGraphicsProvider();
         var assetManager = Mockito.mock(AssetManager.class);
+
+        var font = new BitmapFont();
+        Mockito.when(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class)).thenReturn(font);
+        Mockito.when(assetManager.get("rubik.fnt", BitmapFont.class)).thenReturn(font);
+
+        Mockito.when(assetManager.get(AssetFileNames.WASD_ARROWS_ICON, Texture.class)).thenReturn(Mockito.mock(Texture.class));
+        Mockito.when(assetManager.get(AssetFileNames.SPACE_ENTER_ICON, Texture.class)).thenReturn(Mockito.mock(Texture.class));
+
         var camera = Mockito.mock(OrthographicCamera.class);
         var viewport = Mockito.mock(FitViewport.class);
         var configProvider = new ConfigProvider();

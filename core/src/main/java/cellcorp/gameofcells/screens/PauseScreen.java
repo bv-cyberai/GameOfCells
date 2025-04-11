@@ -112,7 +112,7 @@ public class PauseScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
-            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT)),
+            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch()),
             assetManager,
             graphicsProvider
         );
