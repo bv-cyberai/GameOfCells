@@ -10,6 +10,23 @@ public class AssetFileNames {
      */
     public static String CELL = "Cell.png";
 
+    
+    /*
+     * The file name of our hud texture for the movement controls
+     */
+    public static String MOVE_KEY = "key_start_2_stroke_cropped.png";
+    /*
+     * The file name of our hud texture for the pause button
+     */
+    public static String PAUSE_BUTTON = "p_key_2px_cropped.png";
+    /*
+     * The file name of our hud texture for the quit button
+     */
+    public static String QUIT_BUTTON = "esc_key_2px_cropped.png";
+    /*
+     * The file name of our hud texture for the shop button
+     */
+    public static String SHOP_BUTTON = "q_key_2px_cropped.png";
     /**
      * The file name for our glucose texture.
      */

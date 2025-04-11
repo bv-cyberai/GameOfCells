@@ -1,7 +1,10 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.screens.ShopScreen;
 import cellcorp.gameofcells.objects.NotificationManager;
+
+import org.w3c.dom.Text;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -94,12 +97,19 @@ public class HUD {
     private final int maxATP;
     private float timer = 0;
 
+    // Text game control buttons
+    private String moveControl = "Move";
+    private String pauseButton = "Pause";
+    private String quitbutton = "Quit";
+    private String shopButton = "Upgrade";
+
     // Positioning Constants
     private static final float HEALTH_BAR_Y = 770f;
     private static final float ATP_BAR_Y = 740f;
     private static final float NOTIFICATION_DURATION = 3f;
     private static final float NOTIFICATION_VERTICAL_SPACING = 30f;
     private static final float NOTIFICATION_Y_POSITION = 700f;
+
 
 
     /**
@@ -134,20 +144,33 @@ public class HUD {
         this.atpString = "ATP: " + maxATP + "/" + maxATP;
         this.cellHealthString = "HEALTH: " + maxHealth + "/" + maxHealth;
 
-        loadFonts();
+        loadHudElements();
+
     }
 
-    /**
-     * Load Fonts
+    /*
+     * loadHudElements
+     *
+     * Loads the icons and elements for the hud
      */
-    private void loadFonts() {
+
+    private void loadHudElements() {
         if (assetManager != null) {
             assetManager.load("rubik.fnt", BitmapFont.class);
             assetManager.load("rubik1.png", Texture.class);
             assetManager.load("rubik2.png", Texture.class);
+            assetManager.load("space_enter_stroke.png", Texture.class);
+            assetManager.load("key_start_2_stroke_cropped.png", Texture.class);
+            assetManager.load("p_key_2px_cropped.png", Texture.class);
+            assetManager.load("q_key_2px_cropped.png", Texture.class);
+            assetManager.load("esc_key_2px_cropped.png", Texture.class);
             assetManager.finishLoading();
+
         }
     }
+
+
+
 
     /**
      * Draw
@@ -156,6 +179,7 @@ public class HUD {
     public void draw(Viewport callerViewport) {
         viewport.apply(true);
         this.notificationFont.getData().setScale(hudFontScale);
+
 
         // Set up rendering
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -166,6 +190,7 @@ public class HUD {
         drawHudText(batch);
         drawBarText(batch);
         drawNotifications(batch);
+        drawHudIcons(batch);
 
         // Reset the projection matrix to the caller's viewport
         // This is important to avoid breaking the caller's viewport.
@@ -185,10 +210,33 @@ public class HUD {
         font.draw(batch, cellHealthString, 10, 790);
         font.draw(batch, atpString, 10, 760);
         font.draw(batch, timerString, 10, 730);
+        font.draw(batch, pauseButton, 850, 740);
+        font.draw(batch, moveControl, 850, 700);
+        font.draw(batch, quitbutton, 850, 660);
+        font.draw(batch, shopButton, 850, 630);
         //Was using to track time, but will likely be useful when tracking down our stutter bug.
 //        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
     }
+    /*
+     * Draws Hud Icons
+     *
+     * Draws icons for game controls on the hud
+     */
+    //Draws icons for game controls
+    private void drawHudIcons(SpriteBatch batch) {
+    var shopTexture = assetManager.get(AssetFileNames.SHOP_BUTTON, Texture.class);
+    var moveTexture = assetManager.get(AssetFileNames.MOVE_KEY, Texture.class);
+    var pauseTexture = assetManager.get(AssetFileNames.PAUSE_BUTTON, Texture.class);
+    var quitTexture = assetManager.get(AssetFileNames.QUIT_BUTTON, Texture.class);
+    batch.begin();
+    batch.draw(shopTexture, 980, 605,30, 30);
+    batch.draw(moveTexture, 961, 664,70, 50);
+    batch.draw(pauseTexture, 982,715,30,30);
+    batch.draw(quitTexture, 980,634,30,30);
+    batch.end();
+    }
+
 
     private void drawEnergyBars(ShapeRenderer shapeRenderer) {
         energyBars.draw(shapeRenderer);
