@@ -154,7 +154,7 @@ public class Main implements ApplicationListener {
         // I know. I know.
         // HeadlessFiles isn't available to GWT, cause the headless backend isn't.
         // I'm sure there's a better way to do this.
-        if(Gdx.files !=null && !(Gdx.files.getClass().getName().equals("com.badlogic.gdx.backends.headless.HeadlessFiles"))) {
+        if(Gdx.files !=null && !(Gdx.files.getClass().getName().contains("Mockito")) && !(Gdx.files.getClass().getName().contains("Headless"))) {
             configProvider.loadConfig();
         }
         // May need to set to gameScreenManager at somepoint.

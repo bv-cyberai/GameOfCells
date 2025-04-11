@@ -3,6 +3,8 @@ package cellcorp.gameofcells.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import cellcorp.gameofcells.objects.organelle.*;
+import cellcorp.gameofcells.objects.size.*;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -28,8 +30,6 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.objects.organelle.*;
-import cellcorp.gameofcells.objects.size.*;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 
@@ -482,7 +482,7 @@ public class ShopScreen implements GameOfCellsScreen {
     protected Label createLabel(String text, float scale) {
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        Label label = new Label(text, labelStyle);
+        Label label = graphicsProvider.createLabel(text, labelStyle);
         label.setFontScale(scale);
         return label;
     }

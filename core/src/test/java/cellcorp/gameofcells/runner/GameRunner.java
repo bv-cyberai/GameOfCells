@@ -39,7 +39,7 @@ public class GameRunner {
         var graphicsProvider = new FakeGraphicsProvider();
         var assetManager = Mockito.mock(AssetManager.class);
 
-        var font = new BitmapFont();
+        var font = Mockito.mock(BitmapFont.class);
         Mockito.when(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class)).thenReturn(font);
         Mockito.when(assetManager.get("rubik.fnt", BitmapFont.class)).thenReturn(font);
 

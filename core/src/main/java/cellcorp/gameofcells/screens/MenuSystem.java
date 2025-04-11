@@ -162,13 +162,13 @@ public class MenuSystem {
         Table controlsTable = new Table();
         controlsTable.defaults().pad(8);
 
-        Image wasdImage = new Image(wasdArrowsIcon);
+        Image wasdImage = graphicsProvider.createImage(wasdArrowsIcon);
         wasdImage.setColor(0.8f, 0.9f, 1f, 0.9f);
         controlsTable.add(wasdImage)
                 .size(150, 150 * (428f/636f)) // Smaller size
                 .padRight(20);
 
-        Image spaceImage = new Image(spaceEnterIcon);
+        Image spaceImage = graphicsProvider.createImage(spaceEnterIcon);
         spaceImage.setColor(0.8f, 0.9f, 1f, 0.9f);
         controlsTable.add(spaceImage)
                 .size(180, 180 * (202f/800f)); // Smaller size
@@ -431,7 +431,7 @@ public class MenuSystem {
      */
     private Label createLabel(String text, float delta) {
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        Label label = new Label(text, labelStyle);
+        Label label = graphicsProvider.createLabel(text, labelStyle);
         label.setFontScale(delta);
         return label;
     } 

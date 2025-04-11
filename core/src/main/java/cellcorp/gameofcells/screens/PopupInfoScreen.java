@@ -69,7 +69,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        Label messageLabel = new Label(message, labelStyle);
+        Label messageLabel = graphicsProvider.createLabel(message, labelStyle);
         messageLabel.setColor(new Color(1f, 1f, 1f, 0.95f));
         messageLabel.setWrap(true);
         messageLabel.setAlignment(Align.center);
