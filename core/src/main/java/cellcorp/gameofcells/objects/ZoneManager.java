@@ -66,6 +66,17 @@ public class ZoneManager {
             damageCounter += damage;
         }
     }
+    
+    public Map<Chunk, Zone> basicZonesInChunks(List<Chunk> chunks) {
+        Map<Chunk, Zone> map = new HashMap<>();
+        for (var chunk : chunks) {
+            var zone = basicZones.get(chunk);
+            if (zone != null) {
+                map.put(chunk, zone);
+            }
+        }
+        return map;
+    }
 
     /**
      * Distance from the given location to the nearest zone, if any exist.
@@ -73,13 +84,22 @@ public class ZoneManager {
     public Optional<Double> distanceToNearestAcidZone(float x, float y) {
         return distanceToNearestZone(acidZones, x, y);
     }
+//
+//    public Optional<Double> distanceToNearestBasicZone(float x, float y) {
+//        return distanceToNearestZone(basicZones, x, y);
+//    }
 
-    public Optional<Double> distanceToNearestBasicZone(float x, float y) {
-        return distanceToNearestZone(basicZones, x, y);
-    }
-
-    private Optional<Double> distanceToNearestZone(Map<Chunk, Zone> zoneMap, float x, float y) {
-        var nearestZone = zoneMap.values().stream().min(Comparator.comparingDouble(z -> z.distanceFrom(x, y)));
+    public Optional<Double> distanceToNearestZone(Map<Chunk, Zone> zoneMap, float x, float y) {
+        // GWT emulates stream -- very slowly. We'll use enhanced for instead.
+        var lowestDistance = Double.MAX_VALUE;
+        Optional<Zone> nearestZone = Optional.empty();
+        for (var zone: zoneMap.values()) {
+            var distance = zone.distanceFrom(x, y) ;
+            if (distance < lowestDistance) {
+                lowestDistance = distance;
+                nearestZone = Optional.of(zone);
+            }
+        }
         return nearestZone.map(z -> z.distanceFrom(x, y));
     }
 

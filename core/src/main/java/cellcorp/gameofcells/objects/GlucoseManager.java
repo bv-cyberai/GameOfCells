@@ -163,7 +163,7 @@ public class GlucoseManager {
                     continue;
                 }
 
-                float spawnChance = spawnChance(center.x, center.y);
+                float spawnChance = spawnChance(chunk, center.x, center.y);
 
                 if (rand.nextFloat() <= spawnChance) {
                     var glucose = spawnInSubChunk(subChunk);
@@ -175,8 +175,10 @@ public class GlucoseManager {
         glucoses.put(chunk, glucoseList);
     }
 
-    private float spawnChance(float x, float y) {
-        var distance = zoneManager.distanceToNearestBasicZone(x, y);
+    private float spawnChance(Chunk chunk, float x, float y) {
+        var basicZones = zoneManager.basicZonesInChunks(chunk.adjacentChunks());
+
+        var distance = zoneManager.distanceToNearestZone(basicZones, x, y);
         float additionalSpawnChance;
         if (distance.isEmpty()) {
             additionalSpawnChance = 0;
