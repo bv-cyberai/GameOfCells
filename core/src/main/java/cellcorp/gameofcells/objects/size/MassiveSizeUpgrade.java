@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.screens.SizeUpgradeScreen;
 
 public class MassiveSizeUpgrade extends SizeUpgrade {
     public MassiveSizeUpgrade() {
@@ -31,7 +30,7 @@ public class MassiveSizeUpgrade extends SizeUpgrade {
     }
 
     @Override
-    protected boolean isPreviousUpgradePurchased(SizeUpgradeScreen sizeUpgradeScreen) {
-        return sizeUpgradeScreen.hasLargeSizeUpgrade();
+    protected boolean isPreviousUpgradePurchased(Cell cell) {
+        return cell.hasLargeSizeUpgrade();
     }
 }

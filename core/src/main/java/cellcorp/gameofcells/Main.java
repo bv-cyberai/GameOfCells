@@ -136,7 +136,9 @@ public class Main implements ApplicationListener {
         assetManager.load("rubik_yellow2.png", Texture.class);
         assetManager.load(AssetFileNames.CELL, Texture.class);
         assetManager.load(AssetFileNames.GLUCOSE, Texture.class);
+        assetManager.load(AssetFileNames.DANGER, Texture.class);
         assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
+        assetManager.load(AssetFileNames.HUD_FONT, BitmapFont.class);
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.load(AssetFileNames.RIBOSOME_ICON, Texture.class);
         assetManager.load(AssetFileNames.FLAGELLA_ICON, Texture.class);
@@ -145,11 +147,14 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.WHITE_PIXEL, Texture.class);
         assetManager.load(AssetFileNames.ACID_ZONE, Texture.class);
         assetManager.load(AssetFileNames.BASIC_ZONE, Texture.class);
+        assetManager.load(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
+        assetManager.load(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
         assetManager.finishLoading();
+        
         // I know. I know.
         // HeadlessFiles isn't available to GWT, cause the headless backend isn't.
         // I'm sure there's a better way to do this.
-        if(Gdx.files !=null && !(Gdx.files.getClass().getName().equals("com.badlogic.gdx.backends.headless.HeadlessFiles"))) {
+        if(Gdx.files !=null && !(Gdx.files.getClass().getName().contains("Mockito")) && !(Gdx.files.getClass().getName().contains("Headless"))) {
             configProvider.loadConfig();
         }
         // May need to set to gameScreenManager at somepoint.

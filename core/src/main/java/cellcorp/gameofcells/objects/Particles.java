@@ -36,11 +36,9 @@ public class Particles {
     }
 
     public void draw(SpriteBatch batch) {
-        batch.begin();
         for (Particle particle : particles) {
             particle.draw(batch);
         }
-        batch.end();
     }
 
     public void dispose() {

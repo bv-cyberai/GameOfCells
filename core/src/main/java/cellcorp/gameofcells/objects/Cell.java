@@ -502,7 +502,7 @@ public class Cell {
      *
      * @return cellSize
      */
-    public int getcellSize() {
+    public int getCellSize() {
         return (int) cellSize;
     }
 
@@ -557,6 +557,10 @@ public class Cell {
      */
     public int getMaxATP() {
         return MAX_ATP;
+    }
+
+    public float getHeight() {
+        return cellSize;
     }
 
     /**

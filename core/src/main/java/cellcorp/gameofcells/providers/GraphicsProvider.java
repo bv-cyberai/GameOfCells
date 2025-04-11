@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
@@ -127,4 +130,8 @@ public interface GraphicsProvider {
      * @return
      */
     Matrix4 getScreenProjectionMatrix();
+
+    Label createLabel(CharSequence text, Label.LabelStyle labelStyle);
+
+    Image createImage(Texture texture);
 }

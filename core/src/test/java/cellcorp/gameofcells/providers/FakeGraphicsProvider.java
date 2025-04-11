@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
@@ -79,11 +81,22 @@ public class FakeGraphicsProvider implements GraphicsProvider {
 
     @Override
     public BitmapFont createBitmapFont() {
-        return new BitmapFont();
+        return Mockito.mock(BitmapFont.class);
+        // For some reason, this works for the bitmapfont cache being null error.
     }
 
     @Override
     public Matrix4 getScreenProjectionMatrix() {
         return Mockito.mock(Matrix4.class);
+    }
+
+    @Override
+    public Label createLabel(CharSequence text, Label.LabelStyle labelStyle) {
+        return Mockito.mock(Label.class);
+    }
+
+    @Override
+    public Image createImage(Texture texture) {
+        return Mockito.mock(Image.class);
     }
 }

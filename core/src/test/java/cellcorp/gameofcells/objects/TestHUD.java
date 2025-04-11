@@ -14,6 +14,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.ConfigProvider;
@@ -63,6 +64,11 @@ public class TestHUD {
         var fakeGraphicsProvider = new FakeGraphicsProvider();
         var fakeAssetManager = Mockito.mock(AssetManager.class);
         var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        var fakeFont = Mockito.mock(BitmapFont.class);
+        var fakeFontData = Mockito.mock(BitmapFont.BitmapFontData.class);
+        Mockito.when(fakeFont.getData()).thenReturn(fakeFontData);
+        Mockito.when(fakeAssetManager.get("rubik.fnt", BitmapFont.class)).thenReturn(fakeFont);
+        Mockito.when(fakeAssetManager.get(Mockito.anyString(), Mockito.eq(BitmapFont.class))).thenReturn(fakeFont);
         
         Mockito.when(fakeConfigProvider.getIntValue("cellHealth")).thenReturn(100);
         Mockito.when(fakeConfigProvider.getIntValue("cellATP")).thenReturn(30);

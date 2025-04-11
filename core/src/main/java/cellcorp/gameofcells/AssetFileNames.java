@@ -16,6 +16,11 @@ public class AssetFileNames {
     public static String GLUCOSE = "glucose_orange.png";
 
     /**
+     * The file name for our danger texture.
+     */
+    public static String DANGER = "danger.png";
+
+    /**
      * The file name of the default LibGDX font.
      * Loading this font is equivalent to constructing `new BitmapFont()`,
      * but won't crash test code.
@@ -52,7 +57,6 @@ public class AssetFileNames {
      */
     public static String HUD_FONT = "rubik.fnt";
 
-
     /**
      * The file name of the font used in the HUD.
      * This is needed due to the way bitmap fonts work.
@@ -84,4 +88,14 @@ public class AssetFileNames {
      * change.
      */
     public static String TEST_CONFIG = "test_config.txt";
+
+    /**
+     * The file name for the WASD and arrow keys icon.
+     */
+    public static String WASD_ARROWS_ICON = "keys_stroke_1.png";
+
+    /**
+     * The file name for the space and enter keys icon.
+     */
+    public static String SPACE_ENTER_ICON = "space_enter_stroke_1.png";
 }

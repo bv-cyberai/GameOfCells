@@ -1,10 +1,8 @@
 package cellcorp.gameofcells.objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.TestMain;
 import cellcorp.gameofcells.runner.GameRunner;
-import cellcorp.gameofcells.screens.SettingsScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
@@ -14,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Files;
 
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
@@ -27,6 +27,11 @@ public class TestCell {
     @BeforeAll
     public static void setup() {
         TestMain.setUpLibGDX();
+        Gdx.files = Mockito.mock(Files.class);
+        Mockito.when(Gdx.files.internal(Mockito.anyString()))
+            .thenReturn(Mockito.mock(FileHandle.class));
+        Mockito.when(Gdx.files.internal(Mockito.anyString()).readString())
+            .thenReturn("cellHealth:100\ncellATP:30\nmaxHealth:100\nmaxATP:100\n[descriptions]/");
     }
 
     @Test

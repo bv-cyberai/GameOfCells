@@ -2,12 +2,11 @@ package cellcorp.gameofcells.objects.organelle;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Upgrade;
-import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
 
 /**
  * Base class for all organelle upgrades
  */
-public abstract class OrganelleUpgrade implements Upgrade<OrganelleUpgradeScreen> {
+public abstract class OrganelleUpgrade implements Upgrade {
     protected String name;
     protected int cost;
     protected String description;
@@ -76,11 +75,12 @@ public abstract class OrganelleUpgrade implements Upgrade<OrganelleUpgradeScreen
      * @return true if the upgrade can be purchased, false otherwise
      */
     @Override
-    public boolean canPurchase(Cell cell, OrganelleUpgradeScreen screen) {
-        int requiredSizeInCellUnits = 100 + requiredSize * 100;
-        return cell.getCellATP() >= cost && 
-            cell.getcellSize() >= requiredSizeInCellUnits &&
-            !isAlreadyPurchased(cell) && isPreviousUpgradePurchased(screen);
+    public boolean canPurchase(Cell cell) {
+        int currentSizeUnits = (cell.getCellSize() - 100 )/ 100;
+        return cell.getCellATP() >= cost &&
+            currentSizeUnits >= requiredSize &&
+            !isAlreadyPurchased(cell) &&
+            isPreviousUpgradePurchased(cell);
     }
 
     /**
@@ -102,5 +102,5 @@ public abstract class OrganelleUpgrade implements Upgrade<OrganelleUpgradeScreen
      * @param screen
      * @return
      */
-    protected abstract boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen screen);
+    protected abstract boolean isPreviousUpgradePurchased(Cell cell);
 }

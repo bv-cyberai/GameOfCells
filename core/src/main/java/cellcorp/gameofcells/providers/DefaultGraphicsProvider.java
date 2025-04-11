@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
@@ -92,4 +94,13 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
         return new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
+    @Override
+    public Label createLabel(CharSequence text, Label.LabelStyle labelStyle) {
+        return new Label(text, labelStyle);
+    }
+
+    @Override
+    public Image createImage(Texture texture) {
+        return new Image(texture);
+    }
 }

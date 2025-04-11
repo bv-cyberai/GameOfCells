@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.screens.SizeUpgradeScreen;
 
 public class SmallSizeUpgrade extends SizeUpgrade {
     public SmallSizeUpgrade() {
@@ -31,7 +30,7 @@ public class SmallSizeUpgrade extends SizeUpgrade {
     }
 
     @Override
-    protected boolean isPreviousUpgradePurchased(SizeUpgradeScreen sizeUpgradeScreen) {
+    protected boolean isPreviousUpgradePurchased(Cell cell) {
         return true;
     }
 }

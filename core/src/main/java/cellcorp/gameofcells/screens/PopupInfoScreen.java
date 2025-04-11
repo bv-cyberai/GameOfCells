@@ -1,291 +1,177 @@
 package cellcorp.gameofcells.screens;
 
-import cellcorp.gameofcells.providers.ConfigProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
-
-/**
- * PopupInfoScreen
- *
- * Provides the ability to create a popup with informational text.
- *
- * @author Brendon Vinyard / vineyabn207
- * @author Andrew Sennoga-Kimuli / sennogat106
- * @author Mark Murphy / murphyml207
- * @author Tim Davey / daveytj206
- * @date 03/18/2025
- * @course CIS 405
- * @assignment GameOfCells
- */
+import cellcorp.gameofcells.providers.ConfigProvider;
 
 public class PopupInfoScreen implements GameOfCellsScreen {
+    // Types - Add to this as new pop-ups are desired.
+    public enum Type { glucose, danger }
 
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
     /**
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    public static final int VIEW_RECT_WIDTH = 1200;
+    public static final int VIEW_RECT_WIDTH = 1280;
     /**
      * Height of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
     public static final int VIEW_RECT_HEIGHT = 800;
 
-    // Types - Add to this as new pop-ups are desired.
-    public enum Type {
-        glucose, danger
-    };
-
-    private final Type type;
-
-    // game
-    private final Main game;
-    private GameOfCellsScreen previousScreen;
-
-    // providers
-    private final InputProvider inputProvider;
+    private final Stage stage;
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
+    private final InputProvider inputProvider;
+    private final Runnable onClose;
 
-    // Batch/Camera
-    private final FitViewport viewport;
-    private final SpriteBatch spriteBatch;
-    private ShapeRenderer shape;
+    private boolean visible = false;
 
-    // Font and Font Properties
-    private BitmapFont font;
-    // used to center text.
-    private final GlyphLayout layout;
-    private float popUpSize;
-
-    // Message and properties.
-    private String message;
-    private float messageY;
-    private float messageX;
-    private float padding;
-
-    /**
-     * Popup Screen Constructor
-     *
-     * Creates a new popup with the given type.
-     *
-     * @param inputProvider    - The input provider
-     * @param assetManager     - The Asset manager
-     * @param graphicsProvider - The graphics provider
-     * @param game             - The game instance
-     * @param previousScreen   - The previous screen
-     * @param type             - The type of popup to create -- See type enum.
-     */
-    public PopupInfoScreen(InputProvider inputProvider, AssetManager assetManager, GraphicsProvider graphicsProvider,
-        Main game, GameOfCellsScreen previousScreen,ConfigProvider configProvider, Type type) {
-
-        this.type = type;
-
-        // Game
-        this.game = game;
-        this.previousScreen = previousScreen;
-        // Providers
-        this.inputProvider = inputProvider;
+    public PopupInfoScreen(
+            GraphicsProvider graphicsProvider,
+            AssetManager assetManager,
+            ConfigProvider configProvider,
+            InputProvider inputProvider,
+            Viewport viewport,
+            Runnable onClose) {
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
-
-
-        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
-        this.spriteBatch = graphicsProvider.createSpriteBatch();
         this.configProvider = configProvider;
+        this.inputProvider = inputProvider;
+        this.onClose = onClose;
 
-        // Font/Message
-        layout = new GlyphLayout();
-
-        message = "";
-        messageX = 0;
-        messageY = 0;
-
-        padding = -10; // negative padding shifts y down, and x left. Should not need to be changed.
-        popUpSize = 500f;
-        setMessageOrDefault();
+        this.stage = new Stage(graphicsProvider.createFitViewport(
+            GamePlayScreen.VIEW_RECT_WIDTH, 
+            GamePlayScreen.VIEW_RECT_HEIGHT), 
+            graphicsProvider.createSpriteBatch());
     }
 
-    @Override
-    public void show() {
-        // throw new UnsupportedOperationException("Unimplemented method 'show'");
+    public void show(Type type) {
+        stage.clear(); // Remove any previous popups
+        visible = true;
+
+        String message = getMessageFromConfig(type);
+        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label messageLabel = graphicsProvider.createLabel(message, labelStyle);
+        messageLabel.setColor(new Color(1f, 1f, 1f, 0.95f));
+        messageLabel.setWrap(true);
+        messageLabel.setAlignment(Align.center);
+
+        Table borderTable = new Table();
+        borderTable.setBackground(new TextureRegionDrawable(graphicsProvider.createWhitePixelTexture()));
+        borderTable.setColor(Color.LIGHT_GRAY);
+
+
+        Table inner = new Table();
+        inner.setColor(new Color(.1f, .2f, .25f, 1f));
+        inner.setBackground(new TextureRegionDrawable(graphicsProvider.createWhitePixelTexture()));
+        inner.add(messageLabel).width(460).pad(30).expandY().fillY();
+        inner.pack();
+
+        borderTable.add(inner).pad(3);
+
+        Table outer = new Table();
+        outer.setFillParent(true);
+        outer.center();
+        outer.add(borderTable).width(500).height(20);
+
+        stage.addActor(outer);
     }
 
-    @Override
     public void render(float delta) {
-        handleInput(delta);
-        draw();
-    }
+        if (!visible) return;
 
-    /**
-     * Message Setter
-     *
-     * Will set the message of the popup based on the given type of the popup.
-     */
-//    private void setMessage() {
-//        switch (type) {
-//            case glucose:
-//                message = "You've collected glucose!" + "\n" + "\n" + "Cells convert glucose into ATP for energy."
-//                        + "\n" + "\n" + "Press 'C' to continue!";
-//                break;
-//            case danger:
-//                message = "You're in danger!" + "\n\n" + "Gradient color 'X' damages cell health" + "\n\n"
-//                        + "Press 'C' to continue!";
-//                break;
-//            default:
-//                break;
-//
-//        }
-//    }
-
-    private void setMessageOrDefault() {
-        switch (type) {
-            case glucose:
-                try {
-                    message = configProvider.getStringValue("glucosePopupMessage");
-                }catch (NullPointerException e) {
-                    message = "You've collected glucose!" + "\n" + "\n" + "Cells convert glucose into ATP for energy."
-                        + "\n" + "\n" + "Press 'Space' to continue!";
-                }
-                break;
-            case danger:
-                try {
-                    message = configProvider.getStringValue("dangerPopupMessage");
-
-                }catch (NullPointerException e) {
-                    message = "You're in danger!" + "\n\n" + "Gradient color 'X' damages cell health" + "\n\n"
-                        + "Press 'Space' to continue!";
-                }
-                break;
-            default:
-                break;
+        stage.act(delta);
+        stage.draw();
+        
+        if(inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+            visible = false;
+            if (onClose != null) {
+                onClose.run();
+            }
         }
     }
 
-
-    /**
-     * Resize
-     *
-     * @param width  - the new width
-     * @param height - the new height
-     */
-    @Override
     public void resize(int width, int height) {
-        viewport.update(width, height); // Update the viewport
-
+        stage.getViewport().update(width, height, true);
     }
 
-    /**
-     * pause
-     */
-    @Override
-    public void pause() {
-        // throw new UnsupportedOperationException("Unimplemented method 'pause'");
+    public boolean isVisible() {
+        return visible;
     }
 
-    /**
-     * resume
-     */
-    @Override
-    public void resume() {
-        // throw new UnsupportedOperationException("Unimplemented method 'resume'");
+    private String getMessageFromConfig(Type type) {
+        try {
+            switch (type) {
+                case glucose:
+                    return configProvider.getStringValue("glucosePopupMessage");
+                case danger:
+                    return configProvider.getStringValue("dangerPopupMessage");
+                default:
+                    throw new IllegalArgumentException("Unknown type: " + type);
+            }
+        } catch (Exception e) {
+            switch (type) {
+                case glucose:
+                    return "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
+                case danger:
+                    return "Danger! You are in a dangerous area.\n\nGradient color 'X damages cell health.";
+                default:
+                    return "Unknown type: " + type;
+            }
+        }
     }
 
-    /**
-     * hide
-     */
-    @Override
-    public void hide() {
-        // throw new UnsupportedOperationException("Unimplemented method 'hide'");
-    }
-
-    /**
-     * Dispose
-     */
-    @Override
-    public void dispose() {
-        shape.dispose();
-        font.dispose();
-        spriteBatch.dispose();
-    }
-
-    /**
-     * Handle Input
-     *
-     * Exits the popup screen on escape
-     */
     @Override
     public void handleInput(float deltaTimeSeconds) {
-        if (inputProvider.isKeyPressed(Input.Keys.C)
-            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
-            game.setScreen(previousScreen);
-        }
+        // No input handling needed for this screen
     }
-
-    /**
-     * Update
-     */
     @Override
     public void update(float deltaTimeSeconds) {
-        // throw new UnsupportedOperationException("Unimplemented method 'update'");
+        // No updates needed for this screen
     }
-
-    /**
-     * Draw
-     */
     @Override
     public void draw() {
-        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f)); // purple
-
-        viewport.apply(true);
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-
-        if (shape == null) {
-            shape = new ShapeRenderer();
-        }
-
-        if (font == null) {
-            font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-            font.getData().setScale(0.375f); // Set the scale of the font
-
-            //wrap and align text.
-            CharSequence cs = message;
-            layout.setText(font, cs, 0, cs.length(), Color.WHITE, (popUpSize + padding), Align.center, true, null);
-
-            // Align the message to the top center of the popup.
-            messageX = ((viewport.getWorldWidth() / 2)) - (popUpSize / 2) - (padding + 5);
-            messageY = (viewport.getWorldHeight() / 2) + (popUpSize / 2) + padding;
-        }
-        shape.setProjectionMatrix(viewport.getCamera().combined);
-        // Draw Square Popup
-        shape.begin(ShapeRenderer.ShapeType.Filled);
-
-        shape.setColor(new Color(.424f, .553f, .573f, 1.0f)); // blue
-
-        shape.rect((viewport.getWorldWidth() / 2) - (popUpSize / 2),
-                (viewport.getWorldHeight() / 2) - (popUpSize / 2),
-                popUpSize,
-                popUpSize);
-        shape.end();
-
-        // Draw message via layout.
-        spriteBatch.begin();
-        font.draw(spriteBatch, layout, messageX, messageY);
-        spriteBatch.end();
+        // No drawing needed for this screen
+    }
+    @Override
+    public void dispose() {
+        stage.dispose();
+        assetManager.unload(AssetFileNames.HUD_FONT);
+    }
+    @Override
+    public void show() {
+        // No action needed when showing this screen
+    }
+    @Override
+    public void hide() {
+        // No action needed when hiding this screen
+    }
+    @Override
+    public void pause() {
+        // No action needed when pausing this screen
     }
 
+    @Override
+    public void resume() {
+        // No action needed when resuming this screen
+    }
 }

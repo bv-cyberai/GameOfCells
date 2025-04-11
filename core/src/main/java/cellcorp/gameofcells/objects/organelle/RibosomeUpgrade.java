@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.objects.organelle;
 
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.screens.OrganelleUpgradeScreen;
 
 /**
  * Ribosome upgrade.
@@ -38,7 +37,7 @@ public class RibosomeUpgrade extends OrganelleUpgrade {
      * @param organelleUpgradeScreen
      */
     @Override
-    protected boolean isPreviousUpgradePurchased(OrganelleUpgradeScreen organelleUpgradeScreen) {
-        return organelleUpgradeScreen.hasMitochondria();
+    protected boolean isPreviousUpgradePurchased(Cell cell) {
+        return cell.hasMitochondria();
     }
 }

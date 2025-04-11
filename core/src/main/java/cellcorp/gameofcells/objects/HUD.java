@@ -128,7 +128,6 @@ public class HUD {
         this.notificationLayout = new GlyphLayout();
 
         this.notificationFont = graphicsProvider.createBitmapFont();
-        this.notificationFont.getData().setScale(hudFontScale);
         this.notificationManager = new NotificationManager(notificationFont, NOTIFICATION_VERTICAL_SPACING, NOTIFICATION_Y_POSITION);
 
         // Initialize strings
@@ -156,6 +155,7 @@ public class HUD {
      */
     public void draw(Viewport callerViewport) {
         viewport.apply(true);
+        this.notificationFont.getData().setScale(hudFontScale);
 
         // Set up rendering
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -225,8 +225,6 @@ public class HUD {
     }
 
     private void drawNotifications(SpriteBatch batch) {
-        if (notificationFont == null) { return; }
-
         batch.begin();
         Array<Notification> notifications = notificationManager.getNotifications();
         for (int i = 0; i < notifications.size; i++) {
@@ -316,7 +314,7 @@ public class HUD {
 
         if (!warningExists) {
             // Add the notification with a very long duration (effectively infinite)
-            addNotification("DANGER: Acid zone! You're taking damage!", Float.MAX_VALUE, Color.RED);
+            addNotification("DANGER: Acid zone! You're taking damage!", Float.MAX_VALUE, Color.GOLD);
         }
     }
 

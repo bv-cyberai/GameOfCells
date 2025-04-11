@@ -51,6 +51,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press Q to access the shop screen.";
+    public static final String MESSAGE_PAUSE = "Press ESC to pause";
     private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
 
     /**
@@ -136,16 +137,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     private final HUD hud;
 
+    private PopupInfoScreen infoPopup;
+
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
     // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
-    private boolean isPaused = false; // Whether the game is paused
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
     private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
+
+    private boolean isPaused = false; // Whether the game is paused
 
     public final Stats stats = new Stats();
 
@@ -180,6 +184,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
+        this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, this::resumeGame);
 
         this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
     }
@@ -209,6 +214,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         handleInput(deltaTimeSeconds);
         update(deltaTimeSeconds);
         draw();
+
+        if (infoPopup.isVisible()) {
+            infoPopup.render(deltaTimeSeconds);
+        }
     }
 
     /**
@@ -223,6 +232,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Update the viewport with the new screen size.
         viewport.update(screenWidth, screenHeight);
         hud.resize(screenWidth, screenHeight);
+        infoPopup.resize(screenWidth, screenHeight);
     }
 
     /**
@@ -290,15 +300,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
             playerCell.removeCellATP(20);
         }
 
-        // Will eventually be triggered by cell state
-        if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    this, configProvider, PopupInfoScreen.Type.danger
-            ));
-        }
-
         // Only move the cell if the game is not paused
         if (!isPaused) {
             playerCell.move(
@@ -313,6 +314,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Returns the player to the main Menu Screen
         if (inputProvider.isKeyJustPressed(Input.Keys.M)) {
             game.setScreen(new MainMenuScreen(inputProvider, graphicsProvider, game, assetManager, camera, viewport, configProvider));
+        }
+
+        // Pause the game when the ESC key is pressed
+        if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE) || inputProvider.isKeyJustPressed(Input.Keys.P)) {
+            pauseGame();
+            game.setScreen(new PauseScreen(
+                this,
+                inputProvider,
+                graphicsProvider,
+                game,
+                assetManager,
+                camera,
+                configProvider
+            ));
         }
     }
 
@@ -503,6 +518,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.end();
     }
 
+    public void showPopup(PopupInfoScreen.Type type) {
+        // Pause the game when showing the popup
+        pauseGame();
+        infoPopup.show(type);
+    }
+
     /**
      * Hud Getter (Testing method)
      *
@@ -549,11 +570,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public void reportGlucoseCollision() {
         if (!playerCell.hasShownGlucosePopup()) {
-            game.setScreen(new PopupInfoScreen(
-                    inputProvider, assetManager,
-                    graphicsProvider, game,
-                    this, configProvider, PopupInfoScreen.Type.glucose
-            ));
+            showPopup(PopupInfoScreen.Type.glucose);
             playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
         }
     }
@@ -741,5 +758,32 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public void setPaused(boolean paused) {
         isPaused = paused;
+    }
+
+    /**
+     * Get the viewport.
+     * This is used for getting the viewport.
+     * For example, if the viewport is not null, it will be used to set the camera
+     * position.
+     * @return the viewport.
+     */
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    /**
+     * Get the GamePlayScreen width.
+     * @return the GamePlayScreen width.
+     */
+    public int getWorldWidth() {
+        return VIEW_RECT_WIDTH;
+    }
+
+    /**
+     * Get the GamePlayScreen height.
+     * @return the GamePlayScreen height.
+     */
+    public int getWorldHeight() {
+        return VIEW_RECT_HEIGHT;
     }
 }
