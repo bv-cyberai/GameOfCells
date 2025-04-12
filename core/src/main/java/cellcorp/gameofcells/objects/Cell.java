@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import java.util.List;
 
+import static com.badlogic.gdx.math.MathUtils.lerpAngleDeg;
 import static java.lang.Math.abs;
 
 /**
@@ -92,6 +93,7 @@ public class Cell {
     private TextureRegion cellTextureRegion = null;
     private Texture cellTexture = null;
     private float cellRotation = 0f;
+    private float rotationSpeed = 20f;
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -159,42 +161,54 @@ public class Cell {
         lastX = cellCircle.x;
         lastY = cellCircle.y;
 
+        float targetRotation = cellRotation;
+
         float dx = 0;
         float dy = 0;
 
         if (moveLeft) {
             dx -= 1;
-            cellRotation = 90f;
+//            cellRotation = 90f;
+            targetRotation = 90f;
         }
         if (moveRight) {
             dx += 1;
-            cellRotation = 270f;
+//            cellRotation = 270f;
+            targetRotation = 270f;
         }
         if (moveUp) {
             dy += 1;
-            cellRotation = 0f;
+//            cellRotation = 0f;
+            targetRotation = 0f;
         }
         if (moveDown) {
             dy -= 1;
-            cellRotation = 180f;
+//            cellRotation = 180f;
+            targetRotation = 180f;
 
         }
 
         if(moveUp  && moveRight) {
-            cellRotation =315;
+//            cellRotation =315;
+            targetRotation = 315;
         }
 
         if(moveUp  && moveLeft) {
-            cellRotation =45;
+//            cellRotation =45;
+            targetRotation = 45;
         }
 
         if(moveDown && moveRight) {
-            cellRotation = 225;
+//            cellRotation = 225;
+            targetRotation = 225;
         }
 
         if(moveDown && moveLeft) {
-            cellRotation = 135;
+//            cellRotation = 135;
+            targetRotation = 135;
         }
+
+        cellRotation = lerpAngleDeg(cellRotation, targetRotation, deltaTime * rotationSpeed);
 
         // Normalize movement along diagonal
         float length = (float) Math.sqrt(dx * dx + dy * dy);
