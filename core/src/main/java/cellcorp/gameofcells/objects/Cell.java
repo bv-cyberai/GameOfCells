@@ -164,11 +164,11 @@ public class Cell {
 
         if (moveLeft) {
             dx -= 1;
-            cellRotation = 270f;
+            cellRotation = 90f;
         }
         if (moveRight) {
             dx += 1;
-            cellRotation = 90f;
+            cellRotation = 270f;
         }
         if (moveUp) {
             dy += 1;
@@ -179,6 +179,23 @@ public class Cell {
             cellRotation = 180f;
 
         }
+
+        if(moveUp  && moveRight) {
+            cellRotation =315;
+        }
+
+        if(moveUp  && moveLeft) {
+            cellRotation =45;
+        }
+
+        if(moveDown && moveRight) {
+            cellRotation = 225;
+        }
+
+        if(moveDown && moveLeft) {
+            cellRotation = 135;
+        }
+
         // Normalize movement along diagonal
         float length = (float) Math.sqrt(dx * dx + dy * dy);
         if (length > 0) {
@@ -194,6 +211,10 @@ public class Cell {
         if (moveLeft || moveRight || moveUp || moveDown) {
             gamePlayScreen.stats.distanceMoved += CELL_SPEED * deltaTime;
         }
+    }
+
+    private void rotateCell(float deltaTime,boolean direction) {
+
     }
 
     /**
