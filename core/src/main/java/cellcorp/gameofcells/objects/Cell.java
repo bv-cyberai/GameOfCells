@@ -491,10 +491,19 @@ public class Cell {
         if (hasNucleus) {
             var nucleusTexture = assetManager.get(AssetFileNames.NUCLEUS_ICON, Texture.class);
             float nucleusSize = cellSize * 0.4f * pulseScale; // Adjust size and pulse effect
-            batch.draw(nucleusTexture,
-                centerX - nucleusSize / 2,
-                centerY - nucleusSize / 2,
-                nucleusSize, nucleusSize);
+
+            if(nucleusTextureRegion == null ) {
+                nucleusTextureRegion = new TextureRegion(nucleusTexture);
+            }
+
+            float nukeX = centerX - nucleusSize / 2;
+            float nukeY = centerY - nucleusSize / 2;
+            batch.draw(nucleusTextureRegion, nukeX, nukeY, centerX-nukeX, centerY-nukeY, nucleusSize,nucleusSize,1f,1f,cellRotation);
+
+//            batch.draw(nucleusTexture,
+//                centerX - nucleusSize / 2,
+//                centerY - nucleusSize / 2,
+//                nucleusSize, nucleusSize);
         }
 
 
