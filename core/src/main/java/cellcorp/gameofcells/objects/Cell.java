@@ -466,25 +466,40 @@ public class Cell {
 
             // New calculations for better flagella positioning
             float flagellaLength = cellSize * 0.5f;// Adjust length as needed
-            float flagellaWidth = cellSize * 0.3f; // Adjust width as needed
+            float flagellaWidth = cellSize * 0.15f; // Adjust width as needed
             float pivotX = centerX + cellRadius; // Start at cell edge
             float pivotY = centerY; // Center vertically
 
             // Calculate position so only the tail sticks out
-            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
-            float drawY = pivotY - flagellaWidth / 2; // Center vertically
+//            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
+//            float drawY = pivotY - flagellaWidth / 2; // Center vertically
+//            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
+//            float drawY = pivotY - flagellaWidth / 2; // Center vertically
+
+            if(flagellaTextureRegion == null ) {
+                flagellaTextureRegion = new TextureRegion(flagellaTexture);
+            }
+
+            float flagX = centerX - flagellaWidth / 2;
+            float flagY = centerY - flagellaLength / 2  - cellRadius * 0.7f;
+
+            float originX = centerX - flagX;
+            float originY = centerY - flagY;
+
+            batch.draw(flagellaTextureRegion, flagX, flagY, originX, originY, flagellaWidth,flagellaLength,1f,1f,cellRotation);
 
 
-            batch.draw(flagellaTexture,
-                    drawX, drawY, // Position
-                    flagellaLength * 0.7f, flagellaWidth/2, // Size
-                    flagellaLength, flagellaWidth, // Size
-                    1, 1, // Scale
-                    flagellaRotation, // Rotation
-                    0, 0, // Texture region
-                    flagellaTexture.getWidth(), flagellaTexture.getHeight(), // Texture region size
-                    true, // Flip X
-                    false); // Flip Y
+            // TODO: Guess I didn't need texture regions, will fix before final commit.
+//            batch.draw(flagellaTexture,
+//                    drawX, drawY, // Position
+//                    flagellaLength * 0.7f, flagellaWidth/2, // Size
+//                    flagellaLength, flagellaWidth, // Size
+//                    1, 1, // Scale
+//                    flagellaRotation, // Rotation
+//                    0, 0, // Texture region
+//                    flagellaTexture.getWidth(), flagellaTexture.getHeight(), // Texture region size
+//                    true, // Flip X
+//                    false); // Flip Y
         }
 
         // Draw nucleus (center with pulse effect)
@@ -500,10 +515,6 @@ public class Cell {
             float nukeY = centerY - nucleusSize / 2;
             batch.draw(nucleusTextureRegion, nukeX, nukeY, centerX-nukeX, centerY-nukeY, nucleusSize,nucleusSize,1f,1f,cellRotation);
 
-//            batch.draw(nucleusTexture,
-//                centerX - nucleusSize / 2,
-//                centerY - nucleusSize / 2,
-//                nucleusSize, nucleusSize);
         }
 
 
