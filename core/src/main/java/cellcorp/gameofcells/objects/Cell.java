@@ -91,6 +91,10 @@ public class Cell {
 
     //cell Texture
     private TextureRegion cellTextureRegion = null;
+    private TextureRegion mitochondriaTextureRegion = null;
+    private TextureRegion nucleusTextureRegion = null;
+    private TextureRegion ribosomeTextureRegion = null;
+    private TextureRegion flagellaTextureRegion = null;
     private Texture cellTexture = null;
     private float cellRotation = 0f;
     private float rotationSpeed = 20f;
@@ -168,43 +172,35 @@ public class Cell {
 
         if (moveLeft) {
             dx -= 1;
-//            cellRotation = 90f;
             targetRotation = 90f;
         }
         if (moveRight) {
             dx += 1;
-//            cellRotation = 270f;
             targetRotation = 270f;
         }
         if (moveUp) {
             dy += 1;
-//            cellRotation = 0f;
             targetRotation = 0f;
         }
         if (moveDown) {
             dy -= 1;
-//            cellRotation = 180f;
             targetRotation = 180f;
 
         }
 
         if(moveUp  && moveRight) {
-//            cellRotation =315;
             targetRotation = 315;
         }
 
         if(moveUp  && moveLeft) {
-//            cellRotation =45;
             targetRotation = 45;
         }
 
         if(moveDown && moveRight) {
-//            cellRotation = 225;
             targetRotation = 225;
         }
 
         if(moveDown && moveLeft) {
-//            cellRotation = 135;
             targetRotation = 135;
         }
 
@@ -335,11 +331,7 @@ public class Cell {
             cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
             cellTextureRegion = new TextureRegion(cellTexture);
         }
-//        var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
-//        TextureRegion t = new TextureRegion(cellTexture);
         batch.begin();
-//        cellSprite.draw(batch);
-//        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellSize, cellSize);
         batch.draw(cellTextureRegion, bottomLeftX, bottomLeftY, cellSize/2, cellSize/2, cellSize,cellSize,1f,1f,cellRotation);
 
 
@@ -436,10 +428,22 @@ public class Cell {
         if (hasMitochondria) {
             var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
             float mitochondriaSize = cellSize * 0.3f; // Adjust size as needed
-            batch.draw(mitochondriaTexture,
-                centerX - cellRadius * 0.6f,
-                centerY - cellRadius * 0.6f,
-                mitochondriaSize, mitochondriaSize);
+
+            float mitoX = centerX - mitochondriaSize / 2 - cellRadius * 0.4f;
+            float mitoY = centerY - mitochondriaSize / 2 - cellRadius * 0.4f;
+
+
+            if(mitochondriaTextureRegion == null ) {
+                mitochondriaTextureRegion = new TextureRegion(mitochondriaTexture);
+            }
+
+            batch.draw(mitochondriaTextureRegion, mitoX, mitoY, centerX - mitoX, centerY - mitoY, mitochondriaSize,mitochondriaSize,1f,1f,cellRotation);
+
+
+//            batch.draw(mitochondriaTexture,
+//                centerX - cellRadius * 0.6f,
+//                centerY - cellRadius * 0.6f,
+//                mitochondriaSize, mitochondriaSize);
         }
 
         // Draw ribosomes (top-left quadrant)

@@ -57,7 +57,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Set to true to enable debug drawing.
      */
-    public static final boolean DEBUG_DRAW_ENABLED = false;
+    public static final boolean DEBUG_DRAW_ENABLED = true;
 
     private final Stage stage;
     private final Main game;
