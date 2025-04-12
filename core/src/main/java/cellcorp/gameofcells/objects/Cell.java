@@ -429,8 +429,8 @@ public class Cell {
             var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
             float mitochondriaSize = cellSize * 0.3f; // Adjust size as needed
 
-            float mitoX = centerX - mitochondriaSize / 2 - cellRadius * 0.4f;
-            float mitoY = centerY - mitochondriaSize / 2 - cellRadius * 0.4f;
+            float mitoX = centerX - mitochondriaSize / 2 - cellRadius * 0.5f;
+            float mitoY = centerY - mitochondriaSize / 2 - cellRadius * 0.5f;
 
 
             if(mitochondriaTextureRegion == null ) {
@@ -439,21 +439,25 @@ public class Cell {
 
             batch.draw(mitochondriaTextureRegion, mitoX, mitoY, centerX - mitoX, centerY - mitoY, mitochondriaSize,mitochondriaSize,1f,1f,cellRotation);
 
-
-//            batch.draw(mitochondriaTexture,
-//                centerX - cellRadius * 0.6f,
-//                centerY - cellRadius * 0.6f,
-//                mitochondriaSize, mitochondriaSize);
         }
 
         // Draw ribosomes (top-left quadrant)
         if (hasRibosomes) {
             var ribosomeTexture = assetManager.get(AssetFileNames.RIBOSOME_ICON, Texture.class);
             float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
-            batch.draw(ribosomeTexture,
-                centerX - cellRadius * 0.7f,
-                centerY + cellRadius * 0.3f,
-                ribosomeSize, ribosomeSize);
+
+            if(ribosomeTextureRegion == null ) {
+                ribosomeTextureRegion = new TextureRegion(ribosomeTexture);
+            }
+
+            float riboX = centerX - ribosomeSize / 2 - cellRadius * 0.7f;
+            float riboY = centerY - ribosomeSize / 2 + cellRadius * 0.3f;
+            batch.draw(ribosomeTextureRegion, riboX, riboY, centerX - riboX, centerY - riboY, ribosomeSize,ribosomeSize,1f,1f,cellRotation);
+
+//            batch.draw(ribosomeTexture,
+//                centerX - cellRadius * 0.7f,
+//                centerY + cellRadius * 0.3f,
+//                ribosomeSize, ribosomeSize);
         }
 
         // Draw flagella (right edge)
