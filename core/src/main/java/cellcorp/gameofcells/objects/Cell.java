@@ -3,7 +3,9 @@ package cellcorp.gameofcells.objects;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.math.MathUtils;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import java.util.List;
 
@@ -85,6 +88,10 @@ public class Cell {
     private float forceCircleSizeMultiplier; // Used on forceCircle to scale up as the cell grows
     private float glucoseVectorScaleFactor; //Used to set how far glucose moves when pushed
 
+    //cell Texture
+    private TextureRegion cellTextureRegion = null;
+    private Texture cellTexture = null;
+    private float cellRotation = 0f;
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -157,15 +164,20 @@ public class Cell {
 
         if (moveLeft) {
             dx -= 1;
+            cellRotation = 270f;
         }
         if (moveRight) {
             dx += 1;
+            cellRotation = 90f;
         }
         if (moveUp) {
             dy += 1;
+            cellRotation = 0f;
         }
         if (moveDown) {
             dy -= 1;
+            cellRotation = 180f;
+
         }
         // Normalize movement along diagonal
         float length = (float) Math.sqrt(dx * dx + dy * dy);
@@ -284,10 +296,18 @@ public class Cell {
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
-        var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
-
+        if(cellTextureRegion == null) {
+            cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+            cellTextureRegion = new TextureRegion(cellTexture);
+        }
+//        var cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+//        TextureRegion t = new TextureRegion(cellTexture);
         batch.begin();
-        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellSize, cellSize);
+//        cellSprite.draw(batch);
+//        batch.draw(cellTexture, bottomLeftX, bottomLeftY, cellSize, cellSize);
+        batch.draw(cellTextureRegion, bottomLeftX, bottomLeftY, cellSize/2, cellSize/2, cellSize,cellSize,1f,1f,cellRotation);
+
+
 
         drawOrganelles(batch);
         batch.end();
