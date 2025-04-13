@@ -3,7 +3,6 @@ package cellcorp.gameofcells.objects;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.math.MathUtils;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import java.util.List;
 
@@ -433,12 +431,21 @@ public class Cell {
             float mitoY = centerY - mitochondriaSize / 2 - cellRadius * 0.5f;
 
 
-            if(mitochondriaTextureRegion == null ) {
-                mitochondriaTextureRegion = new TextureRegion(mitochondriaTexture);
-            }
+//            if(mitochondriaTextureRegion == null ) {
+//                mitochondriaTextureRegion = new TextureRegion(mitochondriaTexture);
+//            }
 
-            batch.draw(mitochondriaTextureRegion, mitoX, mitoY, centerX - mitoX, centerY - mitoY, mitochondriaSize,mitochondriaSize,1f,1f,cellRotation);
+//            batch.draw(mitochondriaTextureRegion, mitoX, mitoY, centerX - mitoX, centerY - mitoY, mitochondriaSize,mitochondriaSize,1f,1f,cellRotation);
 
+            batch.draw(mitochondriaTexture,
+                mitoX, mitoY,
+                centerX - mitoX,centerY - mitoY,
+                mitochondriaSize,mitochondriaSize,
+                1f,1f,
+                cellRotation,
+                0,0,
+                mitochondriaTexture.getWidth(),mitochondriaTexture.getHeight(),
+                false,false);
         }
 
         // Draw ribosomes (top-left quadrant)
@@ -452,8 +459,20 @@ public class Cell {
 
             float riboX = centerX - ribosomeSize / 2 - cellRadius * 0.7f;
             float riboY = centerY - ribosomeSize / 2 + cellRadius * 0.3f;
-            batch.draw(ribosomeTextureRegion, riboX, riboY, centerX - riboX, centerY - riboY, ribosomeSize,ribosomeSize,1f,1f,cellRotation);
+//            batch.draw(ribosomeTextureRegion, riboX, riboY, centerX - riboX, centerY - riboY, ribosomeSize,ribosomeSize,1f,1f,cellRotation);
 
+            batch.draw(ribosomeTexture,
+                riboX, riboY,
+                centerX - riboX,centerY - riboY,
+                ribosomeSize,ribosomeSize,
+                1f,1f,
+                cellRotation,
+                0,0,
+                ribosomeTexture.getWidth(),ribosomeTexture.getHeight(),
+                false,false);
+
+//
+//            batch.draw(ribosomeTexture, riboX, riboY, centerX-riboX, centerY - riboY, ribosomeSize,ribosomeSize,1f,1f,cellRotation);
 //            batch.draw(ribosomeTexture,
 //                centerX - cellRadius * 0.7f,
 //                centerY + cellRadius * 0.3f,
@@ -467,8 +486,8 @@ public class Cell {
             // New calculations for better flagella positioning
             float flagellaLength = cellSize * 0.5f;// Adjust length as needed
             float flagellaWidth = cellSize * 0.15f; // Adjust width as needed
-            float pivotX = centerX + cellRadius; // Start at cell edge
-            float pivotY = centerY; // Center vertically
+//            float pivotX = centerX + cellRadius; // Start at cell edge
+//            float pivotY = centerY; // Center vertically
 
             // Calculate position so only the tail sticks out
 //            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
@@ -476,9 +495,9 @@ public class Cell {
 //            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
 //            float drawY = pivotY - flagellaWidth / 2; // Center vertically
 
-            if(flagellaTextureRegion == null ) {
-                flagellaTextureRegion = new TextureRegion(flagellaTexture);
-            }
+//            if(flagellaTextureRegion == null ) {
+//                flagellaTextureRegion = new TextureRegion(flagellaTexture);
+//            }
 
             float flagX = centerX - flagellaWidth / 2;
             float flagY = centerY - flagellaLength / 2  - cellRadius * 0.7f;
@@ -486,7 +505,15 @@ public class Cell {
             float originX = centerX - flagX;
             float originY = centerY - flagY;
 
-            batch.draw(flagellaTextureRegion, flagX, flagY, originX, originY, flagellaWidth,flagellaLength,1f,1f,cellRotation);
+            batch.draw(flagellaTexture,
+                flagX, flagY,
+                originX, originY,
+                flagellaWidth,flagellaLength,
+                1f,1f,
+                cellRotation,
+                0,0,
+                flagellaTexture.getWidth(),flagellaTexture.getHeight(),
+                false,false);
 
 
             // TODO: Guess I didn't need texture regions, will fix before final commit.
@@ -507,14 +534,23 @@ public class Cell {
             var nucleusTexture = assetManager.get(AssetFileNames.NUCLEUS_ICON, Texture.class);
             float nucleusSize = cellSize * 0.4f * pulseScale; // Adjust size and pulse effect
 
-            if(nucleusTextureRegion == null ) {
-                nucleusTextureRegion = new TextureRegion(nucleusTexture);
-            }
+//            if(nucleusTextureRegion == null ) {
+//                nucleusTextureRegion = new TextureRegion(nucleusTexture);
+//            }
 
             float nukeX = centerX - nucleusSize / 2;
             float nukeY = centerY - nucleusSize / 2;
-            batch.draw(nucleusTextureRegion, nukeX, nukeY, centerX-nukeX, centerY-nukeY, nucleusSize,nucleusSize,1f,1f,cellRotation);
+//            batch.draw(nucleusTextureRegion, nukeX, nukeY, centerX-nukeX, centerY-nukeY, nucleusSize,nucleusSize,1f,1f,cellRotation);
 
+            batch.draw(nucleusTexture,
+                nukeX, nukeY,
+                centerX - nukeX,centerY - nukeY,
+                nucleusSize,nucleusSize,
+                1f,1f,
+                cellRotation,
+                0,0,
+                nucleusTexture.getWidth(),nucleusTexture.getHeight(),
+                false,false);
         }
 
 
