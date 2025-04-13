@@ -87,8 +87,8 @@ public class Cell {
 
     //cell Texture
     private Texture cellTexture;
-    private float cellRotation = 0f;
-    private float rotationSpeed = 20f;
+    private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
+    private float rotationSpeed = 20f; //How quickly the cell rotates
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -219,10 +219,6 @@ public class Cell {
         }
     }
 
-    private void rotateCell(float deltaTime, boolean direction) {
-
-    }
-
     /**
      * ATP Loss Calculation
      *
@@ -328,7 +324,6 @@ public class Cell {
 
         batch.begin();
 
-
         batch.draw(cellTexture,
             bottomLeftX, bottomLeftY,
             cellSize / 2, cellSize / 2,
@@ -338,7 +333,6 @@ public class Cell {
             0, 0,
             cellTexture.getWidth(), cellTexture.getHeight(),
             false, false);
-
 
         drawOrganelles(batch);
         batch.end();
@@ -432,13 +426,6 @@ public class Cell {
             float mitoX = centerX - mitochondriaSize / 2 - cellRadius * 0.5f;
             float mitoY = centerY - mitochondriaSize / 2 - cellRadius * 0.5f;
 
-
-//            if(mitochondriaTextureRegion == null ) {
-//                mitochondriaTextureRegion = new TextureRegion(mitochondriaTexture);
-//            }
-
-//            batch.draw(mitochondriaTextureRegion, mitoX, mitoY, centerX - mitoX, centerY - mitoY, mitochondriaSize,mitochondriaSize,1f,1f,cellRotation);
-
             batch.draw(mitochondriaTexture,
                 mitoX, mitoY,
                 centerX - mitoX, centerY - mitoY,
@@ -455,13 +442,8 @@ public class Cell {
             var ribosomeTexture = assetManager.get(AssetFileNames.RIBOSOME_ICON, Texture.class);
             float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
 
-//            if(ribosomeTextureRegion == null ) {
-//                ribosomeTextureRegion = new TextureRegion(ribosomeTexture);
-//            }
-
             float riboX = centerX - ribosomeSize / 2 - cellRadius * 0.7f;
             float riboY = centerY - ribosomeSize / 2 + cellRadius * 0.3f;
-//            batch.draw(ribosomeTextureRegion, riboX, riboY, centerX - riboX, centerY - riboY, ribosomeSize,ribosomeSize,1f,1f,cellRotation);
 
             batch.draw(ribosomeTexture,
                 riboX, riboY,
@@ -472,13 +454,6 @@ public class Cell {
                 0, 0,
                 ribosomeTexture.getWidth(), ribosomeTexture.getHeight(),
                 false, false);
-
-//
-//            batch.draw(ribosomeTexture, riboX, riboY, centerX-riboX, centerY - riboY, ribosomeSize,ribosomeSize,1f,1f,cellRotation);
-//            batch.draw(ribosomeTexture,
-//                centerX - cellRadius * 0.7f,
-//                centerY + cellRadius * 0.3f,
-//                ribosomeSize, ribosomeSize);
         }
 
         // Draw flagella (right edge)
@@ -488,18 +463,6 @@ public class Cell {
             // New calculations for better flagella positioning
             float flagellaLength = cellSize * 0.5f;// Adjust length as needed
             float flagellaWidth = cellSize * 0.15f; // Adjust width as needed
-//            float pivotX = centerX + cellRadius; // Start at cell edge
-//            float pivotY = centerY; // Center vertically
-
-            // Calculate position so only the tail sticks out
-//            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
-//            float drawY = pivotY - flagellaWidth / 2; // Center vertically
-//            float drawX = pivotX - flagellaLength * 0.7f; // Adjust position
-//            float drawY = pivotY - flagellaWidth / 2; // Center vertically
-
-//            if(flagellaTextureRegion == null ) {
-//                flagellaTextureRegion = new TextureRegion(flagellaTexture);
-//            }
 
             float flagX = centerX - flagellaWidth / 2;
             float flagY = centerY - flagellaLength / 2 - cellRadius * 0.7f;
@@ -516,33 +479,14 @@ public class Cell {
                 0, 0,
                 flagellaTexture.getWidth(), flagellaTexture.getHeight(),
                 false, false);
-
-
-            // TODO: Guess I didn't need texture regions, will fix before final commit.
-//            batch.draw(flagellaTexture,
-//                    drawX, drawY, // Position
-//                    flagellaLength * 0.7f, flagellaWidth/2, // Size
-//                    flagellaLength, flagellaWidth, // Size
-//                    1, 1, // Scale
-//                    flagellaRotation, // Rotation
-//                    0, 0, // Texture region
-//                    flagellaTexture.getWidth(), flagellaTexture.getHeight(), // Texture region size
-//                    true, // Flip X
-//                    false); // Flip Y
         }
 
         // Draw nucleus (center with pulse effect)
         if (hasNucleus) {
             var nucleusTexture = assetManager.get(AssetFileNames.NUCLEUS_ICON, Texture.class);
             float nucleusSize = cellSize * 0.4f * pulseScale; // Adjust size and pulse effect
-
-//            if(nucleusTextureRegion == null ) {
-//                nucleusTextureRegion = new TextureRegion(nucleusTexture);
-//            }
-
             float nukeX = centerX - nucleusSize / 2;
             float nukeY = centerY - nucleusSize / 2;
-//            batch.draw(nucleusTextureRegion, nukeX, nukeY, centerX-nukeX, centerY-nukeY, nucleusSize,nucleusSize,1f,1f,cellRotation);
 
             batch.draw(nucleusTexture,
                 nukeX, nukeY,
