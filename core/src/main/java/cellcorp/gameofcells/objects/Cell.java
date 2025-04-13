@@ -971,4 +971,13 @@ public class Cell {
     public float getGlucoseVectorScaleFactor() {
         return glucoseVectorScaleFactor;
     }
+
+    /**
+     * Cell angle getter
+     * Return the current angle of the cell.
+     * @return The cell Angle
+     */
+    public float getCellRotation () {
+        return cellRotation;
+    }
 }
