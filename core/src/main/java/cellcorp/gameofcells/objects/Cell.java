@@ -38,6 +38,7 @@ public class Cell {
     public static int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
     public static int ZERO_ATP_DAMAGE_PER_SECOND = 10;
+    private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
     /**
      * Time between applications of zero-ATP damage, in seconds.
      */
@@ -85,10 +86,8 @@ public class Cell {
     private float forceCircleSizeMultiplier; // Used on forceCircle to scale up as the cell grows
     private float glucoseVectorScaleFactor; //Used to set how far glucose moves when pushed
 
-    //cell Texture
-    private Texture cellTexture;
     private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
-    private float rotationSpeed = 20f; //How quickly the cell rotates
+
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -196,8 +195,9 @@ public class Cell {
             targetRotation = 315;
         }
 
-        //Use linear interpolation to smooth the cell rotatin angle.
-        cellRotation = lerpAngleDeg(cellRotation, targetRotation, deltaTime * rotationSpeed);
+        //Use linear interpolation to smooth the cell rotation angle.
+        //All cell textures rely on this angle to rotate.
+        cellRotation = lerpAngleDeg(cellRotation, targetRotation, deltaTime * ROTATION_SPEED);
 
         // Normalize movement along diagonal
         float length = (float) Math.sqrt(dx * dx + dy * dy);
@@ -320,7 +320,8 @@ public class Cell {
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
 
-        cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+        //cell Texture
+        Texture cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
 
         batch.begin();
 
@@ -540,6 +541,12 @@ public class Cell {
             CELL_SPEED = configProvider.getFloatValue("cellMovementSpeed");
         } catch (NumberFormatException e) {
             CELL_SPEED = 200f;
+        }
+
+        try {
+            ROTATION_SPEED = configProvider.getFloatValue("cellRotationSpeed");
+        } catch (NumberFormatException e) {
+            ROTATION_SPEED = 20f;
         }
 
     }

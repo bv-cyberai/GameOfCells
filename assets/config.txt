@@ -6,6 +6,7 @@ cellMaxHealth:100       ##Max Health
 cellATP:30              ##Starting ATP
 cellMaxATP:100          ##Max Health
 cellMovementSpeed:200   ##Cell Movement Speed
+cellRotationSpeed:20    ##Cell Rotational Speed
 
 [glucose]
 glucoseRadius:100        ##UNIMPLEMENTED - Perhaps Dangerous
