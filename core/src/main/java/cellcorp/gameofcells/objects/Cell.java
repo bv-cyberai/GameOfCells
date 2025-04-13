@@ -330,7 +330,17 @@ public class Cell {
             cellTextureRegion = new TextureRegion(cellTexture);
         }
         batch.begin();
-        batch.draw(cellTextureRegion, bottomLeftX, bottomLeftY, cellSize/2, cellSize/2, cellSize,cellSize,1f,1f,cellRotation);
+//        batch.draw(cellTextureRegion, bottomLeftX, bottomLeftY, cellSize/2, cellSize/2, cellSize,cellSize,1f,1f,cellRotation);
+
+        batch.draw(cellTexture,
+            bottomLeftX, bottomLeftY,
+            cellSize/2,cellSize/2,
+            cellSize,cellSize,
+            1f,1f,
+            cellRotation,
+            0,0,
+            cellTexture.getWidth(),cellTexture.getHeight(),
+            false,false);
 
 
 
@@ -453,9 +463,9 @@ public class Cell {
             var ribosomeTexture = assetManager.get(AssetFileNames.RIBOSOME_ICON, Texture.class);
             float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
 
-            if(ribosomeTextureRegion == null ) {
-                ribosomeTextureRegion = new TextureRegion(ribosomeTexture);
-            }
+//            if(ribosomeTextureRegion == null ) {
+//                ribosomeTextureRegion = new TextureRegion(ribosomeTexture);
+//            }
 
             float riboX = centerX - ribosomeSize / 2 - cellRadius * 0.7f;
             float riboY = centerY - ribosomeSize / 2 + cellRadius * 0.3f;
