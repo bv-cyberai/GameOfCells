@@ -83,12 +83,12 @@ public class TestMain {
 
         // Return fake config string that has valid values
         String mockConfig = """
-            cellHealth:100
-            cellATP:30
-            maxHealth:100
-            maxATP:100
-            [descriptions]/
-        """;
+                cellHealth:100
+                cellATP:30
+                maxHealth:100
+                maxATP:100
+                [descriptions]/
+            """;
 
         Mockito.when(fileHandle.readString()).thenReturn(mockConfig);
         Mockito.when(Gdx.files.internal(Mockito.anyString())).thenReturn(fileHandle);
@@ -687,12 +687,12 @@ public class TestMain {
 //        System.out.println(225 - gameCell.getCellRotation());
         assertTrue(225f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of( Input.Keys.RIGHT));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
         gameRunner.runForSeconds(2);
 //        System.out.println(270 - gameCell.getCellRotation());
         assertTrue(270f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of( Input.Keys.UP, Input.Keys.RIGHT));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.RIGHT));
         gameRunner.runForSeconds(2);
 //        System.out.println(315 - gameCell.getCellRotation());
         assertTrue(315f - gameCell.getCellRotation() < epsilon);
