@@ -4,7 +4,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
@@ -72,7 +71,6 @@ public class Cell {
     private boolean hasMassiveSizeUpgrade = false; // Whether the cell has the massive size upgrade
 
     // Add rotation and animation fields here if needed
-    private float flagellaRotation = 0.0f; // Rotation angle for flagella animation
     private float nucleusPulse = 0.0f; // Pulse effect for nucleus animation
     private float pulseScale = 1.0f; // Scale for nucleus pulse effect
 
@@ -88,12 +86,7 @@ public class Cell {
     private float glucoseVectorScaleFactor; //Used to set how far glucose moves when pushed
 
     //cell Texture
-    private TextureRegion cellTextureRegion = null;
-    private TextureRegion mitochondriaTextureRegion = null;
-    private TextureRegion nucleusTextureRegion = null;
-    private TextureRegion ribosomeTextureRegion = null;
-    private TextureRegion flagellaTextureRegion = null;
-    private Texture cellTexture = null;
+    private Texture cellTexture;
     private float cellRotation = 0f;
     private float rotationSpeed = 20f;
     /**
@@ -117,7 +110,6 @@ public class Cell {
     private boolean wasAtpBurnedThisFrame; //tracks if ATP has been burnt, mostly for testing
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
-
 
 
     //potential gameOverStat
@@ -150,7 +142,12 @@ public class Cell {
 
     /**
      * Moves the cell based on input direction as well as its collision circle,
-     * diagonal movment is normalized.
+     * diagonal movement is normalized.
+     *
+     * Updates target rotation to match desired angle of cell to align with
+     * movement.
+     *
+     * Note: Rotation angles appear to be counterclockwise.
      *
      * @param deltaTime - The time passed since the last frame
      * @param moveLeft  - If the cell should move left
@@ -168,40 +165,38 @@ public class Cell {
         float dx = 0;
         float dy = 0;
 
+        if (moveUp) {
+            dy += 1;
+            targetRotation = 0f;
+        }
         if (moveLeft) {
             dx -= 1;
             targetRotation = 90f;
+        }
+        if (moveDown) {
+            dy -= 1;
+            targetRotation = 180f;
         }
         if (moveRight) {
             dx += 1;
             targetRotation = 270f;
         }
-        if (moveUp) {
-            dy += 1;
-            targetRotation = 0f;
-        }
-        if (moveDown) {
-            dy -= 1;
-            targetRotation = 180f;
 
+        // If there is movement along a diagonal specifically set the target rotation.
+        if (moveUp && moveLeft) {
+            targetRotation = 45;
         }
-
-        if(moveUp  && moveRight) {
+        if (moveDown && moveLeft) {
+            targetRotation = 135;
+        }
+        if (moveDown && moveRight) {
+            targetRotation = 225;
+        }
+        if (moveUp && moveRight) {
             targetRotation = 315;
         }
 
-        if(moveUp  && moveLeft) {
-            targetRotation = 45;
-        }
-
-        if(moveDown && moveRight) {
-            targetRotation = 225;
-        }
-
-        if(moveDown && moveLeft) {
-            targetRotation = 135;
-        }
-
+        //Use linear interpolation to smooth the cell rotatin angle.
         cellRotation = lerpAngleDeg(cellRotation, targetRotation, deltaTime * rotationSpeed);
 
         // Normalize movement along diagonal
@@ -211,17 +206,20 @@ public class Cell {
             dy /= length;
         }
 
+        //Update cell position.
         cellCircle.x += dx * CELL_SPEED * deltaTime;
         cellCircle.y += dy * CELL_SPEED * deltaTime;
 
+        //Update force circle
         setCellForceCircle(cellCircle.x, cellCircle.y);
 
+        // game stasts
         if (moveLeft || moveRight || moveUp || moveDown) {
             gamePlayScreen.stats.distanceMoved += CELL_SPEED * deltaTime;
         }
     }
 
-    private void rotateCell(float deltaTime,boolean direction) {
+    private void rotateCell(float deltaTime, boolean direction) {
 
     }
 
@@ -241,7 +239,7 @@ public class Cell {
 
         float movementMultiplier = (1 - (1 / (1 + distanceMovedSinceLastTick)));
         if (movementMultiplier > 0) {
-            currentATPLost += deltaTime * ((2*totalATPLossFactor));
+            currentATPLost += deltaTime * ((2 * totalATPLossFactor));
         } else {
             currentATPLost += deltaTime * (totalATPLossFactor);
         }
@@ -325,23 +323,21 @@ public class Cell {
         // Get the already-loaded cell texture
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.
-        if(cellTextureRegion == null) {
-            cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
-            cellTextureRegion = new TextureRegion(cellTexture);
-        }
+
+        cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+
         batch.begin();
-//        batch.draw(cellTextureRegion, bottomLeftX, bottomLeftY, cellSize/2, cellSize/2, cellSize,cellSize,1f,1f,cellRotation);
+
 
         batch.draw(cellTexture,
             bottomLeftX, bottomLeftY,
-            cellSize/2,cellSize/2,
-            cellSize,cellSize,
-            1f,1f,
+            cellSize / 2, cellSize / 2,
+            cellSize, cellSize,
+            1f, 1f,
             cellRotation,
-            0,0,
-            cellTexture.getWidth(),cellTexture.getHeight(),
-            false,false);
-
+            0, 0,
+            cellTexture.getWidth(), cellTexture.getHeight(),
+            false, false);
 
 
         drawOrganelles(batch);
@@ -363,7 +359,7 @@ public class Cell {
         calculateATPLoss(deltaTimeSeconds);
 
         //Used for testing. Set when 1 ATP burn has occurred.
-        if(wasAtpBurnedThisFrame) {
+        if (wasAtpBurnedThisFrame) {
             wasAtpBurnedThisFrame = false;
         }
 
@@ -372,10 +368,6 @@ public class Cell {
         distanceMovedSinceLastTick = 0f;
 
         // Update animations
-        if (hasFlagella) {
-            flagellaRotation += 10 * deltaTimeSeconds; // Adjust rotation speed as needed
-        }
-
         if (hasNucleus) {
             nucleusPulse += deltaTimeSeconds; // Adjust pulse speed as needed
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
@@ -394,8 +386,8 @@ public class Cell {
 
         // Update stats
         var organellesPurchased = List.of(hasMitochondria, hasFlagella, hasNucleus, hasRibosomes)
-                .stream().filter(Boolean::booleanValue).count();
-        gamePlayScreen.stats.organellesPurchased = (int)organellesPurchased;
+            .stream().filter(Boolean::booleanValue).count();
+        gamePlayScreen.stats.organellesPurchased = (int) organellesPurchased;
         int maxSize;
         if (hasMassiveSizeUpgrade) {
             maxSize = 4;
@@ -418,7 +410,7 @@ public class Cell {
             damageTimer = 0f;
             damageCounter = 0f;
         } else if (damageTimer > ZERO_ATP_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
-            applyDamage((int)damageCounter);
+            applyDamage((int) damageCounter);
             damageTimer = deltaTimeSeconds;
             damageCounter = damage;
         } else {
@@ -449,13 +441,13 @@ public class Cell {
 
             batch.draw(mitochondriaTexture,
                 mitoX, mitoY,
-                centerX - mitoX,centerY - mitoY,
-                mitochondriaSize,mitochondriaSize,
-                1f,1f,
+                centerX - mitoX, centerY - mitoY,
+                mitochondriaSize, mitochondriaSize,
+                1f, 1f,
                 cellRotation,
-                0,0,
-                mitochondriaTexture.getWidth(),mitochondriaTexture.getHeight(),
-                false,false);
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, false);
         }
 
         // Draw ribosomes (top-left quadrant)
@@ -473,13 +465,13 @@ public class Cell {
 
             batch.draw(ribosomeTexture,
                 riboX, riboY,
-                centerX - riboX,centerY - riboY,
-                ribosomeSize,ribosomeSize,
-                1f,1f,
+                centerX - riboX, centerY - riboY,
+                ribosomeSize, ribosomeSize,
+                1f, 1f,
                 cellRotation,
-                0,0,
-                ribosomeTexture.getWidth(),ribosomeTexture.getHeight(),
-                false,false);
+                0, 0,
+                ribosomeTexture.getWidth(), ribosomeTexture.getHeight(),
+                false, false);
 
 //
 //            batch.draw(ribosomeTexture, riboX, riboY, centerX-riboX, centerY - riboY, ribosomeSize,ribosomeSize,1f,1f,cellRotation);
@@ -510,7 +502,7 @@ public class Cell {
 //            }
 
             float flagX = centerX - flagellaWidth / 2;
-            float flagY = centerY - flagellaLength / 2  - cellRadius * 0.7f;
+            float flagY = centerY - flagellaLength / 2 - cellRadius * 0.7f;
 
             float originX = centerX - flagX;
             float originY = centerY - flagY;
@@ -518,12 +510,12 @@ public class Cell {
             batch.draw(flagellaTexture,
                 flagX, flagY,
                 originX, originY,
-                flagellaWidth,flagellaLength,
-                1f,1f,
+                flagellaWidth, flagellaLength,
+                1f, 1f,
                 cellRotation,
-                0,0,
-                flagellaTexture.getWidth(),flagellaTexture.getHeight(),
-                false,false);
+                0, 0,
+                flagellaTexture.getWidth(), flagellaTexture.getHeight(),
+                false, false);
 
 
             // TODO: Guess I didn't need texture regions, will fix before final commit.
@@ -554,13 +546,13 @@ public class Cell {
 
             batch.draw(nucleusTexture,
                 nukeX, nukeY,
-                centerX - nukeX,centerY - nukeY,
-                nucleusSize,nucleusSize,
-                1f,1f,
+                centerX - nukeX, centerY - nukeY,
+                nucleusSize, nucleusSize,
+                1f, 1f,
                 cellRotation,
-                0,0,
-                nucleusTexture.getWidth(),nucleusTexture.getHeight(),
-                false,false);
+                0, 0,
+                nucleusTexture.getWidth(), nucleusTexture.getHeight(),
+                false, false);
         }
 
 
@@ -698,6 +690,7 @@ public class Cell {
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
     }
+
     /**
      *Returns the Cell BoundingCircle
      */
@@ -732,11 +725,11 @@ public class Cell {
 
         //increase forceCircle factors
         forceCircleSizeScalar += .125f;
-        glucoseVectorScaleFactor +=10f;
+        glucoseVectorScaleFactor += 10f;
 
         //Increase radi
         cellCircle.radius += sizeIncrease / 2;
-        forceCircle.radius = cellCircle.radius *  forceCircleSizeMultiplier * forceCircleSizeScalar;
+        forceCircle.radius = cellCircle.radius * forceCircleSizeMultiplier * forceCircleSizeScalar;
     }
 
     /**
@@ -802,7 +795,7 @@ public class Cell {
      */
     public void setHasFlagella(boolean hasFlagella) {
         this.hasFlagella = hasFlagella;
-        if((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
+        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
     }
 
     /**
@@ -817,7 +810,7 @@ public class Cell {
      */
     public void setHasNucleus(boolean hasNucleus) {
         this.hasNucleus = hasNucleus;
-        if((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasNucleus) organelleUpgradeLevel++;
+        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasNucleus) organelleUpgradeLevel++;
     }
 
     /**
@@ -840,7 +833,7 @@ public class Cell {
      */
     public void setSmallSizeUpgrade(boolean hasSmallSizeUpgrade) {
         this.hasSmallSizeUpgrade = hasSmallSizeUpgrade;
-        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasSmallSizeUpgrade ) sizeUpgradeLevel++;
+        if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasSmallSizeUpgrade) sizeUpgradeLevel++;
     }
 
     /**
@@ -855,7 +848,7 @@ public class Cell {
      */
     public void setMediumSizeUpgrade(boolean hasMediumSizeUpgrade) {
         this.hasMediumSizeUpgrade = hasMediumSizeUpgrade;
-        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMediumSizeUpgrade) sizeUpgradeLevel++;
+        if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMediumSizeUpgrade) sizeUpgradeLevel++;
     }
 
     /**
@@ -871,7 +864,7 @@ public class Cell {
      */
     public void setLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
         this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
-        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasLargeSizeUpgrade) sizeUpgradeLevel++;
+        if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasLargeSizeUpgrade) sizeUpgradeLevel++;
     }
 
     /**
@@ -885,7 +878,7 @@ public class Cell {
      * Set whether the cell has the massive size upgrade
      */
     public void setMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
-        if((sizeUpgradeLevel < MAX_SIZE_UPGRADES)&& hasMassiveSizeUpgrade ) sizeUpgradeLevel++;
+        if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMassiveSizeUpgrade) sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
     }
 
