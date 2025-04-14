@@ -350,6 +350,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
             if (inAcidZone) {
                 hud.showAcidZoneWarning();
+
+                // We want to show the warning only once when entering the acid zone
+                reportAcidZoneCollision();
             } else if (wasInAcidZone) {
                 // If the cell was in an acid zone last frame, but not this frame,
                 // remove the warning

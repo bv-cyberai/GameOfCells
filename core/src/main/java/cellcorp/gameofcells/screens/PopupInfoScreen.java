@@ -133,7 +133,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 case glucose:
                     return "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
                 case danger:
-                    return "Danger! You are in a dangerous area.\n\nGradient color 'X damages cell health.";
+                    return "Danger! You are in a dangerous area.\n\nGradient color pink damages cell health.";
                 default:
                     return "Unknown type: " + type;
             }
