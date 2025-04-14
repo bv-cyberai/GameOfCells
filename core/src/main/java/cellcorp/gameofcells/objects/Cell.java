@@ -105,8 +105,6 @@ public class Cell {
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
 
-
-
     //potential gameOverStat
     private float totalDistanceMoved;
 
@@ -567,6 +565,7 @@ public class Cell {
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
     }
+
     /**
      *Returns the Cell BoundingCircle
      */

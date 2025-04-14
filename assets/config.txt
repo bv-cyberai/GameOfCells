@@ -24,4 +24,4 @@ mitochondriaUpgradeCost:30 ##UNIMPLEMENTED - This is being refactored this sprin
 [descriptions]/
 [pop-ups]/
 glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'Space' to continue!/
-dangerPopupMessage:You're in danger!\n\nGradient color 'X' damages cell health\n\nPress 'Space' to continue!"/
+dangerPopupMessage:Danger! You are in a dangerous area.\n\nGradient color pink damages cell health.\n\nPress 'Space' to continue!"/
