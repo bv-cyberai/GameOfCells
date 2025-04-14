@@ -57,6 +57,7 @@ public class Cell {
 
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasShownAcidZonePopup = false; // If the acid zone popup has been shown
+    private boolean hasShownBasicZonePopup = false; // If the basic zone popup has been shown
 
     // Organelle Upgrades
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
@@ -637,6 +638,20 @@ public class Cell {
      */
     public void setHasShownAcidZonePopup(boolean hasShownAcidZonePopup) {
         this.hasShownAcidZonePopup = hasShownAcidZonePopup;
+    }
+
+    /**
+     * Check if the basic zone popup has been shown
+     */
+    public boolean hasShownBasicZonePopup() {
+        return hasShownBasicZonePopup;
+    }
+
+    /**
+     * Set the basic zone popup as shown
+     */
+    public void setHasShownBasicZonePopup(boolean hasShownBasicZonePopup) {
+        this.hasShownBasicZonePopup = hasShownBasicZonePopup;
     }
 
     /**
