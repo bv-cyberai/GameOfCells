@@ -159,8 +159,9 @@ public class TestGamePlayScreen {
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
         var cell = gamePlayScreen.getCell();
+        var popupInfo = gamePlayScreen.getInfoPopup();
 
-        cell.setHasShownAcidZonePopup(true);
+        popupInfo.setHasShownAcidZonePopup(true);
 
         var zoneManager = gamePlayScreen.getSpawnManager().getZoneManager();
         

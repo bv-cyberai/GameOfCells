@@ -41,6 +41,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private final Runnable onClose;
 
     private boolean visible = false;
+    private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
+    private boolean hasShownAcidZonePopup = false; // If the acid zone popup has been shown
 
     public PopupInfoScreen(
             GraphicsProvider graphicsProvider,
@@ -138,6 +140,34 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                     return "Unknown type: " + type;
             }
         }
+    }
+
+    /**
+     * Check if the glucose popup has been shown
+     */
+    public boolean hasShownGlucosePopup() {
+        return hasShownGlucosePopup;
+    }
+
+    /**
+     * Set the glucose popup as shown
+     */
+    public void setHasShownGlucosePopup(boolean hasShownGlucosePopup) {
+        this.hasShownGlucosePopup = hasShownGlucosePopup;
+    }
+
+    /**
+     * Check if the acid zone popup has been shown
+     */
+    public boolean hasShownAcidZonePopup() {
+        return hasShownAcidZonePopup;
+    }
+
+    /**
+     * Set the acid zone popup as shown
+     */
+    public void setHasShownAcidZonePopup(boolean hasShownAcidZonePopup) {
+        this.hasShownAcidZonePopup = hasShownAcidZonePopup;
     }
 
     @Override
