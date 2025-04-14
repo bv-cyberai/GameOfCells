@@ -79,15 +79,18 @@ public class ZoneManager {
     }
 
     /**
-     * Distance from the given location to the nearest zone, if any exist.
+     * Distance from the given location to the nearest acid zone, if any exist.
      */
     public Optional<Double> distanceToNearestAcidZone(float x, float y) {
         return distanceToNearestZone(acidZones, x, y);
     }
-//
-//    public Optional<Double> distanceToNearestBasicZone(float x, float y) {
-//        return distanceToNearestZone(basicZones, x, y);
-//    }
+
+    /**
+     * Distance from the given location to the nearest basic zone, if any exist.
+     */
+    public Optional<Double> distanceToNearestBasicZone(float x, float y) {
+        return distanceToNearestZone(basicZones, x, y);
+    }
 
     public Optional<Double> distanceToNearestZone(Map<Chunk, Zone> zoneMap, float x, float y) {
         // GWT emulates stream -- very slowly. We'll use enhanced for instead.
