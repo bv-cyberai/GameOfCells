@@ -576,6 +576,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Reports the cell entering an acid zone.
+     * This is used for displaying the acid zone warning.
+     */
+    public void reportAcidZoneCollision() {
+        if (!playerCell.hasShownAcidZonePopup()) {
+            showPopup(PopupInfoScreen.Type.danger);
+            playerCell.setHasShownAcidZonePopup(true); // Mark the popup as shown
+        }
+    }
+
+    /**
      * Shows a warning that the cell is out of energy.
      * This is used for displaying the energy warning.
      * For example, "WARNING: ATP low!".
