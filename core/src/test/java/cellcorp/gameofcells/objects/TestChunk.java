@@ -1,9 +1,8 @@
 package cellcorp.gameofcells.objects;
-import cellcorp.gameofcells.AssetFileNames;
+
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GamePlayScreen;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -11,10 +10,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.assets.AssetManager;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,7 +18,8 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class TestChunk {
 
@@ -31,14 +28,33 @@ public class TestChunk {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-        new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
-        }, config);
+        new HeadlessApplication(
+                new ApplicationListener() {
+                    @Override
+                    public void create() {
+                    }
+
+                    @Override
+                    public void resize(int width, int height) {
+                    }
+
+                    @Override
+                    public void render() {
+                    }
+
+                    @Override
+                    public void pause() {
+                    }
+
+                    @Override
+                    public void resume() {
+                    }
+
+                    @Override
+                    public void dispose() {
+                    }
+                }, config
+        );
 
         // Mock the graphics provider
         Gdx.graphics = Mockito.mock(Graphics.class);
@@ -49,7 +65,7 @@ public class TestChunk {
         Gdx.gl = gl20;
         Gdx.gl20 = gl20;
     }
-    
+
     @Test
     public void constructChunk() {
         var chunk = new Chunk(10, -20);
@@ -63,12 +79,12 @@ public class TestChunk {
 
         runner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         runner.step();
-        var cell = ((GamePlayScreen)runner.game.getScreen()).getCell();
+        var cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
         var initialChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
 
         runner.setHeldDownKeys(Set.of(Input.Keys.RIGHT, Input.Keys.C));
         runner.runForSeconds(10);
-        cell = ((GamePlayScreen)runner.game.getScreen()).getCell();
+        cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
         var newChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
         assertNotEquals(initialChunk, newChunk);
     }

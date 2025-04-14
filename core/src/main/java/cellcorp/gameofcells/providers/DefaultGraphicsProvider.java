@@ -1,19 +1,16 @@
 package cellcorp.gameofcells.providers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Matrix4;
 
 public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
@@ -39,11 +36,6 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
     public FitViewport createFitViewport(float viewRectWidth, float viewRectHeight, Camera camera) {
         return new FitViewport(viewRectWidth, viewRectHeight, camera);
-    }
-
-    @Override
-    public Viewport createViewport(float viewRectWidth, float viewRectHeight) {
-        return new FitViewport(viewRectWidth, viewRectHeight);
     }
 
     @Override
@@ -77,14 +69,14 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
         pixmap.setColor(color);
 
         // Fill central areas
-        pixmap.fillRectangle(0, (int)cornerRadius, width, height - (int)cornerRadius*2);
-        pixmap.fillRectangle((int)cornerRadius, 0, width - (int)cornerRadius*2, height);
+        pixmap.fillRectangle(0, (int) cornerRadius, width, height - (int) cornerRadius * 2);
+        pixmap.fillRectangle((int) cornerRadius, 0, width - (int) cornerRadius * 2, height);
 
         // Draw all 4 corners
-        pixmap.fillCircle((int)cornerRadius, (int)cornerRadius, (int)cornerRadius); // top-left
-        pixmap.fillCircle((int)cornerRadius, height - (int)cornerRadius, (int)cornerRadius); // bottom-left
-        pixmap.fillCircle(width - (int)cornerRadius, (int)cornerRadius, (int)cornerRadius); // top-right
-        pixmap.fillCircle(width - (int)cornerRadius, height - (int)cornerRadius, (int)cornerRadius); // bottom-right
+        pixmap.fillCircle((int) cornerRadius, (int) cornerRadius, (int) cornerRadius); // top-left
+        pixmap.fillCircle((int) cornerRadius, height - (int) cornerRadius, (int) cornerRadius); // bottom-left
+        pixmap.fillCircle(width - (int) cornerRadius, (int) cornerRadius, (int) cornerRadius); // top-right
+        pixmap.fillCircle(width - (int) cornerRadius, height - (int) cornerRadius, (int) cornerRadius); // bottom-right
 
         Texture texture = new Texture(pixmap);
         pixmap.dispose();
@@ -122,5 +114,15 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
     public Image createImage(Texture texture) {
         return new Image(texture);
+    }
+
+    @Override
+    public TextureRegionDrawable createTextureRegionDrawable(Texture texture) {
+        return new TextureRegionDrawable(texture);
+    }
+
+    @Override
+    public GlyphLayout createGlyphLayout(BitmapFont font, String text) {
+        return new GlyphLayout(font, text);
     }
 }

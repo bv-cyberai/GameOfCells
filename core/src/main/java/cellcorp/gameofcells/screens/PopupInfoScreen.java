@@ -1,7 +1,6 @@
 package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
@@ -76,11 +75,11 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
         if (font.getData() != null) {
-            font.getData().setScale(0.25f); // Match HUD scale
+            font.getData().setScale(0.35f); // Match HUD scale
         }
 
         String message = getMessageFromConfig(type);
-        GlyphLayout layout = new GlyphLayout(font, message);
+        GlyphLayout layout = graphicsProvider.createGlyphLayout(font, message);
         if (font.getData() != null && font.getColor() != null) {
             layout.setText(font, message);
         } else {
@@ -90,8 +89,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         float padding = 40f;
         float popupWidth = layout.width + 2 * padding;
         float popupHeight = layout.height + 2 * padding;
-        float x = (hud.getViewport().getWorldWidth() - popupWidth) / 2;
-        float y = (hud.getViewport().getWorldHeight() - popupHeight) / 2;
+        float x = ((float) HUD.VIEW_RECT_WIDTH - popupWidth) / 2;
+        float y = ((float) HUD.VIEW_RECT_HEIGHT - popupHeight) / 2;
 
         Color backgroundColor;
         switch (type) {
@@ -105,7 +104,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 backgroundColor = Color.BLUE;
                 break;
             default:
-                backgroundColor = Color.WHITE;
+                backgroundColor = Color.BLACK;
                 break;
         }
 

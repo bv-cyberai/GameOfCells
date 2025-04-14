@@ -127,13 +127,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final GlucoseManager glucoseManager;
     private final ZoneManager zoneManager;
     private final SpawnManager spawnManager;
+    //private final HUD hud;
     private final HUD hud;
     private final PopupInfoScreen infoPopup;
     private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
-    // We'll fix it next week as part of unifying game state.
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
@@ -172,8 +172,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
-        
-        this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
+        this.hud = new HUD(graphicsProvider, assetManager, this, stats);
         this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, hud, this::resumeGame);
     }
 
@@ -219,7 +218,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void resize(int screenWidth, int screenHeight) {
         // Update the viewport with the new screen size.
         viewport.update(screenWidth, screenHeight);
-        hud.resize(screenWidth, screenHeight);
         infoPopup.resize(screenWidth, screenHeight);
     }
 
@@ -335,43 +333,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        lowEnergyWarningCooldown -= deltaTimeSeconds; // Decrease cooldown
-
         if (!isPaused) {
-            hud.update(deltaTimeSeconds, playerCell.getCellHealth(), playerCell.getCellATP());
+            hud.update(deltaTimeSeconds);
             zoneManager.update(deltaTimeSeconds);
             glucoseManager.update(deltaTimeSeconds);
             spawnManager.update();
 
-            // Check for basic zone
-            boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
-            if (inBasicZone) {
-                reportBasicZoneCollision();
-            }
-            // Check for acid zone
-            boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
-            if (inAcidZone) {
-                hud.showAcidZoneWarning();
-
-                // We want to show the warning only once when entering the acid zone
-                reportAcidZoneCollision();
-            } else if (wasInAcidZone) {
-                // If the cell was in an acid zone last frame, but not this frame,
-                // remove the warning
-                hud.clearAcidZoneWarning();
-            }
-            wasInAcidZone = inAcidZone; // Update the wasInAcidZone flag
-
-            // Check for low energy (20 or below)
-            if (playerCell.getCellATP() <= 20 && playerCell.getCellATP() > 0 && lowEnergyWarningCooldown <= 0 && !hasShownEnergyWarning) {
-                hud.showEnergyBelowTwentyWarning();
-                hasShownEnergyWarning = true;
-                lowEnergyWarningCooldown = LOW_ENERGY_COOLDOWN; // Reset cooldown
-            }
             playerCell.update(deltaTimeSeconds);
             // Existing out-of-energy checking
             if (playerCell.getCellATP() == 0 && !hasShownEnergyWarning) {
-                hud.showEnergyEqualsZeroWarning();
+//                hud.showEnergyEqualsZeroWarning();
                 hasShownEnergyWarning = true;
             } else if (playerCell.getCellATP() > 20) {
                 hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
@@ -381,31 +352,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
             }
 
             stats.gameTimer += deltaTimeSeconds;
+
+            boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
+            if (inBasicZone) {
+                reportBasicZoneCollision();
+            }
+
+            // Check for acid zone
+            boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
+            if (inAcidZone) {
+                // We want to show the warning only once when entering the acid zone
+                reportAcidZoneCollision();
+            }
         }
     }
-
-    // Not even being used, but keeping it here for reference.
-    // private void handleCollisions() {
-    //     var glucoseToRemove = new ArrayList<Glucose>();
-    //     for (int i = 0; i < getGlucoseManager().getGlucoseArray().size(); i++) {
-    //         var glucose = getGlucoseManager().getGlucoseArray().get(i);
-    //         if (playerCell.getCircle().overlaps(glucose.getCircle())) {
-    //             glucoseToRemove.add(glucose);
-    //             playerCell.addCellATP(Glucose.ATP_PER_GLUCOSE);
-
-    //             // Show the popup on the first glucose collision
-    //             if (!playerCell.hasShownGlucosePopup()) {
-    //                 game.setScreen(new PopupInfoScreen(
-    //                         inputProvider, assetManager,
-    //                         graphicsProvider, game,
-    //                         this, configProvider,PopupInfoScreen.Type.glucose));
-    //                         playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
-    //             }
-    //         }
-    //     }
-
-    //     getGlucoseManager().getGlucoseArray().removeAll(glucoseToRemove);
-    // }
 
     /**
      * Renders the start screen.
@@ -419,9 +379,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
-        drawBackground(shapeRenderer);
+        if (DEBUG_DRAW_ENABLED) {
+            drawBackground(shapeRenderer);
+        }
         drawGameObjects(batch, shapeRenderer);
-        hud.draw(viewport);
+        hud.draw();
 
         if (DEBUG_DRAW_ENABLED) {
             drawChunks(shapeRenderer);
@@ -533,15 +495,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Hud Getter (Testing method)
-     *
-     * @return The Screen Hud.
-     */
-    public HUD getHUD() {
-        return hud;
-    }
-
-    /**
      * For test use only.
      */
     public Cell getCell() {
@@ -617,40 +570,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Shows a warning that the cell is out of energy.
-     * This is used for displaying the energy warning.
-     * For example, "WARNING: ATP low!".
-     */
-    public void showEnergyBelowTwentyWarning() {
-        hud.showEnergyBelowTwentyWarning();
-    }
-
-    /**
-     * Shows a warning that the cell is out of energy.
-     * This is used for displaying the energy warning.
-     * For example, "WARNING: Out of energy! Losing health!".
-     */
-    public void showEnergyEqualsZeroWarning() {
-        hud.showEnergyEqualsZeroWarning();
-    }
-
-    /**
-     * Shows a warning that the cell is in an acid zone.
-     * This is used for displaying the acid zone warning.
-     * For example, "WARNING: Acid zone detected!".
-     */
-    public void showAcidZoneWarning() {
-        hud.showAcidZoneWarning();
-    }
-
-    /**
      * Check if the cell is in an acid zone.
      * This is used for checking if the cell is in an acid zone.
      * For example, if the cell is in an acid zone, it will take damage.
      *
      * @param x
      * @param y
-     * @return true if the cell is in an acid zone, false otherwise.
+     * @return
      */
     protected boolean isInAcidZone(float x, float y) {
         return zoneManager.distanceToNearestAcidZone(x, y)
@@ -854,12 +780,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Get the GamePlayScreen width.
-     *
-     * @return the GamePlayScreen width.
+     * For test use only.
      */
-    public int getWorldWidth() {
-        return VIEW_RECT_WIDTH;
+    public HUD getHUD() {
+        return this.hud;
+    }
+
+    public GraphicsProvider getGraphicsProvider() {
+        return this.graphicsProvider;
     }
 
     /**

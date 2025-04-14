@@ -1,39 +1,71 @@
 package cellcorp.gameofcells.objects;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.notification.Notification;
+import cellcorp.gameofcells.notification.NotificationSource;
+import cellcorp.gameofcells.runner.GameRunner;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-
-import cellcorp.gameofcells.Main;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class TestNotificationManager {
-    
-@BeforeAll
+
+    public static final NotificationSource NEVER_FADE_OUT_SOURCE = new NotificationSource() {
+        @Override
+        public Notification createNotification(GamePlayScreen gamePlayScreen) {
+            return null;
+        }
+
+        @Override
+        public boolean cancelNotifications(GamePlayScreen gamePlayScreen) {
+            return false;
+        }
+    };
+
+    @BeforeAll
     public static void setUpLibGDX() {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
-        // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-        new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
-        }, config);
+        new HeadlessApplication(
+                new ApplicationListener() {
+                    @Override
+                    public void create() {
+                    }
+
+                    @Override
+                    public void resize(int width, int height) {
+                    }
+
+                    @Override
+                    public void render() {
+                    }
+
+                    @Override
+                    public void pause() {
+                    }
+
+                    @Override
+                    public void resume() {
+                    }
+
+                    @Override
+                    public void dispose() {
+                    }
+                }, config
+        );
 
         // Mock the graphics provider
         Gdx.graphics = Mockito.mock(Graphics.class);
@@ -58,27 +90,12 @@ public class TestNotificationManager {
      */
     @Test
     public void systemStartsEmpty() {
-        BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
-        
-        assertTrue(system.getNotifications().isEmpty());
-    }
+        var runner = GameRunner.create();
+        runner.inputProvider.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        runner.step();
+        var system = ((GamePlayScreen) runner.game.getScreen()).getHUD().getNotificationManager();
 
-    /**
-     * * Test that notifications are added correctly.
-     * This test checks that when a notification is added, it is stored in the system with the correct message and color.
-     */
-    @Test
-    public void addNotificationWorks() {
-        BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
-        
-        system.addNotification("Test", 1f, Color.RED);
-        assertEquals(1, system.getNotifications().size);
-        
-        Notification added = system.getNotifications().get(0);
-        assertEquals("Test", added.getMessage());
-        assertEquals(Color.RED, added.getColor());
+        assertTrue(system.getNotifications().isEmpty());
     }
 
     /**
@@ -87,64 +104,19 @@ public class TestNotificationManager {
      */
     @Test
     public void updateRemovesExpiredNotifications() {
-        BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
-        
+        var runner = GameRunner.create();
+        runner.inputProvider.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        runner.step();
+        var gamePlayScreen = (GamePlayScreen) runner.game.getScreen();
+        var system = gamePlayScreen.getHUD().getNotificationManager();
+        var graphicsProvider = gamePlayScreen.getGraphicsProvider();
+        var assetManager = gamePlayScreen.getAssetManager();
+
         // Add a short-lived notification
-        system.addNotification("Temp", 0.1f, Color.WHITE);
-        assertEquals(1, system.getNotifications().size);
-        
+        system.getNotifications().add(new Notification(graphicsProvider, assetManager, NEVER_FADE_OUT_SOURCE, "timeout", 0.2f));
+
         // Update past expiration
-        system.update(0.2f);
-        assertTrue(system.getNotifications().isEmpty());
-    }
-
-    /**
-     * * Test that notifications are removed after their duration.
-     * This test checks that after the duration of a notification has passed, it is removed from the system.
-     */
-    @Test
-    public void updatePreservesActiveNotifications() {
-        BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
-        
-        system.addNotification("Long", 2f, Color.GREEN);
-        system.update(1f);
-        
-        assertEquals(1, system.getNotifications().size);
-        assertEquals("Long", system.getNotifications().get(0).getMessage());
-    }
-
-    /**
-     * * Test that multiple notifications stack in order.
-     * This test checks that when multiple notifications are added, they are stored in the order they were added.
-     */
-    @Test
-    public void multipleNotificationsStackInOrder() {
-        BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
-        
-        system.addNotification("First", 1f, Color.RED);
-        system.addNotification("Second", 1f, Color.GREEN);
-        
-        assertEquals(2, system.getNotifications().size);
-        assertEquals("First", system.getNotifications().get(0).getMessage());
-        assertEquals("Second", system.getNotifications().get(1).getMessage());
-    }
-
-    /**
-     * * Test that the notification system can be cleared.
-     * This test checks that when the clear method is called, all notifications are removed from the system.
-     */
-    @Test
-    public void clearRemovesAllNotifications() {
-        BitmapFont mockFont = Mockito.mock(BitmapFont.class);
-        NotificationManager system = new NotificationManager(mockFont, 30f, 700f);
-        
-        system.addNotification("ToClear", 1f, Color.BLUE);
-        assertEquals(1, system.getNotifications().size);
-        
-        system.clearNotifications();
+        runner.runForSeconds(2);
         assertTrue(system.getNotifications().isEmpty());
     }
 }

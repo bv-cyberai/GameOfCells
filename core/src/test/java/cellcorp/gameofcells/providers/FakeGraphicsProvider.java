@@ -1,21 +1,17 @@
 package cellcorp.gameofcells.providers;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import cellcorp.gameofcells.Main;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.graphics.Texture;
 import org.mockito.Mockito;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.graphics.Color;
 
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
@@ -40,11 +36,6 @@ public class FakeGraphicsProvider implements GraphicsProvider {
 
     @Override
     public FitViewport createFitViewport(float viewRectWidth, float viewRectHeight, Camera camera) {
-        return Mockito.mock(FitViewport.class);
-    }
-
-    @Override
-    public Viewport createViewport(float viewRectWidth, float viewRectHeight) {
         return Mockito.mock(FitViewport.class);
     }
 
@@ -103,5 +94,15 @@ public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
     public Image createImage(Texture texture) {
         return Mockito.mock(Image.class);
+    }
+
+    @Override
+    public TextureRegionDrawable createTextureRegionDrawable(Texture texture) {
+        return Mockito.mock(TextureRegionDrawable.class);
+    }
+
+    @Override
+    public GlyphLayout createGlyphLayout(BitmapFont font, String text) {
+        return Mockito.mock(GlyphLayout.class);
     }
 }

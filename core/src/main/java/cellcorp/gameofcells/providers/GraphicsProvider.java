@@ -1,19 +1,16 @@
 package cellcorp.gameofcells.providers;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Provides information from `Gdx.graphics`, which is needed by game code.
@@ -21,10 +18,14 @@ import com.badlogic.gdx.graphics.Color;
  * add them here and call the method in {@link DefaultGraphicsProvider}.
  */
 public interface GraphicsProvider {
-    /** @return the width of the client area in logical pixels. */
+    /**
+     * @return the width of the client area in logical pixels.
+     */
     int getWidth();
 
-    /** @return the height of the client area in logical pixels */
+    /**
+     * @return the height of the client area in logical pixels
+     */
     int getHeight();
 
     /**
@@ -40,11 +41,11 @@ public interface GraphicsProvider {
      * Create a viewport. Equivalent to calling `new FitViewport()`,
      * but won't crash test code.
      *
-     * @param viewRectWidth The width of the camera view rectangle
-     *                      (the rectangle of the world which the camera will display).
-     *                      Equivalent to the questionably-named {@link Viewport} `worldWidth`
+     * @param viewRectWidth  The width of the camera view rectangle
+     *                       (the rectangle of the world which the camera will display).
+     *                       Equivalent to the questionably-named {@link Viewport} `worldWidth`
      * @param viewRectHeight The width of the camera view rectangle
-     *                      Equivalent to the questionably-named {@link Camera} `worldHeight`
+     *                       Equivalent to the questionably-named {@link Camera} `worldHeight`
      * @return A newly-constructed {@link FitViewport}
      */
     FitViewport createFitViewport(float viewRectWidth, float viewRectHeight);
@@ -53,28 +54,15 @@ public interface GraphicsProvider {
      * Create a viewport with the given camera. Equivalent to calling `new FitViewport(camera)`,
      * but won't crash test code.
      *
-     * @param viewRectWidth The width of the camera view rectangle
-     *                      (the rectangle of the world which the camera will display).
-     *                      Equivalent to the questionably-named {@link Viewport} `worldWidth`
+     * @param viewRectWidth  The width of the camera view rectangle
+     *                       (the rectangle of the world which the camera will display).
+     *                       Equivalent to the questionably-named {@link Viewport} `worldWidth`
      * @param viewRectHeight The width of the camera view rectangle
-     *                      Equivalent to the questionably-named {@link Camera} `worldHeight`
+     *                       Equivalent to the questionably-named {@link Camera} `worldHeight`
      * @return A newly-constructed {@link Viewport}
      */
     FitViewport createFitViewport(float viewRectWidth, float viewRectHeight, Camera camera);
 
-    /**
-     * Create a viewport. Equivalent to calling `new FitViewport()`,
-     * but won't crash test code.
-     *
-     * @param viewRectWidth The width of the camera view rectangle
-     *                      (the rectangle of the world which the camera will display).
-     *                      Equivalent to the questionably-named {@link Viewport} `worldWidth`
-     * @param viewRectHeight The width of the camera view rectangle
-     *                      Equivalent to the questionably-named {@link Camera} `worldHeight`
-     * @return A newly-constructed {@link Viewport}
-     */
-    Viewport createViewport(float viewRectWidth, float viewRectHeight);
-    
     /**
      * Create a shape renderer. Equivalent to calling `new ShapeRenderer()`,
      * but won't crash test code.
@@ -86,13 +74,14 @@ public interface GraphicsProvider {
     /**
      * Create a sprite batch. Equivalent to calling `new SpriteBatch()`,
      * but won't crash test code.
-     * 
+     *
      * @return A newly-constructed {@link SpriteBatch}
      */
     SpriteBatch createSpriteBatch();
 
     /**
      * Create a texture with the given width, height, and format.
+     *
      * @param width
      * @param height
      * @param format
@@ -108,6 +97,7 @@ public interface GraphicsProvider {
     /**
      * Create a rounded rectangle texture with the given parameters.
      * This is a convenience method for creating a texture with rounded corners.
+     *
      * @param width
      * @param height
      * @param color
@@ -118,12 +108,14 @@ public interface GraphicsProvider {
 
     /**
      * Create a bitmap font with the given parameters.
+     *
      * @return
      */
     BitmapFont createWhiteFont();
 
     /**
      * Create a pixmap with the given width, height, and format.
+     *
      * @param width
      * @param height
      * @param format
@@ -133,12 +125,14 @@ public interface GraphicsProvider {
 
     /**
      * Create a bitmap font.
+     *
      * @return
      */
     BitmapFont createBitmapFont();
 
     /**
      * Get the screen projection matrix.
+     *
      * @return
      */
     Matrix4 getScreenProjectionMatrix();
@@ -146,4 +140,8 @@ public interface GraphicsProvider {
     Label createLabel(CharSequence text, Label.LabelStyle labelStyle);
 
     Image createImage(Texture texture);
+
+    TextureRegionDrawable createTextureRegionDrawable(Texture texture);
+
+    GlyphLayout createGlyphLayout(BitmapFont font, String text);
 }

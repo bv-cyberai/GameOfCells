@@ -15,6 +15,8 @@ package cellcorp.gameofcells;
  */
 
 import cellcorp.gameofcells.providers.*;
+import cellcorp.gameofcells.screens.GameOfCellsScreen;
+import cellcorp.gameofcells.screens.MainMenuScreen;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -24,75 +26,40 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import cellcorp.gameofcells.screens.GameOfCellsScreen;
-import cellcorp.gameofcells.screens.MainMenuScreen;
-
 public class Main implements ApplicationListener {
     public static final int DEFAULT_SCREEN_WIDTH = 1280;
     public static final int DEFAULT_SCREEN_HEIGHT = 800;
 
     public static final Color PURPLE = new Color(.157f, .115f, .181f, 1f);
     public static final Color TEAL = new Color(.424f, .553f, .573f, 1f);
-
-
-    /**
-     * The currently-shown screen.
-     */
-    private GameOfCellsScreen screen;
-
     /**
      * Loads assets during game creation,
      * then provides loaded assets to draw code, using [AssetManager#get(String)]
      */
     private final AssetManager assetManager;
-
     /**
      * Gets information about inputs, like held-down keys.
      * Use this instead of `Gdx.input`, to avoid crashing tests.
      */
     private final InputProvider inputProvider;
-
     /**
      * Gets information about graphics. Use this instead of `Gdx.graphics` in game code,
      * to avoid crashing tests.
      */
     private final GraphicsProvider graphicsProvider;
-
-    private ConfigProvider configProvider;
-
     /**
      * The camera used to render the game.
      */
     private final OrthographicCamera camera;
-
     /**
      * The viewport used to render the game.
      */
     private final FitViewport viewport;
-
+    private final ConfigProvider configProvider;
     /**
-     * Constructs a new `Main`.
-     * This is a
-     * <a href=https://en.wikipedia.org/wiki/Factory_method_pattern>"factory method"</a>.
-     * Here, it's necessary because the `FitViewport` constructor references `camera`.
-     * @return The new GameRunner
+     * The currently-shown screen.
      */
-    public static Main createMain() {
-        var inputProvider = new DefaultInputProvider();
-        var graphicsProvider = new DefaultGraphicsProvider();
-        var assetManager = new AssetManager();
-        var camera = new OrthographicCamera();
-        var configProvider = new ConfigProvider();
-        // Gdx.graphics is not instantiated until `create()`.
-        // Just use the configuration constants here.
-        var viewport = new FitViewport(
-            DEFAULT_SCREEN_WIDTH,
-            DEFAULT_SCREEN_HEIGHT,
-            camera
-        );
-
-        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport, configProvider);
-    }
+    private GameOfCellsScreen screen;
 
     /**
      * Creates a game instance.
@@ -116,6 +83,31 @@ public class Main implements ApplicationListener {
         this.camera = camera;
         this.viewport = viewport;
         this.configProvider = configProvider;
+    }
+
+    /**
+     * Constructs a new `Main`.
+     * This is a
+     * <a href=https://en.wikipedia.org/wiki/Factory_method_pattern>"factory method"</a>.
+     * Here, it's necessary because the `FitViewport` constructor references `camera`.
+     *
+     * @return The new GameRunner
+     */
+    public static Main createMain() {
+        var inputProvider = new DefaultInputProvider();
+        var graphicsProvider = new DefaultGraphicsProvider();
+        var assetManager = new AssetManager();
+        var camera = new OrthographicCamera();
+        var configProvider = new ConfigProvider();
+        // Gdx.graphics is not instantiated until `create()`.
+        // Just use the configuration constants here.
+        var viewport = new FitViewport(
+                DEFAULT_SCREEN_WIDTH,
+                DEFAULT_SCREEN_HEIGHT,
+                camera
+        );
+
+        return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport, configProvider);
     }
 
     @Override
@@ -149,16 +141,21 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.BASIC_ZONE, Texture.class);
         assetManager.load(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
         assetManager.load(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
+        assetManager.load(AssetFileNames.SHOP_BUTTON, Texture.class);
+        assetManager.load(AssetFileNames.MOVE_KEY, Texture.class);
+        assetManager.load(AssetFileNames.PAUSE_BUTTON, Texture.class);
+        assetManager.load(AssetFileNames.QUIT_BUTTON, Texture.class);
+        assetManager.load(AssetFileNames.HEAL_ICON, Texture.class);
         assetManager.finishLoading();
-        
+
         // I know. I know.
         // HeadlessFiles isn't available to GWT, cause the headless backend isn't.
         // I'm sure there's a better way to do this.
-        if(Gdx.files !=null && !(Gdx.files.getClass().getName().contains("Mockito")) && !(Gdx.files.getClass().getName().contains("Headless"))) {
+        if (Gdx.files != null && !(Gdx.files.getClass().getName().contains("Mockito")) && !(Gdx.files.getClass().getName().contains("Headless"))) {
             configProvider.loadConfig();
         }
         // May need to set to gameScreenManager at somepoint.
-        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport,configProvider));
+        setScreen(new MainMenuScreen(inputProvider, graphicsProvider, this, assetManager, camera, viewport, configProvider));
     }
 
     @Override
@@ -188,6 +185,10 @@ public class Main implements ApplicationListener {
         if (screen != null) screen.resize(width, height);
     }
 
+    public GameOfCellsScreen getScreen() {
+        return this.screen;
+    }
+
     public void setScreen(GameOfCellsScreen screen) {
         if (this.screen != null) this.screen.hide();
 
@@ -196,12 +197,9 @@ public class Main implements ApplicationListener {
         this.screen.resize(graphicsProvider.getWidth(), graphicsProvider.getHeight());
     }
 
-    public GameOfCellsScreen getScreen() {
-        return this.screen;
-    }
-
     /**
      * Responds to key-presses, updating game state.
+     *
      * @param deltaTimeSeconds The time passed since the last call to `handleInput`, in seconds.
      */
     public void handleInput(float deltaTimeSeconds) {
@@ -210,6 +208,7 @@ public class Main implements ApplicationListener {
 
     /**
      * Updates game state that does not depend on input.
+     *
      * @param deltaTimeSeconds The time passed since the last call to `update`, in seconds.
      */
     public void update(float deltaTimeSeconds) {
