@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.utils.Array;
-
+import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 
@@ -102,6 +102,7 @@ public class HUD {
     private String pauseButton = "Pause";
     private String quitbutton = "Quit";
     private String shopButton = "Upgrade";
+    private String healButton = "Heal";
 
     // Positioning Constants
     private static final float HEALTH_BAR_Y = 770f;
@@ -164,6 +165,7 @@ public class HUD {
             assetManager.load("p_key_2px_cropped.png", Texture.class);
             assetManager.load("q_key_2px_cropped.png", Texture.class);
             assetManager.load("esc_key_2px_cropped.png", Texture.class);
+            assetManager.load("H_KEY_2px.png",  Texture.class);
             assetManager.finishLoading();
 
         }
@@ -211,9 +213,10 @@ public class HUD {
         font.draw(batch, atpString, 10, 760);
         font.draw(batch, timerString, 10, 730);
         font.draw(batch, pauseButton, 850, 740);
-        font.draw(batch, moveControl, 850, 700);
-        font.draw(batch, quitbutton, 850, 660);
+        font.draw(batch, moveControl, 850, 698);
+        font.draw(batch, quitbutton, 850, 658);
         font.draw(batch, shopButton, 850, 630);
+        font.draw(batch, healButton, 850, 599);
         //Was using to track time, but will likely be useful when tracking down our stutter bug.
 //        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
@@ -229,11 +232,13 @@ public class HUD {
     var moveTexture = assetManager.get(AssetFileNames.MOVE_KEY, Texture.class);
     var pauseTexture = assetManager.get(AssetFileNames.PAUSE_BUTTON, Texture.class);
     var quitTexture = assetManager.get(AssetFileNames.QUIT_BUTTON, Texture.class);
+    var healTexture = assetManager.get(AssetFileNames.HEAL_ICON, Texture.class);
     batch.begin();
     batch.draw(shopTexture, 980, 605,30, 30);
     batch.draw(moveTexture, 961, 664,70, 50);
     batch.draw(pauseTexture, 982,715,30,30);
-    batch.draw(quitTexture, 980,634,30,30);
+    batch.draw(quitTexture, 980,633,30,30);
+    batch.draw(healTexture, 980,575,30,30);
     batch.end();
     }
 

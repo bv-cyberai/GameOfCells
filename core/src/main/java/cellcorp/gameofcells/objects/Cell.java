@@ -39,6 +39,8 @@ public class Cell {
     private static float CELL_SPEED = 200f; // Speed of the cell
     public static int ZERO_ATP_DAMAGE_PER_SECOND = 10;
     private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
+    public static int ATP_HEAL_COST = 5;
+    public static int AMOUNT_HEALED = 5;
     /**
      * Time between applications of zero-ATP damage, in seconds.
      */
@@ -545,7 +547,18 @@ public class Cell {
         } catch (NumberFormatException e) {
             ROTATION_SPEED = 20f;
         }
+        try {
+            ATP_HEAL_COST = configProvider.getIntValue("atpHealCost");
+        } catch (NumberFormatException e) {
+            ATP_HEAL_COST = 5;
+        }
 
+        try {
+            AMOUNT_HEALED = configProvider.getIntValue("amountHealed");
+            } catch (NumberFormatException e){
+                AMOUNT_HEALED = 5;
+
+        }
     }
 
     /**
@@ -699,6 +712,24 @@ public class Cell {
             gamePlayScreen.endGame();
         } else {
             this.cellHealth -= damage;
+        }
+    }
+
+    /**
+     * Decreases current atp amount in order to increase cell Health
+     * Only usable if the Cell has the Mitochondria upgrade
+     */
+    public void healDamage() {
+        if (cellATP > ATP_HEAL_COST && cellHealth < MAX_HEALTH) {
+            if (cellHealth - MAX_HEALTH < AMOUNT_HEALED) {
+                if (MAX_HEALTH - cellHealth < AMOUNT_HEALED) {
+                    cellHealth = MAX_HEALTH;
+                }
+                else {
+                    cellATP -= ATP_HEAL_COST;
+                    this.cellHealth += AMOUNT_HEALED;
+                }
+            }
         }
     }
 

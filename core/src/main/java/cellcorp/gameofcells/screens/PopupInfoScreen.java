@@ -1,50 +1,45 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
-import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.providers.InputProvider;
-import cellcorp.gameofcells.providers.ConfigProvider;
 
 public class PopupInfoScreen implements GameOfCellsScreen {
-    // Types - Add to this as new pop-ups are desired.
-    public enum Type { glucose, danger, basic}
-
-    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
-    // Change as is most convenient.
     /**
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
     public static final int VIEW_RECT_WIDTH = 1280;
+
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
     /**
      * Height of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
     public static final int VIEW_RECT_HEIGHT = 800;
-
     private final Stage stage;
     private final AssetManager assetManager;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
     private final InputProvider inputProvider;
     private final Runnable onClose;
-
     private boolean visible = false;
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasShownAcidZonePopup = false; // If the acid zone popup has been shown
     private boolean hasShownBasicZonePopup = false; // If the basic zone popup has been shown
-
+    private boolean hasShownHealAvailablePopup = false; // If the heal available popup has been shown
     public PopupInfoScreen(
             GraphicsProvider graphicsProvider,
             AssetManager assetManager,
@@ -58,10 +53,13 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         this.inputProvider = inputProvider;
         this.onClose = onClose;
 
-        this.stage = new Stage(graphicsProvider.createFitViewport(
-            GamePlayScreen.VIEW_RECT_WIDTH, 
-            GamePlayScreen.VIEW_RECT_HEIGHT), 
-            graphicsProvider.createSpriteBatch());
+        this.stage = new Stage(
+                graphicsProvider.createFitViewport(
+                        GamePlayScreen.VIEW_RECT_WIDTH,
+                        GamePlayScreen.VIEW_RECT_HEIGHT
+                ),
+                graphicsProvider.createSpriteBatch()
+        );
     }
 
     public void show(Type type) {
@@ -103,9 +101,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         stage.act(delta);
         stage.draw();
-        
-        if(inputProvider.isKeyJustPressed(Input.Keys.ENTER)
-            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+
+        if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
+                || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             visible = false;
             if (onClose != null) {
                 onClose.run();
@@ -130,6 +128,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                     return configProvider.getStringValue("dangerPopupMessage");
                 case basic:
                     return configProvider.getStringValue("basicPopupMessage");
+                case heal:
+                    return configProvider.getStringValue("healAvailableMessage");
                 default:
                     throw new IllegalArgumentException("Unknown type: " + type);
             }
@@ -189,31 +189,48 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         this.hasShownBasicZonePopup = hasShownBasicZonePopup;
     }
 
+    /**
+     * Check if the heal avaible popup has been shown
+     */
+    public boolean hasShownHealAvailablePopup() {
+        return hasShownHealAvailablePopup;
+    }
+
+    public void setHasShownHealAvailablePopup(boolean hasShownHealAvailablePopup) {
+        this.hasShownHealAvailablePopup = hasShownHealAvailablePopup;
+    }
+
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // No input handling needed for this screen
     }
+
     @Override
     public void update(float deltaTimeSeconds) {
         // No updates needed for this screen
     }
+
     @Override
     public void draw() {
         // No drawing needed for this screen
     }
+
     @Override
     public void dispose() {
         stage.dispose();
         assetManager.unload(AssetFileNames.HUD_FONT);
     }
+
     @Override
     public void show() {
         // No action needed when showing this screen
     }
+
     @Override
     public void hide() {
         // No action needed when hiding this screen
     }
+
     @Override
     public void pause() {
         // No action needed when pausing this screen
@@ -223,4 +240,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     public void resume() {
         // No action needed when resuming this screen
     }
+
+    // Types - Add to this as new pop-ups are desired.
+    public enum Type {glucose, danger, basic, heal}
 }

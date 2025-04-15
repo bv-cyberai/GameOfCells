@@ -10,7 +10,7 @@ public class AssetFileNames {
      */
     public static String CELL = "Cell.png";
 
-    
+
     /*
      * The file name of our hud texture for the movement controls
      */
@@ -115,4 +115,6 @@ public class AssetFileNames {
      * The file name for the space and enter keys icon.
      */
     public static String SPACE_ENTER_ICON = "space_enter_stroke_1.png";
+
+    public static String HEAL_ICON = "H_KEY_2px.png";
 }

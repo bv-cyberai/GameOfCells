@@ -1,24 +1,22 @@
 package cellcorp.gameofcells.screens;
 
-import cellcorp.gameofcells.objects.*;
-import cellcorp.gameofcells.providers.*;
-
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.glutils.*;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.actions.*;
-import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.utils.viewport.*;
-
 import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.objects.GlucoseManager;
-import cellcorp.gameofcells.objects.HUD;
+import cellcorp.gameofcells.objects.*;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * GamePlay Screen
@@ -52,26 +50,22 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public static final String MESSAGE_GAME = "Game is now playing..."; // Message after starting the screen
     public static final String MESSAGE_SHOP = "Press Q to access the shop screen.";
     public static final String MESSAGE_PAUSE = "Press ESC to pause";
-    private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
-
     /**
      * Set to true to enable debug drawing.
      */
     public static final boolean DEBUG_DRAW_ENABLED = false;
-
+    private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
+    public final Stats stats = new Stats();
     private final Stage stage;
     private final Main game;
-
     /// Loads assets during game creation,
     /// then provides loaded assets to draw code, using [AssetManager#get(String)]
     private final AssetManager assetManager;
-
     /// Gets information about inputs, like held-down keys.
     /// Use this instead of `Gdx.input`, to avoid crashing tests.
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
-
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
     // classes' code):
@@ -126,19 +120,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // false.
     private final Camera camera;
     private final Viewport viewport;
-
     private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
-
     // Objects for rendering the game
     private final Cell playerCell;
     private final GlucoseManager glucoseManager;
     private final ZoneManager zoneManager;
     private final SpawnManager spawnManager;
     private final HUD hud;
-
-    private PopupInfoScreen infoPopup;
-
+    private final PopupInfoScreen infoPopup;
+    private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
@@ -146,13 +137,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
-    private boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
-
     private boolean isPaused = false; // Whether the game is paused
-
-    public final Stats stats = new Stats();
 
     /**
      * Constructs the GamePlayScreen.
@@ -163,10 +150,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param configProvider
      */
     public GamePlayScreen(
-        InputProvider inputProvider,
-        GraphicsProvider graphicsProvider,
-        Main game,
-        AssetManager assetManager, ConfigProvider configProvider) {
+            InputProvider inputProvider,
+            GraphicsProvider graphicsProvider,
+            Main game,
+            AssetManager assetManager, ConfigProvider configProvider) {
 
         this.assetManager = assetManager;
         this.game = game;
@@ -202,7 +189,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Fade in the gameplay screen when returning from the shop
         stage.getRoot().getColor().a = 0; // Start transparent
         stage.addAction(Actions.fadeIn(2f)); // Fade in over 2 seconds
-        }
+    }
 
     /// Move the game state forward a tick, handling input, performing updates, and
     /// rendering.
@@ -301,14 +288,23 @@ public class GamePlayScreen implements GameOfCellsScreen {
             playerCell.removeCellATP(20);
         }
 
+        if (inputProvider.isKeyJustPressed(Input.Keys.H)) {
+            if (playerCell.hasMitochondria()) {
+                playerCell.healDamage();
+            }
+        }
+        if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
+            showPopup(PopupInfoScreen.Type.heal);
+        }
+
         // Only move the cell if the game is not paused
         if (!isPaused) {
             playerCell.move(
-                deltaTimeSeconds,
-                (inputProvider.isKeyPressed(Input.Keys.LEFT )|| inputProvider.isKeyPressed(Input.Keys.A )), // Check if the left key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D )), // Check if the right key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.UP)||inputProvider.isKeyPressed(Input.Keys.W) ), // Check if the up key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.DOWN)|| inputProvider.isKeyPressed(Input.Keys.S )) // Check if the down key is pressed
+                    deltaTimeSeconds,
+                    (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
+                    (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
+                    (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
+                    (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
 
             );
         }
@@ -321,13 +317,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE) || inputProvider.isKeyJustPressed(Input.Keys.P)) {
             pauseGame();
             game.setScreen(new PauseScreen(
-                this,
-                inputProvider,
-                graphicsProvider,
-                game,
-                assetManager,
-                camera,
-                configProvider
+                    this,
+                    inputProvider,
+                    graphicsProvider,
+                    game,
+                    assetManager,
+                    camera,
+                    configProvider
             ));
         }
     }
@@ -379,6 +375,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 hasShownEnergyWarning = true;
             } else if (playerCell.getCellATP() > 20) {
                 hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
+            }
+            if (playerCell.hasMitochondria()) {
+                reportHealAvailable();
             }
 
             stats.gameTimer += deltaTimeSeconds;
@@ -554,7 +553,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 inputProvider,
                 assetManager,
                 graphicsProvider,
-                game, configProvider, stats));
+                game, configProvider, stats
+        ));
     }
 
     /**
@@ -592,6 +592,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (!infoPopup.hasShownAcidZonePopup()) {
             showPopup(PopupInfoScreen.Type.danger);
             infoPopup.setHasShownAcidZonePopup(true); // Mark the popup as shown
+        }
+    }
+
+    public void reportHealAvailable() {
+        if (!infoPopup.hasShownHealAvailablePopup()) {
+            showPopup(PopupInfoScreen.Type.heal);
+            infoPopup.setHasShownHealAvailablePopup(true);
         }
     }
 
@@ -637,43 +644,36 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Check if the cell is in an acid zone.
      * This is used for checking if the cell is in an acid zone.
      * For example, if the cell is in an acid zone, it will take damage.
+     *
      * @param x
      * @param y
      * @return true if the cell is in an acid zone, false otherwise.
      */
     protected boolean isInAcidZone(float x, float y) {
         return zoneManager.distanceToNearestAcidZone(x, y)
-            .map(d -> d <= Zone.ZONE_RADIUS)
-            .orElse(false);
+                .map(d -> d <= Zone.ZONE_RADIUS)
+                .orElse(false);
     }
 
     /**
      * Check if the cell is in a basic zone.
      * This is used for checking if the cell is in a basic zone.
+     *
      * @param x
      * @param y
      * @return
      */
     protected boolean isInBasicZone(float x, float y) {
         return zoneManager.distanceToNearestBasicZone(x, y)
-            .map(d -> d <= Zone.ZONE_RADIUS)
-            .orElse(false);
-    }
-
-    /**
-     * Set the wasInAcidZone flag.
-     * This is used for checking if the cell was in an acid zone last frame.
-     * For example, if the cell was in an acid zone last frame, it will take damage.
-     * @param wasInAcidZone
-     */
-    public void setWasInAcidZone(boolean wasInAcidZone) {
-        this.wasInAcidZone = wasInAcidZone;
+                .map(d -> d <= Zone.ZONE_RADIUS)
+                .orElse(false);
     }
 
     /**
      * Get the wasInAcidZone flag.
      * This is used for checking if the cell was in an acid zone last frame.
      * For example, if the cell was in an acid zone last frame, it will take damage.
+     *
      * @return true if the cell was in an acid zone last frame, false otherwise.
      * @see #wasInAcidZone
      */
@@ -682,9 +682,21 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Set the wasInAcidZone flag.
+     * This is used for checking if the cell was in an acid zone last frame.
+     * For example, if the cell was in an acid zone last frame, it will take damage.
+     *
+     * @param wasInAcidZone
+     */
+    public void setWasInAcidZone(boolean wasInAcidZone) {
+        this.wasInAcidZone = wasInAcidZone;
+    }
+
+    /**
      * Get the isPaused flag.
      * This is used for checking if the game is paused.
      * For example, if the game is paused, it will not update the game state.
+     *
      * @return true if the game is paused, false otherwise.
      * @see #isPaused
      */
@@ -696,6 +708,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Set the isPaused flag.
      * This is used for checking if the game is paused.
      * For example, if the game is paused, it will not update the game state.
+     *
      * @param isPaused
      * @see #isPaused
      */
@@ -708,6 +721,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for getting the zone manager.
      * For example, if the zone manager is not null, it will be used to spawn
      * objects.
+     *
      * @return the zone manager.
      */
     public ZoneManager getZoneManager() {
@@ -719,6 +733,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for getting the spawn manager.
      * For example, if the spawn manager is not null, it will be used to spawn
      * objects.
+     *
      * @return the spawn manager.
      */
     public SpawnManager getSpawnManager() {
@@ -730,6 +745,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for getting the asset manager.
      * For example, if the asset manager is not null, it will be used to load
      * assets.
+     *
      * @return the asset manager.
      */
     public AssetManager getAssetManager() {
@@ -741,6 +757,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for getting the info popup.
      * For example, if the info popup is not null, it will be used to show
      * information to the user.
+     *
      * @return the info popup.
      */
     public PopupInfoScreen getInfoPopup() {
@@ -748,25 +765,27 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * Set the hasShownEnergyWarning flag.
-     * This is used for checking if the energy warning has been shown.
-     * For example, if the energy warning has been shown, it will not show it again.
-     * @see #hasShownEnergyWarning
-     * @param hasShownEnergyWarning
-     */
-    public void setHasShownEnergyWarning(boolean hasShownEnergyWarning) {
-        this.hasShownEnergyWarning = hasShownEnergyWarning;
-    }
-
-    /**
      * Get the hasShownEnergyWarning flag.
      * This is used for checking if the energy warning has been shown.
      * For example, if the energy warning has been shown, it will not show it again.
-     * @see #hasShownEnergyWarning
+     *
      * @return
+     * @see #hasShownEnergyWarning
      */
     public boolean isHasShownEnergyWarning() {
         return hasShownEnergyWarning;
+    }
+
+    /**
+     * Set the hasShownEnergyWarning flag.
+     * This is used for checking if the energy warning has been shown.
+     * For example, if the energy warning has been shown, it will not show it again.
+     *
+     * @param hasShownEnergyWarning
+     * @see #hasShownEnergyWarning
+     */
+    public void setHasShownEnergyWarning(boolean hasShownEnergyWarning) {
+        this.hasShownEnergyWarning = hasShownEnergyWarning;
     }
 
     /**
@@ -774,8 +793,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for checking if the low energy warning cooldown is active.
      * For example, if the low energy warning cooldown is active, it will not show
      * the energy warning again.
-     * @see #lowEnergyWarningCooldown
+     *
      * @return the low energy warning cooldown
+     * @see #lowEnergyWarningCooldown
      */
     public float getLowEnergyWarningCooldown() {
         return lowEnergyWarningCooldown;
@@ -786,8 +806,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for checking if the low energy warning cooldown is active.
      * For example, if the low energy warning cooldown is active, it will not show
      * the energy warning again.
-     * @see #lowEnergyWarningCooldown
+     *
      * @param lowEnergyWarningCooldown
+     * @see #lowEnergyWarningCooldown
      */
     public void setLowEnergyWarningCooldown(float lowEnergyWarningCooldown) {
         this.lowEnergyWarningCooldown = lowEnergyWarningCooldown;
@@ -797,8 +818,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Get the isPaused flag.
      * This is used for checking if the game is paused.
      * For example, if the game is paused, it will not update the game state.
-     * @see #isPaused
+     *
      * @return true if the game is paused, false otherwise.
+     * @see #isPaused
      */
     public boolean isPaused() {
         return isPaused;
@@ -807,9 +829,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Set the paused state of the game.
      * This is used for checking if the game is paused.
+     *
      * @param paused
-     * @see #isPaused
      * @return true if the game is paused, false otherwise.
+     * @see #isPaused
      */
     public void setPaused(boolean paused) {
         isPaused = paused;
@@ -820,6 +843,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for getting the viewport.
      * For example, if the viewport is not null, it will be used to set the camera
      * position.
+     *
      * @return the viewport.
      */
     public Viewport getViewport() {
@@ -828,6 +852,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Get the GamePlayScreen width.
+     *
      * @return the GamePlayScreen width.
      */
     public int getWorldWidth() {
@@ -836,6 +861,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Get the GamePlayScreen height.
+     *
      * @return the GamePlayScreen height.
      */
     public int getWorldHeight() {
