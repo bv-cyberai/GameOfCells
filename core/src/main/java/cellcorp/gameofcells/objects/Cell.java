@@ -679,6 +679,8 @@ public class Cell {
         cellCircle.radius += sizeIncrease / 2;
         forceCircle.radius = cellCircle.radius * forceCircleSizeMultiplier * forceCircleSizeScalar;
     }
+        forceCircle.radius = cellCircle.radius *  forceCircleSizeMultiplier * forceCircleSizeScalar;
+    }
 
     /**
      * Set whether the cell has the mitochondria upgrade

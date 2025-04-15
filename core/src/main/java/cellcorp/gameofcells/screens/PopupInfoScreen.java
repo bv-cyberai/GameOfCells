@@ -18,7 +18,7 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 
 public class PopupInfoScreen implements GameOfCellsScreen {
     // Types - Add to this as new pop-ups are desired.
-    public enum Type { glucose, danger }
+    public enum Type { glucose, danger, basic}
 
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
     // Change as is most convenient.
@@ -43,6 +43,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private boolean visible = false;
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasShownAcidZonePopup = false; // If the acid zone popup has been shown
+    private boolean hasShownBasicZonePopup = false; // If the basic zone popup has been shown
 
     public PopupInfoScreen(
             GraphicsProvider graphicsProvider,
@@ -127,6 +128,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                     return configProvider.getStringValue("glucosePopupMessage");
                 case danger:
                     return configProvider.getStringValue("dangerPopupMessage");
+                case basic:
+                    return configProvider.getStringValue("basicPopupMessage");
                 default:
                     throw new IllegalArgumentException("Unknown type: " + type);
             }
@@ -136,6 +139,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                     return "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
                 case danger:
                     return "Danger! You are in a dangerous area.\n\nGradient color pink damages cell health.";
+                case basic:
+                    return "Nutrient-rich zone detected!\n\nGradient color blue contains abundant glucose resources.";
                 default:
                     return "Unknown type: " + type;
             }
@@ -168,6 +173,20 @@ public class PopupInfoScreen implements GameOfCellsScreen {
      */
     public void setHasShownAcidZonePopup(boolean hasShownAcidZonePopup) {
         this.hasShownAcidZonePopup = hasShownAcidZonePopup;
+    }
+
+    /**
+     * Check if the basic zone popup has been shown
+     */
+    public boolean hasShownBasicZonePopup() {
+        return hasShownBasicZonePopup;
+    }
+
+    /**
+     * Set the basic zone popup as shown
+     */
+    public void setHasShownBasicZonePopup(boolean hasShownBasicZonePopup) {
+        this.hasShownBasicZonePopup = hasShownBasicZonePopup;
     }
 
     @Override

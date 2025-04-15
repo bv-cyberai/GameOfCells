@@ -146,6 +146,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
+    private boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
 
@@ -346,6 +347,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
             glucoseManager.update(deltaTimeSeconds);
             spawnManager.update();
 
+            // Check for basic zone
+            boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
+            if (inBasicZone) {
+                reportBasicZoneCollision();
+            }
             // Check for acid zone
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
             if (inAcidZone) {
@@ -590,6 +596,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Reports the cell entering a basic zone.
+     * This is used for displaying the basic zone warning.
+     */
+    public void reportBasicZoneCollision() {
+        if (!infoPopup.hasShownBasicZonePopup()) {
+            showPopup(PopupInfoScreen.Type.basic);
+            infoPopup.setHasShownBasicZonePopup(true); // Mark the popup as shown
+        }
+    }
+
+    /**
      * Shows a warning that the cell is out of energy.
      * This is used for displaying the energy warning.
      * For example, "WARNING: ATP low!".
@@ -624,8 +641,21 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param y
      * @return true if the cell is in an acid zone, false otherwise.
      */
-    private boolean isInAcidZone(float x, float y) {
+    protected boolean isInAcidZone(float x, float y) {
         return zoneManager.distanceToNearestAcidZone(x, y)
+            .map(d -> d <= Zone.ZONE_RADIUS)
+            .orElse(false);
+    }
+
+    /**
+     * Check if the cell is in a basic zone.
+     * This is used for checking if the cell is in a basic zone.
+     * @param x
+     * @param y
+     * @return
+     */
+    protected boolean isInBasicZone(float x, float y) {
+        return zoneManager.distanceToNearestBasicZone(x, y)
             .map(d -> d <= Zone.ZONE_RADIUS)
             .orElse(false);
     }
@@ -711,7 +741,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for getting the info popup.
      * For example, if the info popup is not null, it will be used to show
      * information to the user.
-     * @return
+     * @return the info popup.
      */
     public PopupInfoScreen getInfoPopup() {
         return infoPopup;
