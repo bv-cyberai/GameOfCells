@@ -97,10 +97,7 @@ public class PauseScreen implements GameOfCellsScreen {
         this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
-        this.viewport = graphicsProvider.createFitViewport(
-            GamePlayScreen.VIEW_RECT_WIDTH,
-            GamePlayScreen.VIEW_RECT_HEIGHT
-        );
+        this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
 
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
