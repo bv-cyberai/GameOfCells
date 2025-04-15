@@ -140,7 +140,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 case danger:
                     return "Danger! You are in a dangerous area.\n\nGradient color pink damages cell health.";
                 case basic:
-                    return "Nutrient-rich zone detected!\n\nThis area contains abundant glucose resources.";
+                    return "Nutrient-rich zone detected!\n\nGradient color blue contains abundant glucose resources.";
                 default:
                     return "Unknown type: " + type;
             }
