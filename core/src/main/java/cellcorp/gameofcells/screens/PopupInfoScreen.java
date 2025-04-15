@@ -1,17 +1,15 @@
 package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.objects.HUD;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -35,11 +33,18 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private final ConfigProvider configProvider;
     private final InputProvider inputProvider;
     private final Runnable onClose;
+    private final HUD hud;
+
     private boolean visible = false;
     private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
     private boolean hasShownAcidZonePopup = false; // If the acid zone popup has been shown
     private boolean hasShownBasicZonePopup = false; // If the basic zone popup has been shown
     private boolean hasShownHealAvailablePopup = false; // If the heal available popup has been shown
+
+    // For rendering data
+    private String popupMessage;
+    private float popupX, popupY, popupWidth, popupHeight;
+    private Color popupColor;
 
     public PopupInfoScreen(
             GraphicsProvider graphicsProvider,
@@ -47,12 +52,14 @@ public class PopupInfoScreen implements GameOfCellsScreen {
             ConfigProvider configProvider,
             InputProvider inputProvider,
             Viewport viewport,
+            HUD hud,
             Runnable onClose) {
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
         this.configProvider = configProvider;
         this.inputProvider = inputProvider;
         this.onClose = onClose;
+        this.hud = hud;
 
         this.stage = new Stage(
                 graphicsProvider.createFitViewport(
@@ -76,16 +83,16 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         float padding = 40f;
         float popupWidth = layout.width + 2 * padding;
         float popupHeight = layout.height + 2 * padding;
-        float x = (stage.getViewport().getWorldWidth() - layout.width) / 2;
-        float y = (stage.getViewport().getWorldHeight() - layout.height) / 2;
+        float x = (hud.getViewport().getWorldWidth() - popupWidth) / 2;
+        float y = (hud.getViewport().getWorldHeight() - popupHeight) / 2;
 
         Color backgroundColor;
         switch (type) {
             case glucose:
-                backgroundColor = Color.ORANGE;
+                backgroundColor = new Color(0.8f, 0.33f, 0.0f, 1f);
                 break;
             case danger:
-                backgroundColor = Color.PINK;
+                backgroundColor = new Color(0.8f, 0.0f, 0.4f, 1f);
                 break;
             case basic:
                 backgroundColor = Color.BLUE;
@@ -95,18 +102,13 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 break;
         }
 
-        Texture backgroundRegion = graphicsProvider.createRoundedRectangleTexture(
-                (int) popupWidth, (int) popupHeight, backgroundColor, 20f);
-
-        // Clear actors and draw directly using SpriteBatch just like HUD
-        stage.addActor(new Actor() {
-            @Override
-            public void draw(Batch batch, float parentAlpha) {
-                batch.draw(backgroundRegion, x, y, popupWidth, popupHeight);
-                font.setColor(Color.WHITE);
-                font.draw(batch, message, x + padding, y + popupHeight - padding);
-            }
-        });
+        // Store popup data to draw in HUD during render
+        this.popupMessage = message;
+        this.popupX = x;
+        this.popupY = y;
+        this.popupWidth = popupWidth;
+        this.popupHeight = popupHeight;
+        this.popupColor = backgroundColor;
     }
 
     public void render(float delta) {
@@ -114,7 +116,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         stage.act(delta);
         stage.draw();
-
+        hud.queuePopup(popupMessage, popupX, popupY, popupWidth, popupHeight, popupColor);
         if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
                 || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             visible = false;
@@ -130,6 +132,15 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    /**
+     * Check if the popup is visible
+     *
+     * @param visible true if the popup is visible, false otherwise
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     private String getMessageFromConfig(Type type) {

@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import org.mockito.Mockito;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.Color;
 
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
@@ -66,6 +67,10 @@ public class FakeGraphicsProvider implements GraphicsProvider {
 
     @Override
     public Texture createWhitePixelTexture() {
+        return Mockito.mock(Texture.class);
+    }
+
+    public Texture createRoundedRectangleTexture(int width, int height, Color color, float radius) {
         return Mockito.mock(Texture.class);
     }
 

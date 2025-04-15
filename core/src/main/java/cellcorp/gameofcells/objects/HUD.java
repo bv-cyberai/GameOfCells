@@ -11,8 +11,10 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.utils.Array;
@@ -77,6 +79,9 @@ public class HUD {
     // It is not used in the HUD class, but it is included here for completeness.
     private final NotificationManager notificationManager;
 
+    // Graphics Provider
+    private final GraphicsProvider graphicsProvider;
+
     // fonts
     private BitmapFont font;
     private BitmapFont barFont;
@@ -88,6 +93,7 @@ public class HUD {
     private GlyphLayout healthLayout;
     private GlyphLayout atpLayout;
     private GlyphLayout notificationLayout;
+    private GlyphLayout popupLayout;
 
     // Energy Bar Values for storing and calculating position of text.
     private String timerString = "Timer: 0";
@@ -103,6 +109,12 @@ public class HUD {
     private String quitbutton = "Quit";
     private String shopButton = "Upgrade";
     private String healButton = "Heal";
+
+    // Popup info variables
+    private boolean shouldDrawPopup = false;
+    private String popupMessage;
+    private float popupX, popupY, popupWidth, popupHeight;
+    private Color popupColor;
 
     // Positioning Constants
     private static final float HEALTH_BAR_Y = 770f;
@@ -129,6 +141,7 @@ public class HUD {
         this.maxHealth = maxHealth;
         this.maxATP = maxATP;
 
+        this.graphicsProvider = graphicsProvider;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.batch = graphicsProvider.createSpriteBatch();
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
@@ -137,6 +150,7 @@ public class HUD {
         this.healthLayout = new GlyphLayout();
         this.atpLayout = new GlyphLayout();
         this.notificationLayout = new GlyphLayout();
+        this.popupLayout = new GlyphLayout();
 
         this.notificationFont = graphicsProvider.createBitmapFont();
         this.notificationManager = new NotificationManager(notificationFont, NOTIFICATION_VERTICAL_SPACING, NOTIFICATION_Y_POSITION);
@@ -171,8 +185,15 @@ public class HUD {
         }
     }
 
-
-
+    public void queuePopup(String message, float x, float y, float width, float height, Color bgColor) {
+        this.shouldDrawPopup = true;
+        this.popupMessage = message;
+        this.popupX = x;
+        this.popupY = y;
+        this.popupWidth = width;
+        this.popupHeight = height;
+        this.popupColor = bgColor;
+    }
 
     /**
      * Draw
@@ -193,6 +214,7 @@ public class HUD {
         drawBarText(batch);
         drawNotifications(batch);
         drawHudIcons(batch);
+        drawPopup(batch);
 
         // Reset the projection matrix to the caller's viewport
         // This is important to avoid breaking the caller's viewport.
@@ -299,7 +321,30 @@ public class HUD {
             notificationFont.setColor(oldColor);
         }
         batch.end();
+    }
 
+    public void drawPopup(SpriteBatch batch) {
+        if (!shouldDrawPopup) return;
+
+        BitmapFont popupFont = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        popupFont.getData().setScale(hudFontScale);
+        popupLayout.setText(popupFont, popupMessage);
+
+        Texture backgroudRegion = graphicsProvider.createRoundedRectangleTexture(
+            (int) popupWidth, (int) popupHeight, popupColor, 20f);
+
+        batch.begin();
+        batch.draw(backgroudRegion, popupX, popupY, popupWidth, popupHeight);
+
+        Color oldColor = popupFont.getColor().cpy();
+        popupFont.setColor(Color.BLACK);
+        popupFont.draw(batch, popupLayout, popupX + 40,
+                        popupY + popupHeight - 40);
+        popupFont.setColor(oldColor);
+        batch.end();
+
+        backgroudRegion.dispose(); // Dispose of the background texture
+        shouldDrawPopup = false; // Reset the flag
     }
 
     /**
@@ -419,9 +464,19 @@ public class HUD {
 
     /**
      * Get the Notification Manager
-     * @return
+     *
+     * @return - the Notification Manager
      */
     public NotificationManager getNotificationManager() {
         return notificationManager;
+    }
+
+    /**
+     * Get the Viewport
+     *
+     * @return - the Viewport
+     */
+    public Viewport getViewport() {
+        return viewport;
     }
 }

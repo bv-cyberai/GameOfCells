@@ -172,9 +172,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
-        this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, this::resumeGame);
-
+        
         this.hud = new HUD(graphicsProvider, assetManager, playerCell.getMaxHealth(), playerCell.getMaxATP());
+        this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, hud, this::resumeGame);
     }
 
     /**
@@ -298,7 +298,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
 
         // Only move the cell if the game is not paused
-        if (!isPaused) {
+        if (!isPaused && !infoPopup.isVisible()) {
             playerCell.move(
                     deltaTimeSeconds,
                     (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
@@ -571,6 +571,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void resumeGame() {
         // Resume game logic (e.g., start updating entities)
         isPaused = false;
+        if (infoPopup.isVisible()) {
+            infoPopup.setVisible(false);
+        }
     }
 
     /**
