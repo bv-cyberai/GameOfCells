@@ -71,13 +71,6 @@ public class PauseScreen implements GameOfCellsScreen {
     private final MenuSystem menuSystem;
     private final SpriteBatch batch;
 
-    private Cell cell;
-    private Random random;
-    private float targetX, targetY;
-    private float cellSpeed = 100f;
-    private float animationTime = 0f;
-    private boolean isSimulationRunning = true;
-
     /**
      * Constructor for the PauseScreen class.
      * 
@@ -117,14 +110,6 @@ public class PauseScreen implements GameOfCellsScreen {
             graphicsProvider
         );
         this.batch = graphicsProvider.createSpriteBatch();
-        this.random = new Random();
-        this.cell = new Cell(new GamePlayScreen(
-            inputProvider, graphicsProvider, game, assetManager, configProvider),
-            assetManager,
-            configProvider);
-
-        this.targetX = random.nextFloat() * viewport.getWorldWidth();
-        this.targetY = random.nextFloat() * viewport.getWorldHeight();
     }
 
     /**
@@ -133,8 +118,6 @@ public class PauseScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
-        isSimulationRunning = true;
-        animationTime = 0f;
         menuSystem.initializePauseMenu("Paused", PAUSE_OPTIONS, INSTRUCTIONS);
     }
 
@@ -190,7 +173,6 @@ public class PauseScreen implements GameOfCellsScreen {
     @Override
     public void hide() {
         // Hide logic if needed
-        isSimulationRunning = false;
     }
 
     /**
@@ -202,9 +184,6 @@ public class PauseScreen implements GameOfCellsScreen {
         menuSystem.clear();
         particles.dispose();
         batch.dispose();
-        if (cell != null) {
-            cell.dispose();
-        }
     }
 
     /**
@@ -274,57 +253,8 @@ public class PauseScreen implements GameOfCellsScreen {
      */
     @Override
     public void update(float deltaTimeSeconds) {
-        if (isSimulationRunning) {
-            animationTime += deltaTimeSeconds;
-
-            particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
-        
-            updateCellMovement(deltaTimeSeconds);
-        }
+        particles.update(deltaTimeSeconds, viewport.getWorldWidth(), viewport.getWorldHeight());
         menuSystem.getStage().act(deltaTimeSeconds);
-    }
-
-    /**
-     * Draws the pause screen.
-     * This method is called every frame to draw the game state.
-     * 
-     * @param deltaTimeSeconds The time since the last frame
-     */
-    private void updateCellMovement(float deltaTimeSeconds) {
-        // Humanistic movement logic
-        float cellX = cell.getX();
-        float cellY = cell.getY();
-
-        // Calculate direction to target
-        float dx = targetX - cellX;
-        float dy = targetY - cellY;
-        float distance = (float) Math.sqrt(dx * dx + dy * dy);
-
-        // Normalize direction
-        if (distance > 0) {
-            dx /= distance;
-            dy /= distance;
-        }
-
-        // Move the cell towards the target
-        cellX += dx * cellSpeed * deltaTimeSeconds;
-        cellY += dy * cellSpeed * deltaTimeSeconds;
-
-
-        // Update cell position
-        cell.moveTo(cellX, cellY);
-
-        // Check if the cell has reached the target
-        if (distance < 10) { // Close enough to the target
-            // Set a new random target
-            targetX = random.nextFloat() * viewport.getWorldWidth();
-            targetY = random.nextFloat() * viewport.getWorldHeight();
-
-            // Randomize speed occasionally
-            if (random.nextFloat() < 0.1) { // 10% chance to change speed
-                cellSpeed = 50 + random.nextFloat() * 150; // Random speed between 50 and 200
-            }
-        }
     }
 
     /**
@@ -340,8 +270,6 @@ public class PauseScreen implements GameOfCellsScreen {
         ScreenUtils.clear(.05f, .15f, .2f, 1f); // Deep teal background
         viewport.apply(true);
         batch.setProjectionMatrix(viewport.getCamera().combined);
-
-        cell.draw(batch, shapeRenderer);
 
         batch.begin();
         // Draw the particles
