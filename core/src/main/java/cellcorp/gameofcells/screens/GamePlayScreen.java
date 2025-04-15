@@ -350,6 +350,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
             if (inAcidZone) {
                 hud.showAcidZoneWarning();
+
+                // We want to show the warning only once when entering the acid zone
+                reportAcidZoneCollision();
             } else if (wasInAcidZone) {
                 // If the cell was in an acid zone last frame, but not this frame,
                 // remove the warning
@@ -569,9 +572,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * If this is the first collision, shows an info screen.
      */
     public void reportGlucoseCollision() {
-        if (!playerCell.hasShownGlucosePopup()) {
+        if (!infoPopup.hasShownGlucosePopup()) {
             showPopup(PopupInfoScreen.Type.glucose);
-            playerCell.setHasShownGlucosePopup(true); // Mark the popup as shown
+            infoPopup.setHasShownGlucosePopup(true); // Mark the popup as shown
+        }
+    }
+
+    /**
+     * Reports the cell entering an acid zone.
+     * This is used for displaying the acid zone warning.
+     */
+    public void reportAcidZoneCollision() {
+        if (!infoPopup.hasShownAcidZonePopup()) {
+            showPopup(PopupInfoScreen.Type.danger);
+            infoPopup.setHasShownAcidZonePopup(true); // Mark the popup as shown
         }
     }
 
@@ -690,6 +704,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    /**
+     * Get the info popup.
+     * This is used for getting the info popup.
+     * For example, if the info popup is not null, it will be used to show
+     * information to the user.
+     * @return
+     */
+    public PopupInfoScreen getInfoPopup() {
+        return infoPopup;
     }
 
     /**

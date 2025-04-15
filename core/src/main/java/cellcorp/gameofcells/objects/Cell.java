@@ -57,8 +57,6 @@ public class Cell {
     private int cellATP;
     private final Circle cellCircle;
 
-    private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
-
     // Organelle Upgrades
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
     private boolean hasRibosomes = false; // Whether the cell has the ribosomes upgrade
@@ -109,7 +107,6 @@ public class Cell {
     private boolean wasAtpBurnedThisFrame; //tracks if ATP has been burnt, mostly for testing
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
-
 
     //potential gameOverStat
     private float totalDistanceMoved;
@@ -681,20 +678,6 @@ public class Cell {
         //Increase radi
         cellCircle.radius += sizeIncrease / 2;
         forceCircle.radius = cellCircle.radius * forceCircleSizeMultiplier * forceCircleSizeScalar;
-    }
-
-    /**
-     * Check if the glucose popup has been shown
-     */
-    public boolean hasShownGlucosePopup() {
-        return hasShownGlucosePopup;
-    }
-
-    /**
-     * Set the glucose popup as shown
-     */
-    public void setHasShownGlucosePopup(boolean hasShownGlucosePopup) {
-        this.hasShownGlucosePopup = hasShownGlucosePopup;
     }
 
     /**

@@ -159,6 +159,10 @@ public class TestGamePlayScreen {
         
         var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
         var cell = gamePlayScreen.getCell();
+        var popupInfo = gamePlayScreen.getInfoPopup();
+
+        popupInfo.setHasShownAcidZonePopup(true);
+
         var zoneManager = gamePlayScreen.getSpawnManager().getZoneManager();
         
         // Set cell to full health at position (1000,1000)
