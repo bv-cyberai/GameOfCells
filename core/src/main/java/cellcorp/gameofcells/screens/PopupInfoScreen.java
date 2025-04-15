@@ -7,13 +7,12 @@ import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PopupInfoScreen implements GameOfCellsScreen {
@@ -68,48 +67,46 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         stage.clear(); // Remove any previous popups
         visible = true;
 
-        String message = getMessageFromConfig(type);
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-        font.getData().setScale(0.25f); // Match HUD font scale
+        font.getData().setScale(0.25f); // Match HUD scale
 
-        GlyphLayout glyphLayout = new GlyphLayout(font, message);
+        String message = getMessageFromConfig(type);
+        GlyphLayout layout = new GlyphLayout(font, message);
 
-        float popupWidth = Math.min(glyphLayout.width + 60, 460);
-        float popupHeight = glyphLayout.height + 60;
+        float padding = 40f;
+        float popupWidth = layout.width + 2 * padding;
+        float popupHeight = layout.height + 2 * padding;
+        float x = (stage.getViewport().getWorldWidth() - layout.width) / 2;
+        float y = (stage.getViewport().getWorldHeight() - layout.height) / 2;
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        Label messageLabel = graphicsProvider.createLabel(message, labelStyle);
-        messageLabel.setColor(new Color(1f, 1f, 1f, 0.95f));
-        messageLabel.setWrap(true);
-        messageLabel.setAlignment(Align.center);
+        Color backgroundColor;
+        switch (type) {
+            case glucose:
+                backgroundColor = Color.ORANGE;
+                break;
+            case danger:
+                backgroundColor = Color.PINK;
+                break;
+            case basic:
+                backgroundColor = Color.BLUE;
+                break;
+            default:
+                backgroundColor = Color.WHITE;
+                break;
+        }
 
-        Table popupTable = new Table();
-        popupTable.setSize(popupWidth, popupHeight);
+        Texture backgroundRegion = graphicsProvider.createRoundedRectangleTexture(
+                (int) popupWidth, (int) popupHeight, backgroundColor, 20f);
 
-        // Background (matches HUD style)
-        popupTable.setBackground(new TextureRegionDrawable(graphicsProvider.createRoundedRectangleTexture(
-                (int) popupWidth, (int) popupHeight,
-                new Color(0.1f, 0.2f, 0.25f, 1f),
-                15f // corner radius
-        )));
-
-        // Add border (matches HUD notitifcations)
-        popupTable.pad(3);
-        popupTable.setColor(Color.LIGHT_GRAY);
-
-        // Content layout
-        popupTable.add(messageLabel)
-                .width(popupWidth - 40)
-                .pad(20)
-                .center();
-
-        // Center on stage
-        popupTable.setPosition(
-                (stage.getWidth() - popupWidth) / 2,
-                (stage.getHeight() - popupHeight) / 2
-        );
-
-        stage.addActor(popupTable);
+        // Clear actors and draw directly using SpriteBatch just like HUD
+        stage.addActor(new Actor() {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(backgroundRegion, x, y, popupWidth, popupHeight);
+                font.setColor(Color.WHITE);
+                font.draw(batch, message, x + padding, y + popupHeight - padding);
+            }
+        });
     }
 
     public void render(float delta) {
@@ -154,9 +151,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 case glucose:
                     return "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
                 case danger:
-                    return "Danger! Acid Zone!\n\nHealth drains while in pink zones.";
+                    return "DANGER ZONE!\n\nHealth drains in pink areas. Move to safety quickly!";
                 case basic:
-                    return "Glucose-rich Zone!\n\nBlue areas are abundant in glucose resources.";
+                    return "GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.";
                 default:
                     return "Unknown type: " + type;
             }

@@ -76,11 +76,15 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
 
-        // Draw rounded rectangle
+        // Fill central areas
         pixmap.fillRectangle(0, (int)cornerRadius, width, height - (int)cornerRadius*2);
         pixmap.fillRectangle((int)cornerRadius, 0, width - (int)cornerRadius*2, height);
-        pixmap.fillCircle((int)cornerRadius, (int)cornerRadius, (int)cornerRadius);
-        pixmap.fillCircle((int)cornerRadius, height - (int)cornerRadius, (int)cornerRadius);
+
+        // Draw all 4 corners
+        pixmap.fillCircle((int)cornerRadius, (int)cornerRadius, (int)cornerRadius); // top-left
+        pixmap.fillCircle((int)cornerRadius, height - (int)cornerRadius, (int)cornerRadius); // bottom-left
+        pixmap.fillCircle(width - (int)cornerRadius, (int)cornerRadius, (int)cornerRadius); // top-right
+        pixmap.fillCircle(width - (int)cornerRadius, height - (int)cornerRadius, (int)cornerRadius); // bottom-right
 
         Texture texture = new Texture(pixmap);
         pixmap.dispose();
