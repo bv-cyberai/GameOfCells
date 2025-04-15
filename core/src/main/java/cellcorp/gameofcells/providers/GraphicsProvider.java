@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * Provides information from `Gdx.graphics`, which is needed by game code.
@@ -103,6 +104,17 @@ public interface GraphicsProvider {
      * Create a texture from the given pixmap.
      */
     Texture createWhitePixelTexture();
+
+    /**
+     * Create a rounded rectangle texture with the given parameters.
+     * This is a convenience method for creating a texture with rounded corners.
+     * @param width
+     * @param height
+     * @param color
+     * @param cornerRadius
+     * @return
+     */
+    Texture createRoundedRectangleTexture(int width, int height, Color color, float cornerRadius);
 
     /**
      * Create a bitmap font with the given parameters.

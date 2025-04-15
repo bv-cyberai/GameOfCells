@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -40,6 +41,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
     private boolean hasShownAcidZonePopup = false; // If the acid zone popup has been shown
     private boolean hasShownBasicZonePopup = false; // If the basic zone popup has been shown
     private boolean hasShownHealAvailablePopup = false; // If the heal available popup has been shown
+
     public PopupInfoScreen(
             GraphicsProvider graphicsProvider,
             AssetManager assetManager,
@@ -68,6 +70,12 @@ public class PopupInfoScreen implements GameOfCellsScreen {
 
         String message = getMessageFromConfig(type);
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        font.getData().setScale(0.25f); // Match HUD font scale
+
+        GlyphLayout glyphLayout = new GlyphLayout(font, message);
+
+        float popupWidth = Math.min(glyphLayout.width + 60, 460);
+        float popupHeight = glyphLayout.height + 60;
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Label messageLabel = graphicsProvider.createLabel(message, labelStyle);
@@ -75,25 +83,33 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         messageLabel.setWrap(true);
         messageLabel.setAlignment(Align.center);
 
-        Table borderTable = new Table();
-        borderTable.setBackground(new TextureRegionDrawable(graphicsProvider.createWhitePixelTexture()));
-        borderTable.setColor(Color.LIGHT_GRAY);
+        Table popupTable = new Table();
+        popupTable.setSize(popupWidth, popupHeight);
 
+        // Background (matches HUD style)
+        popupTable.setBackground(new TextureRegionDrawable(graphicsProvider.createRoundedRectangleTexture(
+                (int) popupWidth, (int) popupHeight,
+                new Color(0.1f, 0.2f, 0.25f, 1f),
+                15f // corner radius
+        )));
 
-        Table inner = new Table();
-        inner.setColor(new Color(.1f, .2f, .25f, 1f));
-        inner.setBackground(new TextureRegionDrawable(graphicsProvider.createWhitePixelTexture()));
-        inner.add(messageLabel).width(460).pad(30).expandY().fillY();
-        inner.pack();
+        // Add border (matches HUD notitifcations)
+        popupTable.pad(3);
+        popupTable.setColor(Color.LIGHT_GRAY);
 
-        borderTable.add(inner).pad(3);
+        // Content layout
+        popupTable.add(messageLabel)
+                .width(popupWidth - 40)
+                .pad(20)
+                .center();
 
-        Table outer = new Table();
-        outer.setFillParent(true);
-        outer.center();
-        outer.add(borderTable).width(500).height(20);
+        // Center on stage
+        popupTable.setPosition(
+                (stage.getWidth() - popupWidth) / 2,
+                (stage.getHeight() - popupHeight) / 2
+        );
 
-        stage.addActor(outer);
+        stage.addActor(popupTable);
     }
 
     public void render(float delta) {
@@ -138,9 +154,9 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                 case glucose:
                     return "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
                 case danger:
-                    return "Danger! You are in a dangerous area.\n\nGradient color pink damages cell health.";
+                    return "Danger! Acid Zone!\n\nHealth drains while in pink zones.";
                 case basic:
-                    return "Nutrient-rich zone detected!\n\nGradient color blue contains abundant glucose resources.";
+                    return "Glucose-rich Zone!\n\nBlue areas are abundant in glucose resources.";
                 default:
                     return "Unknown type: " + type;
             }

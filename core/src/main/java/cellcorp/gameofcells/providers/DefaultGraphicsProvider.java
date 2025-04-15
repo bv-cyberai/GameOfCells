@@ -72,6 +72,22 @@ public class DefaultGraphicsProvider implements GraphicsProvider {
     }
 
     @Override
+    public Texture createRoundedRectangleTexture(int width, int height, Color color, float cornerRadius) {
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(color);
+
+        // Draw rounded rectangle
+        pixmap.fillRectangle(0, (int)cornerRadius, width, height - (int)cornerRadius*2);
+        pixmap.fillRectangle((int)cornerRadius, 0, width - (int)cornerRadius*2, height);
+        pixmap.fillCircle((int)cornerRadius, (int)cornerRadius, (int)cornerRadius);
+        pixmap.fillCircle((int)cornerRadius, height - (int)cornerRadius, (int)cornerRadius);
+
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        return texture;
+    }
+
+    @Override
     public BitmapFont createWhiteFont() {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(1.0f);
