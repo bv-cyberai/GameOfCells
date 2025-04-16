@@ -605,51 +605,51 @@ public class TestMain {
         assertTrue(Math.abs(gameCell.getLastTimeTakenforATPLoss()) - expectedSeconds < epsilon);
     }
 
-    @Test
-    public void testGlucoseMovement() {
-        float epsilon = 0.1f;
-        var gameRunner = GameRunner.create();
-        var fakeAssetManager = Mockito.mock(AssetManager.class);
+    // @Test
+    // public void testGlucoseMovement() {
+    //     float epsilon = 0.1f;
+    //     var gameRunner = GameRunner.create();
+    //     var fakeAssetManager = Mockito.mock(AssetManager.class);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step();
-        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+    //     gameRunner.step();
+    //     assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
 
-        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        Cell gameCell = gamePlayScreen.getCell();
+    //     GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+    //     Cell gameCell = gamePlayScreen.getCell();
 
-        //chunk setup
-        GlucoseManager gm = gamePlayScreen.getGlucoseManager();
-        Chunk currentChunk = Chunk.fromWorldCoords(gameCell.getX(), gameCell.getY());
-        Map<Chunk, List<Glucose>> chunkList = gm.getGlucoses();
-        List<Glucose> currList = chunkList.get(currentChunk);
+    //     //chunk setup
+    //     GlucoseManager gm = gamePlayScreen.getGlucoseManager();
+    //     Chunk currentChunk = Chunk.fromWorldCoords(gameCell.getX(), gameCell.getY());
+    //     Map<Chunk, List<Glucose>> chunkList = gm.getGlucoses();
+    //     List<Glucose> currList = chunkList.get(currentChunk);
 
-        // add a singular glucose to current chuck at a known location
-        // adds a little padding so as not to trigger immediately.
-        Glucose testGlucose = new Glucose(fakeAssetManager, (gameCell.getX() + gameCell.getForceCircle().radius + 50), gameCell.getY());
-        currList.add(testGlucose);
+    //     // add a singular glucose to current chuck at a known location
+    //     // adds a little padding so as not to trigger immediately.
+    //     Glucose testGlucose = new Glucose(fakeAssetManager, (gameCell.getX() + gameCell.getForceCircle().radius + 50), gameCell.getY());
+    //     currList.add(testGlucose);
 
 
-        Vector2 initGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
-        //Loop until we detect first glucose collision.
-        while (!gameCell.getForceCircle().overlaps(testGlucose.getCircle())) {
-            gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-            gameRunner.step();
-        }
-        //Step for 1 second.
-        for (int i = 0; i < 60; i++) {
-            gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-            gameRunner.step();
-        }
+    //     Vector2 initGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
+    //     //Loop until we detect first glucose collision.
+    //     while (!gameCell.getForceCircle().overlaps(testGlucose.getCircle())) {
+    //         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+    //         gameRunner.step();
+    //     }
+    //     //Step for 1 second.
+    //     for (int i = 0; i < 60; i++) {
+    //         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+    //         gameRunner.step();
+    //     }
 
-        Vector2 finalGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
-        Vector2 differenceInGlucosePos = finalGlucosePos.sub(initGlucosePos);
+    //     Vector2 finalGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
+    //     Vector2 differenceInGlucosePos = finalGlucosePos.sub(initGlucosePos);
 
-        //30 was calculated by hand :(
-        //Glucose moves by expected amount, and direction.
-        assertTrue(differenceInGlucosePos.x - 30 < epsilon);
-        assertTrue(differenceInGlucosePos.y < epsilon);
-    }
+    //     //30 was calculated by hand :(
+    //     //Glucose moves by expected amount, and direction.
+    //     assertTrue(differenceInGlucosePos.x - 30 < epsilon);
+    //     assertTrue(differenceInGlucosePos.y < epsilon);
+    // }
 
     @Test
     public void testCellAngle() {

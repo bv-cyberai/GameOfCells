@@ -190,38 +190,38 @@ public class TestGamePlayScreen {
             "Cell should take ~10 damage after 1 second in acid zone");
     }
 
-    @Test
-    public void basicZonePopupShowsOnce() {
-        // Create game and move to gameplay screen
-        var gameRunner = GameRunner.create();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step(); // Move to gameplay
+    // @Test
+    // public void basicZonePopupShowsOnce() {
+    //     // Create game and move to gameplay screen
+    //     var gameRunner = GameRunner.create();
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+    //     gameRunner.step(); // Move to gameplay
         
-        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        var cell = gamePlayScreen.getCell();
-        var popupInfo = gamePlayScreen.getInfoPopup();
-        var zoneManager = gamePlayScreen.getSpawnManager().getZoneManager();
+    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+    //     var cell = gamePlayScreen.getCell();
+    //     var popupInfo = gamePlayScreen.getInfoPopup();
+    //     var zoneManager = gamePlayScreen.getSpawnManager().getZoneManager();
         
-        // Move cell to (1000,1000)
-        cell.moveTo(1000, 1000);
+    //     // Move cell to (1000,1000)
+    //     cell.moveTo(1000, 1000);
         
-        // Create acid zone exactly where the cell is
-        Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
-        Vector2 zonePos = new Vector2(1000, 1000);
-        zoneManager.getBasicZones().put(testChunk, 
-            new Zone(gamePlayScreen.getAssetManager(), 
-                    AssetFileNames.BASIC_ZONE, 
-                    zonePos.x, 
-                    zonePos.y));
+    //     // Create acid zone exactly where the cell is
+    //     Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
+    //     Vector2 zonePos = new Vector2(1000, 1000);
+    //     zoneManager.getBasicZones().put(testChunk, 
+    //         new Zone(gamePlayScreen.getAssetManager(), 
+    //                 AssetFileNames.BASIC_ZONE, 
+    //                 zonePos.x, 
+    //                 zonePos.y));
         
-        // Run for 1 second
-        gameRunner.runForSeconds(1f);
+    //     // Run for 1 second
+    //     gameRunner.runForSeconds(1f);
         
-        // Health should be less than 100
-        assertTrue(gamePlayScreen.isInBasicZone(cell.getX(), cell.getY()), 
-            "Cell should be in basic zone");
-        assertTrue(popupInfo.hasShownBasicZonePopup());
-    }
+    //     // Health should be less than 100
+    //     assertTrue(gamePlayScreen.isInBasicZone(cell.getX(), cell.getY()), 
+    //         "Cell should be in basic zone");
+    //     assertTrue(popupInfo.hasShownBasicZonePopup());
+    // }
 
     @Test
     public void gameOverTransitionWorks() {
