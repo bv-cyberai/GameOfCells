@@ -26,6 +26,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.Files;
 
@@ -103,6 +104,11 @@ public class TestMain {
 
     public AssetManager createMockAssetManager() {
         var assetManager = Mockito.mock(AssetManager.class);
+        var mockFont = Mockito.mock(BitmapFont.class);
+        Mockito.when(assetManager.get(Mockito.anyString(), Mockito.eq(BitmapFont.class)))
+            .thenReturn(mockFont);
+        Mockito.when(mockFont.getColor())
+            .thenReturn(Color.WHITE);
         Mockito.when(assetManager.get(Mockito.anyString(), Mockito.eq(BitmapFont.class)))
             .thenReturn(Mockito.mock(BitmapFont.class));
         return assetManager;

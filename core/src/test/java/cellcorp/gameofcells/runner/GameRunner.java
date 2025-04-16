@@ -6,6 +6,7 @@ import cellcorp.gameofcells.providers.FakeInputProvider;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -40,6 +41,10 @@ public class GameRunner {
         var assetManager = Mockito.mock(AssetManager.class);
 
         var font = Mockito.mock(BitmapFont.class);
+        var fontData = Mockito.mock(BitmapFont.BitmapFontData.class);
+        Mockito.when(font.getData()).thenReturn(fontData);
+        Mockito.when(font.getColor()).thenReturn(Color.WHITE);
+
         Mockito.when(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class)).thenReturn(font);
         Mockito.when(assetManager.get("rubik.fnt", BitmapFont.class)).thenReturn(font);
 

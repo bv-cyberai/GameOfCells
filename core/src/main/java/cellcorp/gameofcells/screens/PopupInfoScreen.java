@@ -75,10 +75,17 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         visible = true;
 
         BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-        font.getData().setScale(0.25f); // Match HUD scale
+        if (font.getData() != null) {
+            font.getData().setScale(0.25f); // Match HUD scale
+        }
 
         String message = getMessageFromConfig(type);
         GlyphLayout layout = new GlyphLayout(font, message);
+        if (font.getData() != null && font.getColor() != null) {
+            layout.setText(font, message);
+        } else {
+            layout.setText(new BitmapFont(), message);
+        }
 
         float padding = 40f;
         float popupWidth = layout.width + 2 * padding;
