@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -141,6 +142,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
     private boolean isPaused = false; // Whether the game is paused
 
+    // Shake fields
+    private float shakeTime = 0; // Time remaining for the shake effect
+    private float shakeDuration = 1.0f; // Duration of the shake effect
+    private float shakeIntensity = 10f; // Intensity of the shake effect
+
+    // Zoom fields
+    private float originalZoom = 1.0f; // Original zoom level
+    private float targetZoom = 0.8f; // Target zoom level
+
     /**
      * Constructs the GamePlayScreen.
      *
@@ -174,6 +184,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, assetManager, this, stats);
         this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, hud, this::resumeGame);
+    }
+
+    public void triggerShake(float duration, float intensity) {
+        this.shakeTime = duration;
+        this.shakeDuration = duration;
+        this.shakeIntensity = intensity;
     }
 
     /**
@@ -419,7 +435,33 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Center's the camera's view rectangle on the cell.
      */
     private void centerCameraOnCell() {
-        camera.position.set(playerCell.getX(), playerCell.getY(), 0);
+        float offsetX = 0;
+        float offsetY = 0;
+
+        if (shakeTime > 0) {
+            float currentIntensity = (shakeTime / shakeDuration) * shakeIntensity;
+            offsetX = MathUtils.random(-currentIntensity, currentIntensity);
+            offsetY = MathUtils.random(-currentIntensity, currentIntensity);
+            shakeTime -= Gdx.graphics.getDeltaTime();
+        }
+
+        float zoomProgress = 1f;
+        if (playerCell.getCellHealth() <= 0) {
+            zoomProgress = Math.min(1f, playerCell.getDeathAnimationTime() / playerCell.getDeathAnimationDuration());
+        }
+
+        float currentZoom = MathUtils.lerp(originalZoom, targetZoom, zoomProgress);
+        applyZoomToViewport(currentZoom);
+        
+
+        camera.position.set(playerCell.getX() + offsetX, playerCell.getY() + offsetY, 0);
+    }
+
+    private void applyZoomToViewport(float zoom) {
+        float newWidth = VIEW_RECT_WIDTH * zoom;
+        float newHeight = VIEW_RECT_HEIGHT * zoom;
+        viewport.setWorldSize(newWidth, newHeight);
+        viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
     }
 
     /**

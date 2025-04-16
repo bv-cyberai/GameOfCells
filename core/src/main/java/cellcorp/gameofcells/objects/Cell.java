@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.Gdx;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
 import java.util.List;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 
 import static com.badlogic.gdx.math.MathUtils.lerpAngleDeg;
 import static java.lang.Math.abs;
@@ -112,6 +114,11 @@ public class Cell {
 
     //potential gameOverStat
     private float totalDistanceMoved;
+
+    // Death tracking / effects
+    private boolean isDying = false; // Whether the cell is dying
+    private float deathAnimationTime = 0f; // Time spent in the death animation
+    private static final float DEATH_ANIMATION_DURATION = 2f; // Duration of the death animation
 
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
@@ -310,6 +317,12 @@ public class Cell {
      * @param batch - The passed spritebatch.
      */
     public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+        float alpha = 1f;
+        if (isDying) {
+            alpha = Math.max(0, 1 - (deathAnimationTime / DEATH_ANIMATION_DURATION));
+        }
+        batch.setColor(1, 1, 1, alpha);
+
         // Draw cell centered around its position.
 
         float bottomLeftX = cellCircle.x - (cellSize / 2);
@@ -336,6 +349,8 @@ public class Cell {
 
         drawOrganelles(batch);
         batch.end();
+
+        batch.setColor(Color.WHITE);
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.circle(cellCircle.x, cellCircle.y, cellCircle.radius);
@@ -346,6 +361,14 @@ public class Cell {
     }
 
     public void update(float deltaTimeSeconds) {
+        if (isDying) {
+            deathAnimationTime += deltaTimeSeconds;
+            if (deathAnimationTime >= DEATH_ANIMATION_DURATION) {
+                gamePlayScreen.endGame();
+            }
+            return;
+        }
+
         damageIfZeroATP(deltaTimeSeconds);
 
         //Recalculate loss factor.
@@ -707,11 +730,14 @@ public class Cell {
      * @param damage Damage to apply.
      */
     public void applyDamage(int damage) {
-        var newHealth = cellHealth - damage;
-        if (newHealth <= 0) {
-            gamePlayScreen.endGame();
-        } else {
-            this.cellHealth -= damage;
+        if (isDying) return;
+
+        cellHealth = Math.max(0, cellHealth - damage);
+
+        if (cellHealth <= 0 && !isDying) {
+            isDying = true;
+            deathAnimationTime = 0f;
+            gamePlayScreen.triggerShake(1f, 10f); // Shake for 1 second
         }
     }
 
@@ -994,4 +1020,24 @@ public class Cell {
     public float getCellRotation () {
         return cellRotation;
     }
+
+    /**
+     * Get the death animation time
+     * This is the time spent in the death animation
+     * 
+     * @return The time spent in the death animation
+     */
+    public float getDeathAnimationTime() {
+        return deathAnimationTime;
+    }
+
+    /**
+     * Get the death animation duration
+     * This is the time it takes for the cell to die
+     * 
+     * @return The duration of the death animation
+     */
+    public float getDeathAnimationDuration() {
+        return DEATH_ANIMATION_DURATION;
+    }   
 }

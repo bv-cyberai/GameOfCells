@@ -2,6 +2,8 @@ package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.objects.Stats;
 import cellcorp.gameofcells.providers.ConfigProvider;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
