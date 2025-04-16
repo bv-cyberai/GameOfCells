@@ -171,6 +171,8 @@ public class PopupInfoScreen implements GameOfCellsScreen {
                     return "DANGER ZONE!\n\nHealth drains in pink areas. Move to safety quickly!";
                 case basic:
                     return "GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.";
+                case heal:
+                    return "Congrats! You can heal damage now.\n\nPress the h button to heal damage.\n\nPress 'Space' to continue!";
                 default:
                     return "Unknown type: " + type;
             }
