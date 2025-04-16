@@ -8,14 +8,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.Gdx;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
 import java.util.List;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 
 import static com.badlogic.gdx.math.MathUtils.lerpAngleDeg;
 import static java.lang.Math.abs;
