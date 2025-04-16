@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
@@ -58,43 +59,34 @@ public class TestGameInfoControlsScreen {
         }
     }
 
-    // /**
-    //  * Test the initial state of the GameInfoControlsScreen.
-    //  * This test checks that the screen is displayed correctly and that the
-    //  * selected option is set to the first option (0).
-    //  */
-    // @Test
-    // public void TestGameInfoControlsScreenInitialState() {
-    //     GameRunner gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
+    /**
+     * Test that the GameInfoControlsScreen returns to the previous screen when the space key is pressed.
+     * This test checks that the screen transitions back to the main menu screen.
+     * It verifies that the screen is no longer the GameInfoControlsScreen after the key press.
+     */
+    @Test
+    public void testGameInfoScreenReturnsToPreviousScreenOnSpacePress() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER)); // go to GameInfoControlsScreen
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
 
-    //     var gameInfoControlsScreen = gameRunner.game.getScreen();
-    //     assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
+        var gameInfoControlsScreen = gameRunner.game.getScreen();
+        assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
 
-    //     GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
+        // Check that the screen is displayed correctly
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
 
-    //     // Check that the screen is displayed correctly
-    //     assertEquals("Game Info:\n" +
-    //             "Welcome to Game of Cells!\n" +
-    //             "Control a cell and explore the microscopic world.\n" +
-    //             "Controls:\n" +
-    //             "Arrow Keys - Move the cell\n" +
-    //             "Enter - Select/Confirm\n" +
-    //             "Escape - Pause/Return to Menu\n\n" +
-    //             "Press any key to return...", gameInfoControlsScreen2.getMessage()
-    //     );
-    // }
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
+    }
 
     /**
      * Test that the GameInfoControlsScreen handles input correctly.
@@ -124,43 +116,33 @@ public class TestGameInfoControlsScreen {
         assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
     }
 
-    // /**
-    //  * Test that the GameInfoControlsScreen is disposed correctly.
-    //  * This test checks that when the screen is disposed, it releases resources properly.
-    //  * It verifies that the sprite batch and particles are disposed without throwing exceptions.
-    //  */
-    // @Test
-    // public void TestGameInfoControlsScreenDispose() {
-    //     GameRunner gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
+    /**
+     * Test that the GameInfoControlsScreen updates the particle system correctly.
+     * This test checks that the particle system is updated and drawn correctly.
+     * It verifies that the particle system is not null and can be updated and drawn without exceptions.
+     */
+    @Test
+    public void testParticleSystemUpdatesCorrectly() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
 
-    //     var gameInfoControlsScreen = gameRunner.game.getScreen();
-    //     assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
+        var gameInfoControlsScreen = gameRunner.game.getScreen();
+        assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
 
-    //     GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
+        var screen = gameRunner.game.getScreen();
+        assertInstanceOf(GameInfoControlsScreen.class, screen);
 
-    //     // Dispose of the screen
-    //     gameInfoControlsScreen2.dispose();
-
-    //     // Verify that the screen is disposed correctly
-    //     assertDoesNotThrow(() -> {
-    //         gameInfoControlsScreen2.getSpriteBatch().dispose();
-    //     });
-    //     assertDoesNotThrow(() -> {
-    //         gameInfoControlsScreen2.getParticles().dispose();
-    //     });
-    // }
+        assertDoesNotThrow(() -> {
+            ((GameInfoControlsScreen) screen).update(1f);
+        });
+    }
 
     /**
      * Test that the GameInfoControlsScreen is not null after creation.
@@ -204,60 +186,30 @@ public class TestGameInfoControlsScreen {
         assertEquals(0, gameInfoControlsScreen2.getMessagePositionY());
     }
 
-    // @Test
-    // public void TestFontInitialization() {
-    //     GameRunner gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
+    /**
+     * Test that the particle system is initialized correctly.
+     * This test checks that the particle system is created and the white pixel texture is not null.
+     * It verifies that the particles are created and can be updated and drawn.
+     */
+    @Test
+    public void TestParticleSystem() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
 
-    //     var gameInfoControlsScreen = gameRunner.game.getScreen();
-    //     assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
+        var gameInfoControlsScreen = gameRunner.game.getScreen();
+        assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
 
-    //     GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
+        GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
 
-    //     // Check that the font is initialized correctly
-    //     assertNotNull(gameInfoControlsScreen2.getWhiteFont());
-    // }
-
-    // /**
-    //  * Test that the particle system is initialized correctly.
-    //  * This test checks that the particle system is created and the white pixel texture is not null.
-    //  * It verifies that the particles are created and can be updated and drawn.
-    //  */
-    // @Test
-    // public void TestParticleSystem() {
-    //     GameRunner gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     gameRunner.setHeldDownKeys(Set.of());
-    //     gameRunner.step();
-
-    //     var gameInfoControlsScreen = gameRunner.game.getScreen();
-    //     assertInstanceOf(GameInfoControlsScreen.class, gameInfoControlsScreen);
-
-    //     GameInfoControlsScreen gameInfoControlsScreen2 = (GameInfoControlsScreen) gameInfoControlsScreen;
-
-    //     // Check that the particle system is initialized correctly
-    //     assertNotNull(gameInfoControlsScreen2.getParticles());
-    //     assertNotNull(gameInfoControlsScreen2.getParticles().getWhitePixelTexture());
-    // }
-
+        // Check that the particle system is initialized correctly
+        assertNotNull(gameInfoControlsScreen2.getParticles());
+        assertNotNull(gameInfoControlsScreen2.getParticles().getWhitePixelTexture());
+    }
 }

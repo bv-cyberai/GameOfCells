@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterAll;
@@ -24,6 +27,8 @@ import com.badlogic.gdx.math.Vector2;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Chunk;
+import cellcorp.gameofcells.objects.Glucose;
+import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.Zone;
 import cellcorp.gameofcells.runner.GameRunner;
 
@@ -100,26 +105,26 @@ public class TestGamePlayScreen {
         assertTrue(gamePlayScreen.getCell().getY() > initialY);
     }
 
-    // @Test
-    // public void pauseGameFreezesUpdates() {
-    //     var gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step(); // Move to gameplay
+    @Test
+    public void pauseGameFreezesUpdates() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
         
-    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-    //     var initialX = gamePlayScreen.getCell().getX();
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        var initialX = gamePlayScreen.getCell().getX();
         
-    //     // Pause the game
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.P));
-    //     gameRunner.step();
+        // Pause the game
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.P));
+        gameRunner.step();
         
-    //     // Try to move while paused
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-    //     gameRunner.step();
+        // Try to move while paused
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+        gameRunner.step();
         
-    //     // Position shouldn't change
-    //     assertEquals(initialX, gamePlayScreen.getCell().getX());
-    // }
+        // Position shouldn't change
+        assertEquals(initialX, gamePlayScreen.getCell().getX());
+    }
 
     @Test
     public void shopScreenTransitionWorks() {
@@ -134,21 +139,42 @@ public class TestGamePlayScreen {
         assertInstanceOf(ShopScreen.class, gameRunner.game.getScreen());
     }
 
-    // @Test
-    // public void glucoseCollisionIncreasesATP() {
-    //     var gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step(); // Move to gameplay
+    @Test
+    public void glucoseCollisionIncreasesATP() throws Exception {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Transition to GamePlayScreen
+
+        var gamePlay = (GamePlayScreen) gameRunner.game.getScreen();
+        var cell = gamePlay.getCell();
+        var initialATP = cell.getCellATP();
+
+        // Manually create a Glucose object at the same location as the cell
+        var cellX = cell.getX();
+        var cellY = cell.getY();
+
+        var glucose = new Glucose(gamePlay.getAssetManager(), cellX, cellY);
+        var cellChunk = Chunk.fromWorldCoords(cellX, cellY);
         
-    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-    //     var initialATP = gamePlayScreen.getCell().getCellATP();
-        
-    //     // Force a glucose collision (would normally need to mock/spawn glucose)
-    //     gamePlayScreen.reportGlucoseCollision();
-        
-    //     // ATP should increase
-    //     assertTrue(gamePlayScreen.getCell().getCellATP() > initialATP);
-    // }
+        // Inject it directly into the glucose manager
+        var glucoseManager = gamePlay.getGlucoseManager();
+        var glucoseList = new ArrayList<Glucose>();
+        glucoseList.add(glucose);
+
+        // Directly insert the glucose into the correct chunk for collision detection
+        var glucoseManagerField = GlucoseManager.class.getDeclaredField("glucoses");
+        glucoseManagerField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<Chunk, List<Glucose>> glucoseMap = (Map<Chunk, List<Glucose>>) glucoseManagerField.get(glucoseManager);
+        glucoseMap.put(cellChunk, glucoseList);
+
+        // Step simulation to allow collision logic to run
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE)); // dismiss popup
+        gameRunner.runForSeconds(1f);
+
+        // Confirm ATP increased
+        assertTrue(cell.getCellATP() > initialATP);
+    }
 
     @Test
     public void acidZoneReducesHealth() {
@@ -190,38 +216,60 @@ public class TestGamePlayScreen {
             "Cell should take ~10 damage after 1 second in acid zone");
     }
 
-    // @Test
-    // public void basicZonePopupShowsOnce() {
-    //     // Create game and move to gameplay screen
-    //     var gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step(); // Move to gameplay
+    @Test
+    public void basicZonePopupShowsOnce() {
+        // Create game and move to gameplay screen
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
         
-    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-    //     var cell = gamePlayScreen.getCell();
-    //     var popupInfo = gamePlayScreen.getInfoPopup();
-    //     var zoneManager = gamePlayScreen.getSpawnManager().getZoneManager();
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        var cell = gamePlayScreen.getCell();
+        var popupInfo = gamePlayScreen.getInfoPopup();
+        var zoneManager = gamePlayScreen.getSpawnManager().getZoneManager();
         
-    //     // Move cell to (1000,1000)
-    //     cell.moveTo(1000, 1000);
+        // Move cell to (1000,1000)
+        cell.moveTo(1000, 1000);
         
-    //     // Create acid zone exactly where the cell is
-    //     Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
-    //     Vector2 zonePos = new Vector2(1000, 1000);
-    //     zoneManager.getBasicZones().put(testChunk, 
-    //         new Zone(gamePlayScreen.getAssetManager(), 
-    //                 AssetFileNames.BASIC_ZONE, 
-    //                 zonePos.x, 
-    //                 zonePos.y));
+        // Create acid zone exactly where the cell is
+        Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
+        Vector2 zonePos = new Vector2(1000, 1000);
+        zoneManager.getBasicZones().put(testChunk, 
+            new Zone(gamePlayScreen.getAssetManager(), 
+                    AssetFileNames.BASIC_ZONE, 
+                    zonePos.x, 
+                    zonePos.y));
         
-    //     // Run for 1 second
-    //     gameRunner.runForSeconds(1f);
+        // Run for 1 second
+        gameRunner.runForSeconds(1f);
         
-    //     // Health should be less than 100
-    //     assertTrue(gamePlayScreen.isInBasicZone(cell.getX(), cell.getY()), 
-    //         "Cell should be in basic zone");
-    //     assertTrue(popupInfo.hasShownBasicZonePopup());
-    // }
+        // Health should be less than 100
+        assertTrue(gamePlayScreen.isInBasicZone(cell.getX(), cell.getY()), 
+            "Cell should be in basic zone");
+        assertTrue(popupInfo.hasShownBasicZonePopup());
+    }
+
+    @Test
+    public void triggerShakeUpdatesShakeFields() throws Exception {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // move to gameplay
+
+        var screen = (GamePlayScreen) gameRunner.game.getScreen();
+        screen.triggerShake(1.5f, 12f);
+
+        // Use reflection to access shakeTime (private field)
+        var shakeTimeField = GamePlayScreen.class.getDeclaredField("shakeTime");
+        shakeTimeField.setAccessible(true);
+        float shakeTime = (float) shakeTimeField.get(screen);
+
+        var shakeIntensityField = GamePlayScreen.class.getDeclaredField("shakeIntensity");
+        shakeIntensityField.setAccessible(true);
+        float shakeIntensity = (float) shakeIntensityField.get(screen);
+
+        assertEquals(1.5f, shakeTime, 0.01f);
+        assertEquals(12f, shakeIntensity, 0.01f);
+    }
 
     @Test
     public void gameOverTransitionWorks() {

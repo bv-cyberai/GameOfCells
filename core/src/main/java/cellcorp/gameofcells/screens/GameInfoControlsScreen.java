@@ -291,4 +291,14 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     public float getMessagePositionY() {
         return startY;
     }
+    
+
+    /**
+     * Get the particles.
+     * 
+     * @return The particles object.
+     */
+    public Particles getParticles() {
+        return particles;
+    }
 }
