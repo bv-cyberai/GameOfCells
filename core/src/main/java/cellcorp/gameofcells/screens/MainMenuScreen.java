@@ -338,4 +338,73 @@ public class MainMenuScreen implements GameOfCellsScreen {
     public int getSelectedOption() {
         return menuSystem.getSelectedOptionIndex();
     }
+
+    /**
+     * Get the number of menu options.
+     * 
+     * @return the number of menu options
+     */
+    public int getMenuOptionCount() {
+        return menuSystem.getMenuOptionCount();
+    }
+
+    /**
+     * Get the inactivity timeout.
+     * This method returns the inactivity timeout value in seconds.
+     * 
+     * @return the inactivity timeout in seconds
+     */
+    public int getInactivityTimeout() {
+        return (int) INACTIVITY_TIMEOUT;
+    }
+
+    /**
+     * Get the particles object.
+     * This method returns the particles object used for rendering particles.
+     * 
+     * @return the particles object
+     */
+    public Particles getParticles() {
+        return particles;
+    }
+
+    /**
+     * Get the viewport object.
+     * This method returns the viewport object used for rendering.
+     * 
+     * @return the viewport object
+     */
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    /**
+     * Get the input provider.
+     * This method returns the input provider used for handling user input.
+     * 
+     * @return the input provider
+     */
+    public InputProvider getInputProvider() {
+        return inputProvider;
+    }
+
+    /**
+     * Get the main game instance.
+     * This method returns the main game instance.
+     * 
+     * @return the main game instance
+     */
+    public Main getGame() {
+        return game;
+    }
+
+    /**
+     * Get the asset manager.
+     * This method returns the asset manager used for loading and managing assets.
+     * 
+     * @return the asset manager
+     */
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
 }
