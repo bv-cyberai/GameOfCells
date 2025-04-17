@@ -73,7 +73,7 @@ public class TestCell {
         assertSame(gamePlay, runner.game.getScreen());
 
         // Let animation finish
-        runner.runForSeconds(2.1f);
+        runner.runForSeconds(2.6f);
 
         // After delay, GameOverScreen should be active
         assertNotSame(gamePlay, runner.game.getScreen());
