@@ -37,13 +37,14 @@ public class AttractScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
     private static final int NUM_GLUCOSE = 10;
-    private static final String PRESS_ANY_KEY_TEXT = "Press any key to start";
+    private static final String PRESS_ANY_KEY_TEXT = "Press space to start";
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
     private final Main game;
     private final AssetManager assetManager;
+    private final GameOfCellsScreen previousScreen;
     private final Camera camera;
     private final Viewport viewport;
     private final SpriteBatch spriteBatch;
@@ -64,6 +65,7 @@ public class AttractScreen implements GameOfCellsScreen {
             GraphicsProvider graphicsProvider,
             Main game,
             AssetManager assetManager,
+            GameOfCellsScreen previousScreen,
             ConfigProvider configProvider) {
 
         this.inputProvider = inputProvider;
@@ -71,6 +73,7 @@ public class AttractScreen implements GameOfCellsScreen {
         this.configProvider = configProvider;
         this.game = game;
         this.assetManager = assetManager;
+        this.previousScreen = previousScreen;
 
         this.camera = graphicsProvider.createCamera();
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT, camera);
@@ -153,16 +156,10 @@ public class AttractScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Return to the main menu if any key is pressed or the screen is touched
-        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            game.setScreen(new MainMenuScreen(
-                inputProvider,
-                graphicsProvider,
-                game,
-                assetManager,
-                camera,
-                viewport,
-                configProvider
-            ));
+        if (inputProvider.isKeyJustPressed(Input.Keys.SPACE) ||
+            inputProvider.isKeyJustPressed(Input.Keys.ENTER) ||
+            inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)){
+            game.setScreen(previousScreen);
         }
     }
 

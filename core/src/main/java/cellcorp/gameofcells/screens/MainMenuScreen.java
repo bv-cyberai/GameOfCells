@@ -275,7 +275,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     inputProvider,
                     graphicsProvider,
                     game,
-                    assetManager,configProvider ));
+                    assetManager,
+                    this,
+                    configProvider ));
         }
 
         // Update the particles system
