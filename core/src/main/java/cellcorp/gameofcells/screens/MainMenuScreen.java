@@ -213,6 +213,11 @@ public class MainMenuScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.L)) {
+            // For testing purposes
+            game.setScreen(new AttractScreen(inputProvider, graphicsProvider, game, assetManager, this, configProvider));
+        }
+        
         // Navigate menu options with arrow keys
         if (inputProvider.isKeyJustPressed(Input.Keys.UP) || inputProvider.isKeyJustPressed(Input.Keys.W)) {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() - 1);

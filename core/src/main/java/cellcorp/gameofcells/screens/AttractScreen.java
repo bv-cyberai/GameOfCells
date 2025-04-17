@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -37,7 +38,7 @@ public class AttractScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
     private static final int NUM_GLUCOSE = 10;
-    private static final String PRESS_ANY_KEY_TEXT = "Press space/enter/escape to start";
+    private static final String INSTRUCTION_TEXT = "Press SPACE, ENTER OR ESC to start";
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -90,6 +91,7 @@ public class AttractScreen implements GameOfCellsScreen {
         );
 
         initializeGameObjects();
+        setupUI();
     }
 
     private void initializeGameObjects() {
@@ -110,12 +112,15 @@ public class AttractScreen implements GameOfCellsScreen {
         targetY = random.nextFloat() * viewport.getWorldHeight();
     }
 
+    private void setupUI() {
+        menuSystem.initialize("", new String[]{}, INSTRUCTION_TEXT);
+    }
+
     @Override
     public void show() {
         // Initialize any resources needed for the attract screen
         isSimulationRunning = true;
         animationTime = 0f;
-        menuSystem.initialize("", new String[]{}, PRESS_ANY_KEY_TEXT);
     }
 
     @Override

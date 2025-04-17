@@ -10,7 +10,10 @@ public class AssetFileNames {
      */
     public static String CELL = "Cell.png";
 
-
+    /**
+     * The file name for our hud texture for the escape button
+     */
+    public static String ESC_KEY = "esc_key_2px_cropped.png";
     /*
      * The file name of our hud texture for the movement controls
      */
