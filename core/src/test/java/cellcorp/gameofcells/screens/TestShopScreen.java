@@ -368,4 +368,182 @@ public class TestShopScreen {
             glowingBorderTexture.dispose();
         });
     }
+
+    @Test
+    public void sizeUpgradeCannotBeRebought() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step(); 
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+        var cell = shop.getPlayerCell();
+
+        cell.setHasSmallSizeUpgrade(true); // Already owns upgrade
+        cell.setCellATP(100);
+        cell.setCellSize(300);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        assertEquals(100, cell.getCellATP(), "ATP should remain unchanged after attempted re-purchase");
+    }
+
+    @Test
+    public void organelleUpgradeCannotBeRebought() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+        var cell = shop.getPlayerCell();
+
+        cell.setHasMitochondria(true); // Already owns organelle
+        cell.setCellATP(100);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); 
+        gameRunner.step(); // switch to organelle
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER)); 
+        gameRunner.step(); // try to buy
+
+        assertEquals(100, cell.getCellATP(), "ATP should remain unchanged after attempted organelle re-purchase");
+    }
+
+    @Test
+    public void leftKeyDoesNotOverflowSizeSelection() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT)); 
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT)); 
+        gameRunner.step(); // press multiple times
+
+        assertTrue(shop.isHighlighted(shop.getCurrentSizeCard()));
+    }
+
+    @Test
+    public void rightKeyDoesNotOverflowOrganelleSelection() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); 
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); 
+        gameRunner.step(); // press multiple times
+
+        assertTrue(shop.isHighlighted(shop.getCurrentOrganelleCard()));
+    }
+
+    @Test
+    public void transitioningFlagFalseAfterDelay() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+
+        gameRunner.runForSeconds(2.1f); // Allow full transition to complete
+        assertFalse(shop.isTransitioning());
+    }
+
+    @Test
+    public void organelleHighlightSkipsOwnedUpgrades() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+        var cell = shop.getPlayerCell();
+
+        cell.setHasMitochondria(true);
+        cell.setHasRibosomes(true);
+        cell.setCellATP(100);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); gameRunner.step(); // switch to organelle
+
+        assertNotNull(shop.getCurrentOrganelleCard(), "Organelle card should still highlight an available upgrade");
+    }
+
+
+    @Test
+    public void transitioningIgnoresInput() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+
+        shop.setTransitioning(true);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // No purchases should happen
+        var cell = shop.getPlayerCell();
+        assertFalse(cell.hasSmallSizeUpgrade() || cell.hasMitochondria());
+    }
+
+    @Test
+    public void shopScreenDisposeDoesNotThrow() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        var shop = (ShopScreen) gameRunner.game.getScreen();
+
+        assertDoesNotThrow(shop::dispose);
+    }
 }

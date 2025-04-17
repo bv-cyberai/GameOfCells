@@ -72,7 +72,7 @@ public class ShopScreen implements GameOfCellsScreen {
     public static final int VIEW_RECT_HEIGHT = 800;
 
     // Instance variables
-    private final Stage stage;
+    protected final Stage stage;
     private final Cell playerCell;
     private final Main game;
     private final InputProvider inputProvider;
@@ -727,6 +727,22 @@ public class ShopScreen implements GameOfCellsScreen {
     public boolean isTransitioning() {
         // Check if the stage is currently transitioning (fading out)
         return stage.getRoot().getActions().size > 0 && stage.getRoot().getActions().peek() instanceof AlphaAction;
+    }
+
+    /**
+     * Set the transitioning state of the stage.
+     * This is used to set the transitioning state of the stage.
+     * 
+     * @param transitioning
+     */
+    public void setTransitioning(boolean transitioning) {
+        // Set the transitioning state of the stage
+        if (transitioning) {
+            stage.getRoot().addAction(Actions.fadeOut(1f));
+        } else {
+            stage.getRoot().clearActions();
+            stage.getRoot().setColor(1, 1, 1, 1); // Reset to fully opaque
+        }
     }
 
     public boolean isPaused() {
