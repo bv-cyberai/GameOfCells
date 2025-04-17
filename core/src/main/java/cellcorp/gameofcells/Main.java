@@ -30,7 +30,7 @@ public class Main implements ApplicationListener {
     public static final int DEFAULT_SCREEN_WIDTH = 1280;
     public static final int DEFAULT_SCREEN_HEIGHT = 800;
 
-    public static final Color PURPLE = new Color(0.08f, 0.05f, 0.10f, 1f);
+    public static final Color PURPLE = new Color(0.08f, 0.05f, 0.10f, 1f); // Darker purple
     public static final Color TEAL = new Color(.424f, .553f, .573f, 1f);
     /**
      * Loads assets during game creation,

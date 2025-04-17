@@ -116,7 +116,7 @@ public class Cell {
     // Death tracking / effects
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
-    private static final float DEATH_ANIMATION_DURATION = 2f; // Duration of the death animation
+    private static final float DEATH_ANIMATION_DURATION = 2.5f; // Duration of the death animation
 
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
@@ -741,7 +741,7 @@ public class Cell {
         if (cellHealth <= 0 && !isDying) {
             isDying = true;
             deathAnimationTime = 0f;
-            gamePlayScreen.triggerShake(1f, 10f); // Shake for 1 second
+            gamePlayScreen.triggerShake(1.5f, 12f); // Shake for 1.5 seconds
         }
     }
 

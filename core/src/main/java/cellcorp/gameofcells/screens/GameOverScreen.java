@@ -139,7 +139,7 @@ public class GameOverScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
-        ScreenUtils.clear(new Color(.157f, .115f, .181f, 1.0f));
+        ScreenUtils.clear(new Color(0.08f, 0.05f, 0.10f, 1f)); // Darker purple background
 
         viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);

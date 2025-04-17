@@ -144,11 +144,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     // Shake fields
     private float shakeTime = 0; // Time remaining for the shake effect
-    private float shakeDuration = 1.0f; // Duration of the shake effect
-    private float shakeIntensity = 10f; // Intensity of the shake effect
+    private float shakeDuration = 3.0f; // Duration of the shake effect
+    private float shakeIntensity = 15f; // Intensity of the shake effect
 
     // Zoom fields
-    private float originalZoom = 1.0f; // Original zoom level
+    private float originalZoom = 1.2f; // Original zoom level
     private float targetZoom = 0.8f; // Target zoom level
 
     /**
@@ -307,6 +307,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 playerCell.healDamage();
             }
         }
+        if (inputProvider.isKeyJustPressed(Input.Keys.T)) {
+            playerCell.applyDamage(20);
+        }
+
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
             showPopup(PopupInfoScreen.Type.heal);
         }

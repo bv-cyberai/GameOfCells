@@ -37,7 +37,7 @@ public class AttractScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
     private static final int NUM_GLUCOSE = 10;
-    private static final String PRESS_ANY_KEY_TEXT = "Press space to start";
+    private static final String PRESS_ANY_KEY_TEXT = "Press space/enter/escape to start";
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -216,7 +216,7 @@ public class AttractScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear the screen with a gradient background
-        ScreenUtils.clear(.157f, .115f, .181f, 1f); // Dark purple background
+        ScreenUtils.clear(0.08f, 0.05f, 0.10f, 1f); // Darker purple background
 
         viewport.apply(true);
         camera.update();
