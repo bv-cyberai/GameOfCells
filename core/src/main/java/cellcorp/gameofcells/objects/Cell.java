@@ -644,6 +644,12 @@ public class Cell {
         this.cellATP = cellATP;
     }
 
+    public void setCellSize(float cellSize) {
+        this.cellSize = cellSize;
+        cellCircle.radius = cellSize / 2;
+        forceCircle.radius = cellCircle.radius * forceCircleSizeMultiplier * forceCircleSizeScalar;
+    }
+
     /**
      * Max Health Getter
      *
@@ -820,7 +826,7 @@ public class Cell {
     /**
      * Set whether the cell has the small size upgrade
      */
-    public void setSmallSizeUpgrade(boolean hasSmallSizeUpgrade) {
+    public void setHasSmallSizeUpgrade(boolean hasSmallSizeUpgrade) {
         this.hasSmallSizeUpgrade = hasSmallSizeUpgrade;
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasSmallSizeUpgrade) sizeUpgradeLevel++;
     }
@@ -835,7 +841,7 @@ public class Cell {
     /**
      * Set whether the cell has the medium size upgrade
      */
-    public void setMediumSizeUpgrade(boolean hasMediumSizeUpgrade) {
+    public void setHasMediumSizeUpgrade(boolean hasMediumSizeUpgrade) {
         this.hasMediumSizeUpgrade = hasMediumSizeUpgrade;
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMediumSizeUpgrade) sizeUpgradeLevel++;
     }
@@ -851,7 +857,7 @@ public class Cell {
     /**
      * Set whether the cell has the large size upgrade
      */
-    public void setLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
+    public void setHasLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
         this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasLargeSizeUpgrade) sizeUpgradeLevel++;
     }
@@ -866,7 +872,7 @@ public class Cell {
     /**
      * Set whether the cell has the massive size upgrade
      */
-    public void setMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
+    public void setHasMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMassiveSizeUpgrade) sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
     }

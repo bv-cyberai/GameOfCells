@@ -1,12 +1,9 @@
 package cellcorp.gameofcells.objects;
 
-import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.TestMain;
 import cellcorp.gameofcells.runner.GameRunner;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,11 +11,8 @@ import org.mockito.Mockito;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 
-import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.ConfigProvider;
-import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
 import java.util.Set;
@@ -202,29 +196,29 @@ public class TestCell {
         assertEquals(0, cell.getSizeUpgradeLevel());
         assertEquals(0, cell.getOrganelleUpgradeLevel());
 
-        cell.setSmallSizeUpgrade(true);
-        cell.setSmallSizeUpgrade(false);
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasSmallSizeUpgrade(false);
         cell.setHasMitochondria(true);
         cell.setHasMitochondria(false);
         assertEquals(1, cell.getSizeUpgradeLevel());
         assertEquals(1, cell.getOrganelleUpgradeLevel());
 
-        cell.setMediumSizeUpgrade(true);
-        cell.setMediumSizeUpgrade(false);
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(false);
         cell.setHasRibosomes(true);
         cell.setHasRibosomes(false);
         assertEquals(2, cell.getSizeUpgradeLevel());
         assertEquals(2, cell.getOrganelleUpgradeLevel());
 
-        cell.setLargeSizeUpgrade(true);
-        cell.setLargeSizeUpgrade(false);
+        cell.setHasLargeSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(false);
         cell.setHasFlagella(true);
         cell.setHasFlagella(false);
         assertEquals(3, cell.getSizeUpgradeLevel());
         assertEquals(3, cell.getOrganelleUpgradeLevel());
 
-        cell.setMassiveSizeUpgrade(true);
-        cell.setMassiveSizeUpgrade(false);
+        cell.setHasMassiveSizeUpgrade(true);
+        cell.setHasMassiveSizeUpgrade(false);
         cell.setHasNucleus(true);
         cell.setHasNucleus(false);
         assertEquals(4, cell.getSizeUpgradeLevel());

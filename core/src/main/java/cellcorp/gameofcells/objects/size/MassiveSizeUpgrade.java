@@ -20,7 +20,7 @@ public class MassiveSizeUpgrade extends SizeUpgrade {
     @Override
     public void applyUpgrade(Cell cell) {
         cell.increasecellSize(sizeIncrease * 100);
-        cell.setMassiveSizeUpgrade(true);
+        cell.setHasMassiveSizeUpgrade(true);
         cell.removeCellATP(atpCost);
     }
 

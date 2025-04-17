@@ -21,7 +21,7 @@ public class LargeSizeUpgrade extends SizeUpgrade {
     @Override
     public void applyUpgrade(Cell cell) {
         cell.increasecellSize(sizeIncrease * 100);
-        cell.setLargeSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(true);
         cell.removeCellATP(atpCost);
     }
 

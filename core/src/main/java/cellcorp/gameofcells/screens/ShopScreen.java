@@ -5,6 +5,8 @@ import java.util.List;
 
 import cellcorp.gameofcells.objects.organelle.*;
 import cellcorp.gameofcells.objects.size.*;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -618,6 +620,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
+        
         // This method is called when the screen becomes the current screen for the game.
 
         // Set the stage's root actor to be transparent initially
@@ -759,4 +762,25 @@ public class ShopScreen implements GameOfCellsScreen {
     public Texture getGlowingBorderTexture() {
         return createGlowingBorderTexture();
     }
+
+    /**
+     * Get the current size card.
+     * This is used to get the current size card for the size upgrades.
+     * 
+     * @return the current size card
+     */
+    public Table getCurrentSizeCard() {
+        return currentSizeCard;
+    }
+
+    /**
+     * Get the current organelle card.
+     * This is used to get the current organelle card for the organelle upgrades.
+     * 
+     * @return the current organelle card
+     */
+    public Table getCurrentOrganelleCard() {
+        return currentOrganelleCard;
+    }
+    
 }

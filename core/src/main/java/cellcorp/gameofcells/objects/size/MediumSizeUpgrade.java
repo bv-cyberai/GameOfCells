@@ -20,7 +20,7 @@ public class MediumSizeUpgrade extends SizeUpgrade {
     @Override
     public void applyUpgrade(Cell cell) {
         cell.increasecellSize(sizeIncrease * 100);
-        cell.setMediumSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(true);
         cell.removeCellATP(atpCost);
     }
 

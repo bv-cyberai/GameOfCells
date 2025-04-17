@@ -20,7 +20,7 @@ public class SmallSizeUpgrade extends SizeUpgrade {
     @Override
     public void applyUpgrade(Cell cell) {
         cell.increasecellSize(sizeIncrease * 100);
-        cell.setSmallSizeUpgrade(true);
+        cell.setHasSmallSizeUpgrade(true);
         cell.removeCellATP(atpCost);
     }
 

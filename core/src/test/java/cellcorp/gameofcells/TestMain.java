@@ -426,19 +426,19 @@ public class TestMain {
         runModifiedStep(12, gameRunner, gameCell, false);
         idleTestHelperAndAsserter(gameCell, 11f, startingATP, 1, epsilon, "1");
 
-        gameCell.setSmallSizeUpgrade(true);
+        gameCell.setHasSmallSizeUpgrade(true);
         runModifiedStep(11, gameRunner, gameCell, false);
         idleTestHelperAndAsserter(gameCell, 10f, startingATP, 2, epsilon, "2");
 
-        gameCell.setMediumSizeUpgrade(true);
+        gameCell.setHasMediumSizeUpgrade(true);
         runModifiedStep(10, gameRunner, gameCell, false);
         idleTestHelperAndAsserter(gameCell, 9f, startingATP, 3, epsilon, "3");
 
-        gameCell.setLargeSizeUpgrade(true);
+        gameCell.setHasLargeSizeUpgrade(true);
         runModifiedStep(9, gameRunner, gameCell, false);
         idleTestHelperAndAsserter(gameCell, 8f, startingATP, 4, epsilon, "4");
 
-        gameCell.setMassiveSizeUpgrade(true);
+        gameCell.setHasMassiveSizeUpgrade(true);
         runModifiedStep(8, gameRunner, gameCell, false);
         idleTestHelperAndAsserter(gameCell, 7f, startingATP, 5, epsilon, "5");
 
@@ -487,19 +487,19 @@ public class TestMain {
         movementTestHelperAndAsserter(startingATP, 1, gameCell, epsilon, "0", 5.5f);
 
 
-        gameCell.setSmallSizeUpgrade(true);
+        gameCell.setHasSmallSizeUpgrade(true);
         runModifiedStep(6, gameRunner, gameCell, true);
         movementTestHelperAndAsserter(startingATP, 2, gameCell, epsilon, "1", 5f);
 
-        gameCell.setMediumSizeUpgrade(true);
+        gameCell.setHasMediumSizeUpgrade(true);
         runModifiedStep(5, gameRunner, gameCell, true);
         movementTestHelperAndAsserter(startingATP, 3, gameCell, epsilon, "2", 4.5f);
 
-        gameCell.setLargeSizeUpgrade(true);
+        gameCell.setHasLargeSizeUpgrade(true);
         runModifiedStep(5, gameRunner, gameCell, true);
         movementTestHelperAndAsserter(startingATP, 4, gameCell, epsilon, "3", 4f);
 
-        gameCell.setMassiveSizeUpgrade(true);
+        gameCell.setHasMassiveSizeUpgrade(true);
         runModifiedStep(4, gameRunner, gameCell, true);
         movementTestHelperAndAsserter(startingATP, 5, gameCell, epsilon, "4", 3.5f);
 
