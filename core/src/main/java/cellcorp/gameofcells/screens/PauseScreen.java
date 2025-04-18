@@ -277,4 +277,22 @@ public class PauseScreen implements GameOfCellsScreen {
         menuSystem.getStage().act();
         menuSystem.getStage().draw();
     }
+
+    /**
+     * Get the menu system.
+     * 
+     * @return The menu system used for the pause screen
+     */
+    public MenuSystem getMenuSystem() {
+        return menuSystem;
+    }
+
+    /**
+     * Get the particles object.
+     * 
+     * @return The particles object used for rendering
+     */
+    public Particles getParticles() {
+        return particles;
+    }
 }

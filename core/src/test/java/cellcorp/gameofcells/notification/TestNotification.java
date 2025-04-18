@@ -1,4 +1,4 @@
-package cellcorp.gameofcells.objects;
+package cellcorp.gameofcells.notification;
 
 import cellcorp.gameofcells.notification.Notification;
 import cellcorp.gameofcells.providers.FakeGraphicsProvider;

@@ -28,4 +28,24 @@ public class Stats {
                 return "Massive";
         }
     }
+
+    /**
+     * Set the size of the cell.
+     * 
+     * @param size
+     */
+    public void setSize(int size) {
+        if (size > maxSize) {
+            maxSize = size;
+        }
+    }
+
+    /**
+     * Get the size of the cell.
+     * 
+     * @return
+     */
+    public int getSize() {
+        return maxSize;
+    }
 }

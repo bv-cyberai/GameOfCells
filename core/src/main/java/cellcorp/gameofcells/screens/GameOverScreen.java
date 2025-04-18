@@ -237,4 +237,13 @@ public class GameOverScreen implements GameOfCellsScreen {
         spriteBatch.dispose();
     }
 
+    /**
+     * Get the stats object.
+     * 
+     * @return the stats object
+     */
+    public Stats getStats() {
+        return stats;
+    }
+
 }

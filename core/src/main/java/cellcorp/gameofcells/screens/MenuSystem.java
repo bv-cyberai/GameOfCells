@@ -381,20 +381,32 @@ public class MenuSystem {
      */
     public void updateSelection(int newIndex) {
         if (newIndex < 0 || newIndex >= menuOptions.length) {
-            return; // Invalid index, do nothing
+            return;
         }
-
-        // Update the color of the previously selected option
-        Label previousOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
-        previousOptionLabel.setColor(Color.LIGHT_GRAY);
-
-        // Update the selected option index
-        selectedOptionIndex = newIndex;
-
-        // Update the color of the newly selected option
-        Label currentOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
-        currentOptionLabel.setColor(Color.YELLOW);
+    
+        // Safe guard: skip if labels not rendered yet
+        if (mainTable == null || mainTable.getCells().size <= selectedOptionIndex + 1) return;
+    
+        // Find all Label actors from mainTable
+        int labelCellOffset = 0;
+        int foundLabels = 0;
+        for (int i = 0; i < mainTable.getCells().size; i++) {
+            if (mainTable.getCells().get(i).getActor() instanceof Label) {
+                if (foundLabels == selectedOptionIndex) {
+                    Label previous = (Label) mainTable.getCells().get(i).getActor();
+                    previous.setColor(Color.LIGHT_GRAY);
+                }
+                if (foundLabels == newIndex) {
+                    Label current = (Label) mainTable.getCells().get(i).getActor();
+                    current.setColor(Color.YELLOW);
+                }
+                foundLabels++;
+            }
+        }
+    
+        this.selectedOptionIndex = newIndex;
     }
+    
 
     /**
      * Gets the currently selected option index.
