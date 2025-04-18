@@ -129,7 +129,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     //private final HUD hud;
     private final HUD hud;
-    private final PopupInfoScreen infoPopup;
+    private PopupInfoScreen infoPopup;
     private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
@@ -555,6 +555,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (!infoPopup.hasShownHealAvailablePopup()) {
             showPopup(PopupInfoScreen.Type.heal);
             infoPopup.setHasShownHealAvailablePopup(true);
+            System.out.println("!!!!!!SPACEPRESSED!!!!!!");
         }
     }
 
@@ -798,4 +799,24 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public int getWorldHeight() {
         return VIEW_RECT_HEIGHT;
     }
+
+
+    /**
+     * Stats Getter
+     * Returns the current stats class
+     * @return the game stats
+     */
+    public Stats getStats() {
+        return stats;
+    }
+
+    /**
+     * Used to set the popupscreen to be mocked to not break tests.
+     * @param mockScreen the mock screen
+     */
+    public void setPopUpInfoScreen(PopupInfoScreen mockScreen) {
+        this.infoPopup = mockScreen;
+    }
+
+
 }

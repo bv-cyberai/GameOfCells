@@ -85,7 +85,7 @@ public class Cell {
     private float forceCircleSizeScalar;
     private float forceCircleSizeMultiplier; // Used on forceCircle to scale up as the cell grows
     private float glucoseVectorScaleFactor; //Used to set how far glucose moves when pushed
-
+    private float totalDistanceMoved;
     private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
 
     /**
@@ -109,9 +109,6 @@ public class Cell {
     private boolean wasAtpBurnedThisFrame; //tracks if ATP has been burnt, mostly for testing
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
-
-    //potential gameOverStat
-    private float totalDistanceMoved;
 
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
@@ -997,5 +994,22 @@ public class Cell {
      */
     public float getCellRotation () {
         return cellRotation;
+    }
+
+    /**
+     * Cell Speed Getter
+     * Returns the current Cell Movement Speed
+     * @ Return the cell movement speed
+     */
+    public float getCellSpeed() {
+        return CELL_SPEED;
+    }
+
+    /**
+     * Cell Circle Getter
+     * @return The cell circle
+     */
+    public Circle getCellCircle() {
+        return cellCircle;
     }
 }

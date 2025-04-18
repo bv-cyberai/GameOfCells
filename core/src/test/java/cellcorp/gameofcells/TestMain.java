@@ -4,10 +4,7 @@ import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.runner.GameRunner;
-import cellcorp.gameofcells.screens.GameOverScreen;
-import cellcorp.gameofcells.screens.GamePlayScreen;
-import cellcorp.gameofcells.screens.MainMenuScreen;
-import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.screens.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
@@ -700,6 +697,101 @@ public class TestMain {
 //        System.out.println(0 - gameCell.getCellRotation());
         assertTrue(0f - gameCell.getCellRotation() < epsilon);
 
+    }
+
+    @Test
+    public void testFlagellaInceasesCellMovmentSpeed() {
+        var gameRunner = GameRunner.create();
+        var fakeAssetManager = Mockito.mock(AssetManager.class);
+//        var fakePopUpScreen = Mockito.mock(PopupInfoScreen.class);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        Cell gameCell = gamePlayScreen.getCell();
+        PopupInfoScreen popupInfoScreen = gamePlayScreen.getInfoPopup();
+//        gamePlayScreen.setPopUpInfoScreen(fakePopUpScreen);
+
+        System.out.println("1: " + gamePlayScreen.getStats().distanceMoved);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+        gameRunner.step();
+//        gameRunner.runForSeconds(3);
+
+        for(int i = 0; i < GameRunner.TICKS_PER_SECOND *2;i++ ) {
+            gameRunner.step();
+            if(i % 30 == 0 ) {
+                System.out.println("D1: " +gamePlayScreen.getStats().distanceMoved);
+                System.out.println("CIRCLE1: " + gameCell.getCellCircle());
+            }
+        }
+
+        System.out.println("2: " +gamePlayScreen.getStats().distanceMoved);
+
+        float noFlagellaDistanceMoved = gamePlayScreen.getStats().distanceMoved;
+
+        gameCell.setSmallSizeUpgrade(true);
+        System.out.println(popupInfoScreen.isVisible());
+
+        gameCell.setHasMitochondria(true);
+
+        System.out.println(popupInfoScreen.isVisible());
+        gameRunner.step();
+        gameRunner.step();
+        System.out.println(popupInfoScreen.isVisible());
+        gameRunner.step();
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+//        popupInfoScreen.setHasShownHealAvailablePopup(true);
+//        popupInfoScreen.setVisible(false);
+        System.out.println("PAUSE:" + gamePlayScreen.getIsPaused());
+        gamePlayScreen.resumeGame();
+        gameRunner.step();
+        System.out.println("PAUSE:" + gamePlayScreen.getIsPaused());
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+//        popupInfoScreen.setHasShownHealAvailablePopup(true);
+//        popupInfoScreen.setVisible(false);
+        gameRunner.step();
+        gameRunner.step();
+
+//        popupInfoScreen.setVisible(false);
+//        gameRunner.step();
+//        System.out.println(popupInfoScreen.isVisible());
+        gameRunner.step();
+//
+        gameCell.setMediumSizeUpgrade(true);
+        gameCell.setHasRibosomes(true);
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+//        gameRunner.step();
+//
+        gameCell.setLargeSizeUpgrade(true);
+        gameCell.setHasFlagella(true);
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+//        gameRunner.step();
+//
+//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+//        gameRunner.step();
+//        gameRunner.runForSeconds(2);
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
+        for(int i = 0; i < GameRunner.TICKS_PER_SECOND *2;i++ ) {
+            gameRunner.step();
+            if(i % 30 == 0 ) {
+                System.out.println("D2: " +gamePlayScreen.getStats().distanceMoved);
+//                System.out.println(gameCell.getCellSpeed());
+                System.out.println("CIRCLE: " + gameCell.getCellCircle());
+            }
+        }
+
+        System.out.println("3: " +gamePlayScreen.getStats().distanceMoved);
+
+        float flagellaDistanceMoved = gamePlayScreen.getStats().distanceMoved - noFlagellaDistanceMoved;
+
+        System.out.println(noFlagellaDistanceMoved);
+        System.out.println(flagellaDistanceMoved);
+
+        assertTrue(flagellaDistanceMoved> noFlagellaDistanceMoved);
     }
 
 }

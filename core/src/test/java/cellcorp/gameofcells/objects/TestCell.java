@@ -116,4 +116,27 @@ public class TestCell {
         assertEquals(4, cell.getSizeUpgradeLevel());
         assertEquals(4, cell.getOrganelleUpgradeLevel());
     }
+    @Test
+    public void testFlagellaSpeedChange() {
+        var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var gamePlayScreen = Mockito.mock(GamePlayScreen.class);
+        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
+        var cell = new Cell(gamePlayScreen, fakeAssetManager, fakeConfigProvider);
+        float startspeed = cell.getCellSpeed();
+        cell.setSmallSizeUpgrade(true);
+        cell.setHasMitochondria(true);
+
+        cell.setMediumSizeUpgrade(true);
+        cell.setHasRibosomes(true);
+
+        cell.setLargeSizeUpgrade(true);
+        cell.setHasFlagella(true);
+
+        float speedPostUpgrade = cell.getCellSpeed();
+
+        //This is somewhat ambiguous but I left it as such in case we decide
+        //to change the speed upgrade amount.
+        //This is also tested in a different manner in testMain.
+        assertTrue(speedPostUpgrade > startspeed);
+    }
 }
