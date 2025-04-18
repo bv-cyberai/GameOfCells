@@ -458,6 +458,7 @@ public class Cell {
 
         // Draw flagella (right edge)
         if (hasFlagella) {
+
             var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
 
             // New calculations for better flagella positioning
@@ -761,6 +762,9 @@ public class Cell {
     public void setHasFlagella(boolean hasFlagella) {
         this.hasFlagella = hasFlagella;
         if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
+
+        //flagella increases movement speed.
+        CELL_SPEED = 370f;
     }
 
     /**
