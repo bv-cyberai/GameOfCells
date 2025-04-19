@@ -77,7 +77,8 @@ public class GameRunner {
     public void runForSeconds(float seconds) {
         int steps = (int)(seconds * TICKS_PER_SECOND);
         for (int i = 0; i < steps; i++) {
-            step();
+            game.update(DELTA_TIME);
+            ticksElapsed += 1;
         }
     }
 
