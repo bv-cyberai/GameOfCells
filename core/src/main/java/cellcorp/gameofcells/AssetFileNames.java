@@ -52,6 +52,36 @@ public class AssetFileNames {
     public static String DEFAULT_FONT = "com/badlogic/gdx/utils/lsans-15.fnt";
 
     /**
+     * The file name for the arrow to basic zone texture.
+     */
+    public static String ARROW_TO_BASIC_ZONE = "arrow_to_basic_zone.png";
+
+    /**
+     * The file name for the deeper, blurred background texture
+     */
+    public static String PARALLAX_FAR = "parallax_far.png";
+
+    /**
+     * The file name for the sharper mid-depth layer background texture
+     */
+    public static String PARALLAX_MID = "parallax_mid.png";
+
+    /**
+     * The file name for the closest layer background texture
+     */
+    public static String PARALLAX_NEAR = "parallax_near.png";
+
+    /**
+     * The file name for the transparent floating texture.
+     */
+    public static String FLOATING_OVERLAY = "transparent_floating_texture.png";
+
+    /**
+     * The file name for the vignette texture.
+     */
+    public static String VIGNETTE_LOW_ATP = "vignette_low_atp.png";
+
+    /**
      * The file name for the mitochondria texture.
      */
     public static String MITOCHONDRIA_ICON = "mitochondria.png";
