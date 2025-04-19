@@ -35,7 +35,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * Shop Screen
- * 
+ *
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -55,14 +55,14 @@ public class ShopScreen implements GameOfCellsScreen {
     private final static float SELECTED_CARD_SCALE = 1.1F;
     private static final float UPGRADE_NAME_TEXT_SIZE = 0.25f;
     private static final float UPGRADE_INFO_TEXT_SIZE = 0.2f;
-    
+
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
     // Change as is most convenient.
     /**
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
      */
-    public static final int VIEW_RECT_WIDTH = 1280;
+    public static final int VIEW_RECT_WIDTH = 1200;
     /**
      * Height of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
@@ -82,7 +82,7 @@ public class ShopScreen implements GameOfCellsScreen {
     private final Particles particles;
     private final MenuSystem menuSystem;
     private final GamePlayScreen previousScreen;
-    
+
     // UI elements
     private List<SizeUpgrade> sizeUpgrades;
     private List<OrganelleUpgrade> organelleUpgrades;
@@ -93,7 +93,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Constructor for the ShopScreen class.
-     * 
+     *
      * @param game The main game instance
      * @param inputProvider The input provider for handling user input
      * @param graphicsProvider The graphics provider for rendering
@@ -176,18 +176,18 @@ public class ShopScreen implements GameOfCellsScreen {
     // and alignment of UI elements.
     private void createUI() {
         Table[] shopTables = menuSystem.initializeShopLayout(
-            "CELL SHOP", 
+            "CELL SHOP",
             "Press ARROW keys to switch sides | ENTER to purchase | ESC to exit"
         );
 
         Table leftTable = shopTables[0];    // Size upgrades column
-        Table centerTable = shopTables[1];  // ATP/Size info column  
+        Table centerTable = shopTables[1];  // ATP/Size info column
         Table rightTable = shopTables[2];   // Organelle upgrades column
 
         // Add ATP/Size info to center column
         Label atpLabel = createLabel("ATP: " + playerCell.getCellATP(), UPGRADE_NAME_TEXT_SIZE);
         Label sizeLabel = createLabel("Size: " + ((playerCell.getCellSize() - 100)/100), UPGRADE_NAME_TEXT_SIZE);
-        
+
         centerTable.add(atpLabel).row();
         centerTable.add(sizeLabel).padTop(10).row();
 
@@ -201,7 +201,7 @@ public class ShopScreen implements GameOfCellsScreen {
         }
         leftTable.add(sizeTable).expand().fill().padTop(20);
 
-        // Create and add organelle upgrades  
+        // Create and add organelle upgrades
         organelleTable = new Table();
         if (!organelleUpgrades.isEmpty()) {
             currentOrganelleCard = createUpgradeCard(organelleUpgrades.get(0), false);
@@ -241,7 +241,7 @@ public class ShopScreen implements GameOfCellsScreen {
         if (isSizeUpgrade) {
             SizeUpgrade sizeUpgrade = (SizeUpgrade) upgrade;
 
-            // Name 
+            // Name
             Label nameLabel = createLabel(sizeUpgrade.getName(), UPGRADE_NAME_TEXT_SIZE);
             nameLabel.setColor(Color.YELLOW);
             nameLabel.setAlignment(Align.center);
@@ -396,7 +396,7 @@ public class ShopScreen implements GameOfCellsScreen {
         ));
     }
 
-    // This method handles the purchase error messages. 
+    // This method handles the purchase error messages.
     // It checks if the player has enough ATP and size to purchase the selected upgrade.
     // If not, it shows a message indicating the specific issue (not enough ATP, size, or both).
     private void showPurchaseError(Object upgrade) {
@@ -426,7 +426,7 @@ public class ShopScreen implements GameOfCellsScreen {
         }
         showMessage(message);
     }
-    
+
     // This method is used to update the display of the size upgrades.
     // It clears the current size table and adds the first available size upgrade card.
     // If all size upgrades are purchased, it shows a message indicating that.
@@ -696,7 +696,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Get the ATP tracker.
      * This is used to get the ATP of the player cell.
-     * @return 
+     * @return
      */
     public int getATPTracker() {
         return playerCell.getCellATP();
