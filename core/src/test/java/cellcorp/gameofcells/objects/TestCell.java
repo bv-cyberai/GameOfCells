@@ -116,6 +116,7 @@ public class TestCell {
         assertEquals(4, cell.getSizeUpgradeLevel());
         assertEquals(4, cell.getOrganelleUpgradeLevel());
     }
+
     @Test
     public void testFlagellaSpeedChange() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);

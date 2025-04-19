@@ -553,8 +553,8 @@ public class Cell {
 
         try {
             AMOUNT_HEALED = configProvider.getIntValue("amountHealed");
-            } catch (NumberFormatException e){
-                AMOUNT_HEALED = 5;
+        } catch (NumberFormatException e) {
+            AMOUNT_HEALED = 5;
 
         }
     }
@@ -722,8 +722,7 @@ public class Cell {
             if (cellHealth - MAX_HEALTH < AMOUNT_HEALED) {
                 if (MAX_HEALTH - cellHealth < AMOUNT_HEALED) {
                     cellHealth = MAX_HEALTH;
-                }
-                else {
+                } else {
                     cellATP -= ATP_HEAL_COST;
                     this.cellHealth += AMOUNT_HEALED;
                 }
@@ -992,7 +991,7 @@ public class Cell {
      * Return the current angle of the cell.
      * @return The cell Angle
      */
-    public float getCellRotation () {
+    public float getCellRotation() {
         return cellRotation;
     }
 
