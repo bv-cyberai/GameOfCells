@@ -70,7 +70,7 @@ public class TestShopScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step(); 
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
 

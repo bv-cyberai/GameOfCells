@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -26,7 +27,7 @@ import org.mockito.Mockito;
 public class TestGameInfoControlsScreen {
 
     @BeforeAll
-    public static void setUpLibGDX() {
+    public static void initLibGDX() {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
@@ -210,5 +211,128 @@ public class TestGameInfoControlsScreen {
         // Check that the particle system is initialized correctly
         assertNotNull(gameInfoControlsScreen2.getParticles());
         assertNotNull(gameInfoControlsScreen2.getParticles().getWhitePixelTexture());
+    }
+
+    @Test
+    public void testScreenDisposeCleansUpResources() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        GameInfoControlsScreen screen = (GameInfoControlsScreen) gameRunner.game.getScreen();
+
+        assertDoesNotThrow(() -> {
+            screen.dispose();
+        }, "Disposing should clean up resources without exceptions");
+    }
+
+    @Test
+    public void testScreenResizeHandlesDifferentDimensions() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        GameInfoControlsScreen screen = (GameInfoControlsScreen) gameRunner.game.getScreen();
+
+        assertDoesNotThrow(() -> {
+            screen.resize(800, 600);
+            screen.resize(1024, 768);
+            screen.resize(400, 300);
+        }, "Resizing should handle different dimensions without exceptions");
+    }
+
+    @Test
+    public void testReturnToPreviousScreenWithEnterKey() {
+        GameRunner gameRunner = GameRunner.create();
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+        // Navigate to the GameInfoControlsScreen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        assertInstanceOf(GameInfoControlsScreen.class, gameRunner.game.getScreen());
+
+        // Press ENTER to return
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen(), "Should return to MainMenuScreen");
+    }
+
+    @Test
+    public void testParticleSystemUpdatesWithDeltaTime() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        GameInfoControlsScreen screen = (GameInfoControlsScreen) gameRunner.game.getScreen();
+        
+        assertDoesNotThrow(() -> {
+            screen.update(0.5f);
+        }, "Updating particle system should not throw exceptions");
+    }
+
+    @Test
+    public void testMenuSystemInitialization() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        GameInfoControlsScreen screen = (GameInfoControlsScreen) gameRunner.game.getScreen();
+
+        assertDoesNotThrow(() -> {
+            screen.show();
+        }, "Menu system initialization should not throw exceptions");
+    }
+
+    @Test
+    public void testScreenLifecycleMethods() {
+        GameRunner gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        GameInfoControlsScreen screen = (GameInfoControlsScreen) gameRunner.game.getScreen();
+
+        assertDoesNotThrow(() -> {
+            screen.pause();
+            screen.resume();
+            screen.hide();
+        }, "Lifecycle methods should not throw exceptions");
     }
 }

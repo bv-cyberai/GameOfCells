@@ -89,4 +89,13 @@ public class Particles {
     public Texture getWhitePixelTexture() {
         return whitePixelTexture;
     }
+
+    /**
+     * Get the number of particles.
+     * 
+     * @return The number of particles in the system.
+     */
+    public int getParticleCount() {
+        return particles.size;
+    }
 }

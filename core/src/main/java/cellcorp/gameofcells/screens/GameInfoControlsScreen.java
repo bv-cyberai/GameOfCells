@@ -301,4 +301,13 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     public Particles getParticles() {
         return particles;
     }
+
+    /**
+     * Get the viewport.
+     * 
+     * @return The viewport object.
+     */
+    public Viewport getViewport() {
+        return viewport;
+    }
 }
