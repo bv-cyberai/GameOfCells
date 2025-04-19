@@ -347,10 +347,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
             } else if (playerCell.getCellATP() > 20) {
                 hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
             }
-            if (playerCell.hasMitochondria()) {
+            if (playerCell.hasMitochondria() && !infoPopup.hasShownHealAvailablePopup()) {
+                System.out.println("HERE1");
                 reportHealAvailable();
+                System.out.println("EXIT1");
             }
-
+//            System.out.println("UPDATE1");
             stats.gameTimer += deltaTimeSeconds;
 
             boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());

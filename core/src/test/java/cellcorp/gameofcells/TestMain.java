@@ -771,7 +771,7 @@ public class TestMain {
 //        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
 //        gameRunner.step();
 //
-//        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
 //        gameRunner.step();
 //        gameRunner.runForSeconds(2);
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
