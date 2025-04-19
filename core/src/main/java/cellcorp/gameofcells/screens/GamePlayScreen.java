@@ -11,6 +11,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -138,6 +139,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     //private final HUD hud;
     private final HUD hud;
+    private final PopupInfoScreen infoPopup;
+
+    // Background textures
+    private Texture parallaxFar;
+    private Texture parallaxMid;
+    private Texture parallaxNear;
+    private Texture floatingOverlay; // Texture for simulating fluid game movement
+    private Texture vignetteLowATP; // Texture for low ATP warning
+    private Texture arrowTexture; // Texture for the arrow pointing to the basic zone
+    private float overlayTime = 0f;
+
+    // Minimap
+    private MinimapRenderer minimapRenderer;
+
     private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Zoom fields
     private final float originalZoom = 1.2f; // Original zoom level
@@ -185,6 +200,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, assetManager, this, stats);
+        this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, hud, this::resumeGame);
+
+        parallaxFar = assetManager.get(AssetFileNames.PARALLAX_FAR, Texture.class);
+        parallaxMid = assetManager.get(AssetFileNames.PARALLAX_MID, Texture.class);
+        parallaxNear = assetManager.get(AssetFileNames.PARALLAX_NEAR, Texture.class);
+        floatingOverlay = assetManager.get(AssetFileNames.FLOATING_OVERLAY, Texture.class);
+        vignetteLowATP = assetManager.get(AssetFileNames.VIGNETTE_LOW_ATP, Texture.class);
+        arrowTexture = assetManager.get(AssetFileNames.ARROW_TO_BASIC_ZONE, Texture.class);
+        
+        // Initialize the minimap renderer
+        minimapRenderer = new MinimapRenderer(8000f, 8000f, 200f, 200f, (OrthographicCamera) camera);
+    }
+
 
         this.glucoseCollisionPopup = new PopupInfoScreen(
                 configProvider,
@@ -443,6 +471,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
         drawGameObjects(batch, shapeRenderer);
         hud.draw();
+
+        // Draw the minimap
+        minimapRenderer.render(
+            Gdx.graphics.getWidth(),
+            Gdx.graphics.getHeight(),
+            playerCell.getX(),
+            playerCell.getY(),
+            zoneManager.getAcidZones().values(),
+            zoneManager.getBasicZones().values(),
+            glucoseManager.getGlucoseArray()
+        );
 
         if (DEBUG_DRAW_ENABLED) {
             drawChunks(shapeRenderer);
