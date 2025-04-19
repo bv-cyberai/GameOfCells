@@ -129,7 +129,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     //private final HUD hud;
     private final HUD hud;
-    private PopupInfoScreen infoPopup;
+    private final PopupInfoScreen infoPopup;
     private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
