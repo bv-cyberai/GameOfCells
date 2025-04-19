@@ -37,6 +37,7 @@ public class Cell {
     public static int MAX_HEALTH = 100;
     public static int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
+    private static float CELL_SPEED_WITH_FLAGELLA = 370f; //Amount to increase cell speed after buying flagella
     public static int ZERO_ATP_DAMAGE_PER_SECOND = 10;
     private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
     public static int ATP_HEAL_COST = 5;
@@ -536,6 +537,7 @@ public class Cell {
 
         try {
             CELL_SPEED = configProvider.getFloatValue("cellMovementSpeed");
+            System.out.println("CS: " + CELL_SPEED);
         } catch (NumberFormatException e) {
             CELL_SPEED = 200f;
         }
@@ -555,6 +557,14 @@ public class Cell {
             AMOUNT_HEALED = configProvider.getIntValue("amountHealed");
         } catch (NumberFormatException e) {
             AMOUNT_HEALED = 5;
+
+        }
+
+        try {
+            CELL_SPEED_WITH_FLAGELLA = configProvider.getFloatValue("cellFlagMovementSpeed");
+            System.out.println("CSWF: " + CELL_SPEED_WITH_FLAGELLA);
+        } catch (NumberFormatException e) {
+            CELL_SPEED_WITH_FLAGELLA = 370f;
 
         }
     }
@@ -760,7 +770,7 @@ public class Cell {
         if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
 
         //flagella increases movement speed.
-        CELL_SPEED = 370f;
+        CELL_SPEED = CELL_SPEED_WITH_FLAGELLA;
     }
 
     /**

@@ -6,6 +6,7 @@ cellMaxHealth:100       ##Max Health
 cellATP:30              ##Starting ATP
 cellMaxATP:100          ##Max Health
 cellMovementSpeed:200   ##Cell Movement Speed
+cellFlagMovementSpeed:370  ##Cell Movement Speed post flagella upgrade
 cellRotationSpeed:20    ##Cell Rotational Speed
 amountHealed:20 ##Amount Healed
 atpHealCost:20 ##Amount of ATP used to heal
