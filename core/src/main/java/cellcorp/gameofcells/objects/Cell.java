@@ -1025,7 +1025,9 @@ public class Cell {
         for (int x = 0; x <  FlagellumYValues.size - 1; x++) {
             float y1 =  FlagellumYValues.get(x);
             float y2 =  FlagellumYValues.get(x + 1);
-            shapeRenderer.line(x, y1, x + 1, y2);
+            shapeRenderer.line(cellCircle.x + x, cellCircle.y + y1, cellCircle.x + x + 1,  cellCircle.y + y2);
+//            shapeRenderer.line( x, y1, x + 1,   y2);
+//            shapeRenderer.line(cellCircle.x , cellCircle.y , cellCircle.x + 1,  cellCircle.y +1);
         }
 
         shapeRenderer.end();
@@ -1033,17 +1035,18 @@ public class Cell {
 
     public void updateFlagellum(float deltaTime) {
         amplitude = 25f;
-        frequency = .12f;
-        yOffset = Gdx.graphics.getHeight() / 2f;
+        frequency = .05f;
+//        yOffset = Gdx.graphics.getHeight() / 2f;
+        yOffset = 0;
 
 
         FlagellumYValues.clear();
-        for (int x = 0; x < 100f; x++) {
+        for (int x = 0; x < 300f; x++) {
             flagY = (float)(amplitude * Math.sin((x * frequency + flagTime)) + yOffset);
             FlagellumYValues.add(flagY);
 
         }
 
-        flagTime += deltaTime * 15;
+        flagTime += deltaTime * 5;
     }
 }
