@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
 
@@ -88,6 +90,16 @@ public class Cell {
 
     private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
 
+    //flagellum
+    private boolean drawFlagellum;
+    private float amplitude = 50f;
+    private float frequency = 0.05f;
+    private float yOffset = Gdx.graphics.getHeight() / 2f;
+    private float flagY = 0f;
+    private float nextY =0f;
+    private float flagTime = 0f;
+    private Array<Float> FlagellumYValues = new Array<>();
+
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -133,6 +145,8 @@ public class Cell {
         forceCircleSizeMultiplier = 1.375f;
         forceCircleSizeScalar = 1f;
         glucoseVectorScaleFactor = 50f;
+
+        drawFlagellum = false;
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
         forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
@@ -322,6 +336,8 @@ public class Cell {
         //cell Texture
         Texture cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
 
+        drawFlagellum(true,shapeRenderer);
+
         batch.begin();
 
         batch.draw(cellTexture,
@@ -343,6 +359,7 @@ public class Cell {
             shapeRenderer.circle(forceCircle.x, forceCircle.y, forceCircle.radius);
             shapeRenderer.end();
         }
+
     }
 
     public void update(float deltaTimeSeconds) {
@@ -395,6 +412,8 @@ public class Cell {
             maxSize = 0;
         }
         gamePlayScreen.stats.maxSize = maxSize;
+
+        updateFlagellum(deltaTimeSeconds);
     }
 
     private void damageIfZeroATP(float deltaTimeSeconds) {
@@ -993,5 +1012,38 @@ public class Cell {
      */
     public float getCellRotation () {
         return cellRotation;
+    }
+
+    public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
+
+
+        if (!drawFlagellum ||  FlagellumYValues.size < 2) return;
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.CYAN);
+
+        for (int x = 0; x <  FlagellumYValues.size - 1; x++) {
+            float y1 =  FlagellumYValues.get(x);
+            float y2 =  FlagellumYValues.get(x + 1);
+            shapeRenderer.line(x, y1, x + 1, y2);
+        }
+
+        shapeRenderer.end();
+    }
+
+    public void updateFlagellum(float deltaTime) {
+        amplitude = 100f;
+        frequency = .5f;
+        yOffset = Gdx.graphics.getHeight() / 2f;
+
+
+        FlagellumYValues.clear();
+        for (int x = 0; x < 50f; x++) {
+            flagY = (float)(amplitude * Math.sin(x * frequency)) + yOffset;
+            FlagellumYValues.add(flagY);
+
+        }
+
+        flagTime += deltaTime * 100;
     }
 }
