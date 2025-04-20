@@ -15,7 +15,6 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.badlogic.gdx.math.MathUtils.lerpAngleDeg;
@@ -96,7 +95,7 @@ public class Cell {
     private float amplitude = 50f;
     private float frequency = 0.05f;
     private float yOffset = Gdx.graphics.getHeight() / 2f;
-    private float flagY = 0f;
+    private float flagX = 0f;
     private float nextY =0f;
     private float flagTime = 0f;
     private Array<Float> FlagellumYValues = new Array<>();
@@ -1024,10 +1023,13 @@ public class Cell {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.CYAN);
 
-        for (int x = 0; x <  FlagellumVectors.size - 1; x++) {
-            float y1 =  FlagellumVectors.get(x).y;
-            float y2 =  FlagellumVectors.get(x + 1).y;
-            shapeRenderer.line(cellCircle.x + x, cellCircle.y + y1, cellCircle.x + x + 1,  cellCircle.y + y2);
+        for (int i = 0; i <  FlagellumVectors.size - 1; i++) {
+            Vector2 p1 = FlagellumVectors.get(i);
+            Vector2 p2 = FlagellumVectors.get(i + 1);
+            shapeRenderer.line(
+                cellCircle.x + p1.x, cellCircle.y + p1.y,
+                cellCircle.x + p2.x, cellCircle.y + p2.y
+            );
         }
 
         shapeRenderer.end();
@@ -1036,15 +1038,20 @@ public class Cell {
     public void updateFlagellum(float deltaTime) {
         amplitude = 25f;
         frequency = .05f;
-        yOffset = 0;
 
         FlagellumVectors.clear();
-        for (int x = 0; x < 300f; x++) {
-            flagY = (float)(amplitude * Math.sin((x * frequency + flagTime)) + yOffset);
-            FlagellumVectors.add(new Vector2(x,flagY));
+        for (int y = 0; y < 300f; y++) {
+            flagX = (float)(amplitude * Math.sin((y * frequency + flagTime)));
+            FlagellumVectors.add(new Vector2(flagX,y-cellCircle.radius-300)); // fix this is stupid
 
         }
 
+        // Rotate the flagellum
+        for (int i = 0; i < FlagellumVectors.size; i++) {
+            Vector2 vector = FlagellumVectors.get(i);
+            vector.rotateDeg(cellRotation);
+
+        }
 
         flagTime += deltaTime * 5;
     }
