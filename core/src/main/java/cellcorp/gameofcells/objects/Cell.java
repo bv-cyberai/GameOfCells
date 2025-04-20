@@ -15,6 +15,7 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.badlogic.gdx.math.MathUtils.lerpAngleDeg;
@@ -99,6 +100,7 @@ public class Cell {
     private float nextY =0f;
     private float flagTime = 0f;
     private Array<Float> FlagellumYValues = new Array<>();
+    private Array<Vector2> FlagellumVectors = new Array<>();
 
     /**
      * Times how long the cell has been taking zero-ATP damage.
@@ -1017,17 +1019,15 @@ public class Cell {
     public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
 
 
-        if (!drawFlagellum ||  FlagellumYValues.size < 2) return;
+        if (!drawFlagellum ||  FlagellumVectors.size < 2) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.CYAN);
 
-        for (int x = 0; x <  FlagellumYValues.size - 1; x++) {
-            float y1 =  FlagellumYValues.get(x);
-            float y2 =  FlagellumYValues.get(x + 1);
+        for (int x = 0; x <  FlagellumVectors.size - 1; x++) {
+            float y1 =  FlagellumVectors.get(x).y;
+            float y2 =  FlagellumVectors.get(x + 1).y;
             shapeRenderer.line(cellCircle.x + x, cellCircle.y + y1, cellCircle.x + x + 1,  cellCircle.y + y2);
-//            shapeRenderer.line( x, y1, x + 1,   y2);
-//            shapeRenderer.line(cellCircle.x , cellCircle.y , cellCircle.x + 1,  cellCircle.y +1);
         }
 
         shapeRenderer.end();
@@ -1036,16 +1036,15 @@ public class Cell {
     public void updateFlagellum(float deltaTime) {
         amplitude = 25f;
         frequency = .05f;
-//        yOffset = Gdx.graphics.getHeight() / 2f;
         yOffset = 0;
 
-
-        FlagellumYValues.clear();
+        FlagellumVectors.clear();
         for (int x = 0; x < 300f; x++) {
             flagY = (float)(amplitude * Math.sin((x * frequency + flagTime)) + yOffset);
-            FlagellumYValues.add(flagY);
+            FlagellumVectors.add(new Vector2(x,flagY));
 
         }
+
 
         flagTime += deltaTime * 5;
     }
