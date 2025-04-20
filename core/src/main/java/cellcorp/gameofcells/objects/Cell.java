@@ -1032,18 +1032,18 @@ public class Cell {
     }
 
     public void updateFlagellum(float deltaTime) {
-        amplitude = 100f;
-        frequency = .5f;
+        amplitude = 25f;
+        frequency = .12f;
         yOffset = Gdx.graphics.getHeight() / 2f;
 
 
         FlagellumYValues.clear();
-        for (int x = 0; x < 50f; x++) {
-            flagY = (float)(amplitude * Math.sin(x * frequency)) + yOffset;
+        for (int x = 0; x < 100f; x++) {
+            flagY = (float)(amplitude * Math.sin((x * frequency + flagTime)) + yOffset);
             FlagellumYValues.add(flagY);
 
         }
 
-        flagTime += deltaTime * 100;
+        flagTime += deltaTime * 15;
     }
 }
