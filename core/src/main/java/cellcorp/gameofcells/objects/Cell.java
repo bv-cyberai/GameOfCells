@@ -172,6 +172,12 @@ public class Cell {
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
         //track these values to calculate ATP Burn.
+
+        //prevents undesirable movement and rotation.
+        if((moveLeft && moveRight) || (moveUp && moveDown)) {
+            return;
+        }
+
         lastX = cellCircle.x;
         lastY = cellCircle.y;
 
