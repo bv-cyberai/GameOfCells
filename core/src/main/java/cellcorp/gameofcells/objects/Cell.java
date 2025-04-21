@@ -559,7 +559,7 @@ public class Cell {
         try {
             amplitude = configProvider.getFloatValue("amplitude");
         } catch (NumberFormatException e) {
-            amplitude = 50f;
+            amplitude = 25f;
         }
         try {
             frequency = configProvider.getFloatValue("frequency");
@@ -1053,8 +1053,8 @@ public class Cell {
         //Track movement for the next render cycle
         previousPosition.set(cellCircle.x, cellCircle.y);
 
-        amplitude = 25f;
-        frequency = .05f;
+//        amplitude = 25f;
+//        frequency = .05f;
 
         FlagellumVectors.clear();
 
