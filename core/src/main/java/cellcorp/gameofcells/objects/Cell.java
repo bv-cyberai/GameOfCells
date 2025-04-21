@@ -339,7 +339,7 @@ public class Cell {
         //cell Texture
         Texture cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
 
-        drawFlagellum(true,shapeRenderer);
+        drawFlagellum(hasFlagella,shapeRenderer);
 
         batch.begin();
 
@@ -479,29 +479,29 @@ public class Cell {
         }
 
         // Draw flagella (right edge)
-        if (hasFlagella) {
-            var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
-
-            // New calculations for better flagella positioning
-            float flagellaLength = cellSize * 0.5f;// Adjust length as needed
-            float flagellaWidth = cellSize * 0.15f; // Adjust width as needed
-
-            float flagX = centerX - flagellaWidth / 2;
-            float flagY = centerY - flagellaLength / 2 - cellRadius * 0.7f;
-
-            float originX = centerX - flagX;
-            float originY = centerY - flagY;
-
-            batch.draw(flagellaTexture,
-                flagX, flagY,
-                originX, originY,
-                flagellaWidth, flagellaLength,
-                1f, 1f,
-                cellRotation,
-                0, 0,
-                flagellaTexture.getWidth(), flagellaTexture.getHeight(),
-                false, false);
-        }
+//        if (hasFlagella) {
+//            var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
+//
+//            // New calculations for better flagella positioning
+//            float flagellaLength = cellSize * 0.5f;// Adjust length as needed
+//            float flagellaWidth = cellSize * 0.15f; // Adjust width as needed
+//
+//            float flagX = centerX - flagellaWidth / 2;
+//            float flagY = centerY - flagellaLength / 2 - cellRadius * 0.7f;
+//
+//            float originX = centerX - flagX;
+//            float originY = centerY - flagY;
+//
+//            batch.draw(flagellaTexture,
+//                flagX, flagY,
+//                originX, originY,
+//                flagellaWidth, flagellaLength,
+//                1f, 1f,
+//                cellRotation,
+//                0, 0,
+//                flagellaTexture.getWidth(), flagellaTexture.getHeight(),
+//                false, false);
+//        }
 
         // Draw nucleus (center with pulse effect)
         if (hasNucleus) {
