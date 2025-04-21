@@ -92,10 +92,10 @@ public class Cell {
     //flagellum
     private float amplitude = 50f;
     private float frequency = 0.05f;
-    private float flagX = 0f;
-    private float flagTime = 0f;
-    private Array<Vector2> FlagellumVectors = new Array<>();
-    private Vector2 previousPosition;
+    private float flagTime = 0f; // storePhase
+    private int wiggleVelcoityMultiplier = 5; //How quickly to wiggle
+    private Array<Vector2> FlagellumVectors = new Array<>(); //sine wave vectors
+    private Vector2 previousPosition; //previous position of the cell
 
     /**
      * Times how long the cell has been taking zero-ATP damage.
@@ -338,7 +338,7 @@ public class Cell {
         //cell Texture
         Texture cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
 
-        drawFlagellum(hasFlagella, shapeRenderer);
+        drawFlagellum(hasFlagella, shapeRenderer); //moved outside of draw organelles to be underneath the cell.
 
         batch.begin();
 
@@ -477,30 +477,6 @@ public class Cell {
                 false, false);
         }
 
-        // Draw flagella (right edge)
-//        if (hasFlagella) {
-//            var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
-//
-//            // New calculations for better flagella positioning
-//            float flagellaLength = cellSize * 0.5f;// Adjust length as needed
-//            float flagellaWidth = cellSize * 0.15f; // Adjust width as needed
-//
-//            float flagX = centerX - flagellaWidth / 2;
-//            float flagY = centerY - flagellaLength / 2 - cellRadius * 0.7f;
-//
-//            float originX = centerX - flagX;
-//            float originY = centerY - flagY;
-//
-//            batch.draw(flagellaTexture,
-//                flagX, flagY,
-//                originX, originY,
-//                flagellaWidth, flagellaLength,
-//                1f, 1f,
-//                cellRotation,
-//                0, 0,
-//                flagellaTexture.getWidth(), flagellaTexture.getHeight(),
-//                false, false);
-//        }
 
         // Draw nucleus (center with pulse effect)
         if (hasNucleus) {
@@ -580,6 +556,22 @@ public class Cell {
             AMOUNT_HEALED = 5;
 
         }
+        try {
+            amplitude = configProvider.getFloatValue("amplitude");
+        } catch (NumberFormatException e) {
+            amplitude = 50;
+        }
+        try {
+            frequency = configProvider.getFloatValue("frequency");
+        } catch (NumberFormatException e) {
+            frequency = 0.05f;
+        }
+        try {
+            wiggleVelcoityMultiplier = configProvider.getIntValue("velocity");
+        } catch (NumberFormatException e) {
+            wiggleVelcoityMultiplier = 5;
+        }
+
     }
 
     /**
@@ -1068,7 +1060,7 @@ public class Cell {
 
         //calculate new sin wave positions.
         for (int y = 0; y < 300f; y++) {
-            flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
+            float flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
             FlagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - 300)); // <-shifts flagella down, stupid calc, but it works
         }
 
@@ -1079,6 +1071,6 @@ public class Cell {
 
         }
 
-        flagTime += deltaTime * 5;
+        flagTime += deltaTime * wiggleVelcoityMultiplier;
     }
 }
