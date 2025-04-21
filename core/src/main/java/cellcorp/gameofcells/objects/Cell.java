@@ -100,6 +100,7 @@ public class Cell {
     private float flagTime = 0f;
     private Array<Float> FlagellumYValues = new Array<>();
     private Array<Vector2> FlagellumVectors = new Array<>();
+    private Vector2 previousPosition;
 
     /**
      * Times how long the cell has been taking zero-ATP damage.
@@ -151,6 +152,7 @@ public class Cell {
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
         forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
+        previousPosition = new Vector2(-1,-1);
     }
 
     /**
@@ -1036,10 +1038,20 @@ public class Cell {
     }
 
     public void updateFlagellum(float deltaTime) {
+
+        if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y) {
+            return;
+        }
+        previousPosition.set(cellCircle.x, cellCircle.y);
+
         amplitude = 25f;
         frequency = .05f;
 
+
+
         FlagellumVectors.clear();
+
+        //calculate new sin wave posistions.
         for (int y = 0; y < 300f; y++) {
             flagX = (float)(amplitude * Math.sin((y * frequency + flagTime)));
             FlagellumVectors.add(new Vector2(flagX,y-cellCircle.radius-300)); // fix this is stupid
