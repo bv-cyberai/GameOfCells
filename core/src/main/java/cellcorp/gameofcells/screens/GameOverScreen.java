@@ -233,7 +233,7 @@ public class GameOverScreen implements GameOfCellsScreen {
      */
     @Override
     public void dispose() {
-        font.dispose();
+        if (font != null) font.dispose();
         spriteBatch.dispose();
     }
 

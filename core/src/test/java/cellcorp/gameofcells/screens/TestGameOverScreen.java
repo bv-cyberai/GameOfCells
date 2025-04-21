@@ -59,6 +59,26 @@ public class TestGameOverScreen {
     }
 
     /**
+     * Test that the GameOverScreen is initialized correctly.
+     */
+    @Test
+    public void testScreenInitialization() {
+        GameRunner gameRunner = GameRunner.create();
+        Stats stats = new Stats();
+        GameOverScreen gameOverScreen = new GameOverScreen(
+            gameRunner.inputProvider,
+            gameRunner.game.getAssetManager(),
+            gameRunner.game.getGraphicsProvider(),
+            gameRunner.game,
+            gameRunner.configProvider,
+            stats
+        );
+
+        assertNotNull(gameOverScreen);
+        assertEquals(stats, gameOverScreen.getStats());
+    }
+
+    /**
      * Test that the GameOverScreen is created successfully and is not null.
      */
     @Test
@@ -196,4 +216,83 @@ public class TestGameOverScreen {
             gameOverScreen.resize(800, 600);
         });
     }
+
+    /**
+     * Test that the screen handles edge cases in stats correctly.
+     * This includes cases where stats are zero or negative.
+     */
+    @Test
+    public void testEdgeCaseStats() {
+        GameRunner gameRunner = GameRunner.create();
+        Stats stats = new Stats();
+        // Set some edge case stats
+        stats.gameTimer = 0f;
+        stats.glucoseCollected = 0;
+        stats.atpGenerated = 0;
+        stats.distanceMoved = 0;
+        stats.setSize(0); // Tiny
+        stats.organellesPurchased = 0;
+
+        GameOverScreen gameOverScreen = new GameOverScreen(
+            gameRunner.inputProvider,
+            gameRunner.game.getAssetManager(),
+            gameRunner.game.getGraphicsProvider(),
+            gameRunner.game,
+            gameRunner.configProvider,
+            stats
+        );
+        gameRunner.game.setScreen(gameOverScreen);
+
+        assertSame(stats, gameOverScreen.getStats());
+        assertEquals(0f, gameOverScreen.getStats().gameTimer);
+        assertEquals(0, gameOverScreen.getStats().glucoseCollected);
+        assertEquals(0, gameOverScreen.getStats().atpGenerated);
+        assertEquals(0, gameOverScreen.getStats().distanceMoved);
+        assertEquals(0, gameOverScreen.getStats().getSize());
+        assertEquals(0, gameOverScreen.getStats().organellesPurchased);
+    }
+
+    /**
+     * Test that the screen can be disposed without exceptions.
+     */
+    @Test
+    public void testGameOverScreenDispose() {
+        GameRunner gameRunner = GameRunner.create();
+        Stats stats = new Stats();
+        GameOverScreen gameOverScreen = new GameOverScreen(
+            gameRunner.inputProvider,
+            gameRunner.game.getAssetManager(),
+            gameRunner.game.getGraphicsProvider(),
+            gameRunner.game,
+            gameRunner.configProvider,
+            stats
+        );
+
+        assertDoesNotThrow(() -> {
+            gameOverScreen.dispose();
+        });
+    }
+
+    /**
+     * Test that the screen can be updated without exceptions.
+     * This test is not very meaningful in headless mode, but we include it for completeness.
+     */
+    @Test
+    public void testGameOverScreenUpdate() {
+        GameRunner gameRunner = GameRunner.create();
+        Stats stats = new Stats();
+        GameOverScreen gameOverScreen = new GameOverScreen(
+            gameRunner.inputProvider,
+            gameRunner.game.getAssetManager(),
+            gameRunner.game.getGraphicsProvider(),
+            gameRunner.game,
+            gameRunner.configProvider,
+            stats
+        );
+
+        assertDoesNotThrow(() -> {
+            gameOverScreen.update(0.016f);
+        });
+    }
+
 }

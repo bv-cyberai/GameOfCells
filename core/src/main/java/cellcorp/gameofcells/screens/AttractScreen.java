@@ -255,4 +255,12 @@ public class AttractScreen implements GameOfCellsScreen {
         return glucoseList;
     }
 
+    public float getTargetX() {
+        return targetX;
+    }
+    
+    public float getTargetY() {
+        return targetY;
+    }
+
 }
