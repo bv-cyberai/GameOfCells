@@ -145,7 +145,7 @@ public class Cell {
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
         forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
-        previousPosition = new Vector2(-1, -1);
+        previousPosition = new Vector2(-500, -500);
     }
 
     /**
@@ -559,7 +559,7 @@ public class Cell {
         try {
             amplitude = configProvider.getFloatValue("amplitude");
         } catch (NumberFormatException e) {
-            amplitude = 50;
+            amplitude = 50f;
         }
         try {
             frequency = configProvider.getFloatValue("frequency");
