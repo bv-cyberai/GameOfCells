@@ -22,7 +22,7 @@ import static java.lang.Math.abs;
 
 /**
  * Cell Class
- *
+ * <p>
  * Includes the data for the primary cell the player
  * Controls in the game
  *
@@ -30,7 +30,6 @@ import static java.lang.Math.abs;
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
- *
  * @date 02/18/2025
  * @course CIS 405
  * @assignment GameOfCells
@@ -91,14 +90,10 @@ public class Cell {
     private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
 
     //flagellum
-    private boolean drawFlagellum;
     private float amplitude = 50f;
     private float frequency = 0.05f;
-    private float yOffset = Gdx.graphics.getHeight() / 2f;
     private float flagX = 0f;
-    private float nextY =0f;
     private float flagTime = 0f;
-    private Array<Float> FlagellumYValues = new Array<>();
     private Array<Vector2> FlagellumVectors = new Array<>();
     private Vector2 previousPosition;
 
@@ -148,20 +143,18 @@ public class Cell {
         forceCircleSizeScalar = 1f;
         glucoseVectorScaleFactor = 50f;
 
-        drawFlagellum = false;
-
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
         forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
-        previousPosition = new Vector2(-1,-1);
+        previousPosition = new Vector2(-1, -1);
     }
 
     /**
      * Moves the cell based on input direction as well as its collision circle,
      * diagonal movement is normalized.
-     *
+     * <p>
      * Updates target rotation to match desired angle of cell to align with
      * movement.
-     *
+     * <p>
      * Note: Rotation angles appear to be counterclockwise.
      *
      * @param deltaTime - The time passed since the last frame
@@ -174,7 +167,7 @@ public class Cell {
         //track these values to calculate ATP Burn.
 
         //prevents undesirable movement and rotation.
-        if((moveLeft && moveRight) || (moveUp && moveDown)) {
+        if ((moveLeft && moveRight) || (moveUp && moveDown)) {
             return;
         }
 
@@ -243,9 +236,9 @@ public class Cell {
 
     /**
      * ATP Loss Calculation
-     *
+     * <p>
      * Returns ATPburn based on movement upgrades and size.
-     *
+     * <p>
      * When moving burn rate is twice the base burn. See
      * setTotalLossFactor() for more detailed burn rates.
      *
@@ -283,20 +276,20 @@ public class Cell {
      * Base Burn Rate(BBR) - Rate burned when idle at given size
      * Each Organelle upgrade reduces this value by 1
      * Each Size upgrade reduces this value by 1
-     *
-     +----+---------+------+-----+------+------+------+
-     |    | Type    | BBR  | Mit | Ribo | Flag | Nuke |
-     +====+=========+======+=====+=====+======+======+=
-     |  0 | none    |  11  |  -  |  -   |  -   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  1 | small   |  10  |  9  |  -   |  -   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  2 | medium  |  9   |  8  |  7   |  -   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  3 | large   |  8   |  7  |  6   |  5   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  4 | massive |  7   |  6  |  5   |  4   |  3   |
-     +----+---------+------+-----+-----+------+-------+
+     * <p>
+     * +----+---------+------+-----+------+------+------+
+     * |    | Type    | BBR  | Mit | Ribo | Flag | Nuke |
+     * +====+=========+======+=====+=====+======+======+=
+     * |  0 | none    |  11  |  -  |  -   |  -   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  1 | small   |  10  |  9  |  -   |  -   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  2 | medium  |  9   |  8  |  7   |  -   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  3 | large   |  8   |  7  |  6   |  5   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  4 | massive |  7   |  6  |  5   |  4   |  3   |
+     * +----+---------+------+-----+-----+------+-------+
      */
     private float setTotalLossFactor() {
         switch (sizeUpgradeLevel) {
@@ -345,7 +338,7 @@ public class Cell {
         //cell Texture
         Texture cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
 
-        drawFlagellum(hasFlagella,shapeRenderer);
+        drawFlagellum(hasFlagella, shapeRenderer);
 
         batch.begin();
 
@@ -583,8 +576,8 @@ public class Cell {
 
         try {
             AMOUNT_HEALED = configProvider.getIntValue("amountHealed");
-            } catch (NumberFormatException e){
-                AMOUNT_HEALED = 5;
+        } catch (NumberFormatException e) {
+            AMOUNT_HEALED = 5;
 
         }
     }
@@ -645,6 +638,7 @@ public class Cell {
 
     /**
      * Set Cell Health
+     *
      * @param cellATP
      */
     public void setCellATP(int cellATP) {
@@ -681,7 +675,7 @@ public class Cell {
     }
 
     /**
-     *Returns the Cell BoundingCircle
+     * Returns the Cell BoundingCircle
      */
     public Circle getCircle() {
         return cellCircle;
@@ -689,7 +683,7 @@ public class Cell {
 
     /**
      * Adds ATP
-     *
+     * <p>
      * increases ATP for glucose collection
      */
     public void addCellATP(int increaseAmount) {
@@ -707,6 +701,7 @@ public class Cell {
     /**
      * Increases the cell size This method also increases the values used to
      * push glucose away.
+     *
      * @param sizeIncrease - The amount to increase the cell by.
      */
     public void increasecellSize(float sizeIncrease) {
@@ -732,6 +727,7 @@ public class Cell {
     /**
      * Applies damage to the cell.
      * Ends the game if cell health goes below 0.
+     *
      * @param damage Damage to apply.
      */
     public void applyDamage(int damage) {
@@ -752,8 +748,7 @@ public class Cell {
             if (cellHealth - MAX_HEALTH < AMOUNT_HEALED) {
                 if (MAX_HEALTH - cellHealth < AMOUNT_HEALED) {
                     cellHealth = MAX_HEALTH;
-                }
-                else {
+                } else {
                     cellATP -= ATP_HEAL_COST;
                     this.cellHealth += AMOUNT_HEALED;
                 }
@@ -877,6 +872,7 @@ public class Cell {
 
     /**
      * Get the protein synthesis multiplier
+     *
      * @return
      */
     public float getProteinSynthesisMultiplier() {
@@ -885,6 +881,7 @@ public class Cell {
 
     /**
      * Set the protein synthesis multiplier
+     *
      * @param proteinSynthesisMultiplier
      */
     public void setProteinSynthesisMultiplier(float proteinSynthesisMultiplier) {
@@ -893,6 +890,7 @@ public class Cell {
 
     /**
      * Get the movement speed multiplier
+     *
      * @return
      */
     public float getMovementSpeedMultiplier() {
@@ -901,6 +899,7 @@ public class Cell {
 
     /**
      * Set the movement speed multiplier
+     *
      * @param movementSpeedMultiplier
      */
     public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
@@ -909,6 +908,7 @@ public class Cell {
 
     /**
      * Get the canSplit boolean
+     *
      * @return
      */
     public boolean canSplit() {
@@ -917,6 +917,7 @@ public class Cell {
 
     /**
      * Set the canSplit boolean
+     *
      * @param canSplit
      */
     public void setCanSplit(boolean canSplit) {
@@ -925,6 +926,7 @@ public class Cell {
 
     /**
      * Get Size Upgrade level
+     *
      * @return size upgrade level
      */
     public int getSizeUpgradeLevel() {
@@ -933,6 +935,7 @@ public class Cell {
 
     /**
      * Get Organelle Upgrade level
+     *
      * @return Organelle upgrade level
      */
     public int getOrganelleUpgradeLevel() {
@@ -941,6 +944,7 @@ public class Cell {
 
     /**
      * Current ATP Lost Getter
+     *
      * @return the Current ammount of atp lost.
      */
     public float getCurrentATPLost() {
@@ -949,6 +953,7 @@ public class Cell {
 
     /**
      * Loss Factor getter
+     *
      * @return The loss factor.
      */
     public float getTotalATPLossFactor() {
@@ -957,7 +962,7 @@ public class Cell {
 
     /**
      * ATP flag getter
-     *
+     * <p>
      * Tracks if ATP burn occured this render cycle.
      *
      * @return the state of the ATP flag
@@ -968,8 +973,9 @@ public class Cell {
 
     /**
      * CurrTimeTaken Getter
-     *
+     * <p>
      * Tracks time taken for the current ATP loss.
+     *
      * @return The time taken for atp loss.
      */
     public float getCurrTimeTakenforATPLoss() {
@@ -978,8 +984,9 @@ public class Cell {
 
     /**
      * LastTimeTaken Getter
-     *
+     * <p>
      * The time taken for the previous ATP loss.
+     *
      * @return THe previous time taken for atp loss.
      */
     public float getLastTimeTakenforATPLoss() {
@@ -988,8 +995,9 @@ public class Cell {
 
     /**
      * cellForceCircleUpdater
-     *
+     * <p>
      * Updates the position of the forceCircle with new values.
+     *
      * @param newX The new X value
      * @param newY The new Y value
      */
@@ -1000,6 +1008,7 @@ public class Cell {
 
     /**
      * Force Circle getter
+     *
      * @return The forceCricle
      */
     public Circle getForceCircle() {
@@ -1008,6 +1017,7 @@ public class Cell {
 
     /**
      * Getter For the GlucoseVectorScaleFactor
+     *
      * @return How much to scale glucose pushing.
      */
     public float getGlucoseVectorScaleFactor() {
@@ -1017,63 +1027,49 @@ public class Cell {
     /**
      * Cell angle getter
      * Return the current angle of the cell.
+     *
      * @return The cell Angle
      */
-    public float getCellRotation () {
+    public float getCellRotation() {
         return cellRotation;
     }
 
     public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
 
-
-        if (!drawFlagellum ||  FlagellumVectors.size < 2) return;
+        if (!drawFlagellum || FlagellumVectors.isEmpty()) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);
+
         float thickness = 12.5f;
 
-        for (int i = 0; i <  FlagellumVectors.size - 1; i++) {
+        for (int i = 0; i < FlagellumVectors.size; i++) {
+            Vector2 point = new Vector2(cellCircle.x + FlagellumVectors.get(i).x, cellCircle.y + FlagellumVectors.get(i).y);
 
-            Vector2 p1 = new Vector2(cellCircle.x + FlagellumVectors.get(i).x, cellCircle.y + FlagellumVectors.get(i).y);
-            Vector2 p2 = new Vector2(cellCircle.x + FlagellumVectors.get(i + 1).x, cellCircle.y + FlagellumVectors.get(i + 1).y);
-
-            Vector2 dir = new Vector2(p2).sub(p1);
-            float length = dir.len();
-            float angle = dir.angleDeg();
-
-            shapeRenderer.rect(
-                p1.x, p1.y,
-                0, thickness / 2f,
-                length, thickness,
-                1f, 1f,
-                angle
-            );
-            shapeRenderer.circle(p1.x, p1.y, thickness);
-            shapeRenderer.circle(p2.x, p2.y, thickness);
+            //Draw Circles along the sine wave.
+            shapeRenderer.circle(point.x, point.y, thickness);
         }
 
         shapeRenderer.end();
     }
 
     public void updateFlagellum(float deltaTime) {
-
+        //Prevent moving flagellum if cell hasn't moved
         if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y) {
             return;
         }
+        //Track movement for the next render cycle
         previousPosition.set(cellCircle.x, cellCircle.y);
 
         amplitude = 25f;
         frequency = .05f;
 
-
-
         FlagellumVectors.clear();
 
-        //calculate new sin wave posistions.
+        //calculate new sin wave positions.
         for (int y = 0; y < 300f; y++) {
-            flagX = (float)(amplitude * Math.sin((y * frequency + flagTime)));
-            FlagellumVectors.add(new Vector2(flagX,y-cellCircle.radius-300)); // fix this is stupid
-
+            flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
+            FlagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - 300)); // <-shifts flagella down, stupid calc, but it works
         }
 
         // Rotate the flagellum
