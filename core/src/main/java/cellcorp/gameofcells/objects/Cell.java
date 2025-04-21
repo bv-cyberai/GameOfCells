@@ -1022,16 +1022,28 @@ public class Cell {
 
         if (!drawFlagellum ||  FlagellumVectors.size < 2) return;
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);
+        float thickness = 12.5f;
 
         for (int i = 0; i <  FlagellumVectors.size - 1; i++) {
-            Vector2 p1 = FlagellumVectors.get(i);
-            Vector2 p2 = FlagellumVectors.get(i + 1);
-            shapeRenderer.line(
-                cellCircle.x + p1.x, cellCircle.y + p1.y,
-                cellCircle.x + p2.x, cellCircle.y + p2.y
+
+            Vector2 p1 = new Vector2(cellCircle.x + FlagellumVectors.get(i).x, cellCircle.y + FlagellumVectors.get(i).y);
+            Vector2 p2 = new Vector2(cellCircle.x + FlagellumVectors.get(i + 1).x, cellCircle.y + FlagellumVectors.get(i + 1).y);
+
+            Vector2 dir = new Vector2(p2).sub(p1);
+            float length = dir.len();
+            float angle = dir.angleDeg();
+
+            shapeRenderer.rect(
+                p1.x, p1.y,
+                0, thickness / 2f,
+                length, thickness,
+                1f, 1f,
+                angle
             );
+            shapeRenderer.circle(p1.x, p1.y, thickness);
+            shapeRenderer.circle(p2.x, p2.y, thickness);
         }
 
         shapeRenderer.end();
