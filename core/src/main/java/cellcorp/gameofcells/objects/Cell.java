@@ -745,6 +745,7 @@ public class Cell {
         if (cellATP > ATP_HEAL_COST && cellHealth < MAX_HEALTH) {
             if (cellHealth - MAX_HEALTH < AMOUNT_HEALED) {
                 if (MAX_HEALTH - cellHealth < AMOUNT_HEALED) {
+                    cellATP -= ATP_HEAL_COST;
                     cellHealth = MAX_HEALTH;
                 } else {
                     cellATP -= ATP_HEAL_COST;

@@ -291,9 +291,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 playerCell.healDamage();
             }
         }
-        if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
-            showPopup(PopupInfoScreen.Type.heal);
-        }
 
         // Only move the cell if the game is not paused
         if (!isPaused && !infoPopup.isVisible()) {
