@@ -1,6 +1,5 @@
 package cellcorp.gameofcells.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -92,9 +91,9 @@ public class Cell {
     //flagellum
     private float amplitude = 50f;
     private float frequency = 0.05f;
-    private float flagTime = 0f; // storePhase
-    private int wiggleVelcoityMultiplier = 5; //How quickly to wiggle
-    private Array<Vector2> FlagellumVectors = new Array<>(); //sine wave vectors
+    private float flagTime = 0f; // Phase offset of the sine wave.
+    private int wiggleVelocityMultiplier = 5; //How quickly to wiggle
+    private Array<Vector2> flagellumVectors = new Array<>(); //sine wave vectors
     private Vector2 previousPosition; //previous position of the cell
 
     /**
@@ -567,9 +566,9 @@ public class Cell {
             frequency = 0.05f;
         }
         try {
-            wiggleVelcoityMultiplier = configProvider.getIntValue("velocity");
+            wiggleVelocityMultiplier = configProvider.getIntValue("velocity");
         } catch (NumberFormatException e) {
-            wiggleVelcoityMultiplier = 5;
+            wiggleVelocityMultiplier = 5;
         }
 
     }
@@ -1028,15 +1027,15 @@ public class Cell {
 
     public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
 
-        if (!drawFlagellum || FlagellumVectors.isEmpty()) return;
+        if (!drawFlagellum || flagellumVectors.isEmpty()) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(.631f,.855f,.851f,1);
 
         float thickness = 12.5f;
 
-        for (int i = 0; i < FlagellumVectors.size; i++) {
-            Vector2 point = new Vector2(cellCircle.x + FlagellumVectors.get(i).x, cellCircle.y + FlagellumVectors.get(i).y);
+        for (int i = 0; i < flagellumVectors.size; i++) {
+            Vector2 point = new Vector2(cellCircle.x + flagellumVectors.get(i).x, cellCircle.y + flagellumVectors.get(i).y);
 
             //Draw Circles along the sine wave.
             shapeRenderer.circle(point.x, point.y, thickness);
@@ -1053,21 +1052,21 @@ public class Cell {
         //Track movement for the next render cycle
         previousPosition.set(cellCircle.x, cellCircle.y);
 
-        FlagellumVectors.clear();
+        flagellumVectors.clear();
 
         //calculate new sin wave positions.
         for (int y = 0; y < 300f; y++) {
             float flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
-            FlagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - 300)); // <-shifts flagella down, stupid calc, but it works
+            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - 300)); // <-shifts flagella down, stupid calc, but it works
         }
 
         // Rotate the flagellum
-        for (int i = 0; i < FlagellumVectors.size; i++) {
-            Vector2 vector = FlagellumVectors.get(i);
+        for (int i = 0; i < flagellumVectors.size; i++) {
+            Vector2 vector = flagellumVectors.get(i);
             vector.rotateDeg(cellRotation);
 
         }
 
-        flagTime += deltaTime * wiggleVelcoityMultiplier;
+        flagTime += deltaTime * wiggleVelocityMultiplier;
     }
 }
