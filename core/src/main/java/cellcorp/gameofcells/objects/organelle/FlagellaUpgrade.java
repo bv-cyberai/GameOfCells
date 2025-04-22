@@ -33,7 +33,7 @@ public class FlagellaUpgrade extends OrganelleUpgrade {
     /**
      * Check if the previous upgrade is purchased.
      * Flagella requires Ribosome to be purchased.
-     * @param organelleUpgradeScreen
+     * @param cell the game cell
      */
     @Override
     public boolean isPreviousUpgradePurchased(Cell cell) {
