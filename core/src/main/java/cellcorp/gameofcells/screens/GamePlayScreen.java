@@ -54,7 +54,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Set to true to enable debug drawing.
      */
-    public static final boolean DEBUG_DRAW_ENABLED = true;
+    public static final boolean DEBUG_DRAW_ENABLED = false;
     private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
     public final Stats stats = new Stats();
     private final Stage stage;
@@ -144,8 +144,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
-    public boolean sizeUpgradePurchased = false;
-    public boolean hasMitochondria = false;
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
     private boolean isPaused = false; // Whether the game is paused
@@ -192,7 +190,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 graphicsProvider,
                 assetManager,
                 "glucosePopupMessage",
-                PopupInfoScreen.DEFAULT_ACID_ZONE_POPUP_MESSAGE,
+                PopupInfoScreen.DEFAULT_GLUCOSE_POPUP_MESSAGE,
                 new Color(0.8f, 0.33f, 0.0f, 1f),
                 this::resumeGame
         );
@@ -201,7 +199,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 graphicsProvider,
                 assetManager,
                 "dangerPopupMessage",
-                PopupInfoScreen.DEFAULT_GLUCOSE_POPUP_MESSAGE,
+                PopupInfoScreen.DEFAULT_ACID_ZONE_POPUP_MESSAGE,
                 new Color(0.8f, 0.0f, 0.4f, 1f),
                 this::resumeGame
         );
@@ -614,7 +612,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for displaying the acid zone warning.
      */
     public void reportAcidZoneCollision() {
-        if (!acidZonePopup.wasShown()) {
+        if (!acidZonePopup.wasShown() && playerCell.hasSmallSizeUpgrade()) {
             pauseGame();
             acidZonePopup.show();
         }

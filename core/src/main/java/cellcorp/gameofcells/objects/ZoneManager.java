@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +57,7 @@ public class ZoneManager {
         var distanceRatio = 1 - Util.smoothStep(0f, Zone.ZONE_RADIUS, (float) distance.get().doubleValue());
         var damage = distanceRatio * Zone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
         if (timer > Zone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
-            cell.applyDamage((int)damageCounter);
+            cell.applyDamage((int) damageCounter);
             timer = deltaTimeSeconds;
             damageCounter = damage;
         } else if (damage == 0) {
@@ -66,7 +69,7 @@ public class ZoneManager {
             damageCounter += damage;
         }
     }
-    
+
     public Map<Chunk, Zone> basicZonesInChunks(List<Chunk> chunks) {
         Map<Chunk, Zone> map = new HashMap<>();
         for (var chunk : chunks) {
@@ -96,8 +99,8 @@ public class ZoneManager {
         // GWT emulates stream -- very slowly. We'll use enhanced for instead.
         var lowestDistance = Double.MAX_VALUE;
         Optional<Zone> nearestZone = Optional.empty();
-        for (var zone: zoneMap.values()) {
-            var distance = zone.distanceFrom(x, y) ;
+        for (var zone : zoneMap.values()) {
+            var distance = zone.distanceFrom(x, y);
             if (distance < lowestDistance) {
                 lowestDistance = distance;
                 nearestZone = Optional.of(zone);
@@ -109,7 +112,9 @@ public class ZoneManager {
 
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         drawZoneMap(basicZones, spriteBatch, shapeRenderer);
-        drawZoneMap(acidZones, spriteBatch, shapeRenderer);
+        if (cell.hasSmallSizeUpgrade()) {
+            drawZoneMap(acidZones, spriteBatch, shapeRenderer);
+        }
     }
 
     private void drawZoneMap(Map<Chunk, Zone> zoneMap, SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
@@ -176,9 +181,10 @@ public class ZoneManager {
 
     /**
      * Place a zone within the given chunk.
+     *
      * @param chunk The chunk
-     * @param seed The random seed. Multiple calls on the same `ZoneManager` with the same chunk and seed
-     *             will produce identical results.
+     * @param seed  The random seed. Multiple calls on the same `ZoneManager` with the same chunk and seed
+     *              will produce identical results.
      * @return The coordinates of the zone's midpoint.
      */
     private Vector2 placeZone(Chunk chunk, int seed) {
@@ -199,7 +205,7 @@ public class ZoneManager {
 
         for (var ch : adjacentChunks) {
             if (overlap(acidZones, ch, zonePlacement)
-                || overlap(basicZones, ch, zonePlacement)) {
+                    || overlap(basicZones, ch, zonePlacement)) {
                 return true;
             }
         }

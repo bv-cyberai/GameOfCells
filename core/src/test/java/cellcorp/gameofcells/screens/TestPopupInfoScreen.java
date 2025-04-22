@@ -98,6 +98,7 @@ public class TestPopupInfoScreen {
         var screen = (GamePlayScreen) runner.game.getScreen();
 
         // Spawn glucose, collide with it
+        screen.getCell().setHasSmallSizeUpgrade(true);
         screen.getZoneManager().getAcidZones().put(new Chunk(0, 0), new Zone(screen.getAssetManager(), "", 0, 0));
         runner.step();
 
