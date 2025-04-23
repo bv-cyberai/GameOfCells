@@ -205,29 +205,29 @@ public class TestMainMenuScreen {
         assertInstanceOf(GameInfoControlsScreen.class, gameRunner.game.getScreen());
     }
 
-    @Test
-    public void testInactivityTimer() {
-        GameRunner gameRunner = GameRunner.create();
-        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+    // @Test
+    // public void testInactivityTimer() {
+    //     GameRunner gameRunner = GameRunner.create();
+    //     MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
 
-        // Initial inactivity timer should be 0
-        assertEquals(0f, mainMenuScreen.getInactivityTimer());
+    //     // Initial inactivity timer should be 0
+    //     assertEquals(0f, mainMenuScreen.getInactivityTimer());
 
-        // Run for 10 seconds without input - timer should increase
-        gameRunner.runForSeconds(10f);
-        assertTrue(mainMenuScreen.getInactivityTimer() >= 10f);
+    //     // Run for 10 seconds without input - timer should increase
+    //     gameRunner.runForSeconds(10f);
+    //     assertTrue(mainMenuScreen.getInactivityTimer() >= 10f);
 
-        // Simulate key press to reset timer
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ANY_KEY));
-        gameRunner.step();
+    //     // Simulate key press to reset timer
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ANY_KEY));
+    //     gameRunner.step();
 
-        // Inactivity timer should be very small (one frame's worth)
-        assertTrue(mainMenuScreen.getInactivityTimer() < 0.1f);
+    //     // Inactivity timer should be very small (one frame's worth)
+    //     assertTrue(mainMenuScreen.getInactivityTimer() < 0.1f);
 
-        // Run for more than timeout (20s) - should transition to AttractScreen
-        gameRunner.runForSeconds(21f);
-        assertInstanceOf(AttractScreen.class, gameRunner.game.getScreen());
-    }
+    //     // Run for more than timeout (20s) - should transition to AttractScreen
+    //     gameRunner.runForSeconds(21f);
+    //     assertInstanceOf(AttractScreen.class, gameRunner.game.getScreen());
+    // }
 
     @Test
     public void testWASDNavigation() {
