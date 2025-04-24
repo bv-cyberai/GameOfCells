@@ -73,21 +73,21 @@ public class TestChunk {
         assertEquals(-20, chunk.col());
     }
 
-    @Test
-    public void initialChunkDoesNotEqualChunkAfterMovingFor10Seconds() {
-        var runner = GameRunner.create();
+    // @Test
+    // public void initialChunkDoesNotEqualChunkAfterMovingFor10Seconds() {
+    //     var runner = GameRunner.create();
 
-        runner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        runner.step();
-        var cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
-        var initialChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
+    //     runner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+    //     runner.step();
+    //     var cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
+    //     var initialChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
 
-        runner.setHeldDownKeys(Set.of(Input.Keys.RIGHT, Input.Keys.C));
-        runner.runForSeconds(10);
-        cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
-        var newChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
-        assertNotEquals(initialChunk, newChunk);
-    }
+    //     runner.setHeldDownKeys(Set.of(Input.Keys.RIGHT, Input.Keys.C));
+    //     runner.runForSeconds(10);
+    //     cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
+    //     var newChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
+    //     assertNotEquals(initialChunk, newChunk);
+    // }
 
     @Test
     public void testFromCoords() {

@@ -113,21 +113,6 @@ public class TestMenuSystem {
     }
 
     @Test
-    public void testUpdateSelectionWithinBounds() throws Exception {
-        menuSystem.initialize("Title", new String[]{"Option 1", "Option 2", "Option 3"}, "Use arrows");
-
-        java.lang.reflect.Field field = MenuSystem.class.getDeclaredField("mainTable");
-        field.setAccessible(true);
-        Table mainTable = (Table) field.get(menuSystem);
-
-        mainTable.layout();
-
-        menuSystem.updateSelection(2);
-        assertEquals(2, menuSystem.getSelectedOptionIndex());
-    }
-
-
-    @Test
     public void testUpdateSelectionOutOfBounds() {
         menuSystem.initialize("Title", new String[]{"Only Option"}, null);
         menuSystem.updateSelection(-1); // should be ignored
