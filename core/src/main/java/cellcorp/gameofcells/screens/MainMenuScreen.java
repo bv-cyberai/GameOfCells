@@ -283,6 +283,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     assetManager,
                     this,
                     configProvider ));
+
+            inactivityTimer = 0f; // Reset the inactivity timer
         }
 
         // Update the particles system
