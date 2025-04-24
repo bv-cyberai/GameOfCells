@@ -160,10 +160,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param configProvider
      */
     public GamePlayScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager, ConfigProvider configProvider) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager, ConfigProvider configProvider) {
 
         this.assetManager = assetManager;
         this.game = game;
@@ -282,12 +282,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             pauseGame();
             game.setScreen(new ShopScreen(
-                    game,
-                    inputProvider,
-                    graphicsProvider,
-                    assetManager,
-                    this, // Pass the current screen to the shop screen
-                    playerCell
+                game,
+                inputProvider,
+                graphicsProvider,
+                assetManager,
+                this, // Pass the current screen to the shop screen
+                playerCell
             ));
         }
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
@@ -318,11 +318,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Only move the cell if the game is not paused
         if (!isPaused && !infoPopup.isVisible()) {
             playerCell.move(
-                    deltaTimeSeconds,
-                    (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
-                    (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
-                    (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
-                    (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
+                deltaTimeSeconds,
+                (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
+                (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
+                (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
+                (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
 
             );
         }
@@ -335,13 +335,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE) || inputProvider.isKeyJustPressed(Input.Keys.P)) {
             pauseGame();
             game.setScreen(new PauseScreen(
-                    this,
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager,
-                    camera,
-                    configProvider
+                this,
+                inputProvider,
+                graphicsProvider,
+                game,
+                assetManager,
+                camera,
+                configProvider
             ));
         }
     }
@@ -367,10 +367,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
             } else if (playerCell.getCellATP() > 20) {
                 hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
             }
-            if (playerCell.hasMitochondria()) {
+            if (playerCell.hasMitochondria() && !infoPopup.hasShownHealAvailablePopup()) {
                 reportHealAvailable();
             }
-
             stats.gameTimer += deltaTimeSeconds;
 
             boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
@@ -549,10 +548,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     public void endGame() {
         game.setScreen(new GameOverScreen(
-                inputProvider,
-                assetManager,
-                graphicsProvider,
-                game, configProvider, stats
+            inputProvider,
+            assetManager,
+            graphicsProvider,
+            game, configProvider, stats
         ));
     }
 
@@ -626,8 +625,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     protected boolean isInAcidZone(float x, float y) {
         return zoneManager.distanceToNearestAcidZone(x, y)
-                .map(d -> d <= Zone.ZONE_RADIUS)
-                .orElse(false);
+            .map(d -> d <= Zone.ZONE_RADIUS)
+            .orElse(false);
     }
 
     /**
@@ -640,8 +639,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     protected boolean isInBasicZone(float x, float y) {
         return zoneManager.distanceToNearestBasicZone(x, y)
-                .map(d -> d <= Zone.ZONE_RADIUS)
-                .orElse(false);
+            .map(d -> d <= Zone.ZONE_RADIUS)
+            .orElse(false);
     }
 
     /**
@@ -844,4 +843,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public int getWorldHeight() {
         return VIEW_RECT_HEIGHT;
     }
+
+
+    /**
+     * Stats Getter
+     * Returns the current stats class
+     * @return the game stats
+     */
+    public Stats getStats() {
+        return stats;
+    }
+
 }

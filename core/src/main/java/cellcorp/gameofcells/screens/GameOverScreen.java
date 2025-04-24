@@ -237,4 +237,6 @@ public class GameOverScreen implements GameOfCellsScreen {
         spriteBatch.dispose();
     }
 
+
+
 }

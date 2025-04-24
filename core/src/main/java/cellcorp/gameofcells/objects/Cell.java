@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class Cell {
     public static int MAX_HEALTH = 100;
     public static int MAX_ATP = 100;
     private static float CELL_SPEED = 200f; // Speed of the cell
+    private static float CELL_SPEED_WITH_FLAGELLA = 370f; //Amount to increase cell speed after buying flagella
     public static int ZERO_ATP_DAMAGE_PER_SECOND = 10;
     private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
     public static int ATP_HEAL_COST = 5;
@@ -85,8 +87,16 @@ public class Cell {
     private float forceCircleSizeScalar;
     private float forceCircleSizeMultiplier; // Used on forceCircle to scale up as the cell grows
     private float glucoseVectorScaleFactor; //Used to set how far glucose moves when pushed
-
+    private float totalDistanceMoved;
     private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
+
+    //flagellum
+    private float amplitude = 50f;
+    private float frequency = 0.05f;
+    private float flagTime = 0f; // Phase offset of the sine wave.
+    private int wiggleVelocityMultiplier = 5; //How quickly to wiggle
+    private Array<Vector2> flagellumVectors = new Array<>(); //sine wave vectors
+    private Vector2 previousPosition; //previous position of the cell
 
     /**
      * Times how long the cell has been taking zero-ATP damage.
@@ -141,6 +151,7 @@ public class Cell {
 
         cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
         forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
+        previousPosition = new Vector2(-500, -500);
     }
 
     /**
@@ -160,6 +171,12 @@ public class Cell {
      */
     public void move(float deltaTime, boolean moveLeft, boolean moveRight, boolean moveUp, boolean moveDown) {
         //track these values to calculate ATP Burn.
+
+        //prevents undesirable movement and rotation.
+        if ((moveLeft && moveRight) || (moveUp && moveDown)) {
+            return;
+        }
+
         lastX = cellCircle.x;
         lastY = cellCircle.y;
 
@@ -333,6 +350,8 @@ public class Cell {
         //cell Texture
         Texture cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
 
+        drawFlagellum(hasFlagella, shapeRenderer); //moved outside of draw organelles to be underneath the cell.
+
         batch.begin();
 
         batch.draw(cellTexture,
@@ -356,6 +375,7 @@ public class Cell {
             shapeRenderer.circle(forceCircle.x, forceCircle.y, forceCircle.radius);
             shapeRenderer.end();
         }
+
     }
 
     public void update(float deltaTimeSeconds) {
@@ -416,6 +436,8 @@ public class Cell {
             maxSize = 0;
         }
         gamePlayScreen.stats.maxSize = maxSize;
+
+        updateFlagellum(deltaTimeSeconds);
     }
 
     private void damageIfZeroATP(float deltaTimeSeconds) {
@@ -477,30 +499,6 @@ public class Cell {
                 false, false);
         }
 
-        // Draw flagella (right edge)
-        if (hasFlagella) {
-            var flagellaTexture = assetManager.get(AssetFileNames.FLAGELLA_ICON, Texture.class);
-
-            // New calculations for better flagella positioning
-            float flagellaLength = cellSize * 0.5f;// Adjust length as needed
-            float flagellaWidth = cellSize * 0.15f; // Adjust width as needed
-
-            float flagX = centerX - flagellaWidth / 2;
-            float flagY = centerY - flagellaLength / 2 - cellRadius * 0.7f;
-
-            float originX = centerX - flagX;
-            float originY = centerY - flagY;
-
-            batch.draw(flagellaTexture,
-                flagX, flagY,
-                originX, originY,
-                flagellaWidth, flagellaLength,
-                1f, 1f,
-                cellRotation,
-                0, 0,
-                flagellaTexture.getWidth(), flagellaTexture.getHeight(),
-                false, false);
-        }
 
         // Draw nucleus (center with pulse effect)
         if (hasNucleus) {
@@ -576,10 +574,34 @@ public class Cell {
 
         try {
             AMOUNT_HEALED = configProvider.getIntValue("amountHealed");
-            } catch (NumberFormatException e){
-                AMOUNT_HEALED = 5;
+        } catch (NumberFormatException e) {
+            AMOUNT_HEALED = 5;
 
         }
+
+        try {
+            CELL_SPEED_WITH_FLAGELLA = configProvider.getFloatValue("cellFlagMovementSpeed");
+            System.out.println("CSWF: " + CELL_SPEED_WITH_FLAGELLA);
+        } catch (NumberFormatException e) {
+            CELL_SPEED_WITH_FLAGELLA = 370f;
+
+        }
+        try {
+            amplitude = configProvider.getFloatValue("amplitude");
+        } catch (NumberFormatException e) {
+            amplitude = 25f;
+        }
+        try {
+            frequency = configProvider.getFloatValue("frequency");
+        } catch (NumberFormatException e) {
+            frequency = 0.05f;
+        }
+        try {
+            wiggleVelocityMultiplier = configProvider.getIntValue("velocity");
+        } catch (NumberFormatException e) {
+            wiggleVelocityMultiplier = 5;
+        }
+
     }
 
     /**
@@ -638,6 +660,7 @@ public class Cell {
 
     /**
      * Set Cell Health
+     *
      * @param cellATP
      */
     public void setCellATP(int cellATP) {
@@ -680,7 +703,7 @@ public class Cell {
     }
 
     /**
-     *Returns the Cell BoundingCircle
+     * Returns the Cell BoundingCircle
      */
     public Circle getCircle() {
         return cellCircle;
@@ -706,6 +729,7 @@ public class Cell {
     /**
      * Increases the cell size This method also increases the values used to
      * push glucose away.
+     *
      * @param sizeIncrease - The amount to increase the cell by.
      */
     public void increasecellSize(float sizeIncrease) {
@@ -731,6 +755,7 @@ public class Cell {
     /**
      * Applies damage to the cell.
      * Ends the game if cell health goes below 0.
+     *
      * @param damage Damage to apply.
      */
     public void applyDamage(int damage) {
@@ -753,9 +778,9 @@ public class Cell {
         if (cellATP > ATP_HEAL_COST && cellHealth < MAX_HEALTH) {
             if (cellHealth - MAX_HEALTH < AMOUNT_HEALED) {
                 if (MAX_HEALTH - cellHealth < AMOUNT_HEALED) {
+                    cellATP -= ATP_HEAL_COST;
                     cellHealth = MAX_HEALTH;
-                }
-                else {
+                } else {
                     cellATP -= ATP_HEAL_COST;
                     this.cellHealth += AMOUNT_HEALED;
                 }
@@ -791,6 +816,9 @@ public class Cell {
     public void setHasFlagella(boolean hasFlagella) {
         this.hasFlagella = hasFlagella;
         if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
+
+        //flagella increases movement speed.
+        CELL_SPEED = CELL_SPEED_WITH_FLAGELLA;
     }
 
     /**
@@ -879,6 +907,7 @@ public class Cell {
 
     /**
      * Get the protein synthesis multiplier
+     *
      * @return
      */
     public float getProteinSynthesisMultiplier() {
@@ -887,6 +916,7 @@ public class Cell {
 
     /**
      * Set the protein synthesis multiplier
+     *
      * @param proteinSynthesisMultiplier
      */
     public void setProteinSynthesisMultiplier(float proteinSynthesisMultiplier) {
@@ -895,6 +925,7 @@ public class Cell {
 
     /**
      * Get the movement speed multiplier
+     *
      * @return
      */
     public float getMovementSpeedMultiplier() {
@@ -903,6 +934,7 @@ public class Cell {
 
     /**
      * Set the movement speed multiplier
+     *
      * @param movementSpeedMultiplier
      */
     public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
@@ -911,6 +943,7 @@ public class Cell {
 
     /**
      * Get the canSplit boolean
+     *
      * @return
      */
     public boolean canSplit() {
@@ -919,6 +952,7 @@ public class Cell {
 
     /**
      * Set the canSplit boolean
+     *
      * @param canSplit
      */
     public void setCanSplit(boolean canSplit) {
@@ -927,6 +961,7 @@ public class Cell {
 
     /**
      * Get Size Upgrade level
+     *
      * @return size upgrade level
      */
     public int getSizeUpgradeLevel() {
@@ -935,6 +970,7 @@ public class Cell {
 
     /**
      * Get Organelle Upgrade level
+     *
      * @return Organelle upgrade level
      */
     public int getOrganelleUpgradeLevel() {
@@ -943,6 +979,7 @@ public class Cell {
 
     /**
      * Current ATP Lost Getter
+     *
      * @return the Current ammount of atp lost.
      */
     public float getCurrentATPLost() {
@@ -951,6 +988,7 @@ public class Cell {
 
     /**
      * Loss Factor getter
+     *
      * @return The loss factor.
      */
     public float getTotalATPLossFactor() {
@@ -959,7 +997,7 @@ public class Cell {
 
     /**
      * ATP flag getter
-     *
+     * <p>
      * Tracks if ATP burn occured this render cycle.
      *
      * @return the state of the ATP flag
@@ -972,6 +1010,7 @@ public class Cell {
      * CurrTimeTaken Getter
      *
      * Tracks time taken for the current ATP loss.
+     *
      * @return The time taken for atp loss.
      */
     public float getCurrTimeTakenforATPLoss() {
@@ -982,6 +1021,7 @@ public class Cell {
      * LastTimeTaken Getter
      *
      * The time taken for the previous ATP loss.
+     *
      * @return THe previous time taken for atp loss.
      */
     public float getLastTimeTakenforATPLoss() {
@@ -990,8 +1030,9 @@ public class Cell {
 
     /**
      * cellForceCircleUpdater
-     *
+     * <p>
      * Updates the position of the forceCircle with new values.
+     *
      * @param newX The new X value
      * @param newY The new Y value
      */
@@ -1002,6 +1043,7 @@ public class Cell {
 
     /**
      * Force Circle getter
+     *
      * @return The forceCricle
      */
     public Circle getForceCircle() {
@@ -1010,6 +1052,7 @@ public class Cell {
 
     /**
      * Getter For the GlucoseVectorScaleFactor
+     *
      * @return How much to scale glucose pushing.
      */
     public float getGlucoseVectorScaleFactor() {
@@ -1019,9 +1062,10 @@ public class Cell {
     /**
      * Cell angle getter
      * Return the current angle of the cell.
+     *
      * @return The cell Angle
      */
-    public float getCellRotation () {
+    public float getCellRotation() {
         return cellRotation;
     }
 

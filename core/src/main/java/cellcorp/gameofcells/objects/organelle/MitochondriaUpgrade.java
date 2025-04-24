@@ -6,11 +6,11 @@ import cellcorp.gameofcells.objects.Cell;
  */
 public class MitochondriaUpgrade extends OrganelleUpgrade {
     public MitochondriaUpgrade() {
-        super("Mitochondria", 
-            30, 
-            "Powerhouse of the cell", 
-            "Increases ATP production", 
-            30, 
+        super("Mitochondria",
+            30,
+            "Powerhouse of the cell",
+            "Increases ATP production",
+            30,
             1);
     }
 
@@ -25,7 +25,7 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
 
     /**
      * Apply the upgrade's perks to the cell.
-     * @param cell
+     * @param cell the game cell
      */
     @Override
     public void applyUpgrade(Cell cell) {
@@ -37,7 +37,7 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
     /**
      * Check if the previous upgrade is purchased.
      * Mitochondria is the first upgrade, so no previous upgrade it required.
-     * @param organelleUpgradeScreen
+     * @param cell the game cell
      */
     @Override
     protected boolean isPreviousUpgradePurchased(Cell cell) {

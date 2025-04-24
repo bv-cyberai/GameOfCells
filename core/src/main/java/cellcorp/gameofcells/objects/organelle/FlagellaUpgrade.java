@@ -7,7 +7,7 @@ import cellcorp.gameofcells.objects.Cell;
  */
 public class FlagellaUpgrade extends OrganelleUpgrade {
     public FlagellaUpgrade() {
-        super("Flagella", 70, "Cell movement", "Increases movement speed", 70, 3);
+        super("Flagella", 70, "Increases movement speed", "Increases  movement speed", 70, 3);
     }
 
     /**
@@ -33,7 +33,7 @@ public class FlagellaUpgrade extends OrganelleUpgrade {
     /**
      * Check if the previous upgrade is purchased.
      * Flagella requires Ribosome to be purchased.
-     * @param organelleUpgradeScreen
+     * @param cell the cell.
      */
     @Override
     public boolean isPreviousUpgradePurchased(Cell cell) {
