@@ -112,7 +112,7 @@ public class AssetFileNames {
     /**
      * The file name for the WASD and arrow keys icon.
      */
-    public static String WASD_ARROWS_ICON = "keys_stroke_1.png";
+    public static String WASD_ARROWS_ICON = "wasd.png";
 
     /**
      * The file name for the space and enter keys icon.
@@ -120,4 +120,8 @@ public class AssetFileNames {
     public static String SPACE_ENTER_ICON = "space_enter_stroke_1.png";
 
     public static String HEAL_ICON = "H_KEY_2px.png";
+
+    public static String SCROLL_BAR = "scroll_bar.png";
+
+    public static String WS_KEYS = "ws.png";
 }

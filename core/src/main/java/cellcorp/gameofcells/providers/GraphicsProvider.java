@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -144,4 +145,11 @@ public interface GraphicsProvider {
     TextureRegionDrawable createTextureRegionDrawable(Texture texture);
 
     GlyphLayout createGlyphLayout(BitmapFont font, String text);
+
+    default Stage createStage(int viewRectWidth, int viewRectHeight) {
+        return new Stage(
+                this.createFitViewport(viewRectWidth, viewRectHeight),
+                this.createSpriteBatch()
+        );
+    }
 }

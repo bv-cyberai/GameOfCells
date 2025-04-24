@@ -7,272 +7,198 @@ import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-public class PopupInfoScreen implements GameOfCellsScreen {
-    /**
-     * Width of the HUD view rectangle.
-     * (the rectangular region of the world which the camera will display)
-     */
-    public static final int VIEW_RECT_WIDTH = 1280;
+public class PopupInfoScreen {
+    // I feel this is not a _great_ place for these, but Idk where else to put them.
+    // Maybe in `assets/defaults.timl` or something.
+    public static final String DEFAULT_GLUCOSE_POPUP_MESSAGE =
+            "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
+    public static final String DEFAULT_ACID_ZONE_POPUP_MESSAGE =
+            "DANGER ZONE!\n\nHealth drains in pink areas. Move to safety quickly!";
+    public static final String DEFAULT_BASIC_ZONE_POPUP_MESSAGE =
+            "GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.";
+    public static final String DEFAULT_HEAL_AVAILABLE_MESSAGE =
+            "Congrats! You can heal damage now.\n\nPress the h button to heal damage.\n\nPress 'Space' to continue!";
+    public static final String TEST_MESSAGE = """
+            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+            
+            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+            
+            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+            
+            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+            
+            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+            """;
 
-    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
-    // Change as is most convenient.
-    /**
-     * Height of the HUD view rectangle.
-     * (the rectangular region of the world which the camera will display)
-     */
-    public static final int VIEW_RECT_HEIGHT = 800;
-    private final Stage stage;
+    private static final float FONT_SCALE = 0.45f;
+    private static final float HORIZONTAL_PADDING = (float) HUD.VIEW_RECT_WIDTH / 5;
+    private static final float VERTICAL_PADDING = (float) HUD.VIEW_RECT_HEIGHT / 5;
+    private static final float SCROLL_PANE_WIDTH = HUD.VIEW_RECT_WIDTH - 2 * HORIZONTAL_PADDING;
+    private static final float SCROLL_PANE_CORNER_RADIUS = SCROLL_PANE_WIDTH / 16;
+    private static final float TEXT_HORIZONTAL_PADDING = SCROLL_PANE_WIDTH / 20;
+    private static final float SCROLL_PANE_HEIGHT = HUD.VIEW_RECT_HEIGHT - 2 * VERTICAL_PADDING;
+    private static final float TEXT_VERTICAL_PADDING = SCROLL_PANE_HEIGHT / 15;
+
+    private static final float SCROLL_DISTANCE_PER_SECOND = 1600;
+
     private final AssetManager assetManager;
-    private final GraphicsProvider graphicsProvider;
-    private final ConfigProvider configProvider;
-    private final InputProvider inputProvider;
-    private final Runnable onClose;
-    private final HUD hud;
+    /**
+     * Name of the key for this message's popup in the config file.
+     */
+    private final Color backgroundColor;
+    private final Runnable onHide;
+    private final ScrollPane scrollPane;
+    private final Stage stage;
+    private boolean isVisible = false;
+    private boolean wasShown = false;
 
-    private boolean visible = false;
-    private boolean hasShownGlucosePopup = false; // If the glucose popup has been shown
-    private boolean hasShownAcidZonePopup = false; // If the acid zone popup has been shown
-    private boolean hasShownBasicZonePopup = false; // If the basic zone popup has been shown
-    private boolean hasShownHealAvailablePopup = false; // If the heal available popup has been shown
-
-    // For rendering data
-    private String popupMessage;
-    private float popupX, popupY, popupWidth, popupHeight;
-    private Color popupColor;
-
-    public PopupInfoScreen(
-            GraphicsProvider graphicsProvider,
-            AssetManager assetManager,
-            ConfigProvider configProvider,
-            InputProvider inputProvider,
-            Viewport viewport,
-            HUD hud,
-            Runnable onClose) {
+    public PopupInfoScreen(ConfigProvider configProvider,
+                           GraphicsProvider graphicsProvider,
+                           AssetManager assetManager,
+                           String messageConfigKey,
+                           String defaultMessage,
+                           Color backgroundColor,
+                           Runnable onHide) {
         this.assetManager = assetManager;
-        this.graphicsProvider = graphicsProvider;
-        this.configProvider = configProvider;
-        this.inputProvider = inputProvider;
-        this.onClose = onClose;
-        this.hud = hud;
+        var message = configProvider.getStringOrDefault(messageConfigKey, defaultMessage);
+        this.backgroundColor = backgroundColor;
+        this.onHide = onHide;
 
-        this.stage = new Stage(
-                graphicsProvider.createFitViewport(
-                        GamePlayScreen.VIEW_RECT_WIDTH,
-                        GamePlayScreen.VIEW_RECT_HEIGHT
-                ),
-                graphicsProvider.createSpriteBatch()
+        this.stage = graphicsProvider.createStage(HUD.VIEW_RECT_WIDTH, HUD.VIEW_RECT_HEIGHT);
+        this.scrollPane = scrollPane(background(graphicsProvider), label(graphicsProvider, message));
+        stage.addActor(table(scrollPane));
+
+        if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
+            stage.setDebugAll(true);
+        }
+    }
+
+    private Label label(GraphicsProvider graphicsProvider, String message) {
+        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+
+        var style = new Label.LabelStyle(font, Color.WHITE);
+        var label = graphicsProvider.createLabel(message, style);
+        label.setWrap(true);
+
+        return label;
+    }
+
+    private Drawable background(GraphicsProvider graphicsProvider) {
+        Texture backgroundTexture = graphicsProvider.createRoundedRectangleTexture(
+                (int) SCROLL_PANE_WIDTH,
+                (int) SCROLL_PANE_HEIGHT,
+                backgroundColor,
+                SCROLL_PANE_CORNER_RADIUS
         );
+        Drawable background = new TextureRegionDrawable(backgroundTexture);
+        background.setLeftWidth(TEXT_HORIZONTAL_PADDING);
+        background.setRightWidth(TEXT_HORIZONTAL_PADDING);
+        background.setTopHeight(TEXT_VERTICAL_PADDING);
+        background.setBottomHeight(TEXT_VERTICAL_PADDING);
+
+        return background;
     }
 
-    public void show(Type type) {
-        stage.clear(); // Remove any previous popups
-        visible = true;
+    private ScrollPane scrollPane(Drawable background, Label label) {
+        var style = new ScrollPane.ScrollPaneStyle(background, null, null, null, null);
 
-        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
-        if (font.getData() != null) {
-            font.getData().setScale(0.35f); // Match HUD scale
-        }
+        var labelTable = new Table();
+        labelTable.row().expand();
+        labelTable.add(label).fill();
 
-        String message = getMessageFromConfig(type);
-        GlyphLayout layout = graphicsProvider.createGlyphLayout(font, message);
-        if (font.getData() != null && font.getColor() != null) {
-            layout.setText(font, message);
-        } else {
-            layout.setText(new BitmapFont(), message);
-        }
-
-        float padding = 40f;
-        float popupWidth = layout.width + 2 * padding;
-        float popupHeight = layout.height + 2 * padding;
-        float x = ((float) HUD.VIEW_RECT_WIDTH - popupWidth) / 2;
-        float y = ((float) HUD.VIEW_RECT_HEIGHT - popupHeight) / 2;
-
-        Color backgroundColor;
-        switch (type) {
-            case glucose:
-                backgroundColor = new Color(0.8f, 0.2f, 0.0f, 1f); // fiery-bold orange
-                break;
-            case danger:
-                backgroundColor = new Color(0.35f, 0.0f, 0.18f, 1f); // Dark pink-purple
-                break;
-            case basic:
-                backgroundColor = new Color(0.0f, 0.0f, 0.25f, 1f); // Dark blue
-                break;
-            default:
-                backgroundColor = Color.BLACK;
-                break;
-        }
-
-        // Store popup data to draw in HUD during render
-        this.popupMessage = message;
-        this.popupX = x;
-        this.popupY = y;
-        this.popupWidth = popupWidth;
-        this.popupHeight = popupHeight;
-        this.popupColor = backgroundColor;
+        return new ScrollPane(labelTable, style);
     }
 
-    public void render(float delta) {
-        if (!visible) return;
+    private Table table(ScrollPane scrollPane) {
+        var table = new Table();
+        table.setFillParent(true);
+        table.row().expand();
+        table.add(scrollPane).width(SCROLL_PANE_WIDTH).height(SCROLL_PANE_HEIGHT).fill().expand();
 
-        stage.act(delta);
-        stage.draw();
-        hud.queuePopup(popupMessage, popupX, popupY, popupWidth, popupHeight, popupColor);
+        return table;
+    }
+
+    public void show() {
+        this.isVisible = true;
+        this.wasShown = true;
+    }
+
+    public void hide() {
+        isVisible = false;
+        if (onHide != null) {
+            onHide.run();
+        }
+    }
+
+    public void handleInput(InputProvider inputProvider, float deltaTimeSeconds) {
+        if (!isVisible) return;
+
         if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
                 || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
-            visible = false;
-            if (onClose != null) {
-                onClose.run();
-            }
+            hide();
+        }
+
+        if (inputProvider.isKeyPressed(Input.Keys.UP)) {
+            scrollUp(deltaTimeSeconds);
+        } else if (inputProvider.isKeyPressed(Input.Keys.DOWN)) {
+            scrollDown(deltaTimeSeconds);
         }
     }
 
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    /**
-     * Check if the popup is visible
-     *
-     * @param visible true if the popup is visible, false otherwise
-     */
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    private String getMessageFromConfig(Type type) {
-        try {
-            switch (type) {
-                case glucose:
-                    return configProvider.getStringValue("glucosePopupMessage");
-                case danger:
-                    return configProvider.getStringValue("dangerPopupMessage");
-                case basic:
-                    return configProvider.getStringValue("basicPopupMessage");
-                case heal:
-                    return configProvider.getStringValue("healAvailableMessage");
-                default:
-                    throw new IllegalArgumentException("Unknown type: " + type);
-            }
-        } catch (Exception e) {
-            switch (type) {
-                case glucose:
-                    return "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
-                case danger:
-                    return "DANGER ZONE!\n\nHealth drains in pink areas. Move to safety quickly!";
-                case basic:
-                    return "GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.";
-                case heal:
-                    return "Congrats! You can heal damage now.\n\nPress the h button to heal damage.\n\nPress 'Space' to continue!";
-                default:
-                    return "Unknown type: " + type;
-            }
-        }
-    }
-
-    /**
-     * Check if the glucose popup has been shown
-     */
-    public boolean hasShownGlucosePopup() {
-        return hasShownGlucosePopup;
-    }
-
-    /**
-     * Set the glucose popup as shown
-     */
-    public void setHasShownGlucosePopup(boolean hasShownGlucosePopup) {
-        this.hasShownGlucosePopup = hasShownGlucosePopup;
-    }
-
-    /**
-     * Check if the acid zone popup has been shown
-     */
-    public boolean hasShownAcidZonePopup() {
-        return hasShownAcidZonePopup;
-    }
-
-    /**
-     * Set the acid zone popup as shown
-     */
-    public void setHasShownAcidZonePopup(boolean hasShownAcidZonePopup) {
-        this.hasShownAcidZonePopup = hasShownAcidZonePopup;
-    }
-
-    /**
-     * Check if the basic zone popup has been shown
-     */
-    public boolean hasShownBasicZonePopup() {
-        return hasShownBasicZonePopup;
-    }
-
-    /**
-     * Set the basic zone popup as shown
-     */
-    public void setHasShownBasicZonePopup(boolean hasShownBasicZonePopup) {
-        this.hasShownBasicZonePopup = hasShownBasicZonePopup;
-    }
-
-    /**
-     * Check if the heal avaible popup has been shown
-     */
-    public boolean hasShownHealAvailablePopup() {
-        return hasShownHealAvailablePopup;
-    }
-
-    public void setHasShownHealAvailablePopup(boolean hasShownHealAvailablePopup) {
-        this.hasShownHealAvailablePopup = hasShownHealAvailablePopup;
-    }
-
-    @Override
-    public void handleInput(float deltaTimeSeconds) {
-        // No input handling needed for this screen
-    }
-
-    @Override
-    public void update(float deltaTimeSeconds) {
-        // No updates needed for this screen
-    }
-
-    @Override
     public void draw() {
-        // No drawing needed for this screen
+        if (!isVisible) return;
+
+        BitmapFont font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        var callerScaleX = font.getScaleX();
+        var callerScaleY = font.getScaleY();
+        font.getData().setScale(FONT_SCALE);
+
+        stage.draw();
+
+        font.getData().setScale(callerScaleX, callerScaleY);
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
-        assetManager.unload(AssetFileNames.HUD_FONT);
+    /**
+     * Returns whether this info popup has ever been shown.
+     */
+    public boolean wasShown() {
+        return wasShown;
     }
 
-    @Override
-    public void show() {
-        // No action needed when showing this screen
+    private void scrollUp(float deltaTimeSeconds) {
+        if (!scrollPane.isScrollY()) return;
+
+        var scrollPercent = scrollPane.getScrollPercentY();
+
+        var scrollPercentChange = (-1 * SCROLL_DISTANCE_PER_SECOND * deltaTimeSeconds) / scrollPane.getHeight();
+        var newScrollPercent = Math.max(scrollPercent + scrollPercentChange, 0);
+        scrollPane.setScrollPercentY(newScrollPercent);
+        scrollPane.updateVisualScroll();
     }
 
-    @Override
-    public void hide() {
-        // No action needed when hiding this screen
+    private void scrollDown(float deltaTimeSeconds) {
+        if (!scrollPane.isScrollY()) return;
+
+        var scrollPercent = scrollPane.getScrollPercentY();
+        var scrollPercentChange = (SCROLL_DISTANCE_PER_SECOND * deltaTimeSeconds) / scrollPane.getHeight();
+        var newScrollPercent = Math.min(scrollPercent + scrollPercentChange, 100);
+        scrollPane.setScrollPercentY(newScrollPercent);
+        scrollPane.updateVisualScroll();
     }
 
-    @Override
-    public void pause() {
-        // No action needed when pausing this screen
+    /**
+     * For test use only.
+     */
+    public boolean isVisible() {
+        return isVisible;
     }
-
-    @Override
-    public void resume() {
-        // No action needed when resuming this screen
-    }
-
-    // Types - Add to this as new pop-ups are desired.
-    public enum Type {glucose, danger, basic, heal}
 }

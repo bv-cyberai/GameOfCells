@@ -54,7 +54,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Set to true to enable debug drawing.
      */
-    public static final boolean DEBUG_DRAW_ENABLED = false;
+    public static final boolean DEBUG_DRAW_ENABLED = true;
     private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
     public final Stats stats = new Stats();
     private final Stage stage;
@@ -67,6 +67,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
+
+    // ==== Popup info screens ====
+    private final PopupInfoScreen glucoseCollisionPopup;
+    private final PopupInfoScreen acidZonePopup;
+    private final PopupInfoScreen basicZonePopup;
+    private final PopupInfoScreen healAvailablePopup;
+
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
     // classes' code):
@@ -130,26 +137,22 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     //private final HUD hud;
     private final HUD hud;
-    private final PopupInfoScreen infoPopup;
     private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
+    // Zoom fields
+    private final float originalZoom = 1.2f; // Original zoom level
+    private final float targetZoom = 0.8f; // Target zoom level
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
     public boolean sizeUpgradePurchased = false;
     public boolean hasMitochondria = false;
     private boolean wasInAcidZone = false; // Whether the cell was in an acid zone last frame
-    private boolean hasShownEnergyWarning = false; // Tracks if the energy warning has been shown
     private float lowEnergyWarningCooldown = 0; // Cooldown for low energy warning
     private boolean isPaused = false; // Whether the game is paused
-
     // Shake fields
     private float shakeTime = 0; // Time remaining for the shake effect
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
-
-    // Zoom fields
-    private float originalZoom = 1.2f; // Original zoom level
-    private float targetZoom = 0.8f; // Target zoom level
 
     /**
      * Constructs the GamePlayScreen.
@@ -160,10 +163,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param configProvider
      */
     public GamePlayScreen(
-        InputProvider inputProvider,
-        GraphicsProvider graphicsProvider,
-        Main game,
-        AssetManager assetManager, ConfigProvider configProvider) {
+            InputProvider inputProvider,
+            GraphicsProvider graphicsProvider,
+            Main game,
+            AssetManager assetManager, ConfigProvider configProvider) {
 
         this.assetManager = assetManager;
         this.game = game;
@@ -183,7 +186,43 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, assetManager, this, stats);
-        this.infoPopup = new PopupInfoScreen(graphicsProvider, assetManager, configProvider, inputProvider, viewport, hud, this::resumeGame);
+
+        this.glucoseCollisionPopup = new PopupInfoScreen(
+                configProvider,
+                graphicsProvider,
+                assetManager,
+                "glucosePopupMessage",
+                PopupInfoScreen.DEFAULT_ACID_ZONE_POPUP_MESSAGE,
+                new Color(0.8f, 0.33f, 0.0f, 1f),
+                this::resumeGame
+        );
+        this.acidZonePopup = new PopupInfoScreen(
+                configProvider,
+                graphicsProvider,
+                assetManager,
+                "dangerPopupMessage",
+                PopupInfoScreen.DEFAULT_GLUCOSE_POPUP_MESSAGE,
+                new Color(0.8f, 0.0f, 0.4f, 1f),
+                this::resumeGame
+        );
+        this.basicZonePopup = new PopupInfoScreen(
+                configProvider,
+                graphicsProvider,
+                assetManager,
+                "basicPopupMessage",
+                PopupInfoScreen.DEFAULT_BASIC_ZONE_POPUP_MESSAGE,
+                new Color(0.0f, 0.0f, 0.25f, 1f),
+                this::resumeGame
+        );
+        this.healAvailablePopup = new PopupInfoScreen(
+                configProvider,
+                graphicsProvider,
+                assetManager,
+                "healAvailableMessage",
+                PopupInfoScreen.DEFAULT_HEAL_AVAILABLE_MESSAGE,
+                Color.BLACK,
+                this::resumeGame
+        );
     }
 
     public void triggerShake(float duration, float intensity) {
@@ -197,10 +236,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
-        // This method should be "test-safe".
-        // When run, if the game has been constructed with properly-mocked providers,
-        // it should not crash test code.
-
         // Fade in the gameplay screen when returning from the shop
         stage.getRoot().getColor().a = 0; // Start transparent
         stage.addAction(Actions.fadeIn(2f)); // Fade in over 2 seconds
@@ -217,10 +252,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         handleInput(deltaTimeSeconds);
         update(deltaTimeSeconds);
         draw();
-
-        if (infoPopup.isVisible()) {
-            infoPopup.render(deltaTimeSeconds);
-        }
     }
 
     /**
@@ -234,7 +265,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void resize(int screenWidth, int screenHeight) {
         // Update the viewport with the new screen size.
         viewport.update(screenWidth, screenHeight);
-        infoPopup.resize(screenWidth, screenHeight);
     }
 
     /**
@@ -282,12 +312,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             pauseGame();
             game.setScreen(new ShopScreen(
-                game,
-                inputProvider,
-                graphicsProvider,
-                assetManager,
-                this, // Pass the current screen to the shop screen
-                playerCell
+                    game,
+                    inputProvider,
+                    graphicsProvider,
+                    assetManager,
+                    this, // Pass the current screen to the shop screen
+                    playerCell
             ));
         }
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
@@ -312,17 +342,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.Y)) {
-            showPopup(PopupInfoScreen.Type.heal);
+            reportHealAvailable();
         }
 
         // Only move the cell if the game is not paused
-        if (!isPaused && !infoPopup.isVisible()) {
+        if (!isPaused) {
             playerCell.move(
-                deltaTimeSeconds,
-                (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
-                (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
+                    deltaTimeSeconds,
+                    (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
+                    (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
+                    (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
+                    (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
 
             );
         }
@@ -335,15 +365,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE) || inputProvider.isKeyJustPressed(Input.Keys.P)) {
             pauseGame();
             game.setScreen(new PauseScreen(
-                this,
-                inputProvider,
-                graphicsProvider,
-                game,
-                assetManager,
-                camera,
-                configProvider
+                    this,
+                    inputProvider,
+                    graphicsProvider,
+                    game,
+                    assetManager,
+                    camera,
+                    configProvider
             ));
         }
+
+        glucoseCollisionPopup.handleInput(inputProvider, deltaTimeSeconds);
+        acidZonePopup.handleInput(inputProvider, deltaTimeSeconds);
+        basicZonePopup.handleInput(inputProvider, deltaTimeSeconds);
+        healAvailablePopup.handleInput(inputProvider, deltaTimeSeconds);
     }
 
     /**
@@ -360,14 +395,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
             spawnManager.update();
 
             playerCell.update(deltaTimeSeconds);
-            // Existing out-of-energy checking
-            if (playerCell.getCellATP() == 0 && !hasShownEnergyWarning) {
-//                hud.showEnergyEqualsZeroWarning();
-                hasShownEnergyWarning = true;
-            } else if (playerCell.getCellATP() > 20) {
-                hasShownEnergyWarning = false; // Reset the warning if ATP is above 0
-            }
-            if (playerCell.hasMitochondria() && !infoPopup.hasShownHealAvailablePopup()) {
+            if (playerCell.hasMitochondria() && !healAvailablePopup.wasShown()) {
                 reportHealAvailable();
             }
             stats.gameTimer += deltaTimeSeconds;
@@ -407,6 +435,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (DEBUG_DRAW_ENABLED) {
             drawChunks(shapeRenderer);
         }
+
+        glucoseCollisionPopup.draw();
+        acidZonePopup.draw();
+        basicZonePopup.draw();
+        healAvailablePopup.draw();
     }
 
     /**
@@ -455,7 +488,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         float currentZoom = MathUtils.lerp(originalZoom, targetZoom, zoomProgress);
         applyZoomToViewport(currentZoom);
-        
+
 
         camera.position.set(playerCell.getX() + offsetX, playerCell.getY() + offsetY, 0);
     }
@@ -533,12 +566,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.end();
     }
 
-    public void showPopup(PopupInfoScreen.Type type) {
-        // Pause the game when showing the popup
-        pauseGame();
-        infoPopup.show(type);
-    }
-
     /**
      * For test use only.
      */
@@ -548,10 +575,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     public void endGame() {
         game.setScreen(new GameOverScreen(
-            inputProvider,
-            assetManager,
-            graphicsProvider,
-            game, configProvider, stats
+                inputProvider,
+                assetManager,
+                graphicsProvider,
+                game, configProvider, stats
         ));
     }
 
@@ -569,9 +596,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void resumeGame() {
         // Resume game logic (e.g., start updating entities)
         isPaused = false;
-        if (infoPopup.isVisible()) {
-            infoPopup.setVisible(false);
-        }
     }
 
     /**
@@ -579,9 +603,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * If this is the first collision, shows an info screen.
      */
     public void reportGlucoseCollision() {
-        if (!infoPopup.hasShownGlucosePopup()) {
-            showPopup(PopupInfoScreen.Type.glucose);
-            infoPopup.setHasShownGlucosePopup(true); // Mark the popup as shown
+        if (!glucoseCollisionPopup.wasShown()) {
+            pauseGame();
+            glucoseCollisionPopup.show();
         }
     }
 
@@ -590,16 +614,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for displaying the acid zone warning.
      */
     public void reportAcidZoneCollision() {
-        if (!infoPopup.hasShownAcidZonePopup()) {
-            showPopup(PopupInfoScreen.Type.danger);
-            infoPopup.setHasShownAcidZonePopup(true); // Mark the popup as shown
+        if (!acidZonePopup.wasShown()) {
+            pauseGame();
+            acidZonePopup.show();
         }
     }
 
     public void reportHealAvailable() {
-        if (!infoPopup.hasShownHealAvailablePopup()) {
-            showPopup(PopupInfoScreen.Type.heal);
-            infoPopup.setHasShownHealAvailablePopup(true);
+        if (!healAvailablePopup.wasShown()) {
+            pauseGame();
+            healAvailablePopup.show();
         }
     }
 
@@ -608,9 +632,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for displaying the basic zone warning.
      */
     public void reportBasicZoneCollision() {
-        if (!infoPopup.hasShownBasicZonePopup()) {
-            showPopup(PopupInfoScreen.Type.basic);
-            infoPopup.setHasShownBasicZonePopup(true); // Mark the popup as shown
+        if (!basicZonePopup.wasShown()) {
+            pauseGame();
+            basicZonePopup.show();
         }
     }
 
@@ -625,8 +649,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     protected boolean isInAcidZone(float x, float y) {
         return zoneManager.distanceToNearestAcidZone(x, y)
-            .map(d -> d <= Zone.ZONE_RADIUS)
-            .orElse(false);
+                .map(d -> d <= Zone.ZONE_RADIUS)
+                .orElse(false);
     }
 
     /**
@@ -639,8 +663,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     protected boolean isInBasicZone(float x, float y) {
         return zoneManager.distanceToNearestBasicZone(x, y)
-            .map(d -> d <= Zone.ZONE_RADIUS)
-            .orElse(false);
+                .map(d -> d <= Zone.ZONE_RADIUS)
+                .orElse(false);
     }
 
     /**
@@ -724,42 +748,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public AssetManager getAssetManager() {
         return assetManager;
-    }
-
-    /**
-     * Get the info popup.
-     * This is used for getting the info popup.
-     * For example, if the info popup is not null, it will be used to show
-     * information to the user.
-     *
-     * @return the info popup.
-     */
-    public PopupInfoScreen getInfoPopup() {
-        return infoPopup;
-    }
-
-    /**
-     * Get the hasShownEnergyWarning flag.
-     * This is used for checking if the energy warning has been shown.
-     * For example, if the energy warning has been shown, it will not show it again.
-     *
-     * @return
-     * @see #hasShownEnergyWarning
-     */
-    public boolean isHasShownEnergyWarning() {
-        return hasShownEnergyWarning;
-    }
-
-    /**
-     * Set the hasShownEnergyWarning flag.
-     * This is used for checking if the energy warning has been shown.
-     * For example, if the energy warning has been shown, it will not show it again.
-     *
-     * @param hasShownEnergyWarning
-     * @see #hasShownEnergyWarning
-     */
-    public void setHasShownEnergyWarning(boolean hasShownEnergyWarning) {
-        this.hasShownEnergyWarning = hasShownEnergyWarning;
     }
 
     /**
@@ -848,10 +836,31 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Stats Getter
      * Returns the current stats class
+     *
      * @return the game stats
      */
     public Stats getStats() {
         return stats;
     }
 
+    /**
+     * For test use only.
+     */
+    public PopupInfoScreen getGlucoseCollisionPopup() {
+        return glucoseCollisionPopup;
+    }
+
+    /**
+     * For test use only.
+     */
+    public PopupInfoScreen getAcidZonePopup() {
+        return acidZonePopup;
+    }
+
+    /**
+     * For test use only.
+     */
+    public PopupInfoScreen getBasicZonePopup() {
+        return basicZonePopup;
+    }
 }

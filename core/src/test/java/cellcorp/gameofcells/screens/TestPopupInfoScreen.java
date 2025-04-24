@@ -1,61 +1,68 @@
 package cellcorp.gameofcells.screens;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.Chunk;
+import cellcorp.gameofcells.objects.Glucose;
+import cellcorp.gameofcells.objects.Zone;
 import cellcorp.gameofcells.runner.GameRunner;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-
-import java.util.Set;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class TestPopupInfoScreen {
-
-    private PopupInfoScreen popup;
-    private AssetManager assetManager;
-    private GameRunner gameRunner;
-    private BitmapFont font;
-
     @BeforeAll
     public static void setUpLibGDX() {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-        new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
-        }, config);
+        new HeadlessApplication(
+                new ApplicationListener() {
+                    @Override
+                    public void create() {
+                    }
 
+                    @Override
+                    public void resize(int width, int height) {
+                    }
+
+                    @Override
+                    public void render() {
+                    }
+
+                    @Override
+                    public void pause() {
+                    }
+
+                    @Override
+                    public void resume() {
+                    }
+
+                    @Override
+                    public void dispose() {
+                    }
+                }, config
+        );
+
+        // Mock the graphics provider
         Gdx.graphics = Mockito.mock(Graphics.class);
-        Mockito.when(Gdx.graphics.getWidth()).thenReturn(1280);
-        Mockito.when(Gdx.graphics.getHeight()).thenReturn(800);
+        Mockito.when(Gdx.graphics.getWidth()).thenReturn(Main.DEFAULT_SCREEN_WIDTH);
+        Mockito.when(Gdx.graphics.getHeight()).thenReturn(Main.DEFAULT_SCREEN_HEIGHT);
 
         GL20 gl20 = Mockito.mock(GL20.class);
-        GL30 gl30 = Mockito.mock(GL30.class);
         Gdx.gl = gl20;
         Gdx.gl20 = gl20;
-        Gdx.gl30 = gl30;
     }
 
     @AfterAll
@@ -65,101 +72,70 @@ public class TestPopupInfoScreen {
         }
     }
 
-    @BeforeEach
-    public void setup() {
-        gameRunner = GameRunner.create();
-        assetManager = Mockito.mock(AssetManager.class);
+    @Test
+    public void testGlucosePopupAppearsOnFirstCollision() {
+        var runner = GameRunner.create();
+        var input = runner.inputProvider;
 
-        font = Mockito.mock(BitmapFont.class);
-        BitmapFont.BitmapFontData fontData = Mockito.mock(BitmapFont.BitmapFontData.class);
-        Mockito.when(font.getData()).thenReturn(fontData);
-        Mockito.when(font.getColor()).thenReturn(Color.WHITE);
+        input.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+        var screen = (GamePlayScreen) runner.game.getScreen();
 
-        Mockito.when(assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class)).thenReturn(font);
+        // Spawn glucose, collide with it
+        screen.getGlucoseManager().getGlucoses().get(new Chunk(0, 0)).add(new Glucose(screen.getAssetManager(), 0, 0));
+        runner.step();
 
-        popup = new PopupInfoScreen(
-                gameRunner.game.getGraphicsProvider(),
-                assetManager,
-                gameRunner.configProvider,
-                gameRunner.inputProvider,
-                gameRunner.game.getGraphicsProvider().createFitViewport(1280, 800),
-                Mockito.mock(HUD.class),
-                () -> {}
-        );
+        assertTrue(screen.getGlucoseCollisionPopup().wasShown());
     }
 
     @Test
-    public void testPopupVisibilityToggles() {
-        popup.setVisible(true);
-        assertTrue(popup.isVisible());
+    public void testAcidZonePopupAppearsOnFirstCollision() {
+        var runner = GameRunner.create();
+        var input = runner.inputProvider;
 
-        popup.setVisible(false);
-        assertFalse(popup.isVisible());
+        input.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+        var screen = (GamePlayScreen) runner.game.getScreen();
+
+        // Spawn glucose, collide with it
+        screen.getZoneManager().getAcidZones().put(new Chunk(0, 0), new Zone(screen.getAssetManager(), "", 0, 0));
+        runner.step();
+
+        assertTrue(screen.getAcidZonePopup().wasShown());
     }
 
     @Test
-    public void testShowPopupGlucose() {
-        popup.show(PopupInfoScreen.Type.glucose);
-        assertTrue(popup.isVisible());
+    public void testBasicZonePopupAppearsOnFirstCollision() {
+        var runner = GameRunner.create();
+        var input = runner.inputProvider;
+
+        input.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+        var screen = (GamePlayScreen) runner.game.getScreen();
+
+        // Spawn glucose, collide with it
+        screen.getZoneManager().getBasicZones().put(new Chunk(0, 0), new Zone(screen.getAssetManager(), "", 0, 0));
+        runner.step();
+
+        assertTrue(screen.getBasicZonePopup().wasShown());
     }
 
     @Test
-    public void testShowPopupDanger() {
-        popup.show(PopupInfoScreen.Type.danger);
-        assertTrue(popup.isVisible());
-    }
+    public void testPopupClosesOnKeyPress() {
+        var runner = GameRunner.create();
+        var input = runner.inputProvider;
 
-    @Test
-    public void testShowPopupBasic() {
-        popup.show(PopupInfoScreen.Type.basic);
-        assertTrue(popup.isVisible());
-    }
+        input.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+        var screen = (GamePlayScreen) runner.game.getScreen();
 
-    @Test
-    public void testPopupClosesOnKeyPress() throws Exception {
-        popup.show(PopupInfoScreen.Type.glucose);
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        overrideStageWithMock(popup);
-        popup.render(0.1f);        
-        assertFalse(popup.isVisible());
-    }
+        // Spawn glucose, collide with it
+        screen.getZoneManager().getBasicZones().put(new Chunk(0, 0), new Zone(screen.getAssetManager(), "", 0, 0));
+        runner.step();
 
-    @Test
-    public void testPopupFlagsToggle() {
-        popup.setHasShownGlucosePopup(true);
-        assertTrue(popup.hasShownGlucosePopup());
-
-        popup.setHasShownAcidZonePopup(true);
-        assertTrue(popup.hasShownAcidZonePopup());
-
-        popup.setHasShownBasicZonePopup(true);
-        assertTrue(popup.hasShownBasicZonePopup());
-
-        popup.setHasShownHealAvailablePopup(true);
-        assertTrue(popup.hasShownHealAvailablePopup());
-    }
-
-    @Test
-    public void testPopupDisposeDoesNotThrow() {
-        assertDoesNotThrow(() -> popup.dispose());
-    }
-
-    @Test
-    public void testResizeDoesNotThrow() {
-        assertDoesNotThrow(() -> popup.resize(1024, 768));
-    }
-
-    @Test
-    public void testPopupShowMethodDoesNotThrow() {
-        assertDoesNotThrow(() -> popup.show());
-    }
-
-    // This is needed for mocking the stage in the PopupInfoScreen class
-    // to avoid the actual rendering of the stage in the test environment.
-    private void overrideStageWithMock(PopupInfoScreen popup) throws Exception {
-        Stage mockStage = Mockito.mock(Stage.class);
-        var field = PopupInfoScreen.class.getDeclaredField("stage");
-        field.setAccessible(true);
-        field.set(popup, mockStage);
+        var glucosePopup = screen.getGlucoseCollisionPopup();
+        input.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+        assertFalse(glucosePopup.isVisible());
     }
 }

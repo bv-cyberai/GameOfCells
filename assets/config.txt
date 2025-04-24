@@ -32,7 +32,7 @@ mitochondriaUpgradeCost:30 ##UNIMPLEMENTED - This is being refactored this sprin
 
 [descriptions]/
 [pop-ups]/
-glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP for energy.\n\nPress 'Space' to continue!/
-dangerPopupMessage:DANGER ZONE!\n\nHealth drains in pink areas. Move to safety quickly!\n\nPress 'Space' to continue!"/
+glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP, which provides energy to the cell.\n\nIf you collect enough glucose, you can open the shop and spend glucose.\n\n You can make your cell larger, or buy organelles that unlock new abilities.\n\nDid you know?\nGlucose is a kind of sugar!\n\nPress 'Space' to continue!/
+dangerPopupMessage:ACID ZONE!\n\nHealth drains in pink areas. Move to safety quickly!\n\nPress 'Space' to continue!"/
 basicPopupMessage:GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.\n\nPress 'Space to continue!"/
-healAvailableMessage:Congrats! You can heal damage now.\n\nPress the 'H' key to heal damage.\n\nPress 'Space' to continue!"/
+healAvailableMessage:You can now use ATP to heal your cell.\n\nPress the 'H' key to heal damage.\n\nPress 'Space' to continue!"/

@@ -29,7 +29,7 @@ public class HUD implements Disposable {
      */
     public static final int VIEW_RECT_HEIGHT = 1080;
 
-    private static final float FONT_SCALE = 0.35f;
+    public static final float FONT_SCALE = 0.35f;
 
     private static final float PADDING = 20f;
     // Padding once on each edge
