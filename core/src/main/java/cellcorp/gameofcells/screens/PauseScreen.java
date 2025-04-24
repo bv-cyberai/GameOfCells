@@ -264,7 +264,7 @@ public class PauseScreen implements GameOfCellsScreen {
         gamePlayScreen.draw();
 
         // Then draw our pause menu overlay
-        ScreenUtils.clear(0.08f, 0.05f, 0.10f, 1f); // Darker purple background
+        ScreenUtils.clear(Main.PURPLE); // Darker purple background
         viewport.apply(true);
         batch.setProjectionMatrix(viewport.getCamera().combined);
 

@@ -14,11 +14,18 @@ public class DefaultInputProvider implements InputProvider {
         boolean isPressed = Gdx.input.isKeyPressed(key);
         boolean wasPressed = previousKeyStates.getOrDefault(key, false);
 
-        // Update the previous key state
+        // Update state immediately
         previousKeyStates.put(key, isPressed);
 
-        // Return true only if the key was just pressed
-        return isPressed && !wasPressed;
+        // Return true only if the key was JUST pressed
+        boolean result = isPressed && !wasPressed;
+
+        // If this was a "just pressed" event, mark it as "already pressed" for next frame
+        if (result) {
+            previousKeyStates.put(key, true);
+        }
+
+        return result;
     }
 
     @Override
