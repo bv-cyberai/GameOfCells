@@ -8,7 +8,11 @@ public class AssetFileNames {
     /**
      * The file name for our cell texture.
      */
-    public static String CELL = "Cell.png";
+    public static String CELL = "mod_cell.png";
+
+    public static String CELL_MEMBRANE = "cell_membrane.png";
+
+    public static String CELL_MEMBRANE_DAMAGED = "cell_membrane_damaged.png";
 
     /**
      * The file name for our hud texture for the escape button

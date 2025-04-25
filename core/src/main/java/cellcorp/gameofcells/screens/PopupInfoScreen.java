@@ -27,6 +27,8 @@ public class PopupInfoScreen {
             "GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.";
     public static final String DEFAULT_HEAL_AVAILABLE_MESSAGE =
             "Congrats! You can heal damage now.\n\nPress the h button to heal damage.\n\nPress 'Space' to continue!";
+    public static final String DEFAULT_CELL_MEMBRANE_MESSAGE =
+            "Congrats! You have a cell membrane now.\n\nYou wil take less damage from acid zones.\n\nPress 'Space' to continue!";
 
     private static final float FONT_SCALE = 0.45f;
     private static final float HORIZONTAL_PADDING = (float) HUD.VIEW_RECT_WIDTH / 5;

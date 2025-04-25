@@ -125,6 +125,8 @@ public class Cell {
     private float deathAnimationTime = 0f; // Time spent in the death animation
     private static final float DEATH_ANIMATION_DURATION = 2.5f; // Duration of the death animation
 
+    Texture cellTexture;
+
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
@@ -345,7 +347,18 @@ public class Cell {
         // and the class of the asset to load.
 
         //cell Texture
-        Texture cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+        if (hasSmallSizeUpgrade) {
+            if (cellHealth <= (MAX_HEALTH/2)) {
+                cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE_DAMAGED, Texture.class);
+            }
+            else {
+                cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE, Texture.class);
+
+            }
+        }
+        else {
+            cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+        }
 
         drawFlagellum(hasFlagella, shapeRenderer); //moved outside of draw organelles to be underneath the cell.
 
@@ -405,6 +418,7 @@ public class Cell {
             pulseScale = 1.0f + 0.1f * MathUtils.sin(nucleusPulse * 2.0f); // Adjust pulse effect
         }
 
+
         //When ATP loss accumulates above 1, subtract and reset currentATPLost.
         if (currentATPLost >= 1) {
             if (cellATP > 0) {
@@ -457,7 +471,6 @@ public class Cell {
         float cellRadius = cellSize / 2f;
         float centerX = cellCircle.x;
         float centerY = cellCircle.y;
-
         // Draw mitochondria (bottom-left quadrant)
         if (hasMitochondria) {
             var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
@@ -697,6 +710,9 @@ public class Cell {
      */
     public void dispose() {
         assetManager.unload(AssetFileNames.CELL);
+        assetManager.unload(AssetFileNames.CELL_MEMBRANE);
+        assetManager.unload(AssetFileNames.CELL_MEMBRANE_DAMAGED);
+
     }
 
     /**
@@ -1119,7 +1135,7 @@ public class Cell {
     /**
      * Get the death animation time
      * This is the time spent in the death animation
-     * 
+     *
      * @return The time spent in the death animation
      */
     public float getDeathAnimationTime() {
@@ -1129,10 +1145,10 @@ public class Cell {
     /**
      * Get the death animation duration
      * This is the time it takes for the cell to die
-     * 
+     *
      * @return The duration of the death animation
      */
     public float getDeathAnimationDuration() {
         return DEATH_ANIMATION_DURATION;
-    }   
+    }
 }

@@ -73,6 +73,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final PopupInfoScreen acidZonePopup;
     private final PopupInfoScreen basicZonePopup;
     private final PopupInfoScreen healAvailablePopup;
+    private final PopupInfoScreen cellMembranePopup;
 
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
@@ -218,6 +219,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 assetManager,
                 "healAvailableMessage",
                 PopupInfoScreen.DEFAULT_HEAL_AVAILABLE_MESSAGE,
+                Color.BLACK,
+                this::resumeGame
+        );
+        this.cellMembranePopup = new PopupInfoScreen(
+                configProvider,
+                graphicsProvider,
+                assetManager,
+                "membraneAvailableMessage",
+                PopupInfoScreen.DEFAULT_CELL_MEMBRANE_MESSAGE,
                 Color.BLACK,
                 this::resumeGame
         );
@@ -377,6 +387,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         acidZonePopup.handleInput(inputProvider, deltaTimeSeconds);
         basicZonePopup.handleInput(inputProvider, deltaTimeSeconds);
         healAvailablePopup.handleInput(inputProvider, deltaTimeSeconds);
+        cellMembranePopup.handleInput(inputProvider, deltaTimeSeconds);
     }
 
     /**
@@ -395,6 +406,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
             playerCell.update(deltaTimeSeconds);
             if (playerCell.hasMitochondria() && !healAvailablePopup.wasShown()) {
                 reportHealAvailable();
+            }
+            if (playerCell.hasSmallSizeUpgrade() && !cellMembranePopup.wasShown()) {
+                reportCellMembrane();
             }
             stats.gameTimer += deltaTimeSeconds;
 
@@ -438,6 +452,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         acidZonePopup.draw();
         basicZonePopup.draw();
         healAvailablePopup.draw();
+        cellMembranePopup.draw();
     }
 
     /**
@@ -618,13 +633,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
     }
 
-    public void reportHealAvailable() {
-        if (!healAvailablePopup.wasShown()) {
-            pauseGame();
-            healAvailablePopup.show();
-        }
-    }
-
     /**
      * Reports the cell entering a basic zone.
      * This is used for displaying the basic zone warning.
@@ -633,6 +641,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (!basicZonePopup.wasShown()) {
             pauseGame();
             basicZonePopup.show();
+        }
+    }
+
+    public void reportHealAvailable() {
+        if (!healAvailablePopup.wasShown()) {
+            pauseGame();
+            healAvailablePopup.show();
+        }
+    }
+
+    public void reportCellMembrane() {
+        if (!cellMembranePopup.wasShown()) {
+            pauseGame();
+            cellMembranePopup.show();
         }
     }
 
