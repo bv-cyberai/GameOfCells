@@ -200,8 +200,9 @@
 2. `gradle build`
 3. `gradle dist`
 4. This makes/updates `html/build/dist` in your repo.
-5. On a lab machine, copy the contents of that folder to `/home/students/Classes/405/CellCorp`
-6. Place config.txt from the project assets folder inside of `/home/students/Classes/405/CellCorp/assets`. (This is required as `gradle dist`) ruins the file.
+5. On a lab machine, copy the contents of that folder to `/home/student/Classes/405/CellCorp`
+6. Place config.txt from the project assets folder inside of `/home/student/Classes/405/CellCorp/assets`. (This is required as `gradle dist`) ruins the file.
+7. Run `chmod g+w /home/student/Classes/405/CellCorp/assets/*` to allow others to delete folders you create.
 
 ## Python Web Server Setup
 A local web server instance has been provided to aid in testing of adding user
