@@ -264,7 +264,7 @@ public class PauseScreen implements GameOfCellsScreen {
         gamePlayScreen.draw();
 
         // Then draw our pause menu overlay
-        ScreenUtils.clear(0.08f, 0.05f, 0.10f, 1f); // Darker purple background
+        ScreenUtils.clear(Main.PURPLE); // Darker purple background
         viewport.apply(true);
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
@@ -276,5 +276,23 @@ public class PauseScreen implements GameOfCellsScreen {
         // Draw the menu
         menuSystem.getStage().act();
         menuSystem.getStage().draw();
+    }
+
+    /**
+     * Get the menu system.
+     * 
+     * @return The menu system used for the pause screen
+     */
+    public MenuSystem getMenuSystem() {
+        return menuSystem;
+    }
+
+    /**
+     * Get the particles object.
+     * 
+     * @return The particles object used for rendering
+     */
+    public Particles getParticles() {
+        return particles;
     }
 }

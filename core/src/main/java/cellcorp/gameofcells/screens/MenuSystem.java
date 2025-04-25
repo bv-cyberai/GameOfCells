@@ -395,6 +395,7 @@ public class MenuSystem {
         Label currentOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
         currentOptionLabel.setColor(Color.YELLOW);
     }
+    
 
     /**
      * Gets the currently selected option index.

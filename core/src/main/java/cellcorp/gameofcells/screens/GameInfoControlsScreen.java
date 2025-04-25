@@ -242,7 +242,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear with a biological-themed color
-        ScreenUtils.clear(0.08f, 0.05f, 0.10f, 1f); // Dark purple background
+        ScreenUtils.clear(Main.PURPLE); // Dark purple background
 
         viewport.apply(true);
 
@@ -300,5 +300,14 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      */
     public Particles getParticles() {
         return particles;
+    }
+
+    /**
+     * Get the viewport.
+     * 
+     * @return The viewport object.
+     */
+    public Viewport getViewport() {
+        return viewport;
     }
 }

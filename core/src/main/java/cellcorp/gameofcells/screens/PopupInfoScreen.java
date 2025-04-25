@@ -95,7 +95,7 @@ public class PopupInfoScreen implements GameOfCellsScreen {
         Color backgroundColor;
         switch (type) {
             case glucose:
-                backgroundColor = new Color(0.4f, 0.16f, 0.0f, 1f); // Dark orange
+                backgroundColor = new Color(0.8f, 0.2f, 0.0f, 1f); // fiery-bold orange
                 break;
             case danger:
                 backgroundColor = new Color(0.35f, 0.0f, 0.18f, 1f); // Dark pink-purple

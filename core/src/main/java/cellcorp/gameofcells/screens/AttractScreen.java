@@ -38,7 +38,7 @@ public class AttractScreen implements GameOfCellsScreen {
      */
     public static final int VIEW_RECT_HEIGHT = 800;
     private static final int NUM_GLUCOSE = 10;
-    private static final String INSTRUCTION_TEXT = "Press SPACE, ENTER OR ESC to start";
+    private static final String INSTRUCTION_TEXT = "Press any key to start";
 
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
@@ -161,9 +161,7 @@ public class AttractScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
         // Return to the main menu if any key is pressed or the screen is touched
-        if (inputProvider.isKeyJustPressed(Input.Keys.SPACE) ||
-            inputProvider.isKeyJustPressed(Input.Keys.ENTER) ||
-            inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)){
+        if (inputProvider.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.setScreen(previousScreen);
         }
     }
@@ -221,7 +219,7 @@ public class AttractScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // Clear the screen with a gradient background
-        ScreenUtils.clear(0.08f, 0.05f, 0.10f, 1f); // Darker purple background
+        ScreenUtils.clear(Main.PURPLE); // Darker purple background
 
         viewport.apply(true);
         camera.update();
@@ -253,6 +251,14 @@ public class AttractScreen implements GameOfCellsScreen {
 
     public List<Glucose> getGlucoseList() {
         return glucoseList;
+    }
+
+    public float getTargetX() {
+        return targetX;
+    }
+    
+    public float getTargetY() {
+        return targetY;
     }
 
 }

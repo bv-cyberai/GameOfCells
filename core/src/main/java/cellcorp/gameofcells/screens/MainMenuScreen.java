@@ -283,6 +283,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
                     assetManager,
                     this,
                     configProvider ));
+
+            inactivityTimer = 0f; // Reset the inactivity timer
         }
 
         // Update the particles system
@@ -296,7 +298,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void draw() {
         // New background color
-        ScreenUtils.clear(0.08f, 0.05f, 0.10f, 1f); // Darker purple background
+        ScreenUtils.clear(Main.PURPLE); // Darker purple background
         viewport.apply(true);
 
         Camera camera = viewport.getCamera();

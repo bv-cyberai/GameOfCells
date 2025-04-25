@@ -141,13 +141,13 @@ public class TestMainMenuScreen {
         // Reset to main menu
         gameRunner.game.setScreen(mainMenuScreen);
         
-        // Move to "Settings" (option 1)
+        // Move to "Game Info" (option 1)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
         
-        // Test selecting "Settings"
+        // Test selecting "Game Info"
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
         assertInstanceOf(GameInfoControlsScreen.class, gameRunner.game.getScreen());
@@ -178,5 +178,133 @@ public class TestMainMenuScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
         assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
+    }
+
+    @Test
+    public void testSpaceKeySelection() {
+        GameRunner gameRunner = GameRunner.create();
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+        // Test selecting "Start Game" with SPACE key
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+
+        // Reset to main menu
+        gameRunner.game.setScreen(mainMenuScreen);
+
+        // Move to "Game Info" (option 1)
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        // Test selecting "Game Info" with SPACE key
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(GameInfoControlsScreen.class, gameRunner.game.getScreen());
+    }
+
+    // @Test
+    // public void testInactivityTimer() {
+    //     GameRunner gameRunner = GameRunner.create();
+    //     MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+    //     // Initial inactivity timer should be 0
+    //     assertEquals(0f, mainMenuScreen.getInactivityTimer());
+
+    //     // Run for 10 seconds without input - timer should increase
+    //     gameRunner.runForSeconds(10f);
+    //     assertTrue(mainMenuScreen.getInactivityTimer() >= 10f);
+
+    //     // Simulate key press to reset timer
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ANY_KEY));
+    //     gameRunner.step();
+
+    //     // Inactivity timer should be very small (one frame's worth)
+    //     assertTrue(mainMenuScreen.getInactivityTimer() < 0.1f);
+
+    //     // Run for more than timeout (20s) - should transition to AttractScreen
+    //     gameRunner.runForSeconds(21f);
+    //     assertInstanceOf(AttractScreen.class, gameRunner.game.getScreen());
+    // }
+
+    @Test
+    public void testWASDNavigation() {
+        GameRunner gameRunner = GameRunner.create();
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+        // Test W key for up navigation
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.W));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        assertEquals(0, mainMenuScreen.getSelectedOption());
+
+        // Test S key for down navigation
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        assertEquals(1, mainMenuScreen.getSelectedOption());
+
+        // Test S key for down navigation again
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        assertEquals(2, mainMenuScreen.getSelectedOption());
+
+        // Test W key for up navigation
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.W));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        assertEquals(1, mainMenuScreen.getSelectedOption());
+    }
+
+    @Test
+    public void testEscapeKeyDoesNothing() {
+        GameRunner gameRunner = GameRunner.create();
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+        // Press ESC key - should not change screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
+        gameRunner.step();
+        assertInstanceOf(MainMenuScreen.class, gameRunner.game.getScreen());
+
+        // Should still be on main menu with same selection
+        assertEquals(0, mainMenuScreen.getSelectedOption());
+    }
+
+    @Test
+    public void testMenuWrapAround() {
+        GameRunner gameRunner = GameRunner.create();
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+        // Test wrapping from top to bottom with UP key
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        assertEquals(0, mainMenuScreen.getSelectedOption()); // Should not wrap around
+
+        // Move to bottom option
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        assertEquals(2, mainMenuScreen.getSelectedOption()); // Should be on Exit option
+
+        // Test DOWN key at bottom - should not wrap around
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        assertEquals(2, mainMenuScreen.getSelectedOption()); // Should not wrap around
     }
 }

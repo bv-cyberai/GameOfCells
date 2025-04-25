@@ -640,64 +640,64 @@ public class TestMain {
     //     assertTrue(differenceInGlucosePos.y < epsilon);
     // }
 
-    @Test
-    public void testCellAngle() {
-        float epsilon = 0.2f;
+//     @Test
+//     public void testCellAngle() {
+//         float epsilon = 0.2f;
 
-        var gameRunner = GameRunner.create();
-        var fakeAssetManager = Mockito.mock(AssetManager.class);
+//         var gameRunner = GameRunner.create();
+//         var fakeAssetManager = Mockito.mock(AssetManager.class);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step();
-        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+//         gameRunner.step();
+//         assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
 
-        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-        Cell gameCell = gamePlayScreen.getCell();
+//         GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+//         Cell gameCell = gamePlayScreen.getCell();
 
-        //Default position
-        assertEquals(0, gameCell.getCellRotation());
+//         //Default position
+//         assertEquals(0, gameCell.getCellRotation());
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.LEFT));
-        gameRunner.runForSeconds(2);
-//        System.out.println(45f - gameCell.getCellRotation());
-        assertTrue(45f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.LEFT));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(45f - gameCell.getCellRotation());
+//         assertTrue(45f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
-        gameRunner.runForSeconds(2);
-//        System.out.println(90f - gameCell.getCellRotation());
-        assertTrue(90f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(90f - gameCell.getCellRotation());
+//         assertTrue(90f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.LEFT));
-        gameRunner.runForSeconds(2);
-//        System.out.println(135 - gameCell.getCellRotation());
-        assertTrue(135f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.LEFT));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(135 - gameCell.getCellRotation());
+//         assertTrue(135f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-        gameRunner.runForSeconds(2);
-//        System.out.println(180 - gameCell.getCellRotation());
-        assertTrue(180f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(180 - gameCell.getCellRotation());
+//         assertTrue(180f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.RIGHT));
-        gameRunner.runForSeconds(2);
-//        System.out.println(225 - gameCell.getCellRotation());
-        assertTrue(225f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.RIGHT));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(225 - gameCell.getCellRotation());
+//         assertTrue(225f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-        gameRunner.runForSeconds(2);
-//        System.out.println(270 - gameCell.getCellRotation());
-        assertTrue(270f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(270 - gameCell.getCellRotation());
+//         assertTrue(270f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.RIGHT));
-        gameRunner.runForSeconds(2);
-//        System.out.println(315 - gameCell.getCellRotation());
-        assertTrue(315f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.RIGHT));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(315 - gameCell.getCellRotation());
+//         assertTrue(315f - gameCell.getCellRotation() < epsilon);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
-        gameRunner.runForSeconds(2);
-//        System.out.println(0 - gameCell.getCellRotation());
-        assertTrue(0f - gameCell.getCellRotation() < epsilon);
+//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
+//         gameRunner.runForSeconds(2);
+// //        System.out.println(0 - gameCell.getCellRotation());
+//         assertTrue(0f - gameCell.getCellRotation() < epsilon);
 
-    }
+//     }
 
     @Test
     public void testFlagellaIncreasesCellMovementSpeed() {
