@@ -716,7 +716,7 @@ public class TestMain {
 
         float noFlagellaDistanceMoved = gamePlayScreen.getStats().distanceMoved;
 
-        gameCell.setSmallSizeUpgrade(true);
+        gameCell.setHasSmallSizeUpgrade(true);
         gameCell.setHasMitochondria(true);
 
         //Deal with the mitochondria popup :(
@@ -725,10 +725,10 @@ public class TestMain {
         gamePlayScreen.resumeGame();
         gameRunner.step();
 
-        gameCell.setMediumSizeUpgrade(true);
+        gameCell.setHasMediumSizeUpgrade(true);
         gameCell.setHasRibosomes(true);
 
-        gameCell.setLargeSizeUpgrade(true);
+        gameCell.setHasLargeSizeUpgrade(true);
         gameCell.setHasFlagella(true);
 
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));

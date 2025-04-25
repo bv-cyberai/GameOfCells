@@ -120,9 +120,6 @@ public class Cell {
     private float currTimeTakenforATPLoss;
     private float lastTimeTakenforATPLoss;
 
-    //potential gameOverStat
-    private float totalDistanceMoved;
-
     // Death tracking / effects
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
@@ -1048,6 +1045,56 @@ public class Cell {
      */
     public Circle getForceCircle() {
         return forceCircle;
+    }
+
+    public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
+
+        if (!drawFlagellum || flagellumVectors.isEmpty()) return;
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(.631f,.855f,.851f,1);
+
+        float thickness = 12.5f;
+
+        for (int i = 0; i < flagellumVectors.size; i++) {
+            Vector2 point = new Vector2(cellCircle.x + flagellumVectors.get(i).x, cellCircle.y + flagellumVectors.get(i).y);
+
+            //Draw Circles along the sine wave.
+            shapeRenderer.circle(point.x, point.y, thickness);
+        }
+
+        shapeRenderer.end();
+    }
+
+    public void updateFlagellum(float deltaTime) {
+        //Prevent moving flagellum if cell hasn't moved
+        if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y) {
+            return;
+        }
+        //Track movement for the next render cycle
+        previousPosition.set(cellCircle.x, cellCircle.y);
+
+        flagellumVectors.clear();
+
+        //calculate new sin wave positions.
+        for (int y = 0; y < 300f; y++) {
+            float flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
+            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - 300)); // <-shifts flagella down, stupid calc, but it works
+        }
+
+        // Rotate the flagellum
+        for (int i = 0; i < flagellumVectors.size; i++) {
+            Vector2 vector = flagellumVectors.get(i);
+            vector.rotateDeg(cellRotation);
+
+        }
+
+        flagTime += deltaTime * wiggleVelocityMultiplier;
+    }
+
+    //
+    public float getCellSpeed() {
+        return CELL_SPEED;
     }
 
     /**

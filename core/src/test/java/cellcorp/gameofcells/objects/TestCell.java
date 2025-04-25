@@ -234,13 +234,13 @@ public class TestCell {
         var cell = new Cell(gamePlayScreen, fakeAssetManager, configProvider);
         float startSpeed = cell.getCellSpeed();
 
-        cell.setSmallSizeUpgrade(true);
+        cell.setHasSmallSizeUpgrade(true);
         cell.setHasMitochondria(true);
 
-        cell.setMediumSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(true);
         cell.setHasRibosomes(true);
 
-        cell.setLargeSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(true);
         cell.setHasFlagella(true);
 
         float speedPostUpgrade = cell.getCellSpeed();

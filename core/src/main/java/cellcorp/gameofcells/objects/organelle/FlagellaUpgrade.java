@@ -7,7 +7,7 @@ import cellcorp.gameofcells.objects.Cell;
  */
 public class FlagellaUpgrade extends OrganelleUpgrade {
     public FlagellaUpgrade() {
-        super("Flagella", 70, "Increases movement speed", "Increases  movement speed", 70, 3);
+        super("Flagella", 70, "Increases movement speed", "Increases movement speed", 70, 3);
     }
 
     /**
