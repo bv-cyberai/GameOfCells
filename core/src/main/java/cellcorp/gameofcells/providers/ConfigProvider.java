@@ -49,9 +49,9 @@ import java.util.HashMap;
 public class ConfigProvider {
 
     //Used for CSDEV
-    private static final String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
+//    private static final String CONFIG_URL = "http://cs.potsdam.edu/Classes/405/CellCorp/assets/config.txt";
     //Used for dev/testing locally
-//     private static final String CONFIG_URL = "http://localhost:1600/assets/config.txt";
+    private static final String CONFIG_URL = "http://localhost:1600/assets/config.txt";
     // This forces the browser to grab a new copy of config.txt
     private static final String CACHE_BUSTER = CONFIG_URL + "?nocache=" + System.currentTimeMillis();
     private static String fileString;
