@@ -477,7 +477,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         drawFloatingBasicZoneArrow(Gdx.graphics.getDeltaTime());
 
         // Draw low ATP warning
-        drawLowATPWarning();
+        drawLowHealthVignette();
 
         // Draw the HUD
         hud.draw();
@@ -563,7 +563,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.begin();
 
         // Far layer - slowest movement (deep background)
-        batch.setColor(1f, 1f, 1f, 0.6f);
+        batch.setColor(1f, 1f, 1f, 0.5f);
         batch.draw(parallaxFar,
             camX - viewport.getWorldWidth() * 0.6f,
             camY - viewport.getWorldHeight() * 0.6f,
@@ -581,7 +581,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         );
 
         // Near layer - fastest movement (foreground)
-        batch.setColor(1f, 1f, 1f, 0.2f);
+        batch.setColor(1f, 1f, 1f, 0.15f);
         batch.draw(parallaxNear,
             camX - viewport.getWorldWidth() * 0.52f,
             camY - viewport.getWorldHeight() * 0.52f,
@@ -600,20 +600,34 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private void drawFloatingOverlay() {
         float camX = camera.position.x;
         float camY = camera.position.y;
-
-        float offsetX = MathUtils.sin(overlayTime * 0.1f) * 60f;
-        float offsetY = MathUtils.cos(overlayTime * 0.1f) * 60f;
-
+    
+        // Calculate player movement-based drift
+        Vector2 cellVelocity = playerCell.getVelocity(); // Assuming you have a getVelocity()
+        
+        // Slow drift if idle
+        float idleDriftX = MathUtils.sin(overlayTime * 0.05f) * 20f;
+        float idleDriftY = MathUtils.cos(overlayTime * 0.05f) * 20f;
+    
+        // Movement-based drift
+        float movementOffsetX = -cellVelocity.x * 0.25f;
+        float movementOffsetY = -cellVelocity.y * 0.25f;
+    
+        // Combine both: when moving, movement dominates
+        float offsetX = idleDriftX + movementOffsetX;
+        float offsetY = idleDriftY + movementOffsetY;
+    
         batch.begin();
-        batch.setColor(1f, 1f, 1f, 0.6f);
+        batch.setColor(1f, 1f, 1f, 0.2f); // 0.2f alpha = subtle
         batch.draw(floatingOverlay,
             camX - viewport.getWorldWidth() / 2 + offsetX,
             camY - viewport.getWorldHeight() / 2 + offsetY,
             viewport.getWorldWidth(),
-            viewport.getWorldHeight());
-        batch.setColor(1f, 1f, 1f, 1f); // Reset to full opacity
+            viewport.getWorldHeight()
+        );
+        batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
     }
+    
 
     /**
      * Draws an arrow pointing to the nearest basic zone.
@@ -661,7 +675,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.end();
     }
 
-    private void drawLowATPWarning() {
+    private void drawLowHealthVignette() {
         if (playerCell.getCellHealth() > 20) return;
     
         float camX = camera.position.x;
