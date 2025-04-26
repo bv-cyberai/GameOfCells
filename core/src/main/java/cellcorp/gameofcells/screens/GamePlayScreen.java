@@ -146,9 +146,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private Texture parallaxFar;
     private Texture parallaxMid;
     private Texture parallaxNear;
-    private Texture floatingOverlay;
-    private Texture vignetteLowATP;
-    private float overlayTime = 0f;
+    private Texture floatingOverlay; // Texture for simulating fluid game movement
+    private Texture vignetteLowATP; // Texture for low ATP warning
+    private float overlayTime = 0f; // Time for the floating overlay animation
 
     // Floating arrow fields
     private Texture arrowTexture;
@@ -553,6 +553,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
     }
 
+    /**
+     * Draws the parallax background layers.
+     * The layers are drawn in order of distance from the camera.
+     */
     private void drawParallax() {
         float camX = camera.position.x;
         float camY = camera.position.y;
@@ -577,6 +581,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
             viewport.getWorldHeight() * 1.1f
         );
 
+        // Near layer - fastest movement (foreground)
         batch.setColor(1f, 1f, 1f, 0.2f);
         batch.draw(parallaxNear,
             camX - viewport.getWorldWidth() * 0.52f,
@@ -589,6 +594,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.end();
     }
 
+    /**
+     * Draws the floating overlay.
+     * The overlay simulates fluid game movement.
+     */
     private void drawFloatingOverlay() {
         float camX = camera.position.x;
         float camY = camera.position.y;
@@ -625,13 +634,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
         float alpha = MathUtils.clamp(distance / 500f, 0f, 1f); // fade as you approach
         if (distance < 5f) return; // if too close, don't show arrow
     
-        dir.nor().scl(100f); // distance in front of cell
-    
+        float cellRadius = playerCell.getCellSize() / 2f;
+        dir.nor().scl(cellRadius + 40f); // Distance in front of the cell
+
         Vector2 arrowPos = cellPos.cpy().add(dir);
         float angle = dir.angleDeg();
     
         // Size up the arrow
-        float scale = 2.5f;
+        float scale = MathUtils.clamp(playerCell.getCellSize() / 50f, 1.5f, 3f);
         float arrowWidth = 16f * scale;
         float arrowHeight = 16f * scale;
     
@@ -653,7 +663,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     private void drawLowATPWarning() {
-        if (playerCell.getCellATP() > 20) return;
+        if (playerCell.getCellHealth() > 20) return;
     
         float camX = camera.position.x;
         float camY = camera.position.y;
@@ -774,6 +784,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         return this.playerCell;
     }
 
+    /**
+     * For test use only.
+     */
     public void endGame() {
         game.setScreen(new GameOverScreen(
                 inputProvider,
