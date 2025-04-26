@@ -17,7 +17,7 @@ import cellcorp.gameofcells.providers.GraphicsProvider;
 
 /**
  * Menu System class
- * 
+ *
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -60,7 +60,7 @@ public class MenuSystem {
 
     /**
      * Constructor for the MenuSystem class.
-     * 
+     *
      * @param stage The stage to which the menu will be added
      * @param assetManager The asset manager for loading assets
      * @param graphicsProvider The graphics provider for creating UI elements
@@ -68,8 +68,8 @@ public class MenuSystem {
      *              stage, asset manager, and graphics provider.
      *              It sets up the necessary components for rendering the menu.
      */
-    public MenuSystem(Stage stage, 
-            AssetManager assetManager, 
+    public MenuSystem(Stage stage,
+            AssetManager assetManager,
             GraphicsProvider graphicsProvider) {
         this.stage = stage;
         this.assetManager = assetManager;
@@ -80,7 +80,7 @@ public class MenuSystem {
     // This method will be the default method for initializing a menu
     /**
      * Initializes a menu with the given options.
-     * 
+     *
      * @param title The title of the menu
      * @param menuOptions The array of menu options
      * @param instructions The instruction text to display (optional)
@@ -129,7 +129,7 @@ public class MenuSystem {
 
     /**
      * Initializes a main menu-specific layout with a title, menu options, and instructions.
-     * 
+     *
      * @param title The title of the main menu
      * @param menuOptions The array of menu options
      * @param instructions Bottom instructions text
@@ -138,7 +138,7 @@ public class MenuSystem {
      */
     public void initializeMainMenu(String title, String[] menuOptions, String instructions, Texture wasdArrowsIcon, Texture spaceEnterIcon) {
         clear();
-        
+
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
 
@@ -172,7 +172,9 @@ public class MenuSystem {
         Image spaceImage = graphicsProvider.createImage(spaceEnterIcon);
         spaceImage.setColor(0.8f, 0.9f, 1f, 0.9f);
         controlsTable.add(spaceImage)
-                .size(180, 180 * (202f/800f)); // Smaller size
+                .size(180, 190 * (210f/800f))
+                    .padTop(60);
+//                .size(180, 180 * (202f/800f)); // Smaller size
 
         mainTable.add().height(40).row(); // New space to push icons down
 
@@ -249,7 +251,7 @@ public class MenuSystem {
 
     /**
      * Initializes a pause-specific menu layout with a title, menu options, and instructions.
-     * 
+     *
      * @param title The title of the pause menu
      * @param menuOptions The array of menu options
      * @param instructions The instruction text to display (optional)
@@ -291,7 +293,7 @@ public class MenuSystem {
     /**
      * Initializes a shop-specific layout with three columns:
      * Left for size upgrades, center for stats, and right for organelle upgrades.
-     * 
+     *
      * @param title The shop title
      * @param instructions Bottom instructions text
      * @return An array of tables for size upgrades, stats, and organelle upgrades
@@ -299,43 +301,43 @@ public class MenuSystem {
      */
     public Table[] initializeShopLayout(String title, String instructions) {
         clear();
-        
+
         // Main container table
         mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.pad(30); // Uniform padding
-        
+
         // Title setup
         Label titleLabel = createLabel(title, 0.5f); // Slightly larger than standard
         titleLabel.setColor(new Color(0.4f, 0.8f, 1f, 1f)); // Cyan-blue
         titleLabel.setAlignment(Align.center);
         mainTable.add(titleLabel).colspan(3).padBottom(40).row();
-        
+
         // Create columns
         Table leftTable = createShopColumn("SIZE UPGRADES");
         Table centerTable = new Table();
         Table rightTable = createShopColumn("ORGANELLE UPGRADES");
-        
+
         // Column layout
         mainTable.add(leftTable).width(350).padRight(15);
         mainTable.add(centerTable).width(250); // Wider center for stats
         mainTable.add(rightTable).width(350).padLeft(15);
         mainTable.row();
-        
+
         // Instructions footer
         if (instructions != null && !instructions.isEmpty()) {
             Label instructionsLabel = createLabel(instructions, 0.2f);
             instructionsLabel.setAlignment(Align.center);
             mainTable.add(instructionsLabel).colspan(3).padTop(30).row();
         }
-        
+
         stage.addActor(mainTable);
         return new Table[]{leftTable, centerTable, rightTable};
     }
 
     /**
      * Helper method to create consistent shop columns
-     * 
+     *
      * @param headerText The header text for the column
      * @return A Table object representing the column
      *         with a header and separator line
@@ -345,22 +347,22 @@ public class MenuSystem {
     private Table createShopColumn(String headerText) {
         Table column = new Table();
         column.top(); // Align content to top
-        
+
         // Column header
         Label header = createLabel(headerText, 0.3f);
         header.setColor(Color.YELLOW);
         column.add(header).padBottom(5).row();
-        
+
         // Separator line
         Image separator = new Image(createSeparatorLine(350, 2));
         column.add(separator).padBottom(15).row();
-        
+
         return column;
     }
 
     /**
      * Creates a simple line texture for separators
-     * 
+     *
      * @param width The width of the line
      * @param height The height of the line
      * @return A Texture object representing the line
@@ -376,7 +378,7 @@ public class MenuSystem {
 
     /**
      * Updates the menu selection
-     * 
+     *
      * @param newIndex The new selected option index
      */
     public void updateSelection(int newIndex) {
@@ -395,11 +397,11 @@ public class MenuSystem {
         Label currentOptionLabel = (Label) mainTable.getCells().get(selectedOptionIndex + 1).getActor();
         currentOptionLabel.setColor(Color.YELLOW);
     }
-    
+
 
     /**
      * Gets the currently selected option index.
-     * 
+     *
      * @return The index of the currently selected option
      */
     public int getSelectedOptionIndex() {
@@ -408,7 +410,7 @@ public class MenuSystem {
 
     /**
      * Gets the stage associated with this menu system.
-     * 
+     *
      * @return The stage used for rendering the menu
      */
     public Stage getStage() {
@@ -436,11 +438,11 @@ public class MenuSystem {
         Label label = graphicsProvider.createLabel(text, labelStyle);
         label.setFontScale(delta);
         return label;
-    } 
+    }
 
     /**
      * Gets the menu options.
-     * 
+     *
      * @return The array of menu options
      */
     public int getMenuOptionCount() {

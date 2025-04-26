@@ -259,5 +259,5 @@ public class Main implements ApplicationListener {
     public FitViewport getViewport() {
         return this.viewport;
     }
-    
+
 }
