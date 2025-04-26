@@ -563,7 +563,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.begin();
 
         // Far layer - slowest movement (deep background)
-        batch.setColor(1f, 1f, 1f, 0.5f);
+        batch.setColor(1f, 1f, 1f, 0.6f);
         batch.draw(parallaxFar,
             camX - viewport.getWorldWidth() * 0.6f,
             camY - viewport.getWorldHeight() * 0.6f,
@@ -603,24 +603,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
     
         // Calculate player movement-based drift
         Vector2 cellVelocity = playerCell.getVelocity(); // Assuming you have a getVelocity()
-        
-        // Slow drift if idle
-        float idleDriftX = MathUtils.sin(overlayTime * 0.05f) * 20f;
-        float idleDriftY = MathUtils.cos(overlayTime * 0.05f) * 20f;
     
         // Movement-based drift
-        float movementOffsetX = -cellVelocity.x * 0.25f;
-        float movementOffsetY = -cellVelocity.y * 0.25f;
-    
-        // Combine both: when moving, movement dominates
-        float offsetX = idleDriftX + movementOffsetX;
-        float offsetY = idleDriftY + movementOffsetY;
+        float movementOffsetX = -cellVelocity.x * 2f;
+        float movementOffsetY = -cellVelocity.y * 2f;
     
         batch.begin();
-        batch.setColor(1f, 1f, 1f, 0.2f); // 0.2f alpha = subtle
+        batch.setColor(1f, 1f, 1f, 0.3f); // 0.2f alpha = subtle
         batch.draw(floatingOverlay,
-            camX - viewport.getWorldWidth() / 2 + offsetX,
-            camY - viewport.getWorldHeight() / 2 + offsetY,
+            camX - viewport.getWorldWidth() / 2 + movementOffsetX,
+            camY - viewport.getWorldHeight() / 2 + movementOffsetY,
             viewport.getWorldWidth(),
             viewport.getWorldHeight()
         );
