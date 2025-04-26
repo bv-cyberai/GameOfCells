@@ -25,6 +25,10 @@ public class MinimapRenderer {
         this.shapeRenderer = new ShapeRenderer();
     }
 
+    // Renders the minimap
+    // Takes the screen width and height, player coordinates, and collections of acid zones, basic zones, and glucose objects
+    // The minimap is drawn at the bottom left corner of the screen with a margin
+    // The player is represented by a white square in the center of the minimap
     public void render(float screenWidth, float screenHeight, float playerX, float playerY, 
                         Collection<Zone> acidZones, Collection<Zone> basicZones, 
                         List<Glucose> glucoseList) {
@@ -68,6 +72,10 @@ public class MinimapRenderer {
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
+    // Draws a relative object on the minimap
+    // Takes the world coordinates of the object and converts them to minimap coordinates
+    // The object is drawn at the specified offset from the minimap center
+    // The player coordinates are used to determine the relative position of the object
     private void drawRelativeObject(float worldX, float worldY, float size, float offsetX, float offsetY, float playerX, float playerY) {
         float dx = worldX - playerX;
         float dy = worldY - playerY;
@@ -83,6 +91,10 @@ public class MinimapRenderer {
         shapeRenderer.circle(drawX, drawY, size);
     }
 
+    // Draws a zone on the minimap
+    // Takes the world coordinates of the zone and converts them to minimap coordinates
+    // The zone is drawn at the specified offset from the minimap center
+    // The player coordinates are used to determine the relative position of the zone
     private void drawZoneRelative(float worldX, float worldY, float worldRadius, float offsetX, float offsetY, float playerX, float playerY) {
         float dx = worldX - playerX;
         float dy = worldY - playerY;
