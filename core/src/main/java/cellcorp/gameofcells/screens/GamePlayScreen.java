@@ -3,6 +3,7 @@ package cellcorp.gameofcells.screens;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.*;
 import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.providers.GameLoaderSaver;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Gdx;
@@ -153,6 +154,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
 
+    //GameSaver
+    GameLoaderSaver gameLoaderSaver;
+
     /**
      * Constructs the GamePlayScreen.
      *
@@ -231,6 +235,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 Color.BLACK,
                 this::resumeGame
         );
+
+        gameLoaderSaver = new GameLoaderSaver(playerCell,glucoseManager,stats,hud.getHudStats());
     }
 
     public void triggerShake(float duration, float intensity) {
@@ -316,6 +322,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
+
+        if( inputProvider.isKeyJustPressed(Input.Keys.L)){
+            gameLoaderSaver.loadState();
+        }
+
+        if(inputProvider.isKeyJustPressed(Input.Keys.O)) {
+            gameLoaderSaver.saveState();
+        }
+
         // Move to `ShopScreen` when 's' is pressed.
         if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             pauseGame();
