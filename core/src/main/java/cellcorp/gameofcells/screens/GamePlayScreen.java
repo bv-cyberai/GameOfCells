@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.screens;
 
+import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.*;
 import cellcorp.gameofcells.providers.ConfigProvider;
@@ -12,8 +13,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -138,6 +141,20 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     //private final HUD hud;
     private final HUD hud;
+
+    // Background textures
+    private Texture parallaxFar;
+    private Texture parallaxMid;
+    private Texture parallaxNear;
+    private Texture floatingOverlay; // Texture for simulating fluid game movement
+    private Texture vignetteLowHealth; // Texture for low health warning
+    private float overlayTime = 0f; // Time for the floating overlay animation
+
+    // Floating arrow fields
+    private Texture arrowTexture;
+    private float arrowAngle = 0f;
+    private float arrowRadius = 80f; // orbit radius
+
     private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Zoom fields
     private final float originalZoom = 1.2f; // Original zoom level
@@ -185,6 +202,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, assetManager, this, stats);
+
+        parallaxFar = assetManager.get(AssetFileNames.PARALLAX_FAR, Texture.class);
+        parallaxMid = assetManager.get(AssetFileNames.PARALLAX_MID, Texture.class);
+        parallaxNear = assetManager.get(AssetFileNames.PARALLAX_NEAR, Texture.class);
+        floatingOverlay = assetManager.get(AssetFileNames.FLOATING_OVERLAY, Texture.class);
+        vignetteLowHealth = assetManager.get(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
+        arrowTexture = assetManager.get(AssetFileNames.ARROW_TO_BASIC_ZONE, Texture.class);
+        
 
         this.glucoseCollisionPopup = new PopupInfoScreen(
                 configProvider,
@@ -411,6 +436,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 reportCellMembrane();
             }
             stats.gameTimer += deltaTimeSeconds;
+            overlayTime += deltaTimeSeconds;
 
             boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
             if (inBasicZone) {
@@ -438,13 +464,26 @@ public class GamePlayScreen implements GameOfCellsScreen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
-        if (DEBUG_DRAW_ENABLED) {
-            drawBackground(shapeRenderer);
-        }
+        // Draw parallax background layers
+        drawParallax();
+
+        // Draw the floating overlay
+        drawFloatingOverlay();
+
+        // Draw core game objects
         drawGameObjects(batch, shapeRenderer);
+
+        // Draw floating basic zone arrow
+        drawFloatingBasicZoneArrow(Gdx.graphics.getDeltaTime());
+
+        // Draw low ATP warning
+        drawLowHealthVignette();
+
+        // Draw the HUD
         hud.draw();
 
         if (DEBUG_DRAW_ENABLED) {
+            drawBackground(shapeRenderer);
             drawChunks(shapeRenderer);
         }
 
@@ -514,6 +553,141 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Draws the parallax background layers.
+     * The layers are drawn in order of distance from the camera.
+     */
+    private void drawParallax() {
+        float camX = camera.position.x;
+        float camY = camera.position.y;
+
+        batch.begin();
+
+        // Far layer - slowest movement (deep background)
+        batch.setColor(1f, 1f, 1f, 0.6f);
+        batch.draw(parallaxFar,
+            camX - viewport.getWorldWidth() * 0.6f,
+            camY - viewport.getWorldHeight() * 0.6f,
+            viewport.getWorldWidth() * 1.2f,
+            viewport.getWorldHeight() * 1.2f
+        );
+
+        // Mid layer - moderate movement
+        batch.setColor(1f, 1f, 1f, 0.3f);
+        batch.draw(parallaxMid,
+            camX - viewport.getWorldWidth() * 0.55f,
+            camY - viewport.getWorldHeight() * 0.55f,
+            viewport.getWorldWidth() * 1.1f,
+            viewport.getWorldHeight() * 1.1f
+        );
+
+        // Near layer - fastest movement (foreground)
+        batch.setColor(1f, 1f, 1f, 0.15f);
+        batch.draw(parallaxNear,
+            camX - viewport.getWorldWidth() * 0.52f,
+            camY - viewport.getWorldHeight() * 0.52f,
+            viewport.getWorldWidth() * 1.04f,
+            viewport.getWorldHeight() * 1.04f
+        );
+
+        batch.setColor(1f, 1f, 1f, 1f); // Reset to full opacity
+        batch.end();
+    }
+
+    /**
+     * Draws the floating overlay.
+     * The overlay simulates fluid game movement.
+     */
+    private void drawFloatingOverlay() {
+        float camX = camera.position.x;
+        float camY = camera.position.y;
+    
+        // Calculate player movement-based drift
+        Vector2 cellVelocity = playerCell.getVelocity(); // Assuming you have a getVelocity()
+    
+        // Movement-based drift
+        float movementOffsetX = -cellVelocity.x * 2f;
+        float movementOffsetY = -cellVelocity.y * 2f;
+    
+        batch.begin();
+        batch.setColor(1f, 1f, 1f, 0.3f); // 0.2f alpha = subtle
+        batch.draw(floatingOverlay,
+            camX - viewport.getWorldWidth() / 2 + movementOffsetX,
+            camY - viewport.getWorldHeight() / 2 + movementOffsetY,
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight()
+        );
+        batch.setColor(1f, 1f, 1f, 1f);
+        batch.end();
+    }
+    
+
+    /**
+     * Draws an arrow pointing to the nearest basic zone.
+     * The arrow will fade out as the player approaches the zone.
+     *
+     * @param delta Time since the last frame.
+     */
+    private void drawFloatingBasicZoneArrow(float delta) {
+        if (playerCell.getCellATP() > 30 || isInBasicZone(playerCell.getX(), playerCell.getY()))
+            return;
+    
+        Vector2 target = getNearestBasicZoneCenter();
+        Vector2 cellPos = new Vector2(playerCell.getX(), playerCell.getY());
+        Vector2 dir = new Vector2(target).sub(cellPos);
+    
+        float distance = dir.len();
+        float alpha = MathUtils.clamp(distance / 500f, 0f, 1f); // fade as you approach
+        if (distance < 5f) return; // if too close, don't show arrow
+    
+        float cellRadius = playerCell.getCellSize() / 2f;
+        dir.nor().scl(cellRadius + 40f); // Distance in front of the cell
+
+        Vector2 arrowPos = cellPos.cpy().add(dir);
+        float angle = dir.angleDeg();
+    
+        // Size up the arrow
+        float scale = MathUtils.clamp(playerCell.getCellSize() / 50f, 1.5f, 3f);
+        float arrowWidth = 16f * scale;
+        float arrowHeight = 16f * scale;
+    
+        batch.begin();
+        batch.setColor(1f, 1f, 1f, alpha);
+        batch.draw(
+            arrowTexture,
+            arrowPos.x - arrowWidth / 2, arrowPos.y - arrowHeight / 2, // position
+            arrowWidth / 2, arrowHeight / 2, // origin
+            arrowWidth, arrowHeight, // size
+            1f, 1f, // scale
+            angle, // rotation
+            0, 0,
+            arrowTexture.getWidth(), arrowTexture.getHeight(),
+            false, false
+        );
+        batch.setColor(1f, 1f, 1f, 1f);
+        batch.end();
+    }
+
+    private void drawLowHealthVignette() {
+        if (playerCell.getCellHealth() > 20) return;
+    
+        float camX = camera.position.x;
+        float camY = camera.position.y;
+
+        float pulse = 0.25f + 0.1f * MathUtils.sin(overlayTime * 4f); // use existing time var
+        
+        batch.begin();
+        batch.setColor(1f, 1f, 1f, pulse);
+        batch.draw(vignetteLowHealth,
+            camX - viewport.getWorldWidth() / 2,
+            camY - viewport.getWorldHeight() / 2,
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight());
+        batch.setColor(1f, 1f, 1f, 1f); // reset
+        batch.end();
+    }
+    
+
+    /**
      * Draw a background with grid lines.
      */
     private void drawBackground(ShapeRenderer shapeRenderer) {
@@ -580,12 +754,44 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
+     * Get the nearest basic zone center.
+     * This is used for displaying the basic zone warning.
+     */
+    private Vector2 getNearestBasicZoneCenter() {
+        ZoneManager zoneManager = spawnManager.getZoneManager(); // assuming you already have spawnManager
+    
+        float cellX = playerCell.getX();
+        float cellY = playerCell.getY();
+    
+        double closestDistance = Double.MAX_VALUE;
+        Zone closestZone = null;
+    
+        for (Zone zone : zoneManager.getBasicZones().values()) {
+            double distance = zone.distanceFrom(cellX, cellY);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestZone = zone;
+            }
+        }
+    
+        if (closestZone != null) {
+            return new Vector2(closestZone.x(), closestZone.y());
+        }
+    
+        // Fallback if no zones found
+        return new Vector2(cellX, cellY); // fallback to cell position = no arrow
+    }
+
+    /**
      * For test use only.
      */
     public Cell getCell() {
         return this.playerCell;
     }
 
+    /**
+     * For test use only.
+     */
     public void endGame() {
         game.setScreen(new GameOverScreen(
                 inputProvider,
@@ -671,6 +877,28 @@ public class GamePlayScreen implements GameOfCellsScreen {
         return zoneManager.distanceToNearestAcidZone(x, y)
                 .map(d -> d <= Zone.ZONE_RADIUS)
                 .orElse(false);
+    }
+
+    /**
+     * Check if the basic zone arrow is visible.
+     * This is used for checking if the basic zone arrow is visible.
+     * For example, if the cell is in a basic zone, it will not show the arrow.
+     *
+     * @return true if the basic zone arrow is visible, false otherwise.
+     */
+    public boolean isBasicZoneArrowVisible() {
+        return playerCell.getCellATP() <= 30 && !isInBasicZone(playerCell.getX(), playerCell.getY());
+    }
+
+    /**
+     * Check if the low health warning is visible.
+     * This is used for checking if the low health warning is visible.
+     * For example, if the cell is in a basic zone, it will not show the arrow.
+     *
+     * @return true if the low health warning is visible, false otherwise.
+     */
+    public boolean isLowHealthWarningVisible() {
+        return playerCell.getCellHealth() <= 20;
     }
 
     /**
@@ -882,5 +1110,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public PopupInfoScreen getBasicZonePopup() {
         return basicZonePopup;
+    }
+
+    /**
+     * For test use only.
+     */
+    public Camera getCamera() {
+        return camera;
+    }
+
+    /**
+     * For test use only.
+     */
+    public float getOverlayTime() {
+        return overlayTime;
     }
 }

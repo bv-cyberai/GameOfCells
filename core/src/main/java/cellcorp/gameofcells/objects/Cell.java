@@ -76,6 +76,8 @@ public class Cell {
     // Add rotation and animation fields here if needed
     private float nucleusPulse = 0.0f; // Pulse effect for nucleus animation
     private float pulseScale = 1.0f; // Scale for nucleus pulse effect
+    private Vector2 smoothedVelocity = new Vector2();
+    private static final float VELOCITY_SMOOTHING = 0.1f; // Adjust if you want faster/slower smoothing
 
     // Upgrade multipliers
     private float proteinSynthesisMultiplier = 1.0f;
@@ -1150,5 +1152,23 @@ public class Cell {
      */
     public float getDeathAnimationDuration() {
         return DEATH_ANIMATION_DURATION;
+    }
+
+    /**
+     * Get the velocity of the cell
+     * This is the difference between the current position and the last position
+     * 
+     * @return The velocity of the cell
+     */
+    public Vector2 getVelocity() {
+        float dx = cellCircle.x - lastX;
+        float dy = cellCircle.y - lastY;
+        
+        Vector2 frameVelocity = new Vector2(dx, dy);
+
+        // Smooth the velocity
+        smoothedVelocity.lerp(frameVelocity, VELOCITY_SMOOTHING);
+
+        return smoothedVelocity;
     }
 }
