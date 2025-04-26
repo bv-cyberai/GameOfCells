@@ -152,7 +152,7 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.PARALLAX_MID, Texture.class);
         assetManager.load(AssetFileNames.PARALLAX_NEAR, Texture.class);
         assetManager.load(AssetFileNames.FLOATING_OVERLAY, Texture.class);
-        assetManager.load(AssetFileNames.VIGNETTE_LOW_ATP, Texture.class);
+        assetManager.load(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
         assetManager.load(AssetFileNames.SCROLL_BAR, Texture.class);
         assetManager.load(AssetFileNames.WS_KEYS, Texture.class);
         assetManager.load(AssetFileNames.ARROW_TO_BASIC_ZONE, Texture.class);

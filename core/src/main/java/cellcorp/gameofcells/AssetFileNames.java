@@ -79,7 +79,7 @@ public class AssetFileNames {
     /**
      * The file name for the vignette texture.
      */
-    public static String VIGNETTE_LOW_ATP = "vignette_low_atp.png";
+    public static String VIGNETTE_LOW_HEALTH = "vignette_low_atp.png";
 
     /**
      * The file name for the mitochondria texture.

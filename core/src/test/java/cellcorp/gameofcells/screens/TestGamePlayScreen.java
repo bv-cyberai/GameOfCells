@@ -7,6 +7,7 @@ import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.Zone;
 import cellcorp.gameofcells.runner.GameRunner;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGamePlayScreen {
@@ -374,4 +375,136 @@ public class TestGamePlayScreen {
         // Show should not throw
         assertDoesNotThrow(() -> gamePlayScreen.show());
     }
+
+    @Test
+    public void floatingOverlayAnimatesCorrectly() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        float initialTime = gamePlayScreen.getOverlayTime();
+
+        gameRunner.runForSeconds(1f);
+
+        assertTrue(gamePlayScreen.getOverlayTime() > initialTime,
+                "Overlay animation time should progress with game time");
+    }
+
+    @Test
+    public void basicZoneArrowAppearsWhenNeeded() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        var cell = gamePlayScreen.getCell();
+
+        // Move cell to (1000,1000)
+        cell.moveTo(1000, 1000);
+
+        // Create basic zone far away from the cell
+        Chunk testChunk = Chunk.fromWorldCoords(4000, 4000);
+        Vector2 zonePos = new Vector2(4000, 4000);
+        gamePlayScreen.getSpawnManager().getZoneManager().getBasicZones().put(
+                testChunk,
+                new Zone(
+                        gamePlayScreen.getAssetManager(),
+                        AssetFileNames.BASIC_ZONE,
+                        zonePos.x,
+                        zonePos.y
+                )
+        );
+
+        // Run for 1 second
+        gameRunner.runForSeconds(1f);
+
+        // Arrow should be visible
+        assertTrue(gamePlayScreen.isBasicZoneArrowVisible());
+    }
+
+    @Test
+    public void lowHealthWarningVignetteShowsWhenCritical() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        var cell = gamePlayScreen.getCell();
+
+        // Set ATP to a low value
+        cell.setCellHealth(19);
+
+        // Run for 1 second
+        gameRunner.runForSeconds(1f);
+
+        // Warning should be visible
+        assertTrue(gamePlayScreen.isLowHealthWarningVisible());
+    }
+
+    @Test
+    public void noArrowInBasicZone() {
+        var gameRunner = GameRunner.create();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step(); // Move to gameplay
+
+        var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        var cell = gamePlayScreen.getCell();
+
+        // Move cell to (1000,1000)
+        cell.moveTo(1000, 1000);
+
+        // Create basic zone exactly where the cell is
+        Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
+        Vector2 zonePos = new Vector2(1000, 1000);
+        gamePlayScreen.getSpawnManager().getZoneManager().getBasicZones().put(
+                testChunk,
+                new Zone(
+                        gamePlayScreen.getAssetManager(),
+                        AssetFileNames.BASIC_ZONE,
+                        zonePos.x,
+                        zonePos.y
+                )
+        );
+
+        // Run for 1 second
+        gameRunner.runForSeconds(1f);
+
+        // Arrow should not be visible
+        assertFalse(gamePlayScreen.isBasicZoneArrowVisible());
+    }
+
+    // @Test
+    // public void shakeEffectUpdatesCamera(){
+    //     var gameRunner = GameRunner.create();
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+    //     gameRunner.step(); // Move to gameplay
+
+    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+    //     var initialX = gamePlayScreen.getCell().getX();
+
+    //     // Trigger shake effect
+    //     gamePlayScreen.triggerShake(1f, 10f);
+    //     gameRunner.runForSeconds(0.1f);
+
+    //     assertNotEquals(initialX, gamePlayScreen.getCell().getX(),
+    //             "Camera should shake and change position");
+    // }
+
+    // @Test
+    // public void zoomEffectAppliesCorrectly() {
+    //     var gameRunner = GameRunner.create();
+    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+    //     gameRunner.step(); // Move to gameplay
+
+    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+    //     float initialZoom = gamePlayScreen.getViewport().getWorldWidth();
+
+    //     // Simulate cell death
+    //     gamePlayScreen.getCell().applyDamage(100);
+    //     gameRunner.runForSeconds(1f);
+
+    //     assertTrue(gamePlayScreen.getViewport().getWorldWidth() < initialZoom,
+    //             "Zoom effect should apply on cell death");
+    // }
 }

@@ -147,7 +147,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private Texture parallaxMid;
     private Texture parallaxNear;
     private Texture floatingOverlay; // Texture for simulating fluid game movement
-    private Texture vignetteLowATP; // Texture for low ATP warning
+    private Texture vignetteLowHealth; // Texture for low health warning
     private float overlayTime = 0f; // Time for the floating overlay animation
 
     // Floating arrow fields
@@ -207,7 +207,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         parallaxMid = assetManager.get(AssetFileNames.PARALLAX_MID, Texture.class);
         parallaxNear = assetManager.get(AssetFileNames.PARALLAX_NEAR, Texture.class);
         floatingOverlay = assetManager.get(AssetFileNames.FLOATING_OVERLAY, Texture.class);
-        vignetteLowATP = assetManager.get(AssetFileNames.VIGNETTE_LOW_ATP, Texture.class);
+        vignetteLowHealth = assetManager.get(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
         arrowTexture = assetManager.get(AssetFileNames.ARROW_TO_BASIC_ZONE, Texture.class);
         
 
@@ -257,7 +257,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 this::resumeGame
         );
     }
-
 
     public void triggerShake(float duration, float intensity) {
         this.shakeTime = duration;
@@ -672,7 +671,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         
         batch.begin();
         batch.setColor(1f, 1f, 1f, pulse);
-        batch.draw(vignetteLowATP,
+        batch.draw(vignetteLowHealth,
             camX - viewport.getWorldWidth() / 2,
             camY - viewport.getWorldHeight() / 2,
             viewport.getWorldWidth(),
@@ -872,6 +871,28 @@ public class GamePlayScreen implements GameOfCellsScreen {
         return zoneManager.distanceToNearestAcidZone(x, y)
                 .map(d -> d <= Zone.ZONE_RADIUS)
                 .orElse(false);
+    }
+
+    /**
+     * Check if the basic zone arrow is visible.
+     * This is used for checking if the basic zone arrow is visible.
+     * For example, if the cell is in a basic zone, it will not show the arrow.
+     *
+     * @return true if the basic zone arrow is visible, false otherwise.
+     */
+    public boolean isBasicZoneArrowVisible() {
+        return playerCell.getCellATP() <= 30 && !isInBasicZone(playerCell.getX(), playerCell.getY());
+    }
+
+    /**
+     * Check if the low health warning is visible.
+     * This is used for checking if the low health warning is visible.
+     * For example, if the cell is in a basic zone, it will not show the arrow.
+     *
+     * @return true if the low health warning is visible, false otherwise.
+     */
+    public boolean isLowHealthWarningVisible() {
+        return playerCell.getCellHealth() <= 20;
     }
 
     /**
@@ -1083,5 +1104,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public PopupInfoScreen getBasicZonePopup() {
         return basicZonePopup;
+    }
+
+    /**
+     * For test use only.
+     */
+    public Camera getCamera() {
+        return camera;
+    }
+
+    /**
+     * For test use only.
+     */
+    public float getOverlayTime() {
+        return overlayTime;
     }
 }
