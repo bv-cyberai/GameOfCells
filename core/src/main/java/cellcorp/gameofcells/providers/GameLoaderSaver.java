@@ -4,6 +4,8 @@ import cellcorp.gameofcells.hud.HudStats;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.Stats;
+import cellcorp.gameofcells.screens.GamePlayScreen;
+import cellcorp.gameofcells.screens.PopupInfoScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
@@ -14,7 +16,16 @@ public class GameLoaderSaver {
     GlucoseManager glucoseManager;
     Stats stats;
     HudStats hudStats;
+
+    PopupInfoScreen glucoseCollisionPopup;
+    PopupInfoScreen acidZonePopup;
+    PopupInfoScreen basicZonePopup;
+    PopupInfoScreen healAvailablePopup;
+    PopupInfoScreen cellMembranePopup;
+
     Preferences saveGame;
+
+
 
     public GameLoaderSaver(Cell cell,
                            GlucoseManager glucoseManager,
@@ -27,11 +38,18 @@ public class GameLoaderSaver {
         saveGame = Gdx.app.getPreferences("saveGame");
     }
 
-    public GameLoaderSaver() {
-        this(null,null,null,null);
+    public GameLoaderSaver(GamePlayScreen gamePlayScreen) {
+        this.cell = gamePlayScreen.getCell();
+        this.glucoseManager = gamePlayScreen.getGlucoseManager();
+        this.stats = gamePlayScreen.getStats();
+        this.hudStats = gamePlayScreen.getHUD().getHudStats();
+        this.glucoseCollisionPopup = gamePlayScreen.getGlucoseCollisionPopup();
+        this.acidZonePopup = gamePlayScreen.getAcidZonePopup();
+        this.basicZonePopup = gamePlayScreen.getBasicZonePopup();
+        this.healAvailablePopup = gamePlayScreen.getHealAvailablePopup();
+        this.cellMembranePopup = gamePlayScreen.getCellMembranePopup();
+        saveGame = Gdx.app.getPreferences("saveGame");
     }
-
-
 
     public void saveState() {
         //cell state
@@ -51,12 +69,24 @@ public class GameLoaderSaver {
         saveGame.putBoolean("flag",cell.hasFlagella());
         saveGame.putBoolean("nuke",cell.hasNucleus());
 
-
         //stats state
         saveGame.putInteger("atpGen", stats.atpGenerated);
         saveGame.putInteger("glukeCollected", stats.glucoseCollected);
         saveGame.putFloat("distanceMoved", stats.distanceMoved);
         saveGame.putFloat("time", stats.gameTimer);
+
+        //Pop-up States
+
+            saveGame.putBoolean("glukePopup", glucoseCollisionPopup.wasShown());
+            saveGame.putBoolean("acidPopup", acidZonePopup.wasShown());
+
+            saveGame.putBoolean("basicPopup", basicZonePopup.wasShown());
+
+            saveGame.putBoolean("healPopup", healAvailablePopup.wasShown());
+
+
+            saveGame.putBoolean("membranePopup", cellMembranePopup.wasShown());
+
 
         saveGame.flush();
     }
@@ -87,7 +117,13 @@ public class GameLoaderSaver {
         stats.distanceMoved = saveGame.getFloat("distanceMoved");
         stats.gameTimer = saveGame.getFloat("time");
 
+        //Pop-up States
 
+        glucoseCollisionPopup.setWasShone(saveGame.getBoolean("glukePopup"));
+        acidZonePopup.setWasShone(saveGame.getBoolean("acidPopup"));
+        basicZonePopup.setWasShone(saveGame.getBoolean("basicPoup"));
+        healAvailablePopup.setWasShone(saveGame.getBoolean("healPopup"));
+        cellMembranePopup.setWasShone(saveGame.getBoolean("membranePopup"));
 
     }
 }

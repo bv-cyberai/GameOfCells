@@ -236,7 +236,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 this::resumeGame
         );
 
-        gameLoaderSaver = new GameLoaderSaver(playerCell,glucoseManager,stats,hud.getHudStats());
+//        gameLoaderSaver = new GameLoaderSaver(playerCell,glucoseManager,stats,hud.getHudStats());
+        gameLoaderSaver = new GameLoaderSaver(this);
     }
 
     public void triggerShake(float duration, float intensity) {
@@ -901,5 +902,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public PopupInfoScreen getBasicZonePopup() {
         return basicZonePopup;
+    }
+
+    public PopupInfoScreen getHealAvailablePopup() {
+        return healAvailablePopup;
+    }
+
+    public PopupInfoScreen getCellMembranePopup () {
+        return cellMembranePopup;
     }
 }
