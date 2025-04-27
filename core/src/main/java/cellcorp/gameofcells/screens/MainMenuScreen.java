@@ -19,7 +19,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * Main Menu Screen
- * 
+ *
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -49,8 +49,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
      * The instructional message displayed on the main menu
      */
     private static final String[] MENU_OPTIONS = {
-        "START GAME", 
-        "GAME INFO", 
+        "START GAME",
+        "GAME INFO",
         "EXIT"
     };
     /**
@@ -59,14 +59,14 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private static final String INSTRUCTIONS = "Use arrow keys or WASD to navigate\nPress Enter or Space to select";
 
     private static final float INACTIVITY_TIMEOUT = 20f; // 20 seconds of inactivity
-    
+
     private final InputProvider inputProvider;
     private final GraphicsProvider graphicsProvider;
     private final ConfigProvider configProvider;
     private final Main game;
     private final AssetManager assetManager;
     private final Viewport viewport;
-    
+
     private final Particles particles;
     private final MenuSystem menuSystem;
 
@@ -75,13 +75,15 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final Texture wasdArrowsIcon;
     private final Texture spaceEnterIcon;
 
+    private GamePlayScreen gamePlayScreen;
+
     // Inactivity timer
     // This timer tracks the time since the last user input
     private float inactivityTimer = 0f;
 
     /**
      * Constructs a new MainMenuScreen.
-     * 
+     *
      * @param inputProvider The input provider for handling user input
      * @param graphicsProvider The graphics provider for rendering graphics
      * @param game The main game instance
@@ -105,7 +107,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.game = game;
         this.assetManager = assetManager;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
-        
+
         // Load white pixel texture and initialize particles
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
@@ -118,6 +120,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         this.wasdArrowsIcon = assetManager.get(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
         this.spaceEnterIcon = assetManager.get(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
+        this.gamePlayScreen = new GamePlayScreen(inputProvider,graphicsProvider,game, assetManager, configProvider);
 
         //Config provider can be 'constructed' anywhere, this is useful as game objects will need access
         //to it.
@@ -134,8 +137,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
     @Override
     public void show() {
         menuSystem.initializeMainMenu(
-            "GAME OF CELLS", 
-            MENU_OPTIONS, 
+            "GAME OF CELLS",
+            MENU_OPTIONS,
             INSTRUCTIONS,
             wasdArrowsIcon,
             spaceEnterIcon
@@ -145,7 +148,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Render the main menu screen.
      * This method is called every frame to update and draw the screen.
-     * 
+     *
      * @param delta The time elapsed since the last frame
      */
     @Override
@@ -158,7 +161,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Resize the main menu screen.
      * This method is called when the window is resized.
-     * 
+     *
      * @param width The new width of the window
      * @param height The new height of the window
      */
@@ -208,7 +211,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Handle user input for the main menu.
      * This method processes user input and updates the menu selection accordingly.
-     * 
+     *
      * @param deltaTimeSeconds The time elapsed since the last frame
      */
     @Override
@@ -217,7 +220,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             // For testing purposes
             game.setScreen(new AttractScreen(inputProvider, graphicsProvider, game, assetManager, this, configProvider));
         }
-        
+
         // Navigate menu options with arrow keys
         if (inputProvider.isKeyJustPressed(Input.Keys.UP) || inputProvider.isKeyJustPressed(Input.Keys.W)) {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() - 1);
@@ -232,11 +235,14 @@ public class MainMenuScreen implements GameOfCellsScreen {
             switch (menuSystem.getSelectedOptionIndex()) {
                 case 0:
                     // Start the game
-                    game.setScreen(new GamePlayScreen(
-                            inputProvider,
-                            graphicsProvider,
-                            game,
-                            assetManager, configProvider ));
+//                    game.setScreen(new GamePlayScreen(
+//                            inputProvider,
+//                            graphicsProvider,
+//                            game,
+//                            assetManager, configProvider ));
+                    // This screen is created with the menu, because preferences for GameSaveLoader
+                    // is very slow.
+                    game.setScreen(gamePlayScreen);
                     break;
                 case 1: // Settings
                     // Open the settings screen
@@ -266,7 +272,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Update the main menu screen.
      * This method updates the particles and any other game state as needed.
-     * 
+     *
      * @param deltaTimeSeconds The time elapsed since the last frame
      */
     @Override
@@ -306,7 +312,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Draw background elements
         SpriteBatch batch = graphicsProvider.createSpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-        
+
         // Draw sem-transparent cell texture
         float cellWidth = 500;
         float cellHeight = 500;
@@ -318,10 +324,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
         batch.draw(cellTexture,
                 cellX,
                 cellY,
-                cellWidth, 
+                cellWidth,
                 cellHeight);
         batch.setColor(1, 1, 1, 1); // Reset color to white
-        
+
         // Draw the particles
         particles.draw(batch);
         batch.end();
@@ -341,7 +347,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     /**
      * Get the index of the currently selected option.
-     * 
+     *
      * @return the index of the selected option
      */
     public int getSelectedOption() {
@@ -350,7 +356,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     /**
      * Get the number of menu options.
-     * 
+     *
      * @return the number of menu options
      */
     public int getMenuOptionCount() {
@@ -360,7 +366,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Get the inactivity timeout.
      * This method returns the inactivity timeout value in seconds.
-     * 
+     *
      * @return the inactivity timeout in seconds
      */
     public int getInactivityTimeout() {
@@ -370,7 +376,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Get the particles object.
      * This method returns the particles object used for rendering particles.
-     * 
+     *
      * @return the particles object
      */
     public Particles getParticles() {
@@ -380,7 +386,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Get the viewport object.
      * This method returns the viewport object used for rendering.
-     * 
+     *
      * @return the viewport object
      */
     public Viewport getViewport() {
@@ -390,7 +396,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Get the input provider.
      * This method returns the input provider used for handling user input.
-     * 
+     *
      * @return the input provider
      */
     public InputProvider getInputProvider() {
@@ -400,7 +406,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Get the main game instance.
      * This method returns the main game instance.
-     * 
+     *
      * @return the main game instance
      */
     public Main getGame() {
@@ -410,7 +416,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Get the asset manager.
      * This method returns the asset manager used for loading and managing assets.
-     * 
+     *
      * @return the asset manager
      */
     public AssetManager getAssetManager() {

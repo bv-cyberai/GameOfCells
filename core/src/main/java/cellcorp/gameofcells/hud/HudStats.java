@@ -74,4 +74,5 @@ public class HudStats {
     private String gameTimeText() {
         return GAME_TIME_TEXT + (int) stats.gameTimer;
     }
+
 }

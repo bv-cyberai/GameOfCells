@@ -325,6 +325,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         if( inputProvider.isKeyJustPressed(Input.Keys.L)){
             gameLoaderSaver.loadState();
+            System.out.println(playerCell.hasSmallSizeUpgrade());
+            System.out.println(playerCell.hasMediumSizeUpgrade());
+            System.out.println(playerCell.hasLargeSizeUpgrade());
+            System.out.println(playerCell.hasMassiveSizeUpgrade());
         }
 
         if(inputProvider.isKeyJustPressed(Input.Keys.O)) {
