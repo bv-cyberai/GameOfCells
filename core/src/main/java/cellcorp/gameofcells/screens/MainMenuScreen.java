@@ -120,7 +120,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         this.wasdArrowsIcon = assetManager.get(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
         this.spaceEnterIcon = assetManager.get(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
-        this.gamePlayScreen = new GamePlayScreen(inputProvider,graphicsProvider,game, assetManager, configProvider);
+//        this.gamePlayScreen = new GamePlayScreen(inputProvider,graphicsProvider,game, assetManager, configProvider);
 
         //Config provider can be 'constructed' anywhere, this is useful as game objects will need access
         //to it.
@@ -235,14 +235,14 @@ public class MainMenuScreen implements GameOfCellsScreen {
             switch (menuSystem.getSelectedOptionIndex()) {
                 case 0:
                     // Start the game
-//                    game.setScreen(new GamePlayScreen(
-//                            inputProvider,
-//                            graphicsProvider,
-//                            game,
-//                            assetManager, configProvider ));
+                    game.setScreen(new GamePlayScreen(
+                            inputProvider,
+                            graphicsProvider,
+                            game,
+                            assetManager, configProvider ));
                     // This screen is created with the menu, because preferences for GameSaveLoader
                     // is very slow.
-                    game.setScreen(gamePlayScreen);
+//                    game.setScreen(gamePlayScreen);
                     break;
                 case 1: // Settings
                     // Open the settings screen
