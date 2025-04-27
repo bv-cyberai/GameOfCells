@@ -92,11 +92,12 @@ public class TestGameLoaderSaver {
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
         Preferences mockPrefs = mock(Preferences.class);
-        when(mockPrefs.getBoolean("smallSizeUpgrade", true)).thenReturn(true);
-        when(mockPrefs.getBoolean("hasMitochondria", true)).thenReturn(true);
-        when(mockPrefs.getInteger("cellHealth", 50)).thenReturn(50);
-        when(mockPrefs.getInteger("cellATP", 60)).thenReturn(60);
-        when(mockPrefs.getFloat("cellSize",200f)).thenReturn(200f);
+        when(mockPrefs.getBoolean("smallSize")).thenReturn(true);
+        when(mockPrefs.getBoolean("mito")).thenReturn(true);
+        when(mockPrefs.getInteger("cellHealth")).thenReturn(50);
+        when(mockPrefs.getInteger("cellATP")).thenReturn(60);
+        when(mockPrefs.getFloat("cellSize")).thenReturn(200f);
+        gameLoaderSaver.setUpMockPrefrences(mockPrefs);
 
         var cell = currentGamePlayScreen.getCell();
 
