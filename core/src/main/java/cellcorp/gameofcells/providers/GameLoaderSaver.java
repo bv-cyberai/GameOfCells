@@ -26,18 +26,6 @@ public class GameLoaderSaver {
     Preferences saveGame;
 
 
-
-    public GameLoaderSaver(Cell cell,
-                           GlucoseManager glucoseManager,
-                           Stats stats,
-                           HudStats hudStats) {
-        this.cell = cell;
-        this.glucoseManager =glucoseManager;
-        this.stats = stats;
-        this.hudStats = hudStats;
-        saveGame = Gdx.app.getPreferences("saveGame");
-    }
-
     public GameLoaderSaver(GamePlayScreen gamePlayScreen) {
         this.cell = gamePlayScreen.getCell();
         this.glucoseManager = gamePlayScreen.getGlucoseManager();
@@ -54,20 +42,20 @@ public class GameLoaderSaver {
     public void saveState() {
         //cell state
         saveGame.putInteger("cellHealth", cell.getCellHealth());
-        saveGame.putInteger("currATP", cell.getCellATP());
+        saveGame.putInteger("cellATP", cell.getCellATP());
         saveGame.putFloat("cellSize", cell.getCellSize());
 
         //size
-        saveGame.putBoolean("smallSize",cell.hasSmallSizeUpgrade());
-        saveGame.putBoolean("mediumSize",cell.hasMediumSizeUpgrade());
-        saveGame.putBoolean("largeSize",cell.hasLargeSizeUpgrade());
-        saveGame.putBoolean("massiveSize",cell.hasMassiveSizeUpgrade());
+        saveGame.putBoolean("smallSize", cell.hasSmallSizeUpgrade());
+        saveGame.putBoolean("mediumSize", cell.hasMediumSizeUpgrade());
+        saveGame.putBoolean("largeSize", cell.hasLargeSizeUpgrade());
+        saveGame.putBoolean("massiveSize", cell.hasMassiveSizeUpgrade());
 
         //organelles
-        saveGame.putBoolean("mito",cell.hasMitochondria());
-        saveGame.putBoolean("ribo",cell.hasRibosomes());
-        saveGame.putBoolean("flag",cell.hasFlagella());
-        saveGame.putBoolean("nuke",cell.hasNucleus());
+        saveGame.putBoolean("mito", cell.hasMitochondria());
+        saveGame.putBoolean("ribo", cell.hasRibosomes());
+        saveGame.putBoolean("flag", cell.hasFlagella());
+        saveGame.putBoolean("nuke", cell.hasNucleus());
 
         //stats state
         saveGame.putInteger("atpGen", stats.atpGenerated);
@@ -76,26 +64,19 @@ public class GameLoaderSaver {
         saveGame.putFloat("time", stats.gameTimer);
 
         //Pop-up States
-
-            saveGame.putBoolean("glukePopup", glucoseCollisionPopup.wasShown());
-            saveGame.putBoolean("acidPopup", acidZonePopup.wasShown());
-
-            saveGame.putBoolean("basicPopup", basicZonePopup.wasShown());
-
-            saveGame.putBoolean("healPopup", healAvailablePopup.wasShown());
-
-
-            saveGame.putBoolean("membranePopup", cellMembranePopup.wasShown());
-
+        saveGame.putBoolean("glukePopup", glucoseCollisionPopup.wasShown());
+        saveGame.putBoolean("acidPopup", acidZonePopup.wasShown());
+        saveGame.putBoolean("basicPopup", basicZonePopup.wasShown());
+        saveGame.putBoolean("healPopup", healAvailablePopup.wasShown());
+        saveGame.putBoolean("membranePopup", cellMembranePopup.wasShown());
 
         saveGame.flush();
     }
 
     public void loadState() {
         //cell state
-
         cell.setCellHealth(saveGame.getInteger("cellHealth"));
-        cell.setCellATP(saveGame.getInteger("currATP"));
+        cell.setCellATP(saveGame.getInteger("cellATP"));
         cell.setCellSize(saveGame.getFloat("cellSize"));
 
         //size
@@ -110,7 +91,6 @@ public class GameLoaderSaver {
         cell.setHasFlagella(saveGame.getBoolean("flag"));
         cell.setHasNucleus(saveGame.getBoolean("nuke"));
 
-
         //stats state
         stats.atpGenerated = saveGame.getInteger("atpGen");
         stats.glucoseCollected = saveGame.getInteger("glukeCollected");
@@ -118,12 +98,16 @@ public class GameLoaderSaver {
         stats.gameTimer = saveGame.getFloat("time");
 
         //Pop-up States
-
         glucoseCollisionPopup.setWasShone(saveGame.getBoolean("glukePopup"));
         acidZonePopup.setWasShone(saveGame.getBoolean("acidPopup"));
         basicZonePopup.setWasShone(saveGame.getBoolean("basicPoup"));
         healAvailablePopup.setWasShone(saveGame.getBoolean("healPopup"));
         cellMembranePopup.setWasShone(saveGame.getBoolean("membranePopup"));
 
+    }
+
+
+    public void setUpMockPrefrences(Preferences mockedSaveGame) {
+        saveGame = mockedSaveGame;
     }
 }

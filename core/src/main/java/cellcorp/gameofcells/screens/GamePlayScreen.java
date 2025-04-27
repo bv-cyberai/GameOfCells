@@ -911,4 +911,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public PopupInfoScreen getCellMembranePopup () {
         return cellMembranePopup;
     }
+
+    public GameLoaderSaver getGameLoaderSaver() {
+        return gameLoaderSaver;
+    }
 }
