@@ -197,7 +197,7 @@ public class TestGameLoaderSaver {
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
         gameLoaderSaver.injectFakePreferences(new FakePreferences());
-//        GameLoaderSaver.clearSaveFile();
+        GameLoaderSaver.clearSaveFile();
         Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
 

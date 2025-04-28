@@ -43,6 +43,7 @@ public class GameLoaderSaver {
 
         //auto save flag.
         hasNotAutoSaved = false;
+
         //The actual saved game file. If this file does not exit, it is made.
         //If it exists, it is overwritten.
         //The data is stored as a map/xml file. See
@@ -86,6 +87,7 @@ public class GameLoaderSaver {
         saveGame.putBoolean("healPopup", healAvailablePopup.wasShown());
         saveGame.putBoolean("membranePopup", cellMembranePopup.wasShown());
 
+        //Writes to the file.
         saveGame.flush();
     }
 

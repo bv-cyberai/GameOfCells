@@ -75,8 +75,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
     private final Texture wasdArrowsIcon;
     private final Texture spaceEnterIcon;
 
-    private GamePlayScreen gamePlayScreen;
-
     // Inactivity timer
     // This timer tracks the time since the last user input
     private float inactivityTimer = 0f;
@@ -240,9 +238,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             graphicsProvider,
                             game,
                             assetManager, configProvider ));
-                    // This screen is created with the menu, because preferences for GameSaveLoader
-                    // is very slow.
-//                    game.setScreen(gamePlayScreen);
                     break;
                 case 1: // Settings
                     // Open the settings screen
