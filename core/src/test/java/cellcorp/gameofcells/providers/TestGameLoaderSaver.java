@@ -17,7 +17,6 @@ import java.util.Set;
 
 import static java.lang.Integer.getInteger;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class TestGameLoaderSaver {
     @BeforeAll
@@ -93,7 +92,7 @@ public class TestGameLoaderSaver {
         var currentGamePlayScreen = (GamePlayScreen) screen;
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
-        gameLoaderSaver.setUpMockPreferences(new FakePreferences());
+        gameLoaderSaver.injectFakePreferences(new FakePreferences());
         Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
 
@@ -179,6 +178,8 @@ public class TestGameLoaderSaver {
         assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());
         assertFalse(currentGamePlayScreen.getAcidZonePopup().wasShown());
         assertFalse(currentGamePlayScreen.getBasicZonePopup().wasShown());
+
+
 
     }
 

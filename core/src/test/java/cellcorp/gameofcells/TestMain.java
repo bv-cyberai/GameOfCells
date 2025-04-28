@@ -5,6 +5,7 @@ import cellcorp.gameofcells.objects.Glucose;
 import cellcorp.gameofcells.objects.Stats;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.FakePreferences;
+import cellcorp.gameofcells.providers.GameLoaderSaver;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
@@ -94,7 +95,11 @@ public class TestMain {
         if (Gdx.app != null) {
             Gdx.app.exit();
         }
+        GameLoaderSaver.clearSaveFile();
+
     }
+
+
 
     public AssetManager createMockAssetManager() {
         var assetManager = Mockito.mock(AssetManager.class);
@@ -763,7 +768,7 @@ public class TestMain {
         var currentGamePlayScreen = (GamePlayScreen) screen;
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
-        gameLoaderSaver.setUpMockPreferences(new FakePreferences());
+        gameLoaderSaver.injectFakePreferences(new FakePreferences());
         Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
 

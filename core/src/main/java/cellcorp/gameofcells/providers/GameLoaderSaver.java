@@ -13,7 +13,7 @@ import com.badlogic.gdx.Preferences;
  * auto save functionality on nucleus purchase.
  */
 public class GameLoaderSaver {
-    private Preferences saveGame;
+    private static Preferences saveGame;
 
     private final Cell cell;
     private final Stats stats;
@@ -95,7 +95,11 @@ public class GameLoaderSaver {
      * loads the state of the game.
      */
     public void loadState() {
-
+        System.out.println(GameLoaderSaver.saveGame.get().isEmpty());
+        if(isInvalidSaveFile()) {
+            System.out.println("BAD SAVE!");
+            return;
+        }
         //cell state
         cell.setCellHealth(saveGame.getInteger("cellHealth"));
         cell.setCellATP(saveGame.getInteger("cellATP"));
@@ -128,8 +132,14 @@ public class GameLoaderSaver {
 
     }
 
-    public boolean checkForValidSaveFile() {
-        return false;
+    public boolean isInvalidSaveFile() {
+        return saveGame.get().isEmpty();
+    }
+
+    public static void clearSaveFile() {
+        saveGame.get().clear();
+        saveGame.clear();
+        saveGame.flush();
     }
 
     /**
@@ -151,7 +161,7 @@ public class GameLoaderSaver {
      * run with a fake preferences object to check logic.
      * @param fakePreferences The fake object.
      */
-    public void setUpMockPreferences(Preferences fakePreferences) {
+    public void injectFakePreferences(Preferences fakePreferences) {
         saveGame = fakePreferences;
     }
 }
