@@ -95,6 +95,7 @@ public class GameLoaderSaver {
      * loads the state of the game.
      */
     public void loadState() {
+
         //cell state
         cell.setCellHealth(saveGame.getInteger("cellHealth"));
         cell.setCellATP(saveGame.getInteger("cellATP"));
@@ -125,6 +126,10 @@ public class GameLoaderSaver {
         healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup"));
         cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup"));
 
+    }
+
+    public boolean checkForValidSaveFile() {
+        return false;
     }
 
     /**
