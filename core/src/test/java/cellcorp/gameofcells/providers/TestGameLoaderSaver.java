@@ -15,9 +15,9 @@ import org.mockito.Mockito;
 
 import java.util.Set;
 
+import static java.lang.Integer.getInteger;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TestGameLoaderSaver {
     @BeforeAll
@@ -78,6 +78,7 @@ public class TestGameLoaderSaver {
         Mockito.when(fileHandle.readString()).thenReturn(mockConfig);
         Mockito.when(Gdx.files.internal(Mockito.anyString())).thenReturn(fileHandle);
     }
+
     @Test
     public void testSaveThenLoad() {
         var gameRunner = GameRunner.create();
@@ -86,13 +87,169 @@ public class TestGameLoaderSaver {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
 
-        // Make sure we're on the gameplay screen, and that some glucose have spawned
+        // Make sure we're on the gameplay screen
+        var screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+        var currentGamePlayScreen = (GamePlayScreen) screen;
+
+        var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
+        gameLoaderSaver.setUpMockPrefrences(new FakePreferences());
+        Stats stats = currentGamePlayScreen.stats;
+        var cell = currentGamePlayScreen.getCell();
+
+        //Setup cell state
+
+        cell.setCellHealth(50);
+        cell.setCellATP(60);
+        cell.setCellSize(100);
+
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(false);
+        cell.setHasMassiveSizeUpgrade(false);
+
+        cell.setHasMitochondria(true);
+        cell.setHasRibosomes(true);
+        cell.setHasFlagella(false);
+        cell.setHasNucleus(false);
+
+        stats.atpGenerated = 40;
+        stats.gameTimer = 40f;
+        stats.distanceMoved = 35f;
+        stats.glucoseCollected = 20;
+
+        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShone(true);
+        currentGamePlayScreen.getCellMembranePopup().setWasShone(true);
+
+        //Save
+        gameLoaderSaver.saveState();
+
+        //Change State
+        cell.setCellHealth(70);
+        cell.setCellATP(70);
+        cell.setCellSize(90);
+
+        cell.setHasSmallSizeUpgrade(false);
+        cell.setHasMediumSizeUpgrade(false);
+        cell.setHasLargeSizeUpgrade(false);
+        cell.setHasMassiveSizeUpgrade(false);
+
+        cell.setHasMitochondria(false);
+        cell.setHasRibosomes(false);
+        cell.setHasFlagella(false);
+        cell.setHasNucleus(false);
+
+        stats.atpGenerated = 50;
+        stats.gameTimer = 50f;
+        stats.distanceMoved = 45f;
+        stats.glucoseCollected = 30;
+
+        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShone(false);
+        currentGamePlayScreen.getCellMembranePopup().setWasShone(false);
+
+        //Load State
+        gameLoaderSaver.loadState();
+
+        //Verify Load
+
+        assertEquals(50, cell.getCellHealth());
+        assertEquals(60, cell.getCellATP());
+        assertEquals(100f,cell.getCellSize());
+
+        assertTrue(cell.hasSmallSizeUpgrade());
+        assertTrue(cell.hasMediumSizeUpgrade());
+        assertFalse(cell.hasLargeSizeUpgrade());
+        assertFalse(cell.hasMassiveSizeUpgrade());
+
+        assertTrue(cell.hasMitochondria());
+        assertTrue(cell.hasRibosomes());
+        assertFalse(cell.hasFlagella());
+        assertFalse(cell.hasNucleus());
+
+        assertEquals(40, stats.atpGenerated);
+        assertEquals(40,stats.gameTimer);
+        assertEquals(35,stats.distanceMoved);
+        assertEquals(20,stats.glucoseCollected);
+
+
+
+        assertTrue(currentGamePlayScreen.getHealAvailablePopup().wasShown());
+        assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());
+        assertFalse(currentGamePlayScreen.getAcidZonePopup().wasShown());
+        assertFalse(currentGamePlayScreen.getBasicZonePopup().wasShown());
+
+
+    }
+    @Test
+    public void testSave() {
+        var gameRunner = GameRunner.create();
+
+        // Hold down space and step forward a frame.
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Make sure we're on the gameplay screen
         var screen = gameRunner.game.getScreen();
         assertInstanceOf(GamePlayScreen.class, screen);
         var currentGamePlayScreen = (GamePlayScreen) screen;
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
         Preferences mockPrefs = mock(Preferences.class);
+        gameLoaderSaver.setUpMockPrefrences(mockPrefs);
+
+        Stats stats = currentGamePlayScreen.stats;
+        var cell = currentGamePlayScreen.getCell();
+
+        cell.setCellHealth(50);
+        cell.setCellATP(60);
+        cell.setCellSize(100);
+
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(false);
+        cell.setHasMassiveSizeUpgrade(false);
+
+        cell.setHasMitochondria(true);
+        cell.setHasRibosomes(true);
+        cell.setHasFlagella(false);
+        cell.setHasNucleus(false);
+
+        stats.atpGenerated = 40;
+        stats.gameTimer = 40f;
+        stats.distanceMoved = 35f;
+        stats.glucoseCollected = 20;
+
+        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShone(true);
+        currentGamePlayScreen.getCellMembranePopup().setWasShone(true);
+
+        gameLoaderSaver.saveState();
+        System.out.println(mockPrefs.getInteger("cellHealth"));
+//        assertEquals(500,mockPrefs.getInteger("cellHealth"));
+    }
+
+    @Test
+    public void testLoad() {
+        var gameRunner = GameRunner.create();
+
+        // Hold down space and step forward a frame.
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Make sure we're on the gameplay screen
+        var screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+        var currentGamePlayScreen = (GamePlayScreen) screen;
+
+        var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
+        Preferences mockPrefs = mock(Preferences.class);
+        gameLoaderSaver.setUpMockPrefrences(mockPrefs);
+
         when(mockPrefs.getInteger("cellHealth")).thenReturn(50);
         when(mockPrefs.getInteger("cellATP")).thenReturn(60);
         when(mockPrefs.getFloat("cellSize")).thenReturn(200f);
@@ -116,8 +273,6 @@ public class TestGameLoaderSaver {
         when(mockPrefs.getBoolean("acidPopup")).thenReturn(false);
         when(mockPrefs.getBoolean("healPopup")).thenReturn(true);
         when(mockPrefs.getBoolean("membranePopup")).thenReturn(true);
-
-        gameLoaderSaver.setUpMockPrefrences(mockPrefs);
 
         Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
@@ -156,12 +311,6 @@ public class TestGameLoaderSaver {
         assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());
         assertFalse(currentGamePlayScreen.getAcidZonePopup().wasShown());
         assertFalse(currentGamePlayScreen.getBasicZonePopup().wasShown());
-
-
-
-
-
-
 
     }
 }
