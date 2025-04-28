@@ -68,12 +68,12 @@ public class TestGameLoaderSaver {
 
         // Return fake config string that has valid values
         String mockConfig = """
-                    cellHealth:100
-                    cellATP:30
-                    maxHealth:100
-                    maxATP:100
-                    [descriptions]/
-                """;
+                cellHealth:100
+                cellATP:30
+                maxHealth:100
+                maxATP:100
+                [descriptions]/
+            """;
 
         Mockito.when(fileHandle.readString()).thenReturn(mockConfig);
         Mockito.when(Gdx.files.internal(Mockito.anyString())).thenReturn(fileHandle);
@@ -158,7 +158,7 @@ public class TestGameLoaderSaver {
 
         assertEquals(50, cell.getCellHealth());
         assertEquals(60, cell.getCellATP());
-        assertEquals(100f,cell.getCellSize());
+        assertEquals(100f, cell.getCellSize());
 
         assertTrue(cell.hasSmallSizeUpgrade());
         assertTrue(cell.hasMediumSizeUpgrade());
@@ -171,11 +171,9 @@ public class TestGameLoaderSaver {
         assertFalse(cell.hasNucleus());
 
         assertEquals(40, stats.atpGenerated);
-        assertEquals(40,stats.gameTimer);
-        assertEquals(35,stats.distanceMoved);
-        assertEquals(20,stats.glucoseCollected);
-
-
+        assertEquals(40, stats.gameTimer);
+        assertEquals(35, stats.distanceMoved);
+        assertEquals(20, stats.glucoseCollected);
 
         assertTrue(currentGamePlayScreen.getHealAvailablePopup().wasShown());
         assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());
@@ -184,6 +182,7 @@ public class TestGameLoaderSaver {
 
 
     }
+
     @Test
     public void testSave() {
         var gameRunner = GameRunner.create();
@@ -290,7 +289,7 @@ public class TestGameLoaderSaver {
 
         assertEquals(50, cell.getCellHealth());
         assertEquals(60, cell.getCellATP());
-        assertEquals(200f,cell.getCellSize());
+        assertEquals(200f, cell.getCellSize());
 
         assertTrue(cell.hasSmallSizeUpgrade());
         assertFalse(cell.hasMediumSizeUpgrade());
@@ -303,9 +302,9 @@ public class TestGameLoaderSaver {
         assertFalse(cell.hasNucleus());
 
         assertEquals(10, stats.atpGenerated);
-        assertEquals(9,stats.glucoseCollected);
-        assertEquals(8,stats.distanceMoved);
-        assertEquals(7,stats.gameTimer);
+        assertEquals(9, stats.glucoseCollected);
+        assertEquals(8, stats.distanceMoved);
+        assertEquals(7, stats.gameTimer);
 
         assertTrue(currentGamePlayScreen.getHealAvailablePopup().wasShown());
         assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());

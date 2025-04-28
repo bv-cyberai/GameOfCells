@@ -109,7 +109,7 @@ public class GameLoaderSaver {
     }
 
     public void update() {
-        if(cell.hasNucleus() && !hasNotAutoSaved) {
+        if (cell.hasNucleus() && !hasNotAutoSaved) {
             saveState();
             hasNotAutoSaved = true;
         }

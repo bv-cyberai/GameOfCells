@@ -99,6 +99,7 @@ public class FakePreferences implements Preferences {
     }
 
     //Not needed
+
     /**
      * Returns a read only Map<String, Object> with all the key, objects of the preferences.
      */
