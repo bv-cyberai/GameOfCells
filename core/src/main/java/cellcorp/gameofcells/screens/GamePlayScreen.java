@@ -673,7 +673,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         float camX = camera.position.x;
         float camY = camera.position.y;
 
-        float pulse = 0.25f + 0.1f * MathUtils.sin(overlayTime * 4f); // use existing time var
+        float pulse = 0.25f + 0.1f * MathUtils.sin(overlayTime * 2.5f); // use existing time var
         
         batch.begin();
         batch.setColor(1f, 1f, 1f, pulse);
