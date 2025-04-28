@@ -806,10 +806,10 @@ public class TestMain {
         cell.setHasRibosomes(false);
         cell.setHasFlagella(false);
         cell.setHasNucleus(false);
-
+        gameRunner.step();
         //Load State
         gameLoaderSaver.loadState();
-
+        gameRunner.step();
         //Verify Load
         assertTrue(cell.hasSmallSizeUpgrade());
         assertTrue(cell.hasMediumSizeUpgrade());

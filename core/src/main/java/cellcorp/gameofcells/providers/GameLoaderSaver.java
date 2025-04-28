@@ -99,6 +99,7 @@ public class GameLoaderSaver {
         if(isInvalidSaveFile()) {
             return;
         }
+        System.out.println("HERE");
         //cell state
         cell.setCellHealth(saveGame.getInteger("cellHealth"));
         cell.setCellATP(saveGame.getInteger("cellATP"));

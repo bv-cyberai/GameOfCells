@@ -161,7 +161,7 @@ public class FakePreferences implements Preferences {
      */
     @Override
     public Map<String, ?> get() {
-        return Map.of();
+        return data;
     }
 
     //Not needed
@@ -190,4 +190,5 @@ public class FakePreferences implements Preferences {
     @Override
     public void flush() {
     }
+
 }

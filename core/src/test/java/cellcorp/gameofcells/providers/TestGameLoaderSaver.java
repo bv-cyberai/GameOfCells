@@ -179,7 +179,33 @@ public class TestGameLoaderSaver {
         assertFalse(currentGamePlayScreen.getAcidZonePopup().wasShown());
         assertFalse(currentGamePlayScreen.getBasicZonePopup().wasShown());
 
+    }
 
+    @Test
+    //Ensures that an empty save file doesn't load bad data.
+    public void loadWithNoSaveFile() {
+        var gameRunner = GameRunner.create();
+
+        // Hold down space and step forward a frame.
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Make sure we're on the gameplay screen
+        var screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+        var currentGamePlayScreen = (GamePlayScreen) screen;
+
+        var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
+        gameLoaderSaver.injectFakePreferences(new FakePreferences());
+//        GameLoaderSaver.clearSaveFile();
+        Stats stats = currentGamePlayScreen.stats;
+        var cell = currentGamePlayScreen.getCell();
+
+        gameLoaderSaver.loadState();
+        assertEquals(100, cell.getCellHealth());
+        assertFalse(cell.hasSmallSizeUpgrade());
+        assertFalse(cell.hasMitochondria());
+        assertEquals(0, stats.distanceMoved);
 
     }
 
