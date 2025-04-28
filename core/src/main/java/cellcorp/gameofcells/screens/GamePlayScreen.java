@@ -443,6 +443,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 // We want to show the warning only once when entering the acid zone
                 reportAcidZoneCollision();
             }
+            //Checks for nucleus, and will autosave if detected.
+            gameLoaderSaver.update();
         }
     }
 

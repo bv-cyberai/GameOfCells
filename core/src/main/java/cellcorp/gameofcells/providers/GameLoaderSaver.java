@@ -22,6 +22,7 @@ public class GameLoaderSaver {
     PopupInfoScreen basicZonePopup;
     PopupInfoScreen healAvailablePopup;
     PopupInfoScreen cellMembranePopup;
+    boolean hasNotAutoSaved;
 
     Preferences saveGame;
 
@@ -36,6 +37,7 @@ public class GameLoaderSaver {
         this.basicZonePopup = gamePlayScreen.getBasicZonePopup();
         this.healAvailablePopup = gamePlayScreen.getHealAvailablePopup();
         this.cellMembranePopup = gamePlayScreen.getCellMembranePopup();
+        hasNotAutoSaved = false;
         saveGame = Gdx.app.getPreferences("saveGame");
     }
 
@@ -104,6 +106,13 @@ public class GameLoaderSaver {
         healAvailablePopup.setWasShone(saveGame.getBoolean("healPopup"));
         cellMembranePopup.setWasShone(saveGame.getBoolean("membranePopup"));
 
+    }
+
+    public void update() {
+        if(cell.hasNucleus() && !hasNotAutoSaved) {
+            saveState();
+            hasNotAutoSaved = true;
+        }
     }
 
 
