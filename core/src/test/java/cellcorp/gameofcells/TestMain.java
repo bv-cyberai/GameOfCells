@@ -2,7 +2,9 @@ package cellcorp.gameofcells;
 
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
+import cellcorp.gameofcells.objects.Stats;
 import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.providers.FakePreferences;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
@@ -747,6 +749,72 @@ public class TestMain {
         System.out.println(flagellaDistanceMoved);
 
         assertTrue(flagellaDistanceMoved > noFlagellaDistanceMoved);
+    }
+    @Test
+    public void testAutoSaveAfterNucleusPurchase() {
+        var gameRunner = GameRunner.create();
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Make sure we're on the gameplay screen
+        var screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+        var currentGamePlayScreen = (GamePlayScreen) screen;
+
+        var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
+        gameLoaderSaver.setUpMockPrefrences(new FakePreferences());
+        Stats stats = currentGamePlayScreen.stats;
+        var cell = currentGamePlayScreen.getCell();
+
+        //Setup cell state
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(true);
+        cell.setHasMassiveSizeUpgrade(true);
+
+        cell.setHasMitochondria(true);
+        cell.setHasRibosomes(true);
+        cell.setHasFlagella(true);
+        cell.setHasNucleus(false);
+
+        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShone(true);
+        currentGamePlayScreen.getCellMembranePopup().setWasShone(true);
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+
+        //simulate buying nucleus
+        cell.setHasNucleus(true);
+        gameRunner.step();
+
+        //Change State
+        cell.setHasSmallSizeUpgrade(false);
+        cell.setHasMediumSizeUpgrade(false);
+        cell.setHasLargeSizeUpgrade(false);
+        cell.setHasMassiveSizeUpgrade(false);
+
+        cell.setHasMitochondria(false);
+        cell.setHasRibosomes(false);
+        cell.setHasFlagella(false);
+        cell.setHasNucleus(false);
+
+        //Load State
+        gameLoaderSaver.loadState();
+
+        //Verify Load
+        assertTrue(cell.hasSmallSizeUpgrade());
+        assertTrue(cell.hasMediumSizeUpgrade());
+        assertTrue(cell.hasLargeSizeUpgrade());
+        assertTrue(cell.hasMassiveSizeUpgrade());
+
+        assertTrue(cell.hasMitochondria());
+        assertTrue(cell.hasRibosomes());
+        assertTrue(cell.hasFlagella());
+        assertTrue(cell.hasNucleus());
+
     }
 
 }
