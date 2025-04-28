@@ -166,11 +166,11 @@ public class PopupInfoScreen {
     }
 
     /**
-     * wasShoneSetter
+     * wasShownSetter
      * Used to prevent duplicate popups during load
      * @param value the value to set wasShone to.
      */
-    public void setWasShone(Boolean value) {
+    public void setWasShown(Boolean value) {
         wasShown = value;
     }
 

@@ -160,8 +160,4 @@ public class HUD implements Disposable {
         backgroudRegion.dispose(); // Dispose of the background texture
         shouldDrawPopup = false; // Reset the flag
     }
-
-    public HudStats getHudStats() {
-        return hudStats;
-    }
 }

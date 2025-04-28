@@ -763,7 +763,7 @@ public class TestMain {
         var currentGamePlayScreen = (GamePlayScreen) screen;
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
-        gameLoaderSaver.setUpMockPrefrences(new FakePreferences());
+        gameLoaderSaver.setUpMockPreferences(new FakePreferences());
         Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
 
@@ -778,10 +778,10 @@ public class TestMain {
         cell.setHasFlagella(true);
         cell.setHasNucleus(false);
 
-        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
-        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
-        currentGamePlayScreen.getHealAvailablePopup().setWasShone(true);
-        currentGamePlayScreen.getCellMembranePopup().setWasShone(true);
+        currentGamePlayScreen.getBasicZonePopup().setWasShown(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShown(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShown(true);
+        currentGamePlayScreen.getCellMembranePopup().setWasShown(true);
 
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
         gameRunner.step();

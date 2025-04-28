@@ -93,7 +93,7 @@ public class TestGameLoaderSaver {
         var currentGamePlayScreen = (GamePlayScreen) screen;
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
-        gameLoaderSaver.setUpMockPrefrences(new FakePreferences());
+        gameLoaderSaver.setUpMockPreferences(new FakePreferences());
         Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
 
@@ -118,10 +118,10 @@ public class TestGameLoaderSaver {
         stats.distanceMoved = 35f;
         stats.glucoseCollected = 20;
 
-        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
-        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
-        currentGamePlayScreen.getHealAvailablePopup().setWasShone(true);
-        currentGamePlayScreen.getCellMembranePopup().setWasShone(true);
+        currentGamePlayScreen.getBasicZonePopup().setWasShown(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShown(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShown(true);
+        currentGamePlayScreen.getCellMembranePopup().setWasShown(true);
 
         //Save
         gameLoaderSaver.saveState();
@@ -146,10 +146,10 @@ public class TestGameLoaderSaver {
         stats.distanceMoved = 45f;
         stats.glucoseCollected = 30;
 
-        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
-        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
-        currentGamePlayScreen.getHealAvailablePopup().setWasShone(false);
-        currentGamePlayScreen.getCellMembranePopup().setWasShone(false);
+        currentGamePlayScreen.getBasicZonePopup().setWasShown(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShown(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShown(false);
+        currentGamePlayScreen.getCellMembranePopup().setWasShown(false);
 
         //Load State
         gameLoaderSaver.loadState();
@@ -198,7 +198,7 @@ public class TestGameLoaderSaver {
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
         Preferences mockPrefs = mock(Preferences.class);
-        gameLoaderSaver.setUpMockPrefrences(mockPrefs);
+        gameLoaderSaver.setUpMockPreferences(mockPrefs);
 
         Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
@@ -222,10 +222,10 @@ public class TestGameLoaderSaver {
         stats.distanceMoved = 35f;
         stats.glucoseCollected = 20;
 
-        currentGamePlayScreen.getBasicZonePopup().setWasShone(false);
-        currentGamePlayScreen.getAcidZonePopup().setWasShone(false);
-        currentGamePlayScreen.getHealAvailablePopup().setWasShone(true);
-        currentGamePlayScreen.getCellMembranePopup().setWasShone(true);
+        currentGamePlayScreen.getBasicZonePopup().setWasShown(false);
+        currentGamePlayScreen.getAcidZonePopup().setWasShown(false);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShown(true);
+        currentGamePlayScreen.getCellMembranePopup().setWasShown(true);
 
         gameLoaderSaver.saveState();
         System.out.println(mockPrefs.getInteger("cellHealth"));
@@ -247,7 +247,7 @@ public class TestGameLoaderSaver {
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
         Preferences mockPrefs = mock(Preferences.class);
-        gameLoaderSaver.setUpMockPrefrences(mockPrefs);
+        gameLoaderSaver.setUpMockPreferences(mockPrefs);
 
         when(mockPrefs.getInteger("cellHealth")).thenReturn(50);
         when(mockPrefs.getInteger("cellATP")).thenReturn(60);

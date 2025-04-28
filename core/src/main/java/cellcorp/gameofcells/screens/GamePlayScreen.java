@@ -154,8 +154,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
 
-    //GameSaver
-    GameLoaderSaver gameLoaderSaver;
+    private final GameLoaderSaver gameLoaderSaver;
 
     /**
      * Constructs the GamePlayScreen.
@@ -235,8 +234,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 Color.BLACK,
                 this::resumeGame
         );
-
-//        gameLoaderSaver = new GameLoaderSaver(playerCell,glucoseManager,stats,hud.getHudStats());
         gameLoaderSaver = new GameLoaderSaver(this);
     }
 
@@ -324,14 +321,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void handleInput(float deltaTimeSeconds) {
 
+        //"L"oad at any time
         if( inputProvider.isKeyJustPressed(Input.Keys.L)){
             gameLoaderSaver.loadState();
-            System.out.println(playerCell.hasSmallSizeUpgrade());
-            System.out.println(playerCell.hasMediumSizeUpgrade());
-            System.out.println(playerCell.hasLargeSizeUpgrade());
-            System.out.println(playerCell.hasMassiveSizeUpgrade());
         }
-
+        //"O"verwrite at any time.
         if(inputProvider.isKeyJustPressed(Input.Keys.O)) {
             gameLoaderSaver.saveState();
         }
@@ -906,14 +900,26 @@ public class GamePlayScreen implements GameOfCellsScreen {
         return basicZonePopup;
     }
 
+    /**
+     * Heal Popup Getter
+     * @return the heal Popup
+     */
     public PopupInfoScreen getHealAvailablePopup() {
         return healAvailablePopup;
     }
 
+    /**
+     * Cell membrane popup getter
+     * @return the cell membrane popup
+     */
     public PopupInfoScreen getCellMembranePopup () {
         return cellMembranePopup;
     }
 
+    /**
+     * GameLoaderSaver Getter
+     * @return The GameLoaderSaver
+     */
     public GameLoaderSaver getGameLoaderSaver() {
         return gameLoaderSaver;
     }

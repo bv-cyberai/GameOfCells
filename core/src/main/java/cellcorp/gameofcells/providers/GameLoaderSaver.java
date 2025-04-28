@@ -1,46 +1,60 @@
 package cellcorp.gameofcells.providers;
 
-import cellcorp.gameofcells.hud.HudStats;
 import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.objects.GlucoseManager;
 import cellcorp.gameofcells.objects.Stats;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import cellcorp.gameofcells.screens.PopupInfoScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
-
+/**
+ * Class that allows loading and
+ * saving of GameOfCells. Also provides
+ * auto save functionality on nucleus purchase.
+ */
 public class GameLoaderSaver {
+    private Preferences saveGame;
 
-    Cell cell;
-    GlucoseManager glucoseManager;
-    Stats stats;
-    HudStats hudStats;
+    private final Cell cell;
+    private final Stats stats;
 
-    PopupInfoScreen glucoseCollisionPopup;
-    PopupInfoScreen acidZonePopup;
-    PopupInfoScreen basicZonePopup;
-    PopupInfoScreen healAvailablePopup;
-    PopupInfoScreen cellMembranePopup;
-    boolean hasNotAutoSaved;
+    private final PopupInfoScreen glucoseCollisionPopup;
+    private final PopupInfoScreen acidZonePopup;
+    private final PopupInfoScreen basicZonePopup;
+    private final PopupInfoScreen healAvailablePopup;
+    private final PopupInfoScreen cellMembranePopup;
+    private boolean hasNotAutoSaved;
 
-    Preferences saveGame;
-
-
+    /**
+     * Constructor
+     *
+     * From the game state, pulls various objects that track game state
+     * to save.
+     * @param gamePlayScreen The game state
+     */
     public GameLoaderSaver(GamePlayScreen gamePlayScreen) {
         this.cell = gamePlayScreen.getCell();
-        this.glucoseManager = gamePlayScreen.getGlucoseManager();
         this.stats = gamePlayScreen.getStats();
-        this.hudStats = gamePlayScreen.getHUD().getHudStats();
         this.glucoseCollisionPopup = gamePlayScreen.getGlucoseCollisionPopup();
         this.acidZonePopup = gamePlayScreen.getAcidZonePopup();
         this.basicZonePopup = gamePlayScreen.getBasicZonePopup();
         this.healAvailablePopup = gamePlayScreen.getHealAvailablePopup();
         this.cellMembranePopup = gamePlayScreen.getCellMembranePopup();
+
+        //auto save flag.
         hasNotAutoSaved = false;
+        //The actual saved game file. If this file does not exit, it is made.
+        //If it exists, it is overwritten.
+        //The data is stored as a map/xml file. See
+        //https://libgdx.com/wiki/preferences for full details.
         saveGame = Gdx.app.getPreferences("saveGame");
     }
 
+    /**
+     * saveState
+     *
+     * Saves the state of the game.
+     */
     public void saveState() {
         //cell state
         saveGame.putInteger("cellHealth", cell.getCellHealth());
@@ -75,6 +89,11 @@ public class GameLoaderSaver {
         saveGame.flush();
     }
 
+    /**
+     * loadState
+     *
+     * loads the state of the game.
+     */
     public void loadState() {
         //cell state
         cell.setCellHealth(saveGame.getInteger("cellHealth"));
@@ -100,14 +119,19 @@ public class GameLoaderSaver {
         stats.gameTimer = saveGame.getFloat("time");
 
         //Pop-up States
-        glucoseCollisionPopup.setWasShone(saveGame.getBoolean("glukePopup"));
-        acidZonePopup.setWasShone(saveGame.getBoolean("acidPopup"));
-        basicZonePopup.setWasShone(saveGame.getBoolean("basicPoup"));
-        healAvailablePopup.setWasShone(saveGame.getBoolean("healPopup"));
-        cellMembranePopup.setWasShone(saveGame.getBoolean("membranePopup"));
+        glucoseCollisionPopup.setWasShown(saveGame.getBoolean("glukePopup"));
+        acidZonePopup.setWasShown(saveGame.getBoolean("acidPopup"));
+        basicZonePopup.setWasShown(saveGame.getBoolean("basicPoup"));
+        healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup"));
+        cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup"));
 
     }
 
+    /**
+     * Update
+     *
+     * Used for autosaving the game.
+     */
     public void update() {
         if (cell.hasNucleus() && !hasNotAutoSaved) {
             saveState();
@@ -115,8 +139,14 @@ public class GameLoaderSaver {
         }
     }
 
-
-    public void setUpMockPrefrences(Preferences mockedSaveGame) {
-        saveGame = mockedSaveGame;
+    /**
+     * Preference Injector
+     *
+     * Allows changing the preference object so that tests can be
+     * run with a fake preferences object to check logic.
+     * @param fakePreferences The fake object.
+     */
+    public void setUpMockPreferences(Preferences fakePreferences) {
+        saveGame = fakePreferences;
     }
 }
