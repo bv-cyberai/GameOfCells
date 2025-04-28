@@ -150,12 +150,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private Texture vignetteLowHealth; // Texture for low health warning
     private float overlayTime = 0f; // Time for the floating overlay animation
 
-    // Floating arrow fields
-    private Texture arrowTexture;
-    private float arrowAngle = 0f;
-    private float arrowRadius = 80f; // orbit radius
-
-    private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Zoom fields
     private final float originalZoom = 1.2f; // Original zoom level
     private final float targetZoom = 0.8f; // Target zoom level
@@ -208,7 +202,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         parallaxNear = assetManager.get(AssetFileNames.PARALLAX_NEAR, Texture.class);
         floatingOverlay = assetManager.get(AssetFileNames.FLOATING_OVERLAY, Texture.class);
         vignetteLowHealth = assetManager.get(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
-        arrowTexture = assetManager.get(AssetFileNames.ARROW_TO_BASIC_ZONE, Texture.class);
+        
         
 
         this.glucoseCollisionPopup = new PopupInfoScreen(
@@ -473,9 +467,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Draw core game objects
         drawGameObjects(batch, shapeRenderer);
 
-        // Draw floating basic zone arrow
-        drawFloatingBasicZoneArrow(Gdx.graphics.getDeltaTime());
-
         // Draw low ATP warning
         drawLowHealthVignette();
 
@@ -619,53 +610,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
     }
-    
-
-    /**
-     * Draws an arrow pointing to the nearest basic zone.
-     * The arrow will fade out as the player approaches the zone.
-     *
-     * @param delta Time since the last frame.
-     */
-    private void drawFloatingBasicZoneArrow(float delta) {
-        if (playerCell.getCellATP() > 30 || isInBasicZone(playerCell.getX(), playerCell.getY()))
-            return;
-    
-        Vector2 target = getNearestBasicZoneCenter();
-        Vector2 cellPos = new Vector2(playerCell.getX(), playerCell.getY());
-        Vector2 dir = new Vector2(target).sub(cellPos);
-    
-        float distance = dir.len();
-        float alpha = MathUtils.clamp(distance / 500f, 0f, 1f); // fade as you approach
-        if (distance < 5f) return; // if too close, don't show arrow
-    
-        float cellRadius = playerCell.getCellSize() / 2f;
-        dir.nor().scl(cellRadius + 40f); // Distance in front of the cell
-
-        Vector2 arrowPos = cellPos.cpy().add(dir);
-        float angle = dir.angleDeg();
-    
-        // Size up the arrow
-        float scale = MathUtils.clamp(playerCell.getCellSize() / 50f, 1.5f, 3f);
-        float arrowWidth = 16f * scale;
-        float arrowHeight = 16f * scale;
-    
-        batch.begin();
-        batch.setColor(1f, 1f, 1f, alpha);
-        batch.draw(
-            arrowTexture,
-            arrowPos.x - arrowWidth / 2, arrowPos.y - arrowHeight / 2, // position
-            arrowWidth / 2, arrowHeight / 2, // origin
-            arrowWidth, arrowHeight, // size
-            1f, 1f, // scale
-            angle, // rotation
-            0, 0,
-            arrowTexture.getWidth(), arrowTexture.getHeight(),
-            false, false
-        );
-        batch.setColor(1f, 1f, 1f, 1f);
-        batch.end();
-    }
 
     private void drawLowHealthVignette() {
         if (playerCell.getCellHealth() > 20) return;
@@ -757,7 +701,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Get the nearest basic zone center.
      * This is used for displaying the basic zone warning.
      */
-    private Vector2 getNearestBasicZoneCenter() {
+    protected Vector2 getNearestBasicZoneCenter() {
         ZoneManager zoneManager = spawnManager.getZoneManager(); // assuming you already have spawnManager
     
         float cellX = playerCell.getX();
@@ -1117,6 +1061,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public Camera getCamera() {
         return camera;
+    }
+
+    /**
+     * For test use only.
+     */
+    public SpriteBatch getSpriteBatch() {
+        return batch;
     }
 
     /**

@@ -13,6 +13,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
@@ -43,16 +46,19 @@ public class HUD implements Disposable {
     private final NotificationManager notificationManager;
     private final GlyphLayout popupLayout = new GlyphLayout();
     private final SpriteBatch popupSpriteBatch;
+    private final GamePlayScreen gamePlayScreen;
     // Popup info variables
     private final Viewport viewport;
     private boolean shouldDrawPopup = false;
     private String popupMessage;
     private float popupX, popupY, popupWidth, popupHeight;
     private Color popupColor;
+    private Texture arrowTexture;
 
     public HUD(GraphicsProvider graphicsProvider, AssetManager assetManager, GamePlayScreen gamePlayScreen, Stats stats) {
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
+        this.gamePlayScreen = gamePlayScreen;
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
         this.stage = new Stage(viewport, graphicsProvider.createSpriteBatch());
 
@@ -69,6 +75,7 @@ public class HUD implements Disposable {
         }
 
         popupSpriteBatch = graphicsProvider.createSpriteBatch();
+        arrowTexture = assetManager.get(AssetFileNames.ARROW_TO_BASIC_ZONE, Texture.class);
     }
 
     private Table table(Table statsTable, Table barsTable, Table iconsTable, Table notificationsTable) {
@@ -110,6 +117,7 @@ public class HUD implements Disposable {
     public void draw() {
         stage.draw();
         drawPopup(popupSpriteBatch);
+        drawArrow(Gdx.graphics.getDeltaTime(), gamePlayScreen.getSpriteBatch());
     }
 
     @Override
@@ -159,5 +167,50 @@ public class HUD implements Disposable {
 
         backgroudRegion.dispose(); // Dispose of the background texture
         shouldDrawPopup = false; // Reset the flag
+    }
+
+    /**
+     * Draws an arrow pointing towards the nearest basic zone.
+     *
+     * @param batch     The sprite batch to draw with.
+     */
+    public void drawArrow(float deltaTime, SpriteBatch batch) {
+        if (gamePlayScreen.getCell().getCellATP() > 30 || gamePlayScreen.isInBasicZone(gamePlayScreen.getCell().getX(), gamePlayScreen.getCell().getY()))
+            return;
+    
+        Vector2 target = gamePlayScreen.getNearestBasicZoneCenter();
+        Vector2 cellPos = new Vector2(gamePlayScreen.getCell().getX(), gamePlayScreen.getCell().getY());
+        Vector2 dir = new Vector2(target).sub(cellPos);
+    
+        float distance = dir.len();
+        float alpha = MathUtils.clamp(distance / 500f, 0f, 1f); // fade as you approach
+        if (distance < 5f) return; // if too close, don't show arrow
+    
+        float cellRadius = gamePlayScreen.getCell().getCellSize() / 2f;
+        dir.nor().scl(cellRadius + 40f); // Distance in front of the cell
+
+        Vector2 arrowPos = cellPos.cpy().add(dir);
+        float angle = dir.angleDeg();
+    
+        // Size up the arrow
+        float scale = MathUtils.clamp(gamePlayScreen.getCell().getCellSize() / 50f, 1.5f, 3f);
+        float arrowWidth = 16f * scale;
+        float arrowHeight = 16f * scale;
+    
+        batch.begin();
+        batch.setColor(1f, 1f, 1f, alpha);
+        batch.draw(
+            arrowTexture,
+            arrowPos.x - arrowWidth / 2, arrowPos.y - arrowHeight / 2, // position
+            arrowWidth / 2, arrowHeight / 2, // origin
+            arrowWidth, arrowHeight, // size
+            1f, 1f, // scale
+            angle, // rotation
+            0, 0,
+            arrowTexture.getWidth(), arrowTexture.getHeight(),
+            false, false
+        );
+        batch.setColor(1f, 1f, 1f, 1f);
+        batch.end();
     }
 }
