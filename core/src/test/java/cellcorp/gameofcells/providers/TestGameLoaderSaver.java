@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.providers;
 
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.Stats;
 import cellcorp.gameofcells.runner.GameRunner;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.*;
@@ -92,40 +93,73 @@ public class TestGameLoaderSaver {
 
         var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
         Preferences mockPrefs = mock(Preferences.class);
-        when(mockPrefs.getBoolean("smallSize")).thenReturn(true);
-        when(mockPrefs.getBoolean("mito")).thenReturn(true);
         when(mockPrefs.getInteger("cellHealth")).thenReturn(50);
         when(mockPrefs.getInteger("cellATP")).thenReturn(60);
         when(mockPrefs.getFloat("cellSize")).thenReturn(200f);
+
+        when(mockPrefs.getBoolean("smallSize")).thenReturn(true);
+        when(mockPrefs.getBoolean("mediumSize")).thenReturn(false);
+        when(mockPrefs.getBoolean("largeSize")).thenReturn(false);
+        when(mockPrefs.getBoolean("massiveSize")).thenReturn(false);
+
+        when(mockPrefs.getBoolean("mito")).thenReturn(true);
+        when(mockPrefs.getBoolean("ribo")).thenReturn(false);
+        when(mockPrefs.getBoolean("flag")).thenReturn(false);
+        when(mockPrefs.getBoolean("nuke")).thenReturn(false);
+
+        when(mockPrefs.getInteger("atpGen")).thenReturn(10);
+        when(mockPrefs.getInteger("glukeCollected")).thenReturn(9);
+        when(mockPrefs.getFloat("distanceMoved")).thenReturn(8f);
+        when(mockPrefs.getFloat("time")).thenReturn(7f);
+
+        when(mockPrefs.getBoolean("glukePopup")).thenReturn(false);
+        when(mockPrefs.getBoolean("acidPopup")).thenReturn(false);
+        when(mockPrefs.getBoolean("healPopup")).thenReturn(true);
+        when(mockPrefs.getBoolean("membranePopup")).thenReturn(true);
+
         gameLoaderSaver.setUpMockPrefrences(mockPrefs);
 
+        Stats stats = currentGamePlayScreen.stats;
         var cell = currentGamePlayScreen.getCell();
 
-        //Set up a cell to save
-        cell.setHasSmallSizeUpgrade(true);
-        cell.setHasMitochondria(true);
-
+        //Set up a game state different from the saved state
         cell.setCellHealth(50);
         cell.setCellATP(60);
-
-        //Save
-//        gameLoaderSaver.saveState();
-
-        //Reset Values
-        cell.setHasSmallSizeUpgrade(false);
-        cell.setHasMitochondria(false);
-
-        cell.setCellHealth(100);
-        cell.setCellATP(100);
+        stats.atpGenerated = 40;
+        stats.gameTimer = 40f;
+        stats.distanceMoved = 35f;
+        stats.glucoseCollected = 20;
 
         //Load
         gameLoaderSaver.loadState();
 
-        assertTrue(cell.hasSmallSizeUpgrade());
-        assertTrue(cell.hasMitochondria());
         assertEquals(50, cell.getCellHealth());
         assertEquals(60, cell.getCellATP());
         assertEquals(200f,cell.getCellSize());
+
+        assertTrue(cell.hasSmallSizeUpgrade());
+        assertFalse(cell.hasMediumSizeUpgrade());
+        assertFalse(cell.hasLargeSizeUpgrade());
+        assertFalse(cell.hasMassiveSizeUpgrade());
+
+        assertTrue(cell.hasMitochondria());
+        assertFalse(cell.hasRibosomes());
+        assertFalse(cell.hasFlagella());
+        assertFalse(cell.hasNucleus());
+
+        assertEquals(10, stats.atpGenerated);
+        assertEquals(9,stats.glucoseCollected);
+        assertEquals(8,stats.distanceMoved);
+        assertEquals(7,stats.gameTimer);
+
+        assertTrue(currentGamePlayScreen.getHealAvailablePopup().wasShown());
+        assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());
+        assertFalse(currentGamePlayScreen.getAcidZonePopup().wasShown());
+        assertFalse(currentGamePlayScreen.getBasicZonePopup().wasShown());
+
+
+
+
 
 
 
