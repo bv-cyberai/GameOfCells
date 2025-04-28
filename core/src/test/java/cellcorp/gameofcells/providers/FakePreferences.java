@@ -38,6 +38,7 @@ public class FakePreferences implements Preferences {
         data.put(key, val);
         return this;
     }
+
     //Not Needed
     @Override
     public Preferences putLong(String key, long val) {
@@ -183,6 +184,7 @@ public class FakePreferences implements Preferences {
     }
 
     //Not needed
+
     /**
      * Makes sure the preferences are persisted.
      */

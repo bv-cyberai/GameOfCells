@@ -37,31 +37,31 @@ public class TestMain {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(
-                new ApplicationListener() {
-                    @Override
-                    public void create() {
-                    }
+            new ApplicationListener() {
+                @Override
+                public void create() {
+                }
 
-                    @Override
-                    public void resize(int width, int height) {
-                    }
+                @Override
+                public void resize(int width, int height) {
+                }
 
-                    @Override
-                    public void render() {
-                    }
+                @Override
+                public void render() {
+                }
 
-                    @Override
-                    public void pause() {
-                    }
+                @Override
+                public void pause() {
+                }
 
-                    @Override
-                    public void resume() {
-                    }
+                @Override
+                public void resume() {
+                }
 
-                    @Override
-                    public void dispose() {
-                    }
-                }, config
+                @Override
+                public void dispose() {
+                }
+            }, config
         );
 
         // Mock the graphics provider
@@ -79,12 +79,12 @@ public class TestMain {
 
         // Return fake config string that has valid values
         String mockConfig = """
-                    cellHealth:100
-                    cellATP:30
-                    maxHealth:100
-                    maxATP:100
-                    [descriptions]/
-                """;
+                cellHealth:100
+                cellATP:30
+                maxHealth:100
+                maxATP:100
+                [descriptions]/
+            """;
 
         Mockito.when(fileHandle.readString()).thenReturn(mockConfig);
         Mockito.when(Gdx.files.internal(Mockito.anyString())).thenReturn(fileHandle);
@@ -101,16 +101,15 @@ public class TestMain {
     }
 
 
-
     public AssetManager createMockAssetManager() {
         var assetManager = Mockito.mock(AssetManager.class);
         var mockFont = Mockito.mock(BitmapFont.class);
         Mockito.when(assetManager.get(Mockito.anyString(), Mockito.eq(BitmapFont.class)))
-                .thenReturn(mockFont);
+            .thenReturn(mockFont);
         Mockito.when(mockFont.getColor())
-                .thenReturn(Color.WHITE);
+            .thenReturn(Color.WHITE);
         Mockito.when(assetManager.get(Mockito.anyString(), Mockito.eq(BitmapFont.class)))
-                .thenReturn(Mockito.mock(BitmapFont.class));
+            .thenReturn(Mockito.mock(BitmapFont.class));
         return assetManager;
     }
 
@@ -300,9 +299,9 @@ public class TestMain {
         var addedGlucose = new ArrayList<Glucose>();
         for (int i = 0; i < 10; i++) {
             addedGlucose.add(new Glucose(
-                    Mockito.mock(AssetManager.class),
-                    cell.getX(),
-                    cell.getY()
+                Mockito.mock(AssetManager.class),
+                cell.getX(),
+                cell.getY()
             ));
         }
         gameGlucose.addAll(addedGlucose);
@@ -756,6 +755,7 @@ public class TestMain {
 
         assertTrue(flagellaDistanceMoved > noFlagellaDistanceMoved);
     }
+
     @Test
     public void testAutoSaveAfterNucleusPurchase() {
         var gameRunner = GameRunner.create();

@@ -98,7 +98,7 @@ public class GameLoaderSaver {
      */
     public void loadState() {
         System.out.println(GameLoaderSaver.saveGame.get().isEmpty());
-        if(isInvalidSaveFile()) {
+        if (isInvalidSaveFile()) {
             return;
         }
         System.out.println("HERE");
