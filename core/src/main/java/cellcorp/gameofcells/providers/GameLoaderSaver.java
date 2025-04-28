@@ -97,7 +97,6 @@ public class GameLoaderSaver {
     public void loadState() {
         System.out.println(GameLoaderSaver.saveGame.get().isEmpty());
         if(isInvalidSaveFile()) {
-            System.out.println("BAD SAVE!");
             return;
         }
         //cell state

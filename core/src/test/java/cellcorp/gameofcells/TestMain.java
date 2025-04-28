@@ -95,6 +95,7 @@ public class TestMain {
         if (Gdx.app != null) {
             Gdx.app.exit();
         }
+        //Clean up save file so test data can't be loaded.
         GameLoaderSaver.clearSaveFile();
 
     }
