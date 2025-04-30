@@ -43,6 +43,7 @@ public class Cell {
     private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
     public static int ATP_HEAL_COST = 5;
     public static int AMOUNT_HEALED = 5;
+    public static int MEMBRANE_DAMAGE_REDUCTION = 1;
     /**
      * Time between applications of zero-ATP damage, in seconds.
      */
@@ -613,6 +614,11 @@ public class Cell {
         } catch (NumberFormatException e) {
             wiggleVelocityMultiplier = 5;
         }
+        try {
+            MEMBRANE_DAMAGE_REDUCTION = configProvider.getIntValue("damageReduction");
+        } catch (NumberFormatException e) {
+            MEMBRANE_DAMAGE_REDUCTION = 2;
+        }
 
     }
 
@@ -783,6 +789,9 @@ public class Cell {
             deathAnimationTime = 0f;
             gamePlayScreen.triggerShake(1.5f, 12f); // Shake for 1.5 seconds
         }
+    }
+    public int getMembraneDamageReduction() {
+        return MEMBRANE_DAMAGE_REDUCTION;
     }
 
     /**
@@ -1157,13 +1166,13 @@ public class Cell {
     /**
      * Get the velocity of the cell
      * This is the difference between the current position and the last position
-     * 
+     *
      * @return The velocity of the cell
      */
     public Vector2 getVelocity() {
         float dx = cellCircle.x - lastX;
         float dy = cellCircle.y - lastY;
-        
+
         Vector2 frameVelocity = new Vector2(dx, dy);
 
         // Smooth the velocity
