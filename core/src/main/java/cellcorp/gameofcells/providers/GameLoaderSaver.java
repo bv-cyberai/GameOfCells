@@ -23,7 +23,7 @@ public class GameLoaderSaver {
     private final PopupInfoScreen basicZonePopup;
     private final PopupInfoScreen healAvailablePopup;
     private final PopupInfoScreen cellMembranePopup;
-    private boolean hasNotAutoSaved;
+    private boolean hasAutoSaved;
 
     /**
      * Constructor
@@ -42,7 +42,7 @@ public class GameLoaderSaver {
         this.cellMembranePopup = gamePlayScreen.getCellMembranePopup();
 
         //auto save flag.
-        hasNotAutoSaved = false;
+        hasAutoSaved = false;
 
         //The actual saved game file. If this file does not exit, it is made.
         //If it exists, it is overwritten.
@@ -94,50 +94,59 @@ public class GameLoaderSaver {
     /**
      * loadState
      *
-     * loads the state of the game.
+     * loads the state of the game. If a field is included in saveState, but
+     * not in loadState the current/default value is kept.
+     *
+     * If we load something, that does not exist, the default values of provider
+     * will be given (0, null, etc...);
      */
     public void loadState() {
-        System.out.println(GameLoaderSaver.saveGame.get().isEmpty());
-        if (isInvalidSaveFile()) {
+        if (isSaveFileEmpty()) {
             return;
         }
-        System.out.println("HERE");
         //cell state
-        cell.setCellHealth(saveGame.getInteger("cellHealth"));
-        cell.setCellATP(saveGame.getInteger("cellATP"));
-        cell.setCellSize(saveGame.getFloat("cellSize"));
+        cell.setCellHealth(saveGame.getInteger("cellHealth",100));
+        cell.setCellATP(saveGame.getInteger("cellATP",30));
+        cell.setCellSize(saveGame.getFloat("cellSize",100));
 
         //size
-        cell.setHasSmallSizeUpgrade(saveGame.getBoolean("smallSize"));
-        cell.setHasMediumSizeUpgrade(saveGame.getBoolean("mediumSize"));
-        cell.setHasLargeSizeUpgrade(saveGame.getBoolean("largeSize"));
-        cell.setHasMassiveSizeUpgrade(saveGame.getBoolean("massiveSize"));
+        cell.setHasSmallSizeUpgrade(saveGame.getBoolean("smallSize",false));
+        cell.setHasMediumSizeUpgrade(saveGame.getBoolean("mediumSize",false));
+        cell.setHasLargeSizeUpgrade(saveGame.getBoolean("largeSize",false));
+        cell.setHasMassiveSizeUpgrade(saveGame.getBoolean("massiveSize",false));
 
         //organelles
-        cell.setHasMitochondria(saveGame.getBoolean("mito"));
-        cell.setHasRibosomes(saveGame.getBoolean("ribo"));
-        cell.setHasFlagella(saveGame.getBoolean("flag"));
-        cell.setHasNucleus(saveGame.getBoolean("nuke"));
+        cell.setHasMitochondria(saveGame.getBoolean("mito",false));
+        cell.setHasRibosomes(saveGame.getBoolean("ribo",false));
+        cell.setHasFlagella(saveGame.getBoolean("flag",false));
+        cell.setHasNucleus(saveGame.getBoolean("nuke",false));
 
         //stats state
-        stats.atpGenerated = saveGame.getInteger("atpGen");
-        stats.glucoseCollected = saveGame.getInteger("glukeCollected");
-        stats.distanceMoved = saveGame.getFloat("distanceMoved");
-        stats.gameTimer = saveGame.getFloat("time");
+        stats.atpGenerated = saveGame.getInteger("atpGen",0);
+        stats.glucoseCollected = saveGame.getInteger("glukeCollected",0);
+        stats.distanceMoved = saveGame.getFloat("distanceMoved",0);
+        stats.gameTimer = saveGame.getFloat("time",0);
 
         //Pop-up States
-        glucoseCollisionPopup.setWasShown(saveGame.getBoolean("glukePopup"));
-        acidZonePopup.setWasShown(saveGame.getBoolean("acidPopup"));
-        basicZonePopup.setWasShown(saveGame.getBoolean("basicPoup"));
-        healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup"));
-        cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup"));
-
+        glucoseCollisionPopup.setWasShown(saveGame.getBoolean("glukePopup",false));
+        acidZonePopup.setWasShown(saveGame.getBoolean("acidPopup",false));
+        basicZonePopup.setWasShown(saveGame.getBoolean("basicPopup",false));
+        healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup",false));
+        cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup",false));
     }
 
-    public boolean isInvalidSaveFile() {
+    /**
+     * Checks if the save file is empty.
+     *
+     * @return True if empty.
+     */
+    public boolean isSaveFileEmpty() {
         return saveGame.get().isEmpty();
     }
 
+    /**
+     * Erases the current save file.
+     */
     public static void clearSaveFile() {
         saveGame.get().clear();
         saveGame.clear();
@@ -150,9 +159,9 @@ public class GameLoaderSaver {
      * Used for autosaving the game.
      */
     public void update() {
-        if (cell.hasNucleus() && !hasNotAutoSaved) {
+        if (cell.hasNucleus() && !hasAutoSaved) {
             saveState();
-            hasNotAutoSaved = true;
+            hasAutoSaved = true;
         }
     }
 
