@@ -4,6 +4,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.*;
 import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.providers.GameLoaderSaver;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Gdx;
@@ -164,6 +165,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
 
+    private final GameLoaderSaver gameLoaderSaver;
+
     /**
      * Constructs the GamePlayScreen.
      *
@@ -202,8 +205,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
         parallaxNear = assetManager.get(AssetFileNames.PARALLAX_NEAR, Texture.class);
         floatingOverlay = assetManager.get(AssetFileNames.FLOATING_OVERLAY, Texture.class);
         vignetteLowHealth = assetManager.get(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
-        
-        
+
+
 
         this.glucoseCollisionPopup = new PopupInfoScreen(
                 configProvider,
@@ -250,6 +253,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 Color.BLACK,
                 this::resumeGame
         );
+        gameLoaderSaver = new GameLoaderSaver(this);
     }
 
     public void triggerShake(float duration, float intensity) {
@@ -335,6 +339,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void handleInput(float deltaTimeSeconds) {
+
+        //"L"oad at any time
+        if( inputProvider.isKeyJustPressed(Input.Keys.L)){
+            gameLoaderSaver.loadState();
+        }
+        //"O"verwrite at any time.
+        if(inputProvider.isKeyJustPressed(Input.Keys.O)) {
+            gameLoaderSaver.saveState();
+        }
+
         // Move to `ShopScreen` when 's' is pressed.
         if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             pauseGame();
@@ -443,6 +457,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 // We want to show the warning only once when entering the acid zone
                 reportAcidZoneCollision();
             }
+            //Checks for nucleus, and will autosave if detected.
+            gameLoaderSaver.update();
         }
     }
 
@@ -591,14 +607,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private void drawFloatingOverlay() {
         float camX = camera.position.x;
         float camY = camera.position.y;
-    
+
         // Calculate player movement-based drift
         Vector2 cellVelocity = playerCell.getVelocity(); // Assuming you have a getVelocity()
-    
+
         // Movement-based drift
         float movementOffsetX = -cellVelocity.x * 2f;
         float movementOffsetY = -cellVelocity.y * 2f;
-    
+
         batch.begin();
         batch.setColor(1f, 1f, 1f, 0.3f); // 0.2f alpha = subtle
         batch.draw(floatingOverlay,
@@ -613,12 +629,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     private void drawLowHealthVignette() {
         if (playerCell.getCellHealth() > 20) return;
-    
+
         float camX = camera.position.x;
         float camY = camera.position.y;
 
         float pulse = 0.25f + 0.1f * MathUtils.sin(overlayTime * 2.5f); // use existing time var
-        
+
         batch.begin();
         batch.setColor(1f, 1f, 1f, pulse);
         batch.draw(vignetteLowHealth,
@@ -629,7 +645,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.setColor(1f, 1f, 1f, 1f); // reset
         batch.end();
     }
-    
+
 
     /**
      * Draw a background with grid lines.
@@ -703,13 +719,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     protected Vector2 getNearestBasicZoneCenter() {
         ZoneManager zoneManager = spawnManager.getZoneManager(); // assuming you already have spawnManager
-    
+
         float cellX = playerCell.getX();
         float cellY = playerCell.getY();
-    
+
         double closestDistance = Double.MAX_VALUE;
         Zone closestZone = null;
-    
+
         for (Zone zone : zoneManager.getBasicZones().values()) {
             double distance = zone.distanceFrom(cellX, cellY);
             if (distance < closestDistance) {
@@ -717,11 +733,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 closestZone = zone;
             }
         }
-    
+
         if (closestZone != null) {
             return new Vector2(closestZone.x(), closestZone.y());
         }
-    
+
         // Fallback if no zones found
         return new Vector2(cellX, cellY); // fallback to cell position = no arrow
     }
@@ -1075,5 +1091,29 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public float getOverlayTime() {
         return overlayTime;
+    }
+
+    /**
+     * Heal Popup Getter
+     * @return the heal Popup
+     */
+    public PopupInfoScreen getHealAvailablePopup() {
+        return healAvailablePopup;
+    }
+
+    /**
+     * Cell membrane popup getter
+     * @return the cell membrane popup
+     */
+    public PopupInfoScreen getCellMembranePopup () {
+        return cellMembranePopup;
+    }
+
+    /**
+     * GameLoaderSaver Getter
+     * @return The GameLoaderSaver
+     */
+    public GameLoaderSaver getGameLoaderSaver() {
+        return gameLoaderSaver;
     }
 }

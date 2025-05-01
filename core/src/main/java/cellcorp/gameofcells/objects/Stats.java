@@ -31,8 +31,8 @@ public class Stats {
 
     /**
      * Set the size of the cell.
-     * 
-     * @param size
+     *
+     * @param size the new size
      */
     public void setSize(int size) {
         if (size > maxSize) {
@@ -42,10 +42,11 @@ public class Stats {
 
     /**
      * Get the size of the cell.
-     * 
-     * @return
+     *
+     * @return the cell size
      */
     public int getSize() {
         return maxSize;
     }
+
 }

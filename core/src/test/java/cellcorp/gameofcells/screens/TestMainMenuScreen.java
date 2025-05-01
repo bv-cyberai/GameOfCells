@@ -56,9 +56,9 @@ public class TestMainMenuScreen {
         GameRunner gameRunner = GameRunner.create();
         var screen = gameRunner.game.getScreen();
         assertInstanceOf(MainMenuScreen.class, screen);
-        
+
         MainMenuScreen mainMenuScreen = (MainMenuScreen) screen;
-        
+
         // Verify initial state
         assertEquals(0, mainMenuScreen.getSelectedOption());
         assertEquals(0f, mainMenuScreen.getInactivityTimer());
@@ -75,52 +75,52 @@ public class TestMainMenuScreen {
     public void testMenuNavigation() {
         GameRunner gameRunner = GameRunner.create();
         MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
-        
+
         // Initial selection should be 0 (Start Game)
         assertEquals(0, mainMenuScreen.getSelectedOption());
-        
+
         // Press DOWN key - should move to option 1 (Settings)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(1, mainMenuScreen.getSelectedOption());
-        
+
         // Press DOWN key again - should move to option 2 (Exit)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(2, mainMenuScreen.getSelectedOption());
-        
+
         // Press DOWN key again - should wrap around to option 0 (Start Game)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(2, mainMenuScreen.getSelectedOption());
-        
+
         // Press UP key - should wrap around to option 2 (Exit)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(1, mainMenuScreen.getSelectedOption());
-        
+
         // Press UP key again - should move to option 1 (Settings)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(0, mainMenuScreen.getSelectedOption());
-        
+
         // Test alternate keys (W/S for UP/DOWN)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.W));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(0, mainMenuScreen.getSelectedOption());
-        
+
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.S));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
@@ -132,26 +132,26 @@ public class TestMainMenuScreen {
     public void testMainMenuSelection() {
         GameRunner gameRunner = GameRunner.create();
         MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
-        
+
         // Test selecting "Start Game" (option 0)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
         assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
-        
+
         // Reset to main menu
         gameRunner.game.setScreen(mainMenuScreen);
-        
+
         // Move to "Game Info" (option 1)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
-        
+
         // Test selecting "Game Info"
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();
         assertInstanceOf(GameInfoControlsScreen.class, gameRunner.game.getScreen());
-        
+
         // Reset to main menu - IMPORTANT: Create fresh instance
         mainMenuScreen = new MainMenuScreen(
             gameRunner.inputProvider,
@@ -163,7 +163,7 @@ public class TestMainMenuScreen {
             gameRunner.configProvider
         );
         gameRunner.game.setScreen(mainMenuScreen);
-        
+
         // Move to "Exit" (option 2)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
@@ -173,7 +173,7 @@ public class TestMainMenuScreen {
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
-        
+
         // Test exit - should remain on main menu screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step();

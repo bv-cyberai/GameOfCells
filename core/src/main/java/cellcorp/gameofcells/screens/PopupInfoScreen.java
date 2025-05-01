@@ -165,6 +165,15 @@ public class PopupInfoScreen {
         return wasShown;
     }
 
+    /**
+     * wasShownSetter
+     * Used to prevent duplicate popups during load
+     * @param value the value to set wasShone to.
+     */
+    public void setWasShown(Boolean value) {
+        wasShown = value;
+    }
+
     private void scrollUp(float deltaTimeSeconds) {
         if (!scrollPane.isScrollY()) return;
 
