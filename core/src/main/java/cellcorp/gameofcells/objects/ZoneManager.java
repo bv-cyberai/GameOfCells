@@ -58,7 +58,7 @@ public class ZoneManager {
         var damage = distanceRatio * Zone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
         if (timer > Zone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
             if (cell.hasSmallSizeUpgrade()) {
-                cell.applyDamage(((int) (damageCounter)/2));
+                cell.applyDamage(((int) (damageCounter)/cell.getMembraneDamageReduction()));
             }
             else {
                 cell.applyDamage((int)damageCounter);
