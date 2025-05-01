@@ -1,17 +1,16 @@
 package cellcorp.gameofcells.objects;
 
+import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.providers.ConfigProvider;
+import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
-
-import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.providers.ConfigProvider;
-import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import static java.lang.Math.abs;
 
 /**
  * Cell Class
- *
+ * <p>
  * Includes the data for the primary cell the player
  * Controls in the game
  *
@@ -30,78 +29,63 @@ import static java.lang.Math.abs;
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
- *
  * @date 02/18/2025
  * @course CIS 405
  * @assignment GameOfCells
  */
 public class Cell {
-    public static int MAX_HEALTH = 100;
-    public static int MAX_ATP = 100;
-    private static float CELL_SPEED = 200f; // Speed of the cell
-    private static float CELL_SPEED_WITH_FLAGELLA = 370f; //Amount to increase cell speed after buying flagella
-    public static int ZERO_ATP_DAMAGE_PER_SECOND = 10;
-    private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
-    public static int ATP_HEAL_COST = 5;
-    public static int AMOUNT_HEALED = 5;
-    public static int MEMBRANE_DAMAGE_REDUCTION = 1;
     /**
      * Time between applications of zero-ATP damage, in seconds.
      */
     private static final int ZERO_ATP_DAMAGE_INCREMENT_SECONDS = 1;
-
     // May change, but used to ensure that invalid case selection is not hit.
     private static final int MAX_SIZE_UPGRADES = 4;
     private static final int MAX_ORGANELLE_UPGRADES = 4;
-    float cellSize;
-
+    private static final float VELOCITY_SMOOTHING = 0.1f; // Adjust if you want faster/slower smoothing
+    private static final float DEATH_ANIMATION_DURATION = 2.5f; // Duration of the death animation
+    private static final float FORCE_CIRCLE_SIZE_MULTIPLIER = 1.375f; // Used on forceCircle to scale up as the cell grows
+    public static int MAX_HEALTH = 100;
+    public static int MAX_ATP = 100;
+    public static int ZERO_ATP_DAMAGE_PER_SECOND = 10;
+    public static int ATP_HEAL_COST = 5;
+    public static int AMOUNT_HEALED = 5;
+    public static int MEMBRANE_DAMAGE_REDUCTION = 1;
+    private static float CELL_SPEED = 200f; // Speed of the cell
+    private static float CELL_SPEED_WITH_FLAGELLA = 370f; //Amount to increase cell speed after buying flagella
+    private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
     private final AssetManager assetManager;
     private final ConfigProvider configProvider;
     private final GamePlayScreen gamePlayScreen;
-
+    private Vector2 smoothedVelocity = new Vector2();
+    private Vector2 previousPosition = new Vector2(-500, -500); //previous position of the cell
+    private Circle cellCircle;
+    // Values used to push glucose
+    private Circle forceCircle; // The circle surrounding the cell pushing glucose.
+    private Array<Vector2> flagellumVectors = new Array<>(); //sine wave vectors
+    private float cellSize = 100;
     private int cellHealth;
     private int cellATP;
-    private final Circle cellCircle;
-
     // Organelle Upgrades
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
     private boolean hasRibosomes = false; // Whether the cell has the ribosomes upgrade
     private boolean hasFlagella = false; // Whether the cell has the flagella upgrade
     private boolean hasNucleus = false; // Whether the cell has the nucleus upgrade
-
     // Size Upgrades
     private boolean hasSmallSizeUpgrade = false; // Whether the cell has the small size upgrade
     private boolean hasMediumSizeUpgrade = false; // Whether the cell has the medium size upgrade
     private boolean hasLargeSizeUpgrade = false; // Whether the cell has the large size upgrade
     private boolean hasMassiveSizeUpgrade = false; // Whether the cell has the massive size upgrade
-
     // Add rotation and animation fields here if needed
     private float nucleusPulse = 0.0f; // Pulse effect for nucleus animation
     private float pulseScale = 1.0f; // Scale for nucleus pulse effect
-    private Vector2 smoothedVelocity = new Vector2();
-    private static final float VELOCITY_SMOOTHING = 0.1f; // Adjust if you want faster/slower smoothing
-
-    // Upgrade multipliers
-    private float proteinSynthesisMultiplier = 1.0f;
-    private float movementSpeedMultiplier = 1.0f;
-    private boolean canSplit = false;
-
-    // Values used to push glucose
-    private final Circle forceCircle; // The circle surrounding the cell pushing glucose.
-    private float forceCircleSizeScalar;
-    private float forceCircleSizeMultiplier; // Used on forceCircle to scale up as the cell grows
-    private float glucoseVectorScaleFactor; //Used to set how far glucose moves when pushed
-    private float totalDistanceMoved;
+    private float forceCircleSizeScalar = 1f;
+    private float glucoseVectorScaleFactor = 50f; //Used to set how far glucose moves when pushed
     private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
-
     //flagellum
     private float amplitude = 50f;
     private float frequency = 0.05f;
     private float flagTime = 0f; // Phase offset of the sine wave.
     private int wiggleVelocityMultiplier = 5; //How quickly to wiggle
-    private Array<Vector2> flagellumVectors = new Array<>(); //sine wave vectors
-    private Vector2 previousPosition; //previous position of the cell
-
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -111,25 +95,25 @@ public class Cell {
      * Zero-ATP damage accumulated since last damage application.
      */
     private float damageCounter = 0f;
-
     // Energy Use tracking
     private float lastX;
     private float lastY;
-    private int sizeUpgradeLevel; // size upgrades 0-4
-    private int organelleUpgradeLevel; //organelle upgrades 0-4
-    private float currentATPLost; // used to track atp loss up to 1
-    private float totalATPLossFactor; //tracks total atp burn
+    private int sizeUpgradeLevel = 0; // size upgrades 0-4
+    private int organelleUpgradeLevel = 0; //organelle upgrades 0-4
+    private float currentATPLost = 0f; // used to track atp loss up to 1
+    private float totalATPLossFactor = 0f; //tracks total atp burn
     private float distanceMovedSinceLastTick;
-    private boolean wasAtpBurnedThisFrame; //tracks if ATP has been burnt, mostly for testing
-    private float currTimeTakenforATPLoss;
-    private float lastTimeTakenforATPLoss;
-
+    private boolean wasAtpBurnedThisFrame = false; //tracks if ATP has been burnt, mostly for testing
+    private float currTimeTakenforATPLoss = 0f;
+    private float lastTimeTakenforATPLoss = 0f;
     // Death tracking / effects
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
-    private static final float DEATH_ANIMATION_DURATION = 2.5f; // Duration of the death animation
 
-    Texture cellTexture;
+    /**
+     * Whether this cell has split and created a save point
+     */
+    private boolean hasSplit = false;
 
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
@@ -137,33 +121,68 @@ public class Cell {
         this.configProvider = configProvider;
 
         setUserConfigOrDefault();
-        cellSize = 100;
 
-        totalATPLossFactor = 0f;
-        sizeUpgradeLevel = 0;
-        organelleUpgradeLevel = 0;
-        currentATPLost = 0f;
-        currTimeTakenforATPLoss = 0f;
-        lastTimeTakenforATPLoss = 0f;
-        wasAtpBurnedThisFrame = false;
-        totalDistanceMoved = 0f;
+        var position = new Vector2(0, 0);
+        cellCircle = new Circle(position, cellSize / 2);
+        forceCircle = new Circle(position, cellSize * FORCE_CIRCLE_SIZE_MULTIPLIER);
+    }
 
-        forceCircleSizeMultiplier = 1.375f;
-        forceCircleSizeScalar = 1f;
-        glucoseVectorScaleFactor = 50f;
+    /**
+     * Copy constructor for `Cell`.
+     */
+    public Cell(Cell other) {
+        this(other.gamePlayScreen, other.assetManager, other.configProvider);
 
-        cellCircle = new Circle(new Vector2(0, 0), cellSize / 2);
-        forceCircle = new Circle(new Vector2(0, 0), cellSize * forceCircleSizeMultiplier);
-        previousPosition = new Vector2(-500, -500);
+        this.cellCircle = new Circle(other.cellCircle);
+        // Values used to push glucose
+        this.forceCircle = new Circle(other.forceCircle);
+        this.smoothedVelocity = new Vector2(other.smoothedVelocity);
+        this.flagellumVectors = new Array<>(other.flagellumVectors);
+        this.previousPosition = new Vector2(other.previousPosition);
+        this.cellSize = other.cellSize;
+        this.cellHealth = other.cellHealth;
+        this.cellATP = other.cellATP;
+        this.hasMitochondria = other.hasMitochondria;
+        this.hasRibosomes = other.hasRibosomes;
+        this.hasFlagella = other.hasFlagella;
+        this.hasNucleus = other.hasNucleus;
+        this.hasSmallSizeUpgrade = other.hasSmallSizeUpgrade;
+        this.hasMediumSizeUpgrade = other.hasMediumSizeUpgrade;
+        this.hasLargeSizeUpgrade = other.hasLargeSizeUpgrade;
+        this.hasMassiveSizeUpgrade = other.hasMassiveSizeUpgrade;
+        this.nucleusPulse = other.nucleusPulse;
+        this.pulseScale = other.pulseScale;
+        this.forceCircleSizeScalar = other.forceCircleSizeScalar;
+        this.glucoseVectorScaleFactor = other.glucoseVectorScaleFactor;
+        this.cellRotation = other.cellRotation;
+        this.amplitude = other.amplitude;
+        this.frequency = other.frequency;
+        this.flagTime = other.flagTime;
+        this.wiggleVelocityMultiplier = other.wiggleVelocityMultiplier;
+        this.damageTimer = other.damageTimer;
+        this.damageCounter = other.damageCounter;
+        this.lastX = other.lastX;
+        this.lastY = other.lastY;
+        this.sizeUpgradeLevel = other.sizeUpgradeLevel;
+        this.organelleUpgradeLevel = other.organelleUpgradeLevel;
+        this.currentATPLost = other.currentATPLost;
+        this.totalATPLossFactor = other.totalATPLossFactor;
+        this.distanceMovedSinceLastTick = other.distanceMovedSinceLastTick;
+        this.wasAtpBurnedThisFrame = other.wasAtpBurnedThisFrame;
+        this.currTimeTakenforATPLoss = other.currTimeTakenforATPLoss;
+        this.lastTimeTakenforATPLoss = other.lastTimeTakenforATPLoss;
+        this.isDying = other.isDying;
+        this.deathAnimationTime = other.deathAnimationTime;
+        this.hasSplit = other.hasSplit;
     }
 
     /**
      * Moves the cell based on input direction as well as its collision circle,
      * diagonal movement is normalized.
-     *
+     * <p>
      * Updates target rotation to match desired angle of cell to align with
      * movement.
-     *
+     * <p>
      * Note: Rotation angles appear to be counterclockwise.
      *
      * @param deltaTime - The time passed since the last frame
@@ -245,9 +264,9 @@ public class Cell {
 
     /**
      * ATP Loss Calculation
-     *
+     * <p>
      * Returns ATPburn based on movement upgrades and size.
-     *
+     * <p>
      * When moving burn rate is twice the base burn. See
      * setTotalLossFactor() for more detailed burn rates.
      *
@@ -285,20 +304,20 @@ public class Cell {
      * Base Burn Rate(BBR) - Rate burned when idle at given size
      * Each Organelle upgrade reduces this value by 1
      * Each Size upgrade reduces this value by 1
-     *
-     +----+---------+------+-----+------+------+------+
-     |    | Type    | BBR  | Mit | Ribo | Flag | Nuke |
-     +====+=========+======+=====+=====+======+======+=
-     |  0 | none    |  11  |  -  |  -   |  -   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  1 | small   |  10  |  9  |  -   |  -   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  2 | medium  |  9   |  8  |  7   |  -   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  3 | large   |  8   |  7  |  6   |  5   |  -   |
-     +----+---------+------+-----+-----+------+-------+
-     |  4 | massive |  7   |  6  |  5   |  4   |  3   |
-     +----+---------+------+-----+-----+------+-------+
+     * <p>
+     * +----+---------+------+-----+------+------+------+
+     * |    | Type    | BBR  | Mit | Ribo | Flag | Nuke |
+     * +====+=========+======+=====+=====+======+======+=
+     * |  0 | none    |  11  |  -  |  -   |  -   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  1 | small   |  10  |  9  |  -   |  -   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  2 | medium  |  9   |  8  |  7   |  -   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  3 | large   |  8   |  7  |  6   |  5   |  -   |
+     * +----+---------+------+-----+-----+------+-------+
+     * |  4 | massive |  7   |  6  |  5   |  4   |  3   |
+     * +----+---------+------+-----+-----+------+-------+
      */
     private float setTotalLossFactor() {
         switch (sizeUpgradeLevel) {
@@ -351,16 +370,15 @@ public class Cell {
         // and the class of the asset to load.
 
         //cell Texture
+        Texture cellTexture;
         if (hasSmallSizeUpgrade) {
-            if (cellHealth <= (MAX_HEALTH/2)) {
+            if (cellHealth <= (MAX_HEALTH / 2)) {
                 cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE_DAMAGED, Texture.class);
-            }
-            else {
+            } else {
                 cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE, Texture.class);
 
             }
-        }
-        else {
+        } else {
             cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         }
 
@@ -368,15 +386,17 @@ public class Cell {
 
         batch.begin();
 
-        batch.draw(cellTexture,
-            bottomLeftX, bottomLeftY,
-            cellSize / 2, cellSize / 2,
-            cellSize, cellSize,
-            1f, 1f,
-            cellRotation,
-            0, 0,
-            cellTexture.getWidth(), cellTexture.getHeight(),
-            false, false);
+        batch.draw(
+                cellTexture,
+                bottomLeftX, bottomLeftY,
+                cellSize / 2, cellSize / 2,
+                cellSize, cellSize,
+                1f, 1f,
+                cellRotation,
+                0, 0,
+                cellTexture.getWidth(), cellTexture.getHeight(),
+                false, false
+        );
 
         drawOrganelles(batch);
         batch.end();
@@ -413,7 +433,6 @@ public class Cell {
         }
 
         //tracked for ATP and game over stats.
-        totalDistanceMoved += distanceMovedSinceLastTick;
         distanceMovedSinceLastTick = 0f;
 
         // Update animations
@@ -436,7 +455,7 @@ public class Cell {
 
         // Update stats
         var organellesPurchased = List.of(hasMitochondria, hasFlagella, hasNucleus, hasRibosomes)
-            .stream().filter(Boolean::booleanValue).count();
+                .stream().filter(Boolean::booleanValue).count();
         gamePlayScreen.stats.organellesPurchased = (int) organellesPurchased;
         int maxSize;
         if (hasMassiveSizeUpgrade) {
@@ -492,14 +511,14 @@ public class Cell {
             // Draw first mitochondrion (top-right side)
             batch.draw(mitochondriaTexture,
                 centerX + offset1.x - size / 2,
-                centerY + offset1.y - size / 2,
-                size / 2, size / 2,
+                    centerY + offset1.y - size / 2,
+                    size / 2, size / 2,
                 size, size,
-                1f, 1f,
-                angle1,
-                0, 0,
-                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                false, true);
+                    1f, 1f,
+                    angle1,
+                    0, 0,
+                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                    false, true);
 
             // Draw second mitochondrion (bottom-left side)
             batch.draw(mitochondriaTexture,
@@ -542,7 +561,8 @@ public class Cell {
             batch.draw(ribosomeTexture,
                     centerX + offset3.x - ribosomeSize / 2,
                     centerY + offset3.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize);
+                    ribosomeSize, ribosomeSize
+            );
         }
 
         // Draw nucleus (center with pulse effect)
@@ -554,8 +574,9 @@ public class Cell {
             float baseSize = cellSize * 0.4f;
             float nucleusSize = baseSize * pulseScale; // Adjust size based on pulse effect
 
-            batch.draw(nucleusTexture,
-                    centerX - nucleusSize / 2,
+            batch.draw(
+                    nucleusTexture,
+                        centerX - nucleusSize / 2,
                     centerY - nucleusSize / 2,
                     nucleusSize / 2 , nucleusSize / 2,
                     nucleusSize, nucleusSize,
@@ -682,6 +703,12 @@ public class Cell {
         return (int) cellSize;
     }
 
+    public void setCellSize(float cellSize) {
+        this.cellSize = cellSize;
+        cellCircle.radius = cellSize / 2;
+        forceCircle.radius = cellCircle.radius * FORCE_CIRCLE_SIZE_MULTIPLIER * forceCircleSizeScalar;
+    }
+
     /**
      * Health Getter
      *
@@ -716,12 +743,6 @@ public class Cell {
      */
     public void setCellATP(int cellATP) {
         this.cellATP = cellATP;
-    }
-
-    public void setCellSize(float cellSize) {
-        this.cellSize = cellSize;
-        cellCircle.radius = cellSize / 2;
-        forceCircle.radius = cellCircle.radius * forceCircleSizeMultiplier * forceCircleSizeScalar;
     }
 
     /**
@@ -765,7 +786,7 @@ public class Cell {
 
     /**
      * Adds ATP
-     *
+     * <p>
      * increases ATP for glucose collection
      */
     public void addCellATP(int increaseAmount) {
@@ -786,7 +807,7 @@ public class Cell {
      *
      * @param sizeIncrease - The amount to increase the cell by.
      */
-    public void increasecellSize(float sizeIncrease) {
+    public void increaseCellSize(float sizeIncrease) {
         this.cellSize += sizeIncrease;
 
         //increase forceCircle factors
@@ -795,7 +816,7 @@ public class Cell {
 
         //Increase radi
         cellCircle.radius += sizeIncrease / 2;
-        forceCircle.radius = cellCircle.radius * forceCircleSizeMultiplier * forceCircleSizeScalar;
+        forceCircle.radius = cellCircle.radius * FORCE_CIRCLE_SIZE_MULTIPLIER * forceCircleSizeScalar;
     }
 
     /**
@@ -823,6 +844,7 @@ public class Cell {
             gamePlayScreen.triggerShake(1.5f, 12f); // Shake for 1.5 seconds
         }
     }
+
     public int getMembraneDamageReduction() {
         return MEMBRANE_DAMAGE_REDUCTION;
     }
@@ -963,66 +985,16 @@ public class Cell {
     }
 
     /**
-     * Get the protein synthesis multiplier
-     *
-     * @return
-     */
-    public float getProteinSynthesisMultiplier() {
-        return proteinSynthesisMultiplier;
-    }
-
-    /**
-     * Set the protein synthesis multiplier
-     *
-     * @param proteinSynthesisMultiplier
-     */
-    public void setProteinSynthesisMultiplier(float proteinSynthesisMultiplier) {
-        this.proteinSynthesisMultiplier = proteinSynthesisMultiplier;
-    }
-
-    /**
-     * Get the movement speed multiplier
-     *
-     * @return
-     */
-    public float getMovementSpeedMultiplier() {
-        return movementSpeedMultiplier;
-    }
-
-    /**
-     * Set the movement speed multiplier
-     *
-     * @param movementSpeedMultiplier
-     */
-    public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
-        this.movementSpeedMultiplier = movementSpeedMultiplier;
-    }
-
-    /**
-     * Get the canSplit boolean
-     *
-     * @return
-     */
-    public boolean canSplit() {
-        return canSplit;
-    }
-
-    /**
-     * Set the canSplit boolean
-     *
-     * @param canSplit
-     */
-    public void setCanSplit(boolean canSplit) {
-        this.canSplit = canSplit;
-    }
-
-    /**
      * Get Size Upgrade level
      *
      * @return size upgrade level
      */
     public int getSizeUpgradeLevel() {
         return sizeUpgradeLevel;
+    }
+
+    public void setSizeUpgradeLevel(int level) {
+        this.sizeUpgradeLevel = level;
     }
 
     /**
@@ -1065,7 +1037,7 @@ public class Cell {
 
     /**
      * CurrTimeTaken Getter
-     *
+     * <p>
      * Tracks time taken for the current ATP loss.
      *
      * @return The time taken for atp loss.
@@ -1076,7 +1048,7 @@ public class Cell {
 
     /**
      * LastTimeTaken Getter
-     *
+     * <p>
      * The time taken for the previous ATP loss.
      *
      * @return THe previous time taken for atp loss.
@@ -1177,6 +1149,15 @@ public class Cell {
     }
 
     /**
+     * Sets the cells rotation to the given angle.
+     *
+     * @param angle Angle in degrees
+     */
+    public void setCellRotation(float angle) {
+        this.cellRotation = angle;
+    }
+
+    /**
      * Get the death animation time
      * This is the time spent in the death animation
      *
@@ -1212,5 +1193,13 @@ public class Cell {
         smoothedVelocity.lerp(frameVelocity, VELOCITY_SMOOTHING);
 
         return smoothedVelocity;
+    }
+
+    public boolean hasSplit() {
+        return hasSplit;
+    }
+
+    public void setHasSplit(boolean hasSplit) {
+        this.hasSplit = hasSplit;
     }
 }

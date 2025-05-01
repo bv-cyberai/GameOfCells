@@ -3,6 +3,8 @@ package cellcorp.gameofcells.objects.size;
 import cellcorp.gameofcells.objects.Cell;
 
 public class SmallSizeUpgrade extends SizeUpgrade {
+    private static final float SIZE_INCREASE = 75;
+
     public SmallSizeUpgrade() {
         super(1, 50, 0, "Small");
     }
@@ -19,7 +21,7 @@ public class SmallSizeUpgrade extends SizeUpgrade {
 
     @Override
     public void applyUpgrade(Cell cell) {
-        cell.increasecellSize(sizeIncrease * 100);
+        cell.increaseCellSize(SIZE_INCREASE);
         cell.setHasSmallSizeUpgrade(true);
         cell.removeCellATP(atpCost);
     }

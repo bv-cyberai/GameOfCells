@@ -27,7 +27,7 @@ public class TestSizeUpgrades {
         assertTrue(upgrade.canPurchase(mockCell));
         upgrade.applyUpgrade(mockCell);
 
-        verify(mockCell).increasecellSize(100);
+        verify(mockCell).increaseCellSize(75);
         verify(mockCell).setHasSmallSizeUpgrade(true);
         verify(mockCell).removeCellATP(50);
     }
@@ -56,7 +56,7 @@ public class TestSizeUpgrades {
         assertTrue(upgrade.canPurchase(mockCell));
         upgrade.applyUpgrade(mockCell);
 
-        verify(mockCell).increasecellSize(100);
+        verify(mockCell).increaseCellSize(50);
         verify(mockCell).setHasMediumSizeUpgrade(true);
         verify(mockCell).removeCellATP(65);
     }
@@ -65,7 +65,7 @@ public class TestSizeUpgrades {
     public void testLargeSizeUpgrade() {
         SizeUpgrade upgrade = new LargeSizeUpgrade();
 
-        when(mockCell.getCellSize()).thenReturn(300); // size = 2 units
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(2); // size = 2 units
         when(mockCell.getCellATP()).thenReturn(200);
         when(mockCell.hasMediumSizeUpgrade()).thenReturn(true);
         when(mockCell.hasLargeSizeUpgrade()).thenReturn(false);
@@ -73,7 +73,7 @@ public class TestSizeUpgrades {
         assertTrue(upgrade.canPurchase(mockCell));
         upgrade.applyUpgrade(mockCell);
 
-        verify(mockCell).increasecellSize(100);
+        verify(mockCell).increaseCellSize(75);
         verify(mockCell).setHasLargeSizeUpgrade(true);
         verify(mockCell).removeCellATP(85);
     }
@@ -90,7 +90,7 @@ public class TestSizeUpgrades {
         assertTrue(upgrade.canPurchase(mockCell));
         upgrade.applyUpgrade(mockCell);
 
-        verify(mockCell).increasecellSize(100);
+        verify(mockCell).increaseCellSize(50);
         verify(mockCell).setHasMassiveSizeUpgrade(true);
         verify(mockCell).removeCellATP(100);
     }

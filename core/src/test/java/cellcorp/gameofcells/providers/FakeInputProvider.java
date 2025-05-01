@@ -25,6 +25,10 @@ public class FakeInputProvider implements InputProvider {
     /// Set of keys which are currently held down, according to our test.
     private Set<Integer> heldDown = Set.of();
 
+    public Set<Integer> getHeldDownKeys() {
+        return heldDown;
+    }
+
     /// Set the keys that are currently held down.
     /// Subsequent calls to this method erase previously held-down keys.
     ///

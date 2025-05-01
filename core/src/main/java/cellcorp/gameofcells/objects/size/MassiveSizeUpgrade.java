@@ -3,8 +3,10 @@ package cellcorp.gameofcells.objects.size;
 import cellcorp.gameofcells.objects.Cell;
 
 public class MassiveSizeUpgrade extends SizeUpgrade {
+    private static final float SIZE_INCREASE = 50;
+
     public MassiveSizeUpgrade() {
-        super(1, 100, 3, "Massive");
+        super(4, 100, 3, "Massive");
     }
 
     @Override
@@ -19,8 +21,9 @@ public class MassiveSizeUpgrade extends SizeUpgrade {
 
     @Override
     public void applyUpgrade(Cell cell) {
-        cell.increasecellSize(sizeIncrease * 100);
+        cell.increaseCellSize(SIZE_INCREASE);
         cell.setHasMassiveSizeUpgrade(true);
+        cell.setSizeUpgradeLevel(sizeLevel);
         cell.removeCellATP(atpCost);
     }
 

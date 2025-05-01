@@ -15,17 +15,17 @@ public abstract class OrganelleUpgrade implements Upgrade {
     protected int requiredSize;
 
     public OrganelleUpgrade(String name,
-        int cost,
-        String description,
-        String perks,
-        int requiredATP,
-        int requiredSize) {
-            this.name = name;
-            this.cost = cost;
-            this.description = description;
-            this.perks = perks;
-            this.requiredATP = requiredATP;
-            this.requiredSize = requiredSize;
+                            int cost,
+                            String description,
+                            String perks,
+                            int requiredATP,
+                            int requiredSize) {
+        this.name = name;
+        this.cost = cost;
+        this.description = description;
+        this.perks = perks;
+        this.requiredATP = requiredATP;
+        this.requiredSize = requiredSize;
     }
 
     /**
@@ -70,21 +70,22 @@ public abstract class OrganelleUpgrade implements Upgrade {
 
     /**
      * Check if the upgrade can be purchased.
+     *
      * @param cell
      * @param screen
      * @return true if the upgrade can be purchased, false otherwise
      */
     @Override
     public boolean canPurchase(Cell cell) {
-        int currentSizeUnits = (cell.getCellSize() - 100 )/ 100;
         return cell.getCellATP() >= cost &&
-            currentSizeUnits >= requiredSize &&
-            !isAlreadyPurchased(cell) &&
-            isPreviousUpgradePurchased(cell);
+                cell.getSizeUpgradeLevel() >= requiredSize &&
+                !isAlreadyPurchased(cell) &&
+                isPreviousUpgradePurchased(cell);
     }
 
     /**
      * Apply the upgrade's perks to the cell.
+     *
      * @param cell
      */
     @Override
@@ -92,13 +93,15 @@ public abstract class OrganelleUpgrade implements Upgrade {
 
     /**
      * Check if the upgrade is already purchased.
+     *
      * @param screen
      * @return
      */
     protected abstract boolean isAlreadyPurchased(Cell cell);
-    
+
     /**
      * Check if the previous upgrade is purchased.
+     *
      * @param screen
      * @return
      */

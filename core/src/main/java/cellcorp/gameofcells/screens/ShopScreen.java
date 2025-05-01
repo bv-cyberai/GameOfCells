@@ -1,12 +1,13 @@
 package cellcorp.gameofcells.screens;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cellcorp.gameofcells.AssetFileNames;
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.objects.Cell;
+import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.objects.organelle.*;
 import cellcorp.gameofcells.objects.size.*;
-
-import com.badlogic.gdx.Gdx;
+import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -15,8 +16,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -24,16 +28,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
-import com.badlogic.gdx.math.Interpolation;
 
-import cellcorp.gameofcells.AssetFileNames;
-import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.objects.Cell;
-import cellcorp.gameofcells.objects.Particles;
-import cellcorp.gameofcells.providers.GraphicsProvider;
-import cellcorp.gameofcells.providers.InputProvider;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Shop Screen
@@ -46,20 +43,11 @@ import cellcorp.gameofcells.providers.InputProvider;
  * @course CIS 405
  * @assignment Game of Cells
  * @description This is the shop screen for the game. This class handles displaying
- *              the shop UI, including the size and organelle upgrades available for
- *              purchase. It also handles the logic for purchasing upgrades and
- *              updating the player's cell accordingly.
+ * the shop UI, including the size and organelle upgrades available for
+ * purchase. It also handles the logic for purchasing upgrades and
+ * updating the player's cell accordingly.
  */
 public class ShopScreen implements GameOfCellsScreen {
-    // Constants for UI layout
-    private static final float UPGRADE_CARD_WIDTH = 350;
-    private static final float UPGRADE_CARD_HEIGHT = 250;
-    private final static float SELECTED_CARD_SCALE = 1.1F;
-    private static final float UPGRADE_NAME_TEXT_SIZE = 0.25f;
-    private static final float UPGRADE_INFO_TEXT_SIZE = 0.2f;
-
-    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
-    // Change as is most convenient.
     /**
      * Width of the HUD view rectangle.
      * (the rectangular region of the world which the camera will display)
@@ -70,7 +58,15 @@ public class ShopScreen implements GameOfCellsScreen {
      * (the rectangular region of the world which the camera will display)
      */
     public static final int VIEW_RECT_HEIGHT = 800;
+    // Constants for UI layout
+    private static final float UPGRADE_CARD_WIDTH = 350;
+    private static final float UPGRADE_CARD_HEIGHT = 250;
+    private final static float SELECTED_CARD_SCALE = 1.1F;
 
+    // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
+    // Change as is most convenient.
+    private static final float UPGRADE_NAME_TEXT_SIZE = 0.25f;
+    private static final float UPGRADE_INFO_TEXT_SIZE = 0.2f;
     // Instance variables
     protected final Stage stage;
     private final Cell playerCell;
@@ -96,12 +92,12 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Constructor for the ShopScreen class.
      *
-     * @param game The main game instance
-     * @param inputProvider The input provider for handling user input
+     * @param game             The main game instance
+     * @param inputProvider    The input provider for handling user input
      * @param graphicsProvider The graphics provider for rendering
-     * @param assetManager The asset manager for loading assets
-     * @param previousScreen The previous screen (GamePlayScreen) to return to
-     * @param cell The player's cell used to determine available upgrades
+     * @param assetManager     The asset manager for loading assets
+     * @param previousScreen   The previous screen (GamePlayScreen) to return to
+     * @param cell             The player's cell used to determine available upgrades
      */
     public ShopScreen(
             Main game,
@@ -129,7 +125,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
         initializeUpgrades();
 
-         // Create UI
+        // Create UI
         createUI();
     }
 
@@ -178,8 +174,8 @@ public class ShopScreen implements GameOfCellsScreen {
     // and alignment of UI elements.
     private void createUI() {
         Table[] shopTables = menuSystem.initializeShopLayout(
-            "CELL SHOP",
-            "Press ARROW keys to switch sides | ENTER to purchase | ESC to exit"
+                "CELL SHOP",
+                "Press ARROW keys to switch sides | ENTER to purchase | ESC to exit"
         );
 
         Table leftTable = shopTables[0];    // Size upgrades column
@@ -188,7 +184,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
         // Add ATP/Size info to center column
         Label atpLabel = createLabel("ATP: " + playerCell.getCellATP(), UPGRADE_NAME_TEXT_SIZE);
-        Label sizeLabel = createLabel("Size: " + ((playerCell.getCellSize() - 100)/100), UPGRADE_NAME_TEXT_SIZE);
+        Label sizeLabel = createLabel("Size: " + playerCell.getSizeUpgradeLevel(), UPGRADE_NAME_TEXT_SIZE);
 
         centerTable.add(atpLabel).row();
         centerTable.add(sizeLabel).padTop(10).row();
@@ -315,28 +311,28 @@ public class ShopScreen implements GameOfCellsScreen {
     // and to purchase the selected upgrade.
     private void updateSelection(boolean isSizeSelected) {
         if (isSizeSelected && currentSizeCard != null) {
-            Image border = (Image) currentSizeCard.findActor("glowingBorder");
+            Image border = currentSizeCard.findActor("glowingBorder");
             if (border != null) {
                 currentSizeCard.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f, Interpolation.swingOut));
                 border.setVisible(true);
             }
 
             if (currentOrganelleCard != null) {
-                Image borderOrganelle = (Image) currentOrganelleCard.findActor("glowingBorder");
+                Image borderOrganelle = currentOrganelleCard.findActor("glowingBorder");
                 if (borderOrganelle != null) {
                     currentOrganelleCard.addAction(Actions.scaleTo(1.0f, 1.0f, 0.2f, Interpolation.swingOut));
                     borderOrganelle.setVisible(false);
                 }
             }
         } else if (currentOrganelleCard != null) {
-            Image border = (Image) currentOrganelleCard.findActor("glowingBorder");
+            Image border = currentOrganelleCard.findActor("glowingBorder");
             if (border != null) {
                 currentOrganelleCard.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f, Interpolation.swingOut));
                 border.setVisible(true);
             }
 
             if (currentSizeCard != null) {
-                Image borderSize = (Image) currentSizeCard.findActor("glowingBorder");
+                Image borderSize = currentSizeCard.findActor("glowingBorder");
                 if (borderSize != null) {
                     currentSizeCard.addAction(Actions.scaleTo(1.0f, 1.0f, 0.2f, Interpolation.swingOut));
                     borderSize.setVisible(false);
@@ -403,10 +399,9 @@ public class ShopScreen implements GameOfCellsScreen {
     // If not, it shows a message indicating the specific issue (not enough ATP, size, or both).
     private void showPurchaseError(Object upgrade) {
         String message = "";
-        if (upgrade instanceof SizeUpgrade) {
-            SizeUpgrade sizeUpgrade = (SizeUpgrade) upgrade;
+        if (upgrade instanceof SizeUpgrade sizeUpgrade) {
             boolean notEnoughATP = playerCell.getCellATP() < sizeUpgrade.getRequiredATP();
-            boolean notEnoughSize = (playerCell.getCellSize() - 100) / 100 < sizeUpgrade.getRequiredSize();
+            boolean notEnoughSize = playerCell.getSizeUpgradeLevel() < sizeUpgrade.getRequiredSize();
             if (notEnoughATP && notEnoughSize) {
                 message = "Not enough ATP and size!";
             } else if (notEnoughATP) {
@@ -414,10 +409,9 @@ public class ShopScreen implements GameOfCellsScreen {
             } else if (notEnoughSize) {
                 message = "Not enough size!";
             }
-        } else if (upgrade instanceof OrganelleUpgrade) {
-            OrganelleUpgrade organelleUpgrade = (OrganelleUpgrade) upgrade;
+        } else if (upgrade instanceof OrganelleUpgrade organelleUpgrade) {
             boolean notEnoughATP = playerCell.getCellATP() < organelleUpgrade.getRequiredATP();
-            boolean notEnoughSize = (playerCell.getCellSize() - 100) / 100 < organelleUpgrade.getRequiredSize();
+            boolean notEnoughSize = playerCell.getSizeUpgradeLevel() < organelleUpgrade.getRequiredSize();
             if (notEnoughATP && notEnoughSize) {
                 message = "Not enough ATP and size!";
             } else if (notEnoughATP) {
@@ -477,6 +471,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Create a label with the specified text and scale.
+     *
      * @param text
      * @param scale
      * @return
@@ -491,6 +486,7 @@ public class ShopScreen implements GameOfCellsScreen {
 
     /**
      * Create a custom background texture for the option cards.
+     *
      * @return The background texture.
      */
     private Texture createOptionBackgroundTexture() {
@@ -525,8 +521,8 @@ public class ShopScreen implements GameOfCellsScreen {
                 if (x < 10 || x >= width - 10 || y < 10 || y >= height - 10) {
                     // Create a gradient effect for the border
                     float alpha = Math.max(
-                        Math.max(10 - x, x - (width - 10)),
-                        Math.max(10 - y, y - (height - 10))
+                            Math.max(10 - x, x - (width - 10)),
+                            Math.max(10 - y, y - (height - 10))
                     ) / 10f; // Normalize to 0..1
                     pixmap.setColor(1, 1, 0, alpha); // Yellow with transparency
                     pixmap.drawPixel(x, y);
@@ -572,12 +568,12 @@ public class ShopScreen implements GameOfCellsScreen {
         } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
             updateSelection(false);
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
-            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+                || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             boolean isSizeSelected = currentSizeCard != null &&
-                ((Image) currentSizeCard.findActor("glowingBorder")).isVisible();
+                    currentSizeCard.findActor("glowingBorder").isVisible();
             attemptPurchase(isSizeSelected);
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)
-            || inputProvider.isKeyJustPressed(Input.Keys.Q)) {
+                || inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             exitShop();
         }
     }
@@ -587,13 +583,13 @@ public class ShopScreen implements GameOfCellsScreen {
     // It also resumes the game state and updates the player's cell.
     private void exitShop() {
         stage.getRoot().addAction(Actions.sequence(
-            Actions.fadeOut(1f),
-            Actions.run(() -> {
-                if (previousScreen != null) {
-                    previousScreen.resumeGame();
-                    game.setScreen(previousScreen);
-                }
-            })
+                Actions.fadeOut(1f),
+                Actions.run(() -> {
+                    if (previousScreen != null) {
+                        previousScreen.resumeGame();
+                        game.setScreen(previousScreen);
+                    }
+                })
         ));
     }
 
@@ -620,7 +616,7 @@ public class ShopScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
-        
+
         // This method is called when the screen becomes the current screen for the game.
 
         // Set the stage's root actor to be transparent initially
@@ -690,6 +686,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Get the player cell size tracker.
      * This is used to get the size of the player cell.
+     *
      * @return
      */
     public int getSizeTracker() {
@@ -699,6 +696,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Get the ATP tracker.
      * This is used to get the ATP of the player cell.
+     *
      * @return
      */
     public int getATPTracker() {
@@ -708,6 +706,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Get the player cell.
      * This is used to get the player cell object.
+     *
      * @return playerCell
      */
     public Cell getPlayerCell() {
@@ -717,10 +716,11 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Check if the option card is highlighted.
      * This is used to check if the option card is highlighted.
+     *
      * @return true if the option card is highlighted, false otherwise.
      */
     public boolean isHighlighted(Table card) {
-        Image glowingBorder = (Image) card.findActor("glowingBorder");
+        Image glowingBorder = card.findActor("glowingBorder");
         return glowingBorder != null && glowingBorder.isVisible();
     }
 
@@ -732,7 +732,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Set the transitioning state of the stage.
      * This is used to set the transitioning state of the stage.
-     * 
+     *
      * @param transitioning
      */
     public void setTransitioning(boolean transitioning) {
@@ -747,12 +747,13 @@ public class ShopScreen implements GameOfCellsScreen {
 
     public boolean isPaused() {
         // Check if the game is paused
-        return previousScreen instanceof GamePlayScreen && ((GamePlayScreen) previousScreen).isPaused();
+        return previousScreen instanceof GamePlayScreen && previousScreen.isPaused();
     }
 
     /**
      * Get the particles object.
      * This is used to get the particles object for rendering.
+     *
      * @return
      */
     public Particles getParticles() {
@@ -763,6 +764,7 @@ public class ShopScreen implements GameOfCellsScreen {
      * Get the option background texture.
      * This is used to get the background texture for the option cards.
      * This is useful for creating a custom background for the option cards.
+     *
      * @return
      */
     public Texture getOptionBackgroundTexture() {
@@ -773,6 +775,7 @@ public class ShopScreen implements GameOfCellsScreen {
      * Get the glowing border texture.
      * This is used to get the glowing border texture for the option cards.
      * This is useful for creating a glowing effect around the selected option card.
+     *
      * @return
      */
     public Texture getGlowingBorderTexture() {
@@ -782,7 +785,7 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Get the current size card.
      * This is used to get the current size card for the size upgrades.
-     * 
+     *
      * @return the current size card
      */
     public Table getCurrentSizeCard() {
@@ -792,11 +795,11 @@ public class ShopScreen implements GameOfCellsScreen {
     /**
      * Get the current organelle card.
      * This is used to get the current organelle card for the organelle upgrades.
-     * 
+     *
      * @return the current organelle card
      */
     public Table getCurrentOrganelleCard() {
         return currentOrganelleCard;
     }
-    
+
 }

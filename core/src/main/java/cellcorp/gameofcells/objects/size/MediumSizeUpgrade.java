@@ -3,8 +3,10 @@ package cellcorp.gameofcells.objects.size;
 import cellcorp.gameofcells.objects.Cell;
 
 public class MediumSizeUpgrade extends SizeUpgrade {
+    private static final float SIZE_INCREASE = 50;
+
     public MediumSizeUpgrade() {
-        super(1, 65, 1, "Medium");
+        super(2, 65, 1, "Medium");
     }
 
     @Override
@@ -19,7 +21,7 @@ public class MediumSizeUpgrade extends SizeUpgrade {
 
     @Override
     public void applyUpgrade(Cell cell) {
-        cell.increasecellSize(sizeIncrease * 100);
+        cell.increaseCellSize(SIZE_INCREASE);
         cell.setHasMediumSizeUpgrade(true);
         cell.removeCellATP(atpCost);
     }

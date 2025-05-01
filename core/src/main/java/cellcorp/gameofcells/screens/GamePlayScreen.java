@@ -10,8 +10,8 @@ import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
  * GamePlay Screen
@@ -78,6 +78,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final PopupInfoScreen basicZonePopup;
     private final PopupInfoScreen healAvailablePopup;
     private final PopupInfoScreen cellMembranePopup;
+    private final PopupInfoScreen splitCellPopup;
 
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
@@ -131,8 +132,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // - Classes with a fixed camera position (like HUD and menus)
     // should call `camera.apply(centerCamera = true)`. Others should leave it
     // false.
-    private final Camera camera;
-    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
     private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
     // Objects for rendering the game
@@ -145,6 +146,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     // Zoom fields
     private final float originalZoom = 1.2f; // Original zoom level
     private final float targetZoom = 0.8f; // Target zoom level
+    private final GameLoaderSaver gameLoaderSaver;
     // Background textures
     private final Texture parallaxFar;
     private final Texture parallaxMid;
@@ -165,6 +167,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
     int popupsAllowed = 1;
+
 
     /**
      * Constructs the GamePlayScreen.
@@ -254,6 +257,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 assetManager,
                 "sizeUpgrade1Message",
                 PopupInfoScreen.DEFAULT_SIZE_UPGRADE_1_MESSAGE,
+                Color.BLACK,
+                this::resumeGame
+        );
+        this.splitCellPopup = new PopupInfoScreen(
+                configProvider,
+                graphicsProvider,
+                assetManager,
+                "splitCellMessage",
+                PopupInfoScreen.DEFAULT_SPLIT_CELL_MESSAGE,
                 Color.BLACK,
                 this::resumeGame
         );
@@ -396,6 +408,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
             reportHealAvailable();
         }
 
+        if (inputProvider.isKeyJustPressed(Input.Keys.N)) {
+            playerCell.setHasNucleus(true);
+        }
+
+        if (inputProvider.isKeyJustPressed(Input.Keys.U)
+                && playerCell.hasNucleus()
+                && !playerCell.hasSplit()) {
+            split();
+        }
+
         // Only move the cell if the game is not paused
         if (!isPaused) {
             playerCell.move(
@@ -431,6 +453,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         basicZonePopup.handleInput(inputProvider, deltaTimeSeconds);
         healAvailablePopup.handleInput(inputProvider, deltaTimeSeconds);
         cellMembranePopup.handleInput(inputProvider, deltaTimeSeconds);
+        splitCellPopup.handleInput(inputProvider, deltaTimeSeconds);
     }
 
     /**
@@ -452,6 +475,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
             }
             if (playerCell.hasSmallSizeUpgrade() && !cellMembranePopup.wasShown() && (popupsAllowed == 1)) {
                 reportCellMembrane();
+            }
+            if (playerCell.hasSplit() && !splitCellPopup.wasShown()) {
+                reportSplitCell();
             }
             stats.gameTimer += deltaTimeSeconds;
             overlayTime += deltaTimeSeconds;
@@ -477,12 +503,22 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void draw() {
+        setUpDraw();
+        drawBackground();
+        playerCell.draw(batch, shapeRenderer);
+        drawHUD();
+    }
+
+    public void setUpDraw() {
         ScreenUtils.clear(Main.PURPLE);
 
         centerCameraOnCell();
         viewport.apply();
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
+    }
+
+    public void drawBackground() {
 
         // Draw parallax background layers
         drawParallax();
@@ -491,24 +527,27 @@ public class GamePlayScreen implements GameOfCellsScreen {
         drawFloatingOverlay();
 
         // Draw core game objects
-        drawGameObjects(batch, shapeRenderer);
+        zoneManager.draw(batch, shapeRenderer);
+        glucoseManager.draw(batch, shapeRenderer);
 
+        if (DEBUG_DRAW_ENABLED) {
+            drawChunks(shapeRenderer);
+        }
+    }
+
+    public void drawHUD() {
         // Draw low ATP warning
         drawLowHealthVignette();
 
         // Draw the HUD
         hud.draw();
 
-        if (DEBUG_DRAW_ENABLED) {
-            drawBackground(shapeRenderer);
-            drawChunks(shapeRenderer);
-        }
-
         glucoseCollisionPopup.draw();
         acidZonePopup.draw();
         basicZonePopup.draw();
         healAvailablePopup.draw();
         cellMembranePopup.draw();
+        splitCellPopup.draw();
     }
 
     /**
@@ -527,6 +566,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public SpriteBatch getBatch() {
         return batch;
+    }
+
+    public ShapeRenderer getShapeRenderer() {
+        return this.shapeRenderer;
     }
 
     /**
@@ -664,55 +707,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
 
     /**
-     * Draw a background with grid lines.
-     */
-    private void drawBackground(ShapeRenderer shapeRenderer) {
-        // It makes ShapeRenderer alpha work. Don't ask. I hate libgdx.
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        var callerColor = shapeRenderer.getColor();
-
-        shapeRenderer.setColor(1, 1, 1, 0.5f);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        var distanceBetweenGridLines = 100f;
-        int rows = (int) Math.ceil(VIEW_RECT_HEIGHT / distanceBetweenGridLines) + 1;
-        int cols = (int) Math.ceil(VIEW_RECT_WIDTH / distanceBetweenGridLines) + 1;
-
-        float rowWidth = VIEW_RECT_WIDTH + 2f;
-        float rowHeight = VIEW_RECT_HEIGHT / 500f;
-        float colWidth = VIEW_RECT_WIDTH / 500f;
-        float colHeight = VIEW_RECT_HEIGHT + 2f;
-
-        float xMin = camera.position.x - (float) VIEW_RECT_WIDTH / 2 - 1;
-        float yMin = camera.position.y - (float) VIEW_RECT_HEIGHT / 2 - 1;
-
-        float yStart = yMin - yMin % distanceBetweenGridLines;
-        for (int row = 0; row < rows; row++) {
-            float yOffset = row * distanceBetweenGridLines;
-            float y = yStart + yOffset;
-            shapeRenderer.rect(xMin, y, rowWidth, rowHeight);
-        }
-
-        float xStart = xMin - xMin % distanceBetweenGridLines;
-        for (int col = 0; col < cols; col++) {
-            float xOffset = col * distanceBetweenGridLines;
-            float x = xStart + xOffset;
-            shapeRenderer.rect(x, yMin, colWidth, colHeight);
-        }
-        shapeRenderer.end();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND); // Idk.
-        shapeRenderer.setColor(callerColor);
-    }
-
-    private void drawGameObjects(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-        zoneManager.draw(batch, shapeRenderer);
-        glucoseManager.draw(batch, shapeRenderer);
-        playerCell.draw(batch, shapeRenderer);
-    }
-
-    /**
      * Draw chunk borders.
      */
     private void drawChunks(ShapeRenderer shapeRenderer) {
@@ -837,6 +831,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (!cellMembranePopup.wasShown() && (popupsAllowed == 1)) {
             pauseGame();
             cellMembranePopup.show();
+        }
+    }
+
+    public void reportSplitCell() {
+        if (!splitCellPopup.wasShown()) {
+            pauseGame();
+            splitCellPopup.show();
         }
     }
 
@@ -1032,7 +1033,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      *
      * @return the viewport.
      */
-    public Viewport getViewport() {
+    public FitViewport getViewport() {
         return viewport;
     }
 
@@ -1091,7 +1092,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * For test use only.
      */
-    public Camera getCamera() {
+    public OrthographicCamera getCamera() {
         return camera;
     }
 
@@ -1134,5 +1135,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public GameLoaderSaver getGameLoaderSaver() {
         return gameLoaderSaver;
+    }
+
+    /**
+     * Splits the cell. Transitions to `SplitCellScreen` to play the animation.
+     */
+    private void split() {
+        var splitCellScreen = new SplitCellScreen(game, this);
+        game.setScreen(splitCellScreen);
+    }
+
+    public ConfigProvider getConfigProvider() {
+        return this.configProvider;
     }
 }

@@ -20,7 +20,7 @@ public class TestOrganelleUpgrades {
     public void testMitochondriaUpgrade() {
         OrganelleUpgrade upgrade = new MitochondriaUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
-        when(mockCell.getCellSize()).thenReturn(200); // size unit = 1
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(1); // size unit = 1
         when(mockCell.hasMitochondria()).thenReturn(false);
 
         assertTrue(upgrade.canPurchase(mockCell));
@@ -34,7 +34,7 @@ public class TestOrganelleUpgrades {
     public void testRibosomeUpgradeFailsWithoutMitochondria() {
         OrganelleUpgrade upgrade = new RibosomeUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
-        when(mockCell.getCellSize()).thenReturn(300); // size unit = 2
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(2); // size unit = 2
         when(mockCell.hasMitochondria()).thenReturn(false);
 
         assertFalse(upgrade.canPurchase(mockCell));
@@ -44,7 +44,7 @@ public class TestOrganelleUpgrades {
     public void testRibosomeUpgradeSuccess() {
         OrganelleUpgrade upgrade = new RibosomeUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
-        when(mockCell.getCellSize()).thenReturn(300); // size unit = 2
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(2); // size unit = 2
         when(mockCell.hasMitochondria()).thenReturn(true);
         when(mockCell.hasRibosomes()).thenReturn(false);
 
@@ -59,7 +59,7 @@ public class TestOrganelleUpgrades {
     public void testFlagellaUpgradeFailsWithoutRibosomes() {
         OrganelleUpgrade upgrade = new FlagellaUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
-        when(mockCell.getCellSize()).thenReturn(400); // size unit = 3
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(4); // size unit = 3
         when(mockCell.hasRibosomes()).thenReturn(false);
 
         assertFalse(upgrade.canPurchase(mockCell));
@@ -69,7 +69,7 @@ public class TestOrganelleUpgrades {
     public void testFlagellaUpgradeSuccess() {
         OrganelleUpgrade upgrade = new FlagellaUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
-        when(mockCell.getCellSize()).thenReturn(400); // size unit = 3
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(3); // size unit = 3
         when(mockCell.hasRibosomes()).thenReturn(true);
         when(mockCell.hasFlagella()).thenReturn(false);
 
@@ -84,7 +84,7 @@ public class TestOrganelleUpgrades {
     public void testNucleusUpgradeFailsWithoutFlagella() {
         OrganelleUpgrade upgrade = new NucleusUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
-        when(mockCell.getCellSize()).thenReturn(500); // size unit = 4
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(4); // size unit = 4
         when(mockCell.hasFlagella()).thenReturn(false);
 
         assertFalse(upgrade.canPurchase(mockCell));
@@ -94,7 +94,7 @@ public class TestOrganelleUpgrades {
     public void testNucleusUpgradeSuccess() {
         OrganelleUpgrade upgrade = new NucleusUpgrade();
         when(mockCell.getCellATP()).thenReturn(150);
-        when(mockCell.getCellSize()).thenReturn(500); // size unit = 4
+        when(mockCell.getSizeUpgradeLevel()).thenReturn(4); // size unit = 4
         when(mockCell.hasFlagella()).thenReturn(true);
         when(mockCell.hasNucleus()).thenReturn(false);
 

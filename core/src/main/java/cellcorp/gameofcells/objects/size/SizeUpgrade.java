@@ -9,20 +9,21 @@ import cellcorp.gameofcells.objects.Upgrade;
  * Represents a size upgrade that can be purchased in the shop
  */
 public abstract class SizeUpgrade implements Upgrade {
-    protected final int sizeIncrease;
+    protected final int sizeLevel;
     protected final int atpCost;
     protected final int requiredSize;
     protected final String tierName;
 
     /**
      * Creates a new size upgrade
+     *
      * @param sizeIncrease How much to increase the cell size (in units)
-     * @param atpCost ATP cost for this upgrade
+     * @param atpCost      ATP cost for this upgrade
      * @param requiredSize Minimum size required to purchase (in units)
-     * @param tierName Name of the upgrade tier
+     * @param tierName     Name of the upgrade tier
      */
-    public SizeUpgrade(int sizeIncrease, int atpCost, int requiredSize, String tierName) {
-        this.sizeIncrease = sizeIncrease;
+    public SizeUpgrade(int sizeLevel, int atpCost, int requiredSize, String tierName) {
+        this.sizeLevel = sizeLevel;
         this.atpCost = atpCost;
         this.requiredSize = requiredSize;
         this.tierName = tierName;
@@ -41,7 +42,7 @@ public abstract class SizeUpgrade implements Upgrade {
      */
     @Override
     public String getDescription() {
-        return "Increases cell size by " + sizeIncrease + " units";
+        return "Increases cell size by " + 1 + " units";
     }
 
     /**
@@ -70,38 +71,31 @@ public abstract class SizeUpgrade implements Upgrade {
 
     /**
      * Checks if the upgrade can be purchased
-     * @param cell The cell to check
+     *
+     * @param cell   The cell to check
      * @param screen The screen to check
      */
     @Override
     public boolean canPurchase(Cell cell) {
-        // Convert shop size units to actual cell size (100 = base size)
-        int currentSizeUnits = (cell.getCellSize() - 100) / 100;
-        return cell.getCellATP() >= atpCost && 
-            currentSizeUnits >= requiredSize &&
-            isPreviousUpgradePurchased(cell) &&
-            !isAlreadyPurchased(cell);
-    }
-
-    /**
-     * Gets the size increase amount (in units)
-     */
-    public int getSizeIncrease() {
-        return sizeIncrease;
+        return cell.getCellATP() >= atpCost &&
+                isPreviousUpgradePurchased(cell) &&
+                !isAlreadyPurchased(cell);
     }
 
     /**
      * Applies the upgrade to the cell
+     *
      * @param cell The cell to apply the upgrade to
      */
     @Override
     public abstract void applyUpgrade(Cell cell);
-    
+
     // Unique visual effect description for each tier
     public abstract String getVisualEffect();
 
     /**
      * Check if the previous upgrade was purchased
+     *
      * @param screen
      * @return true if the previous upgrade was purchased, false otherwise
      */
@@ -109,6 +103,7 @@ public abstract class SizeUpgrade implements Upgrade {
 
     /**
      * Check if the upgrade is already purchased
+     *
      * @param cell
      * @return true if the upgrade is already purchased, false otherwise
      */

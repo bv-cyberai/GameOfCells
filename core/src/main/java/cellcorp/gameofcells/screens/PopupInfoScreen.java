@@ -29,6 +29,8 @@ public class PopupInfoScreen {
             "Congrats! You can heal damage now.\n\nPress the h button to heal damage.\n\nPress 'Space' to continue!";
     public static final String DEFAULT_SIZE_UPGRADE_1_MESSAGE =
             "Your cell has grown!\n\nYou can now see acidic zones, which will damage your cell.\n\nPress 'Space' to continue!";
+    public static final String DEFAULT_SPLIT_CELL_MESSAGE =
+            "Your cell has divided.\n\nFrom now on, if your cell dies, you can load the game and play as the new cell.\n\nPress 'Space' to continue!";
 
     private static final float FONT_SCALE = 0.45f;
     private static final float HORIZONTAL_PADDING = (float) HUD.VIEW_RECT_WIDTH / 5;
@@ -168,6 +170,7 @@ public class PopupInfoScreen {
     /**
      * wasShownSetter
      * Used to prevent duplicate popups during load
+     *
      * @param value the value to set wasShone to.
      */
     public void setWasShown(Boolean value) {
