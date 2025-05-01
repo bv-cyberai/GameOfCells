@@ -118,7 +118,6 @@ public class MainMenuScreen implements GameOfCellsScreen {
         this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         this.wasdArrowsIcon = assetManager.get(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
         this.spaceEnterIcon = assetManager.get(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
-//        this.gamePlayScreen = new GamePlayScreen(inputProvider,graphicsProvider,game, assetManager, configProvider);
 
         //Config provider can be 'constructed' anywhere, this is useful as game objects will need access
         //to it.
