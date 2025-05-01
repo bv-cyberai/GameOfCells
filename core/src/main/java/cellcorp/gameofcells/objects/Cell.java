@@ -483,8 +483,8 @@ public class Cell {
 
             float size = cellSize * 0.3f;
 
-            Vector2 offset1 = new Vector2(+cellRadius * 0.6f, +cellRadius * 0.5f).rotateDeg(cellRotation);
-            Vector2 offset2 = new Vector2(-cellRadius * 0.6f, -cellRadius * 0.5f).rotateDeg(cellRotation);
+            Vector2 offset1 = new Vector2(+cellRadius * 0.5f, +cellRadius * 0.5f).rotateDeg(cellRotation);
+            Vector2 offset2 = new Vector2(-cellRadius * 0.5f, -cellRadius * 0.5f).rotateDeg(cellRotation);
 
             float angle1 = cellRotation + 135;
             float angle2 = cellRotation + 315;
@@ -522,9 +522,9 @@ public class Cell {
 
             float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
 
-            Vector2 offset1 = new Vector2(-cellRadius * 0.5f, +cellRadius * 0.5f).rotateDeg(cellRotation); // Top-left
-            Vector2 offset2 = new Vector2(+cellRadius * 0.6f, -cellRadius * 0.3f).rotateDeg(cellRotation); // Bottom-right
-            Vector2 offset3 = new Vector2(-cellRadius * 0.1f, -cellRadius * 0.6f).rotateDeg(cellRotation); // Bottom-middle-left
+            Vector2 offset1 = new Vector2(-cellRadius * 0.4f, +cellRadius * 0.5f).rotateDeg(cellRotation); // Top-left
+            Vector2 offset2 = new Vector2(+cellRadius * 0.6f, -cellRadius * 0.1f).rotateDeg(cellRotation); // Bottom-right
+            Vector2 offset3 = new Vector2(+cellRadius  * 0.1f, -cellRadius * 0.7f).rotateDeg(cellRotation); // Bottom-middle-left
 
             // Draw first ribosome (top-left side)
             batch.draw(ribosomeTexture,
