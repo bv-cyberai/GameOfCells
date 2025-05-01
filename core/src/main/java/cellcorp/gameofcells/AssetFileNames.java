@@ -8,9 +8,9 @@ public class AssetFileNames {
     /**
      * The file name for our cell texture.
      */
-    public static String CELL = "cell_no_membrane.png";
+    public static String CELL = "cell_no_membrane_bust_no_white_edge_cropped.png";
 
-    public static String CELL_MEMBRANE = "cell_with_membrane.png";
+    public static String CELL_MEMBRANE = "cell_membrane_bust_no_white_edge_cropped.png";
 
     public static String CELL_MEMBRANE_DAMAGED = "cell_membrane_damaged.png";
 

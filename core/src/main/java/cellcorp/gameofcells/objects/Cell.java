@@ -1103,7 +1103,7 @@ public class Cell {
         if (!drawFlagellum || flagellumVectors.isEmpty()) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(.631f,.855f,.851f,1);
+        shapeRenderer.setColor( 0.239f, 0.498f, 0.651f, 1f);
 
         float thickness = 12.5f;
 
