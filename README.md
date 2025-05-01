@@ -1,32 +1,36 @@
- # Game Of Cells
- 
- ## ID Block
- 
- A game used to teach students about cells and cell functions.
- 
- - **Brendon Vinyard** / vineyabn207  
- - **Andrew Sennoga-Kimuli** / sennogat106  
- - **Mark Murphy** / murphyml207  
- - **Tim Davey** / daveytj206  
- - **Date:** - 02/27/2025
- - **Course:** - CIS 405
- - **Assignment:** - GameOfCells
- 
- # Pull Request Reviewer Roster
- When your PR is ready for review, ping the next person in the list to review:
- - Brendon
- - Tim
- - Andrew
- - Mark
- 
- ## Problem
- 
- Use agile methods to develop 'Game Of Cells' as part of a software engineering team. *Game Of Cells* is a game used to teach students about cells and cell functions.
- 
- ## Directory
- 
- **Note:** This directory has been modified slightly to ignore files that are build-specific or temporary. For a full directory, run the `tree` command in your favorite shell.
- 
+# Game Of Cells
+
+## ID Block
+
+A game used to teach students about cells and cell functions.
+
+- **Brendon Vinyard** / vineyabn207
+- **Andrew Sennoga-Kimuli** / sennogat106
+- **Mark Murphy** / murphyml207
+- **Tim Davey** / daveytj206
+- **Date:** - 02/27/2025
+- **Course:** - CIS 405
+- **Assignment:** - GameOfCells
+
+# Pull Request Reviewer Roster
+
+When your PR is ready for review, ping the next person in the list to review:
+
+- Brendon
+- Tim
+- Andrew
+- Mark
+
+## Problem
+
+Use agile methods to develop 'Game Of Cells' as part of a software engineering team. *Game Of Cells* is a game used to
+teach students about cells and cell functions.
+
+## Directory
+
+**Note:** This directory has been modified slightly to ignore files that are build-specific or temporary. For a full
+directory, run the `tree` command in your favorite shell.
+
  ```
  .
 ├── assets
@@ -160,78 +164,102 @@
 ├── README.md
 └── settings.gradle
  ```
- 
- **340 directories, 39 files**
- 
- ## Notes
- 
- - Java version has been set to 17 to avoid some warnings on build.
- 
- ## Desktop
- 
- ### Compilation
+
+**340 directories, 39 files**
+
+## Notes
+
+- Java version has been set to 17 to avoid some warnings on build.
+
+## Desktop
+
+### Compilation
+
  ```sh
  gradle build
  ```
- 
- ### Run
+
+### Run
+
  ```sh
  gradle Run
  ```
- 
- ## Web
- 
- ### Compilation
+
+## Web
+
+### Compilation
+
  ```sh
  gradle build
  ```
- 
- ### Run
+
+### Run
+
  ```sh
  gradle superdev
  ```
 
- Access the following URL via a web browser:
- 
- [http://localhost:8080/index.html](http://localhost:8080/index.html)
+Access the following URL via a web browser:
+
+[http://localhost:8080/index.html](http://localhost:8080/index.html)
+
+## Debug mode
+
+For manual testing, the game has two debug facilities.
+
+Setting the constant `GamePlayScreen.DEBUG_DRAW_ENABLED`
+enables debug draw of Scene2dUi elements, and adds debug wireframes
+to many game objects.
+
+There are also a set of debug keys:
+
+* `g`: Go to game-over screen
+* `e`: Add ATP to cell
+* `f`: Remove ATP from cell
+* `y`: Enable the cell's healing functionality
 
 ## Uploading to CSDev
+
 1. Ensure CONFING_URL is set properly in ConfigProvider.
 2. `gradle build`
 3. `gradle dist`
 4. This makes/updates `html/build/dist` in your repo.
 5. On a lab machine, copy the contents of that folder to `/home/student/Classes/405/CellCorp`
-6. Place config.txt from the project assets folder inside of `/home/student/Classes/405/CellCorp/assets`. (This is required as `gradle dist`) ruins the file.
+6. Place config.txt from the project assets folder inside of `/home/student/Classes/405/CellCorp/assets`. (This is
+   required as `gradle dist`) ruins the file.
 7. Run `chmod g+w /home/student/Classes/405/CellCorp/assets/*` to allow others to delete folders you create.
 
 ## Python Web Server Setup
+
 A local web server instance has been provided to aid in testing of adding user
-configurable variables to the web version of the game. Below are instructions 
+configurable variables to the web version of the game. Below are instructions
 to initialize this setup.
 
 In a terminal window containing our GameOfCells project enter:
-   ```python local_web_server.py```
+```python local_web_server.py```
 This will create a basic web server configured to handle requests from GameOfCells.
 
 Run ```gradle superdev``` and navigate to  [http://localhost:8080/index.html](http://localhost:8080/index.html)
 
-
 Edit and save config.txt as desired. Refresh web instance of game to see updated configs.
 
+## Testing
 
- ## Testing
- 
- ### Test
- Testing is performed via JUnit tests on each build.
- 
- ## Asset list
- 
- ### List of assets/licenses:
- 
- ### Creative Commons:
- Glucose: - Still Undecided.
- - https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png
- - https://openclipart.org/detail/75313/glossy-balls
- 
- ### SIL Open Font License
- - Rubik
+### Test
+
+Testing is performed via JUnit tests on each build.
+
+## Asset list
+
+### List of assets/licenses:
+
+### Creative Commons:
+
+Glucose: - Still Undecided.
+
+- https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png
+- https://openclipart.org/detail/75313/glossy-balls
+
+### SIL Open Font License
+
+- Rubik
