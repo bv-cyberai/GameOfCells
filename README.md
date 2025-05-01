@@ -4,7 +4,7 @@
 
 A game used to teach students about cells and cell functions.
 
-- **Brendon Vinyard** / vineyabn207
+- **Brendon Vineyard** / vineyabn207
 - **Andrew Sennoga-Kimuli** / sennogat106
 - **Mark Murphy** / murphyml207
 - **Tim Davey** / daveytj206
@@ -179,7 +179,7 @@ directory, run the `tree` command in your favorite shell.
  gradle build
  ```
 
-### Run
+### run
 
  ```sh
  gradle Run
@@ -216,11 +216,13 @@ There are also a set of debug keys:
 * `g`: Go to game-over screen
 * `e`: Add ATP to cell
 * `f`: Remove ATP from cell
+* `t`: Damage the cell
 * `y`: Enable the cell's healing functionality
+* `m`: Go to main menu
 
 ## Uploading to CSDev
 
-1. Ensure CONFING_URL is set properly in ConfigProvider.
+1. Ensure `CONFIG_URL` is set properly in ConfigProvider.
 2. `gradle build`
 3. `gradle dist`
 4. This makes/updates `html/build/dist` in your repo.
