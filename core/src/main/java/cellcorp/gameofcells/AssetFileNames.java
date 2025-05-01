@@ -8,9 +8,9 @@ public class AssetFileNames {
     /**
      * The file name for our cell texture.
      */
-    public static String CELL = "cell_real.png";
+    public static String CELL = "cell_no_membrane.png";
 
-    public static String CELL_MEMBRANE = "cell_membrane.png";
+    public static String CELL_MEMBRANE = "cell_with_membrane.png";
 
     public static String CELL_MEMBRANE_DAMAGED = "cell_membrane_damaged.png";
 
@@ -90,11 +90,6 @@ public class AssetFileNames {
      * The file name for the ribosome texture.
      */
     public static String RIBOSOME_ICON = "ribosomes_real.png";
-
-    /**
-     * The file name for the flagella texture.
-     */
-    public static String FLAGELLA_ICON = "flagella.png";
 
     /**
      * The file name for the nucleus texture.

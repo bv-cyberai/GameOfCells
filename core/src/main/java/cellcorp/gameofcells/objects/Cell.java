@@ -350,19 +350,18 @@ public class Cell {
         // and the class of the asset to load.
 
         //cell Texture
-        // if (hasSmallSizeUpgrade) {
-        //     if (cellHealth <= (MAX_HEALTH/2)) {
-        //         cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE_DAMAGED, Texture.class);
-        //     }
-        //     else {
-        //         cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE, Texture.class);
+        if (hasSmallSizeUpgrade) {
+            if (cellHealth <= (MAX_HEALTH/2)) {
+                cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE_DAMAGED, Texture.class);
+            }
+            else {
+                cellTexture = assetManager.get(AssetFileNames.CELL_MEMBRANE, Texture.class);
 
-        //     }
-        // }
-        // else {
-        //     cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
-        // }
-        cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+            }
+        }
+        else {
+            cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+        }
 
         drawFlagellum(hasFlagella, shapeRenderer); //moved outside of draw organelles to be underneath the cell.
 
