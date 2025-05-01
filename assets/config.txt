@@ -37,4 +37,4 @@ glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP,
 dangerPopupMessage:ACID ZONE!\n\nHealth drains in pink areas. Move to safety quickly!\n\nPress 'Space' to continue!"/
 basicPopupMessage:GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.\n\nPress 'Space to continue!"/
 healAvailableMessage:You can now use ATP to heal your cell.\n\nPress the 'H' key to heal damage.\n\nPress 'Space' to continue!"/
-membraneAvailableMessage:Congrats! You have a cell membrane now.\n\nYou will take less damage from acid zones. \n\nPress 'Space' to continue!"/
+sizeUpgrade1Message:Your cell has grown!\n\nYou can now see acidic zones, which will damage your cell.\n\nPress 'Space' to continue!/

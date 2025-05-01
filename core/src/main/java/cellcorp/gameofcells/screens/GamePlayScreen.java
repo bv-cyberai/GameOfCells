@@ -13,8 +13,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -142,18 +142,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     //private final HUD hud;
     private final HUD hud;
-
-    // Background textures
-    private Texture parallaxFar;
-    private Texture parallaxMid;
-    private Texture parallaxNear;
-    private Texture floatingOverlay; // Texture for simulating fluid game movement
-    private Texture vignetteLowHealth; // Texture for low health warning
-    private float overlayTime = 0f; // Time for the floating overlay animation
-
     // Zoom fields
     private final float originalZoom = 1.2f; // Original zoom level
     private final float targetZoom = 0.8f; // Target zoom level
+    // Background textures
+    private final Texture parallaxFar;
+    private final Texture parallaxMid;
+    private final Texture parallaxNear;
+    private final Texture floatingOverlay; // Texture for simulating fluid game movement
+    private final Texture vignetteLowHealth; // Texture for low health warning
+    private float overlayTime = 0f; // Time for the floating overlay animation
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
@@ -207,7 +205,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         vignetteLowHealth = assetManager.get(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
 
 
-
         this.glucoseCollisionPopup = new PopupInfoScreen(
                 configProvider,
                 graphicsProvider,
@@ -248,8 +245,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 configProvider,
                 graphicsProvider,
                 assetManager,
-                "membraneAvailableMessage",
-                PopupInfoScreen.DEFAULT_CELL_MEMBRANE_MESSAGE,
+                "sizeUpgrade1Message",
+                PopupInfoScreen.DEFAULT_SIZE_UPGRADE_1_MESSAGE,
                 Color.BLACK,
                 this::resumeGame
         );
@@ -571,29 +568,32 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         // Far layer - slowest movement (deep background)
         batch.setColor(1f, 1f, 1f, 0.6f);
-        batch.draw(parallaxFar,
-            camX - viewport.getWorldWidth() * 0.6f,
-            camY - viewport.getWorldHeight() * 0.6f,
-            viewport.getWorldWidth() * 1.2f,
-            viewport.getWorldHeight() * 1.2f
+        batch.draw(
+                parallaxFar,
+                camX - viewport.getWorldWidth() * 0.6f,
+                camY - viewport.getWorldHeight() * 0.6f,
+                viewport.getWorldWidth() * 1.2f,
+                viewport.getWorldHeight() * 1.2f
         );
 
         // Mid layer - moderate movement
         batch.setColor(1f, 1f, 1f, 0.3f);
-        batch.draw(parallaxMid,
-            camX - viewport.getWorldWidth() * 0.55f,
-            camY - viewport.getWorldHeight() * 0.55f,
-            viewport.getWorldWidth() * 1.1f,
-            viewport.getWorldHeight() * 1.1f
+        batch.draw(
+                parallaxMid,
+                camX - viewport.getWorldWidth() * 0.55f,
+                camY - viewport.getWorldHeight() * 0.55f,
+                viewport.getWorldWidth() * 1.1f,
+                viewport.getWorldHeight() * 1.1f
         );
 
         // Near layer - fastest movement (foreground)
         batch.setColor(1f, 1f, 1f, 0.15f);
-        batch.draw(parallaxNear,
-            camX - viewport.getWorldWidth() * 0.52f,
-            camY - viewport.getWorldHeight() * 0.52f,
-            viewport.getWorldWidth() * 1.04f,
-            viewport.getWorldHeight() * 1.04f
+        batch.draw(
+                parallaxNear,
+                camX - viewport.getWorldWidth() * 0.52f,
+                camY - viewport.getWorldHeight() * 0.52f,
+                viewport.getWorldWidth() * 1.04f,
+                viewport.getWorldHeight() * 1.04f
         );
 
         batch.setColor(1f, 1f, 1f, 1f); // Reset to full opacity
@@ -617,11 +617,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         batch.begin();
         batch.setColor(1f, 1f, 1f, 0.3f); // 0.2f alpha = subtle
-        batch.draw(floatingOverlay,
-            camX - viewport.getWorldWidth() / 2 + movementOffsetX,
-            camY - viewport.getWorldHeight() / 2 + movementOffsetY,
-            viewport.getWorldWidth(),
-            viewport.getWorldHeight()
+        batch.draw(
+                floatingOverlay,
+                camX - viewport.getWorldWidth() / 2 + movementOffsetX,
+                camY - viewport.getWorldHeight() / 2 + movementOffsetY,
+                viewport.getWorldWidth(),
+                viewport.getWorldHeight()
         );
         batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
@@ -637,11 +638,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         batch.begin();
         batch.setColor(1f, 1f, 1f, pulse);
-        batch.draw(vignetteLowHealth,
-            camX - viewport.getWorldWidth() / 2,
-            camY - viewport.getWorldHeight() / 2,
-            viewport.getWorldWidth(),
-            viewport.getWorldHeight());
+        batch.draw(
+                vignetteLowHealth,
+                camX - viewport.getWorldWidth() / 2,
+                camY - viewport.getWorldHeight() / 2,
+                viewport.getWorldWidth(),
+                viewport.getWorldHeight()
+        );
         batch.setColor(1f, 1f, 1f, 1f); // reset
         batch.end();
     }

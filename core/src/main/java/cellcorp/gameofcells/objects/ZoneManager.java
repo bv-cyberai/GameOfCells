@@ -58,10 +58,9 @@ public class ZoneManager {
         var damage = distanceRatio * Zone.ACID_ZONE_MAX_DAMAGE_PER_SECOND * deltaTimeSeconds;
         if (timer > Zone.ACID_ZONE_DAMAGE_INCREMENT_SECONDS && damageCounter > 1) {
             if (cell.hasSmallSizeUpgrade()) {
-                cell.applyDamage(((int) (damageCounter)/cell.getMembraneDamageReduction()));
-            }
-            else {
-                cell.applyDamage((int)damageCounter);
+                cell.applyDamage(((int) (damageCounter) / cell.getMembraneDamageReduction()));
+            } else {
+                cell.applyDamage((int) damageCounter);
             }
             timer = deltaTimeSeconds;
             damageCounter = damage;
@@ -117,9 +116,7 @@ public class ZoneManager {
 
     public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         drawZoneMap(basicZones, spriteBatch, shapeRenderer);
-        if (cell.hasSmallSizeUpgrade()) {
-            drawZoneMap(acidZones, spriteBatch, shapeRenderer);
-        }
+        drawZoneMap(acidZones, spriteBatch, shapeRenderer);
     }
 
     private void drawZoneMap(Map<Chunk, Zone> zoneMap, SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
@@ -149,7 +146,9 @@ public class ZoneManager {
                     continue;
                 }
                 var chunk = new Chunk(row, col);
-                spawnZone(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
+                if (cell.hasSmallSizeUpgrade()) {
+                    spawnZone(acidZones, ACID_ZONE_SPAWN_CHANCE, AssetFileNames.ACID_ZONE, 2, chunk);
+                }
 
                 spawnZone(basicZones, BASIC_ZONE_SPAWN_CHANCE, AssetFileNames.BASIC_ZONE, 3, chunk);
             }
