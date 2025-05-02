@@ -96,7 +96,7 @@ public class AttractScreen implements GameOfCellsScreen {
 
     private void initializeGameObjects() {
         this.cell = new Cell(
-            new GamePlayScreen(inputProvider, graphicsProvider, game, assetManager, configProvider),
+            new GamePlayScreen(inputProvider, graphicsProvider, game, assetManager, configProvider, 2),
                 assetManager,
                 configProvider);
 
@@ -256,7 +256,7 @@ public class AttractScreen implements GameOfCellsScreen {
     public float getTargetX() {
         return targetX;
     }
-    
+
     public float getTargetY() {
         return targetY;
     }

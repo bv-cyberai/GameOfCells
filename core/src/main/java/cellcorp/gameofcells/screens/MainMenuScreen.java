@@ -49,9 +49,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
      * The instructional message displayed on the main menu
      */
     private static final String[] MENU_OPTIONS = {
-        "START GAME",
+        "NEW GAME",
         "GAME INFO",
-        "EXIT"
+        "EXIT",
+        "RESUME GAME"
     };
     /**
      * The instructions for the main menu
@@ -236,7 +237,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             inputProvider,
                             graphicsProvider,
                             game,
-                            assetManager, configProvider ));
+                            assetManager, configProvider, 2));
                     break;
                 case 1: // Settings
                     // Open the settings screen
@@ -253,6 +254,14 @@ public class MainMenuScreen implements GameOfCellsScreen {
                 case 2:
                     // Exit the game
                     Gdx.app.exit();
+                    break;
+                case 3:
+                    // Start the game and load the previous save
+                    game.setScreen(new GamePlayScreen(
+                        inputProvider,
+                        graphicsProvider,
+                        game,
+                        assetManager, configProvider, 1));
                     break;
             }
         }

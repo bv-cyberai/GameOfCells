@@ -151,6 +151,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Texture parallaxNear;
     private final Texture floatingOverlay; // Texture for simulating fluid game movement
     private final Texture vignetteLowHealth; // Texture for low health warning
+    private final GameLoaderSaver gameLoaderSaver;
+    private final int loadSave;
     private float overlayTime = 0f; // Time for the floating overlay animation
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
@@ -163,8 +165,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
 
-    private final GameLoaderSaver gameLoaderSaver;
-
     /**
      * Constructs the GamePlayScreen.
      *
@@ -172,12 +172,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param graphicsProvider Provide graphics information.
      * @param game             The main game instance.
      * @param configProvider
+     * @param loadSave;
      */
     public GamePlayScreen(
             InputProvider inputProvider,
             GraphicsProvider graphicsProvider,
             Main game,
-            AssetManager assetManager, ConfigProvider configProvider) {
+            AssetManager assetManager, ConfigProvider configProvider, int loadSave) {
 
         this.assetManager = assetManager;
         this.game = game;
@@ -197,7 +198,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, assetManager, this, stats);
-
+        this.loadSave = loadSave;
         parallaxFar = assetManager.get(AssetFileNames.PARALLAX_FAR, Texture.class);
         parallaxMid = assetManager.get(AssetFileNames.PARALLAX_MID, Texture.class);
         parallaxNear = assetManager.get(AssetFileNames.PARALLAX_NEAR, Texture.class);
@@ -264,6 +265,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
+        if (loadSave == 1) {
+            gameLoaderSaver.loadState();
+        }
+        if (loadSave == 0) {
+            GameLoaderSaver.clearSaveFile();
+        }
         // Fade in the gameplay screen when returning from the shop
         stage.getRoot().getColor().a = 0; // Start transparent
         stage.addAction(Actions.fadeIn(2f)); // Fade in over 2 seconds
@@ -338,11 +345,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void handleInput(float deltaTimeSeconds) {
 
         //"L"oad at any time
-        if( inputProvider.isKeyJustPressed(Input.Keys.L)){
+        if (inputProvider.isKeyJustPressed(Input.Keys.L)) {
             gameLoaderSaver.loadState();
         }
         //"O"verwrite at any time.
-        if(inputProvider.isKeyJustPressed(Input.Keys.O)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.O)) {
             gameLoaderSaver.saveState();
         }
 
@@ -1098,6 +1105,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Heal Popup Getter
+     *
      * @return the heal Popup
      */
     public PopupInfoScreen getHealAvailablePopup() {
@@ -1106,14 +1114,16 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Cell membrane popup getter
+     *
      * @return the cell membrane popup
      */
-    public PopupInfoScreen getCellMembranePopup () {
+    public PopupInfoScreen getCellMembranePopup() {
         return cellMembranePopup;
     }
 
     /**
      * GameLoaderSaver Getter
+     *
      * @return The GameLoaderSaver
      */
     public GameLoaderSaver getGameLoaderSaver() {
