@@ -164,6 +164,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float shakeTime = 0; // Time remaining for the shake effect
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
+    int popupsAllowed = 1;
 
     /**
      * Constructs the GamePlayScreen.
@@ -206,6 +207,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         vignetteLowHealth = assetManager.get(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
 
 
+        try {
+            popupsAllowed = configProvider.getIntValue("popupsAllowed");
+        } catch (NumberFormatException e) {
+            popupsAllowed = 1;
+        }
         this.glucoseCollisionPopup = new PopupInfoScreen(
                 configProvider,
                 graphicsProvider,
@@ -441,23 +447,23 @@ public class GamePlayScreen implements GameOfCellsScreen {
             spawnManager.update();
 
             playerCell.update(deltaTimeSeconds);
-            if (playerCell.hasMitochondria() && !healAvailablePopup.wasShown()) {
+            if (playerCell.hasMitochondria() && !healAvailablePopup.wasShown() && (popupsAllowed == 1)) {
                 reportHealAvailable();
             }
-            if (playerCell.hasSmallSizeUpgrade() && !cellMembranePopup.wasShown()) {
+            if (playerCell.hasSmallSizeUpgrade() && !cellMembranePopup.wasShown() && (popupsAllowed == 1)) {
                 reportCellMembrane();
             }
             stats.gameTimer += deltaTimeSeconds;
             overlayTime += deltaTimeSeconds;
 
             boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
-            if (inBasicZone) {
+            if (inBasicZone  && (popupsAllowed == 1)) {
                 reportBasicZoneCollision();
             }
 
             // Check for acid zone
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
-            if (inAcidZone) {
+            if (inAcidZone  && (popupsAllowed == 1)) {
                 // We want to show the warning only once when entering the acid zone
                 reportAcidZoneCollision();
             }
@@ -792,7 +798,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * If this is the first collision, shows an info screen.
      */
     public void reportGlucoseCollision() {
-        if (!glucoseCollisionPopup.wasShown()) {
+        if (!glucoseCollisionPopup.wasShown() && (popupsAllowed == 1)) {
             pauseGame();
             glucoseCollisionPopup.show();
         }
@@ -803,7 +809,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for displaying the acid zone warning.
      */
     public void reportAcidZoneCollision() {
-        if (!acidZonePopup.wasShown() && playerCell.hasSmallSizeUpgrade()) {
+        if (!acidZonePopup.wasShown() && playerCell.hasSmallSizeUpgrade() && (popupsAllowed == 1)) {
             pauseGame();
             acidZonePopup.show();
         }
@@ -814,21 +820,21 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for displaying the basic zone warning.
      */
     public void reportBasicZoneCollision() {
-        if (!basicZonePopup.wasShown()) {
+        if (!basicZonePopup.wasShown() && (popupsAllowed == 1)) {
             pauseGame();
             basicZonePopup.show();
         }
     }
 
     public void reportHealAvailable() {
-        if (!healAvailablePopup.wasShown()) {
+        if (!healAvailablePopup.wasShown() && (popupsAllowed == 1)) {
             pauseGame();
             healAvailablePopup.show();
         }
     }
 
     public void reportCellMembrane() {
-        if (!cellMembranePopup.wasShown()) {
+        if (!cellMembranePopup.wasShown() && (popupsAllowed == 1)) {
             pauseGame();
             cellMembranePopup.show();
         }

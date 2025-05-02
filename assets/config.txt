@@ -11,6 +11,7 @@ cellRotationSpeed:20    ##Cell Rotational Speed
 amountHealed:20 ##Amount Healed
 atpHealCost:20 ##Amount of ATP used to heal
 damageReduction:2 ## Membrane resistance value (higher number means less damage taken)
+popupsAllowed:1 ##enables or disables popups (1 for on, 0 for off)
 
 [flagellum]
 amplitude:25     ##Amplitude of flagellum wave
