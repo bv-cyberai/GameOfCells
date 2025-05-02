@@ -8,9 +8,9 @@ public class AssetFileNames {
     /**
      * The file name for our cell texture.
      */
-    public static String CELL = "mod_cell.png";
+    public static String CELL = "cell_no_membrane_bust_no_white_edge_cropped.png";
 
-    public static String CELL_MEMBRANE = "cell_membrane.png";
+    public static String CELL_MEMBRANE = "cell_membrane_bust_no_white_edge_cropped.png";
 
     public static String CELL_MEMBRANE_DAMAGED = "cell_membrane_damaged.png";
 
@@ -84,22 +84,17 @@ public class AssetFileNames {
     /**
      * The file name for the mitochondria texture.
      */
-    public static String MITOCHONDRIA_ICON = "mitochondria.png";
+    public static String MITOCHONDRIA_ICON = "mitochondria_real.png";
 
     /**
      * The file name for the ribosome texture.
      */
-    public static String RIBOSOME_ICON = "ribosomes.png";
-
-    /**
-     * The file name for the flagella texture.
-     */
-    public static String FLAGELLA_ICON = "flagella.png";
+    public static String RIBOSOME_ICON = "ribosomes_real.png";
 
     /**
      * The file name for the nucleus texture.
      */
-    public static String NUCLEUS_ICON = "nucleus.png";
+    public static String NUCLEUS_ICON = "nucleus_real.png";
 
     /**
      * The file name for the lock texture.

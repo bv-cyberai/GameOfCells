@@ -135,7 +135,6 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.HUD_FONT, BitmapFont.class);
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.load(AssetFileNames.RIBOSOME_ICON, Texture.class);
-        assetManager.load(AssetFileNames.FLAGELLA_ICON, Texture.class);
         assetManager.load(AssetFileNames.NUCLEUS_ICON, Texture.class);
         assetManager.load(AssetFileNames.LOCK_ICON, Texture.class);
         assetManager.load(AssetFileNames.WHITE_PIXEL, Texture.class);

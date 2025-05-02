@@ -15,6 +15,7 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import static com.badlogic.gdx.math.MathUtils.lerpAngleDeg;
 import static java.lang.Math.abs;
@@ -474,64 +475,96 @@ public class Cell {
         float cellRadius = cellSize / 2f;
         float centerX = cellCircle.x;
         float centerY = cellCircle.y;
-        // Draw mitochondria (bottom-left quadrant)
+
         if (hasMitochondria) {
             var mitochondriaTexture = assetManager.get(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
-            float mitochondriaSize = cellSize * 0.3f; // Adjust size as needed
 
-            float mitoX = centerX - mitochondriaSize / 2 - cellRadius * 0.5f;
-            float mitoY = centerY - mitochondriaSize / 2 - cellRadius * 0.5f;
+            assert (mitochondriaTexture != null);
 
+            float size = cellSize * 0.3f;
+
+            Vector2 offset1 = new Vector2(+cellRadius * 0.5f, +cellRadius * 0.5f).rotateDeg(cellRotation);
+            Vector2 offset2 = new Vector2(-cellRadius * 0.5f, -cellRadius * 0.5f).rotateDeg(cellRotation);
+
+            float angle1 = cellRotation + 135;
+            float angle2 = cellRotation + 315;
+
+            // Draw first mitochondrion (top-right side)
             batch.draw(mitochondriaTexture,
-                mitoX, mitoY,
-                centerX - mitoX, centerY - mitoY,
-                mitochondriaSize, mitochondriaSize,
+                centerX + offset1.x - size / 2,
+                centerY + offset1.y - size / 2,
+                size / 2, size / 2,
+                size, size,
                 1f, 1f,
-                cellRotation,
+                angle1,
                 0, 0,
                 mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                false, false);
+                false, true);
+
+            // Draw second mitochondrion (bottom-left side)
+            batch.draw(mitochondriaTexture,
+                centerX + offset2.x - size / 2,
+                centerY + offset2.y - size / 2,
+                size / 2, size / 2,
+                size, size,
+                1f, 1f,
+                angle2,
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, true);
         }
 
         // Draw ribosomes (top-left quadrant)
         if (hasRibosomes) {
             var ribosomeTexture = assetManager.get(AssetFileNames.RIBOSOME_ICON, Texture.class);
+
+            assert (ribosomeTexture != null);
+
             float ribosomeSize = cellSize * 0.2f; // Adjust size as needed
 
-            float riboX = centerX - ribosomeSize / 2 - cellRadius * 0.7f;
-            float riboY = centerY - ribosomeSize / 2 + cellRadius * 0.3f;
+            Vector2 offset1 = new Vector2(-cellRadius * 0.4f, +cellRadius * 0.5f).rotateDeg(cellRotation); // Top-left
+            Vector2 offset2 = new Vector2(+cellRadius * 0.6f, -cellRadius * 0.1f).rotateDeg(cellRotation); // Bottom-right
+            Vector2 offset3 = new Vector2(+cellRadius  * 0.1f, -cellRadius * 0.7f).rotateDeg(cellRotation); // Bottom-middle-left
 
+            // Draw first ribosome (top-left side)
             batch.draw(ribosomeTexture,
-                riboX, riboY,
-                centerX - riboX, centerY - riboY,
-                ribosomeSize, ribosomeSize,
-                1f, 1f,
-                cellRotation,
-                0, 0,
-                ribosomeTexture.getWidth(), ribosomeTexture.getHeight(),
-                false, false);
-        }
+                    centerX + offset1.x - ribosomeSize / 2,
+                    centerY + offset1.y - ribosomeSize / 2,
+                    ribosomeSize, ribosomeSize);
 
+            // Draw second ribosome (bottom-right side)
+            batch.draw(ribosomeTexture,
+                    centerX + offset2.x - ribosomeSize / 2,
+                    centerY + offset2.y - ribosomeSize / 2,
+                    ribosomeSize, ribosomeSize);
+
+            // Draw third ribosome (bottom-middle-left side)
+            batch.draw(ribosomeTexture,
+                    centerX + offset3.x - ribosomeSize / 2,
+                    centerY + offset3.y - ribosomeSize / 2,
+                    ribosomeSize, ribosomeSize);
+        }
 
         // Draw nucleus (center with pulse effect)
         if (hasNucleus) {
             var nucleusTexture = assetManager.get(AssetFileNames.NUCLEUS_ICON, Texture.class);
-            float nucleusSize = cellSize * 0.4f * pulseScale; // Adjust size and pulse effect
-            float nukeX = centerX - nucleusSize / 2;
-            float nukeY = centerY - nucleusSize / 2;
+
+            assert (nucleusTexture != null);
+
+            float baseSize = cellSize * 0.4f;
+            float nucleusSize = baseSize * pulseScale; // Adjust size based on pulse effect
 
             batch.draw(nucleusTexture,
-                nukeX, nukeY,
-                centerX - nukeX, centerY - nukeY,
-                nucleusSize, nucleusSize,
-                1f, 1f,
-                cellRotation,
-                0, 0,
-                nucleusTexture.getWidth(), nucleusTexture.getHeight(),
-                false, false);
+                    centerX - nucleusSize / 2,
+                    centerY - nucleusSize / 2,
+                    nucleusSize / 2 , nucleusSize / 2,
+                    nucleusSize, nucleusSize,
+                    1f, 1f,
+                    cellRotation,
+                    0, 0,
+                    nucleusTexture.getWidth(), nucleusTexture.getHeight(),
+                    false, false);
         }
-
-
     }
 
     /**
@@ -1079,7 +1112,7 @@ public class Cell {
         if (!drawFlagellum || flagellumVectors.isEmpty()) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(.631f,.855f,.851f,1);
+        shapeRenderer.setColor( 0.239f, 0.498f, 0.651f, 1f);
 
         float thickness = 12.5f;
 
