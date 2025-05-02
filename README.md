@@ -213,12 +213,15 @@ to many game objects.
 
 There are also a set of debug keys:
 
-* `g`: Go to game-over screen
-* `e`: Add ATP to cell
-* `f`: Remove ATP from cell
-* `t`: Damage the cell
-* `y`: Enable the cell's healing functionality
-* `m`: Go to main menu
+* `G`: Go to game-over screen
+* `E`: Add ATP to cell
+* `F`: Remove ATP from cell
+* `T`: Damage the cell
+* `Y`: Enable the cell's healing functionality
+* `M`: Go to main menu
+* `0`: Set health to zero
+* `O`: Overwrite Save
+* `L`: Load Save
 
 ## Uploading to CSDev
 

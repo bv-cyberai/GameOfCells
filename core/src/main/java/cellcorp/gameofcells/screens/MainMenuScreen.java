@@ -237,7 +237,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             inputProvider,
                             graphicsProvider,
                             game,
-                            assetManager, configProvider, 2));
+                            assetManager, configProvider, 0));
                     break;
                 case 1: // Settings
                     // Open the settings screen

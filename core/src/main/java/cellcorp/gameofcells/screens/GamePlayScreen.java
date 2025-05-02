@@ -409,7 +409,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.N)) {
             playerCell.setHasNucleus(true);
         }
-        if (inputProvider.isKeyJustPressed(Input.Keys.O)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.NUM_0)) {
             playerCell.setCellHealth(0);
         }
 
