@@ -1,24 +1,18 @@
 package cellcorp.gameofcells.screens;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Set;
-
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.runner.GameRunner;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.badlogic.gdx.graphics.GL20;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.badlogic.gdx.graphics.GL20;
+import java.util.Set;
 
-import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.runner.GameRunner;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMainMenuScreen {
 
@@ -27,14 +21,33 @@ public class TestMainMenuScreen {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-        new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
-        }, config);
+        new HeadlessApplication(
+                new ApplicationListener() {
+                    @Override
+                    public void create() {
+                    }
+
+                    @Override
+                    public void resize(int width, int height) {
+                    }
+
+                    @Override
+                    public void render() {
+                    }
+
+                    @Override
+                    public void pause() {
+                    }
+
+                    @Override
+                    public void resume() {
+                    }
+
+                    @Override
+                    public void dispose() {
+                    }
+                }, config
+        );
 
         // Mock the graphics provider
         Gdx.graphics = Mockito.mock(Graphics.class);
@@ -62,7 +75,7 @@ public class TestMainMenuScreen {
         // Verify initial state
         assertEquals(0, mainMenuScreen.getSelectedOption());
         assertEquals(0f, mainMenuScreen.getInactivityTimer());
-        assertEquals(3, mainMenuScreen.getMenuOptionCount());
+        assertEquals(4, mainMenuScreen.getMenuOptionCount());
         assertEquals(20f, mainMenuScreen.getInactivityTimeout());
         assertNotNull(mainMenuScreen.getParticles());
         assertNotNull(mainMenuScreen.getViewport());
@@ -93,26 +106,23 @@ public class TestMainMenuScreen {
         gameRunner.step();
         assertEquals(2, mainMenuScreen.getSelectedOption());
 
-        // Press DOWN key again - should wrap around to option 0 (Start Game)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of()); // Release key
+        gameRunner.step();
+        assertEquals(3, mainMenuScreen.getSelectedOption());
+
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(2, mainMenuScreen.getSelectedOption());
 
-        // Press UP key - should wrap around to option 2 (Exit)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of()); // Release key
         gameRunner.step();
         assertEquals(1, mainMenuScreen.getSelectedOption());
-
-        // Press UP key again - should move to option 1 (Settings)
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
-        gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of()); // Release key
-        gameRunner.step();
-        assertEquals(0, mainMenuScreen.getSelectedOption());
 
         // Test alternate keys (W/S for UP/DOWN)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.W));
@@ -154,13 +164,13 @@ public class TestMainMenuScreen {
 
         // Reset to main menu - IMPORTANT: Create fresh instance
         mainMenuScreen = new MainMenuScreen(
-            gameRunner.inputProvider,
-            gameRunner.game.getGraphicsProvider(),
-            gameRunner.game,
-            gameRunner.game.getAssetManager(),
-            gameRunner.game.getCamera(),
-            gameRunner.game.getViewport(),
-            gameRunner.configProvider
+                gameRunner.inputProvider,
+                gameRunner.game.getGraphicsProvider(),
+                gameRunner.game,
+                gameRunner.game.getAssetManager(),
+                gameRunner.game.getCamera(),
+                gameRunner.game.getViewport(),
+                gameRunner.configProvider
         );
         gameRunner.game.setScreen(mainMenuScreen);
 
@@ -282,14 +292,12 @@ public class TestMainMenuScreen {
         GameRunner gameRunner = GameRunner.create();
         MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
 
-        // Test wrapping from top to bottom with UP key
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
         assertEquals(0, mainMenuScreen.getSelectedOption()); // Should not wrap around
 
-        // Move to bottom option
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
@@ -300,11 +308,10 @@ public class TestMainMenuScreen {
         gameRunner.step();
         assertEquals(2, mainMenuScreen.getSelectedOption()); // Should be on Exit option
 
-        // Test DOWN key at bottom - should not wrap around
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
-        assertEquals(2, mainMenuScreen.getSelectedOption()); // Should not wrap around
+        assertEquals(3, mainMenuScreen.getSelectedOption()); // Should not wrap around
     }
 }

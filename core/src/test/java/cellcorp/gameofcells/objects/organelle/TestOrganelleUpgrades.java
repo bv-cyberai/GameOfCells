@@ -114,7 +114,7 @@ public class TestOrganelleUpgrades {
 
         assertEquals("Mitochondria", mito.getName());
         assertEquals("Ribosome", ribo.getName());
-        assertEquals("Flagella", flag.getName());
+        assertEquals("Flagellum", flag.getName());
         assertEquals("Nucleus", nuc.getName());
 
         assertEquals("Increases ATP production", mito.getPerks());
