@@ -1,7 +1,7 @@
 package cellcorp.gameofcells.providers;
 
 /*
- * @author Brendon Vinyard / vineyabn207
+ * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
@@ -13,7 +13,6 @@ package cellcorp.gameofcells.providers;
 
 import com.badlogic.gdx.Input;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /// Fake [InputProvider] for use in tests.
@@ -46,7 +45,7 @@ public class FakeInputProvider implements InputProvider {
     ///```
     ///
     /// @param heldDown The set of held-down keys.
-    ///  Gdx represents these as ints, but use `Input.Keys.SOME_KEY_NAME` to name them.
+    ///                  Gdx represents these as ints, but use `Input.Keys.SOME_KEY_NAME` to name them.
     public void setHeldDownKeys(Set<Integer> heldDown) {
         // Previous implementation made it impossible to perform certain sequences of just-held-down keys
         // It's simpler to have both methods return the same thing, and works for all existing tests.

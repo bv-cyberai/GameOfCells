@@ -5,7 +5,7 @@ package cellcorp.gameofcells;
  * <p>
  * The base game class for GameOfCells
  *
- * @author Brendon Vinyard / vineyabn207
+ * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206

@@ -27,7 +27,7 @@
 // *
 // * Provides HUD functionality
 // *
-// * @author Brendon Vinyard / vineyabn207
+// * @author Brendon Vineyard / vineyabn207
 // * @author Andrew Sennoga-Kimuli / sennogat106
 // * @author Mark Murphy / murphyml207
 // * @author Tim Davey / daveytj206
@@ -240,7 +240,7 @@
 //        font.draw(batch, shopButton, 850, 630);
 //        font.draw(batch, healButton, 850, 599);
 //        //Was using to track time, but will likely be useful when tracking down our stutter bug.
-////        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+/// /        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
 //        batch.end();
 //    }
 //    /*
