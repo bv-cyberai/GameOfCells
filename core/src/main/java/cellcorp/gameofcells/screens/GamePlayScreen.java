@@ -281,10 +281,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
-        if (loadSave == 1) {
+        if (loadSave == 1  && gameLoaderSaver!= null) {
             gameLoaderSaver.loadState();
         }
-        if (loadSave == 0) {
+        if (loadSave == 0 && gameLoaderSaver!= null) {
             GameLoaderSaver.clearSaveFile();
         }
         // Fade in the gameplay screen when returning from the shop
