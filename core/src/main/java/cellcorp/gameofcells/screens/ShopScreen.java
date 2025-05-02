@@ -399,7 +399,8 @@ public class ShopScreen implements GameOfCellsScreen {
     // If not, it shows a message indicating the specific issue (not enough ATP, size, or both).
     private void showPurchaseError(Object upgrade) {
         String message = "";
-        if (upgrade instanceof SizeUpgrade sizeUpgrade) {
+        if (upgrade instanceof SizeUpgrade) {
+            var sizeUpgrade = (SizeUpgrade) upgrade;
             boolean notEnoughATP = playerCell.getCellATP() < sizeUpgrade.getRequiredATP();
             boolean notEnoughSize = playerCell.getSizeUpgradeLevel() < sizeUpgrade.getRequiredSize();
             if (notEnoughATP && notEnoughSize) {
@@ -409,7 +410,8 @@ public class ShopScreen implements GameOfCellsScreen {
             } else if (notEnoughSize) {
                 message = "Not enough size!";
             }
-        } else if (upgrade instanceof OrganelleUpgrade organelleUpgrade) {
+        } else if (upgrade instanceof OrganelleUpgrade) {
+            var organelleUpgrade = (OrganelleUpgrade) upgrade;
             boolean notEnoughATP = playerCell.getCellATP() < organelleUpgrade.getRequiredATP();
             boolean notEnoughSize = playerCell.getSizeUpgradeLevel() < organelleUpgrade.getRequiredSize();
             if (notEnoughATP && notEnoughSize) {
