@@ -21,7 +21,8 @@ public class NotificationManager {
                 new AcidZoneSource(this),
                 new LowAtpSource(this),
                 new NoAtpSource(this),
-                new LowHealthSource(this)
+                new LowHealthSource(this),
+                new CanSplitCellSource(this)
         );
 
         this.gamePlayScreen = gamePlayScreen;

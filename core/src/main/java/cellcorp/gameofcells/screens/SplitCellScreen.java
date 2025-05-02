@@ -33,7 +33,7 @@ public class SplitCellScreen implements GameOfCellsScreen {
     private static final float VERTICAL_WIGGLE = 5;
 
     private static final float SWIM_ANGLE_DEGREES = -60;
-    private static final float SWIM_DISTANCE = 500;
+    private static final float SWIM_DISTANCE = 800;
     private static final float SWIM_WIGGLE_FREQUENCY = 15;
     private static final float SWIM_WIGGLE_MAGNITUDE = 15;
 
@@ -111,6 +111,7 @@ public class SplitCellScreen implements GameOfCellsScreen {
             rotateProgress = Util.smoothStep(0, 1, rotateProgress);
             var angle = MathUtils.lerpAngleDeg(startAngle, SWIM_ANGLE_DEGREES, rotateProgress);
             childCell.setCellRotation(angle);
+            childCell.updateFlagellum(deltaTimeSeconds);
         } else if (state == SWIM) {
             var swimProgress = timerSeconds / SWIM_DURATION;
             var swimDistance = MathUtils.lerp(0, SWIM_DISTANCE, swimProgress);
@@ -123,9 +124,25 @@ public class SplitCellScreen implements GameOfCellsScreen {
         }
     }
 
+    private void updateFlagellum() {
+        var flagellumVectors = childCell.getFlagellumVectors();
+        flagellumVectors.clear();
+
+        //calculate new sin wave positions.
+        for (int y = 0; y < 300f; y++) {
+            float flagX = (float) (50 * Math.sin((y * 0.05f + timerSeconds)));
+            flagellumVectors.add(new Vector2(flagX, y - childCell.getCircle().radius - 300)); // <-shifts flagella down, stupid calc, but it works
+        }
+
+        // Rotate the flagellum
+        for (int i = 0; i < flagellumVectors.size; i++) {
+            Vector2 vector = flagellumVectors.get(i);
+            vector.rotateDeg(cell.getCellRotation());
+        }
+    }
+
     private void updateTimer(float deltaTimeSeconds) {
         if (isFinished(deltaTimeSeconds)) {
-            cell.setHasSplit(true);
             game.setScreen(gamePlayScreen);
             return;
         }

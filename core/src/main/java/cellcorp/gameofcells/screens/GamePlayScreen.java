@@ -12,7 +12,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -153,8 +152,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Texture parallaxNear;
     private final Texture floatingOverlay; // Texture for simulating fluid game movement
     private final Texture vignetteLowHealth; // Texture for low health warning
-    private final GameLoaderSaver gameLoaderSaver;
     private final int loadSave;
+    int popupsAllowed = 1;
     private float overlayTime = 0f; // Time for the floating overlay animation
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
@@ -166,7 +165,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private float shakeTime = 0; // Time remaining for the shake effect
     private float shakeDuration = 3.0f; // Duration of the shake effect
     private float shakeIntensity = 15f; // Intensity of the shake effect
-    int popupsAllowed = 1;
 
 
     /**
@@ -411,6 +409,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.N)) {
             playerCell.setHasNucleus(true);
         }
+        if (inputProvider.isKeyJustPressed(Input.Keys.O)) {
+            playerCell.setCellHealth(0);
+        }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.U)
                 && playerCell.hasNucleus()
@@ -483,13 +484,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
             overlayTime += deltaTimeSeconds;
 
             boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
-            if (inBasicZone  && (popupsAllowed == 1)) {
+            if (inBasicZone && (popupsAllowed == 1)) {
                 reportBasicZoneCollision();
             }
 
             // Check for acid zone
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
-            if (inAcidZone  && (popupsAllowed == 1)) {
+            if (inAcidZone && (popupsAllowed == 1)) {
                 // We want to show the warning only once when entering the acid zone
                 reportAcidZoneCollision();
             }
@@ -1141,6 +1142,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Splits the cell. Transitions to `SplitCellScreen` to play the animation.
      */
     private void split() {
+        playerCell.setHasSplit(true);
         var splitCellScreen = new SplitCellScreen(game, this);
         game.setScreen(splitCellScreen);
     }

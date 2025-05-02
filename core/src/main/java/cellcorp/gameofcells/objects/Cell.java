@@ -14,7 +14,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import static com.badlogic.gdx.math.MathUtils.lerpAngleDeg;
 import static java.lang.Math.abs;
@@ -81,6 +80,7 @@ public class Cell {
     private float forceCircleSizeScalar = 1f;
     private float glucoseVectorScaleFactor = 50f; //Used to set how far glucose moves when pushed
     private float cellRotation = 0f; // The cells starting angle, tracks current angle of the cell.
+    private float previousRotation = 0f;
     //flagellum
     private float amplitude = 50f;
     private float frequency = 0.05f;
@@ -509,28 +509,32 @@ public class Cell {
             float angle2 = cellRotation + 315;
 
             // Draw first mitochondrion (top-right side)
-            batch.draw(mitochondriaTexture,
-                centerX + offset1.x - size / 2,
+            batch.draw(
+                    mitochondriaTexture,
+                    centerX + offset1.x - size / 2,
                     centerY + offset1.y - size / 2,
                     size / 2, size / 2,
-                size, size,
+                    size, size,
                     1f, 1f,
                     angle1,
                     0, 0,
                     mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                    false, true);
+                    false, true
+            );
 
             // Draw second mitochondrion (bottom-left side)
-            batch.draw(mitochondriaTexture,
-                centerX + offset2.x - size / 2,
-                centerY + offset2.y - size / 2,
-                size / 2, size / 2,
-                size, size,
-                1f, 1f,
-                angle2,
-                0, 0,
-                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                false, true);
+            batch.draw(
+                    mitochondriaTexture,
+                    centerX + offset2.x - size / 2,
+                    centerY + offset2.y - size / 2,
+                    size / 2, size / 2,
+                    size, size,
+                    1f, 1f,
+                    angle2,
+                    0, 0,
+                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                    false, true
+            );
         }
 
         // Draw ribosomes (top-left quadrant)
@@ -543,22 +547,27 @@ public class Cell {
 
             Vector2 offset1 = new Vector2(-cellRadius * 0.4f, +cellRadius * 0.5f).rotateDeg(cellRotation); // Top-left
             Vector2 offset2 = new Vector2(+cellRadius * 0.6f, -cellRadius * 0.1f).rotateDeg(cellRotation); // Bottom-right
-            Vector2 offset3 = new Vector2(+cellRadius  * 0.1f, -cellRadius * 0.7f).rotateDeg(cellRotation); // Bottom-middle-left
+            Vector2 offset3 = new Vector2(+cellRadius * 0.1f, -cellRadius * 0.7f).rotateDeg(cellRotation); // Bottom-middle-left
 
             // Draw first ribosome (top-left side)
-            batch.draw(ribosomeTexture,
+            batch.draw(
+                    ribosomeTexture,
                     centerX + offset1.x - ribosomeSize / 2,
                     centerY + offset1.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize);
+                    ribosomeSize, ribosomeSize
+            );
 
             // Draw second ribosome (bottom-right side)
-            batch.draw(ribosomeTexture,
+            batch.draw(
+                    ribosomeTexture,
                     centerX + offset2.x - ribosomeSize / 2,
                     centerY + offset2.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize);
+                    ribosomeSize, ribosomeSize
+            );
 
             // Draw third ribosome (bottom-middle-left side)
-            batch.draw(ribosomeTexture,
+            batch.draw(
+                    ribosomeTexture,
                     centerX + offset3.x - ribosomeSize / 2,
                     centerY + offset3.y - ribosomeSize / 2,
                     ribosomeSize, ribosomeSize
@@ -576,15 +585,16 @@ public class Cell {
 
             batch.draw(
                     nucleusTexture,
-                        centerX - nucleusSize / 2,
+                    centerX - nucleusSize / 2,
                     centerY - nucleusSize / 2,
-                    nucleusSize / 2 , nucleusSize / 2,
+                    nucleusSize / 2, nucleusSize / 2,
                     nucleusSize, nucleusSize,
                     1f, 1f,
                     cellRotation,
                     0, 0,
                     nucleusTexture.getWidth(), nucleusTexture.getHeight(),
-                    false, false);
+                    false, false
+            );
         }
     }
 
@@ -1081,10 +1091,10 @@ public class Cell {
 
     public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
 
-        if (!drawFlagellum || flagellumVectors.isEmpty()) return;
+        if (!drawFlagellum || flagellumVectors.isEmpty() || isDying) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor( 0.239f, 0.498f, 0.651f, 1f);
+        shapeRenderer.setColor(0.239f, 0.498f, 0.651f, 1);
 
         float thickness = 12.5f;
 
@@ -1100,11 +1110,12 @@ public class Cell {
 
     public void updateFlagellum(float deltaTime) {
         //Prevent moving flagellum if cell hasn't moved
-        if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y) {
+        if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) {
             return;
         }
         //Track movement for the next render cycle
         previousPosition.set(cellCircle.x, cellCircle.y);
+        previousRotation = cellRotation;
 
         flagellumVectors.clear();
 
@@ -1118,7 +1129,6 @@ public class Cell {
         for (int i = 0; i < flagellumVectors.size; i++) {
             Vector2 vector = flagellumVectors.get(i);
             vector.rotateDeg(cellRotation);
-
         }
 
         flagTime += deltaTime * wiggleVelocityMultiplier;
@@ -1201,5 +1211,9 @@ public class Cell {
 
     public void setHasSplit(boolean hasSplit) {
         this.hasSplit = hasSplit;
+    }
+
+    public Array<Vector2> getFlagellumVectors() {
+        return this.flagellumVectors;
     }
 }
