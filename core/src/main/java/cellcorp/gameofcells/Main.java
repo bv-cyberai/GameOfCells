@@ -19,6 +19,7 @@ import cellcorp.gameofcells.screens.GameOfCellsScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -129,6 +130,7 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.CELL, Texture.class);
         assetManager.load(AssetFileNames.CELL_MEMBRANE, Texture.class);
         assetManager.load(AssetFileNames.CELL_MEMBRANE_DAMAGED, Texture.class);
+        assetManager.load(AssetFileNames.ATTRACT_SCREEN_CELL, Texture.class);
         assetManager.load(AssetFileNames.GLUCOSE, Texture.class);
         assetManager.load(AssetFileNames.DANGER, Texture.class);
         assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);

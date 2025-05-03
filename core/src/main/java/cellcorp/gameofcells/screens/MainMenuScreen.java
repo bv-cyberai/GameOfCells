@@ -116,7 +116,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
                         graphicsProvider
         );
 
-        this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
+        this.cellTexture = assetManager.get(AssetFileNames.ATTRACT_SCREEN_CELL, Texture.class);
         this.wasdArrowsIcon = assetManager.get(AssetFileNames.WASD_ARROWS_ICON, Texture.class);
         this.spaceEnterIcon = assetManager.get(AssetFileNames.SPACE_ENTER_ICON, Texture.class);
 
@@ -317,8 +317,8 @@ public class MainMenuScreen implements GameOfCellsScreen {
         batch.setProjectionMatrix(camera.combined);
 
         // Draw sem-transparent cell texture
-        float cellWidth = 500;
-        float cellHeight = 500;
+        float cellWidth = 779;
+        float cellHeight = 397;
         float cellX = camera.position.x - cellWidth / 2;
         float cellY = camera.position.y - cellHeight / 2;
 

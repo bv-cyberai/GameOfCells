@@ -14,6 +14,8 @@ public class AssetFileNames {
 
     public static String CELL_MEMBRANE_DAMAGED = "cell_membrane_damaged.png";
 
+    public static String ATTRACT_SCREEN_CELL = "cell_w_organelles_cropped.png";
+
     /**
      * The file name for our hud texture for the escape button
      */
