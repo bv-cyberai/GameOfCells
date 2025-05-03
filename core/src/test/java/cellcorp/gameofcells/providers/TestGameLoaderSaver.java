@@ -121,6 +121,7 @@ public class TestGameLoaderSaver {
         currentGamePlayScreen.getAcidZonePopup().setWasShown(false);
         currentGamePlayScreen.getHealAvailablePopup().setWasShown(true);
         currentGamePlayScreen.getCellMembranePopup().setWasShown(true);
+        currentGamePlayScreen.getSplitCellPopup().setWasShown(false);
 
         //Save
         gameLoaderSaver.saveState();
@@ -149,6 +150,7 @@ public class TestGameLoaderSaver {
         currentGamePlayScreen.getAcidZonePopup().setWasShown(false);
         currentGamePlayScreen.getHealAvailablePopup().setWasShown(false);
         currentGamePlayScreen.getCellMembranePopup().setWasShown(false);
+        currentGamePlayScreen.getSplitCellPopup().setWasShown(false);
 
         //Load State
         gameLoaderSaver.loadState();
@@ -178,6 +180,7 @@ public class TestGameLoaderSaver {
         assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());
         assertFalse(currentGamePlayScreen.getAcidZonePopup().wasShown());
         assertFalse(currentGamePlayScreen.getBasicZonePopup().wasShown());
+        assertFalse(currentGamePlayScreen.getSplitCellPopup().wasShown());
 
     }
 
@@ -207,6 +210,102 @@ public class TestGameLoaderSaver {
         assertFalse(cell.hasMitochondria());
         assertEquals(0, stats.distanceMoved);
 
+    }
+
+    @Test
+    public void autoSaveAfterNukeAndSplit() {
+        var gameRunner = GameRunner.create();
+
+        // Hold down space and step forward a frame.
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        // Make sure we're on the gameplay screen
+        var screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+        var currentGamePlayScreen = (GamePlayScreen) screen;
+
+        var gameLoaderSaver = currentGamePlayScreen.getGameLoaderSaver();
+        gameLoaderSaver.injectFakePreferences(new FakePreferences());
+        GameLoaderSaver.clearSaveFile();
+        Stats stats = currentGamePlayScreen.stats;
+        var cell = currentGamePlayScreen.getCell();
+
+        //Setup cell state
+
+        cell.setCellHealth(100);
+        cell.setCellATP(100);
+        cell.setCellSize(100);
+
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(true);
+        cell.setHasMassiveSizeUpgrade(true);
+
+        cell.setHasMitochondria(true);
+        cell.setHasRibosomes(true);
+        cell.setHasFlagella(true);
+        cell.setHasNucleus(false);
+
+        stats.atpGenerated = 40;
+//        stats.gameTimer = 40f; // not tracking these floats for this test and tested elsewhere
+//        stats.distanceMoved = 35f; // not tracking these floats for this test and tested elsewhere
+        stats.glucoseCollected = 20;
+
+        currentGamePlayScreen.getBasicZonePopup().setWasShown(true);
+        currentGamePlayScreen.getAcidZonePopup().setWasShown(true);
+        currentGamePlayScreen.getHealAvailablePopup().setWasShown(true);
+        currentGamePlayScreen.getCellMembranePopup().setWasShown(true);
+        currentGamePlayScreen.getSplitCellPopup().setWasShown(false);
+
+        //Acquire Nuke
+        gameRunner.step();
+        cell.setHasNucleus(true);
+        gameRunner.step();
+
+        gameLoaderSaver.loadState(); // Load Game
+
+        currentGamePlayScreen.getSplitCellPopup().setWasShown(false);
+
+
+        //Verify Load
+
+        assertEquals(100, cell.getCellHealth());
+        assertEquals(100, cell.getCellATP());
+        assertEquals(100f, cell.getCellSize());
+
+        assertTrue(cell.hasSmallSizeUpgrade());
+        assertTrue(cell.hasMediumSizeUpgrade());
+        assertTrue(cell.hasLargeSizeUpgrade());
+        assertTrue(cell.hasMassiveSizeUpgrade());
+
+        assertTrue(cell.hasMitochondria());
+        assertTrue(cell.hasRibosomes());
+        assertTrue(cell.hasFlagella());
+        assertTrue(cell.hasNucleus());
+
+        assertEquals(40, stats.atpGenerated);
+        assertEquals(20, stats.glucoseCollected);
+
+        assertTrue(currentGamePlayScreen.getHealAvailablePopup().wasShown());
+        assertTrue(currentGamePlayScreen.getCellMembranePopup().wasShown());
+        assertTrue(currentGamePlayScreen.getAcidZonePopup().wasShown());
+        assertTrue(currentGamePlayScreen.getBasicZonePopup().wasShown());
+        assertFalse(currentGamePlayScreen.getSplitCellPopup().wasShown());
+
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.U));
+        gameRunner.runForSeconds(20);
+
+        screen = gameRunner.game.getScreen();
+        assertInstanceOf(GamePlayScreen.class, screen);
+
+        gameLoaderSaver.loadState();
+
+        assertTrue(cell.hasSplit());
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertTrue(currentGamePlayScreen.getSplitCellPopup().wasShown());
     }
 
 }

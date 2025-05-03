@@ -152,7 +152,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Texture parallaxNear;
     private final Texture floatingOverlay; // Texture for simulating fluid game movement
     private final Texture vignetteLowHealth; // Texture for low health warning
-    private final int loadSave;
+    private int loadSave;
     int popupsAllowed = 1;
     private float overlayTime = 0f; // Time for the floating overlay animation
     // Part of game state.
@@ -283,9 +283,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public void show() {
         if (loadSave == 1  && gameLoaderSaver!= null) {
             gameLoaderSaver.loadState();
+            loadSave = -1;
         }
         if (loadSave == 0 && gameLoaderSaver!= null) {
             GameLoaderSaver.clearSaveFile();
+            loadSave = -1;
         }
         // Fade in the gameplay screen when returning from the shop
         stage.getRoot().getColor().a = 0; // Start transparent
@@ -417,6 +419,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 && playerCell.hasNucleus()
                 && !playerCell.hasSplit()) {
             split();
+//            gameLoaderSaver.saveState();
         }
 
         // Only move the cell if the game is not paused
@@ -1127,6 +1130,14 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public PopupInfoScreen getCellMembranePopup() {
         return cellMembranePopup;
+    }
+
+    /**
+     * Get Split Cell Popup()
+     * @return The cell popup
+     */
+    public PopupInfoScreen getSplitCellPopup() {
+        return splitCellPopup;
     }
 
     /**

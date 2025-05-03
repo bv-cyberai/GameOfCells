@@ -23,6 +23,7 @@ public class GameLoaderSaver {
     private final PopupInfoScreen basicZonePopup;
     private final PopupInfoScreen healAvailablePopup;
     private final PopupInfoScreen cellMembranePopup;
+    private final PopupInfoScreen splitCellPopup;
     private boolean hasAutoSaved;
 
     /**
@@ -40,6 +41,7 @@ public class GameLoaderSaver {
         this.basicZonePopup = gamePlayScreen.getBasicZonePopup();
         this.healAvailablePopup = gamePlayScreen.getHealAvailablePopup();
         this.cellMembranePopup = gamePlayScreen.getCellMembranePopup();
+        this.splitCellPopup = gamePlayScreen.getSplitCellPopup();
 
         //auto save flag.
         hasAutoSaved = false;
@@ -61,6 +63,7 @@ public class GameLoaderSaver {
         saveGame.putInteger("cellHealth", cell.getCellHealth());
         saveGame.putInteger("cellATP", cell.getCellATP());
         saveGame.putFloat("cellSize", cell.getCellSize());
+        saveGame.putBoolean("cellSplit", cell.hasSplit());
 
         //size
         saveGame.putBoolean("smallSize", cell.hasSmallSizeUpgrade());
@@ -86,6 +89,7 @@ public class GameLoaderSaver {
         saveGame.putBoolean("basicPopup", basicZonePopup.wasShown());
         saveGame.putBoolean("healPopup", healAvailablePopup.wasShown());
         saveGame.putBoolean("membranePopup", cellMembranePopup.wasShown());
+        saveGame.putBoolean("splitPopup", splitCellPopup.wasShown());
 
         //Writes to the file.
         saveGame.flush();
@@ -108,6 +112,8 @@ public class GameLoaderSaver {
         cell.setCellHealth(saveGame.getInteger("cellHealth",100));
         cell.setCellATP(saveGame.getInteger("cellATP",30));
         cell.setCellSize(saveGame.getFloat("cellSize",100));
+        cell.setHasSplit(saveGame.getBoolean("cellSplit",false));
+
 
         //size
         cell.setHasSmallSizeUpgrade(saveGame.getBoolean("smallSize",false));
@@ -133,6 +139,8 @@ public class GameLoaderSaver {
         basicZonePopup.setWasShown(saveGame.getBoolean("basicPopup",false));
         healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup",false));
         cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup",false));
+        splitCellPopup.setWasShown(saveGame.getBoolean("splitPopup",false));
+
     }
 
     /**
