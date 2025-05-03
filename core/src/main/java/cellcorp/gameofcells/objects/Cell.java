@@ -110,6 +110,8 @@ public class Cell {
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
 
+    private Vector2[] healRates = new Vector2[4];
+
     /**
      * Whether this cell has split and created a save point
      */
@@ -125,6 +127,10 @@ public class Cell {
         var position = new Vector2(0, 0);
         cellCircle = new Circle(position, cellSize / 2);
         forceCircle = new Circle(position, cellSize * FORCE_CIRCLE_SIZE_MULTIPLIER);
+        healRates[0] = new Vector2(20,5);
+        healRates[1] = new Vector2(15,10);
+        healRates[2] = new Vector2(10,15);
+        healRates[3] = new Vector2(5,20);
     }
 
     /**
@@ -338,6 +344,40 @@ public class Cell {
     }
 
     /**
+     * Heal Cost Factor Setter
+     *
+     * Sets both the ATP_HEAL_COST and AMOUNT_HEALED
+     * based on organelle upgrade level.
+     * @param organelleUpgradeLevel
+     */
+    private void setHealCostFactor(int organelleUpgradeLevel) {
+        int indexShift = organelleUpgradeLevel - 1;
+        switch (indexShift) {
+            case 1:
+                //Ribo - Cost: 15 / Healed: 10
+                ATP_HEAL_COST = (int) healRates[1].x;
+                AMOUNT_HEALED = (int) healRates[1].y;
+                break;
+            case 2:
+                //Flag - Cost: 10 / Healed: 15
+                ATP_HEAL_COST = (int) healRates[2].x;
+                AMOUNT_HEALED = (int) healRates[2].y;
+                break;
+            case 3:
+                //Nuke - Cost: 5 / Healed: 20
+                ATP_HEAL_COST = (int) healRates[3].x;
+                AMOUNT_HEALED = (int) healRates[3].y;
+                break;
+            default:
+                //Mito/Default - Cost: 20 / Healed: 5
+                ATP_HEAL_COST = (int) healRates[0].x;
+                AMOUNT_HEALED = (int) healRates[0].y;
+
+        }
+
+    }
+
+    /**
      * Moves the cell to a specific position
      *
      * @param x - The new X position
@@ -472,6 +512,7 @@ public class Cell {
         gamePlayScreen.stats.maxSize = maxSize;
 
         updateFlagellum(deltaTimeSeconds);
+        setHealCostFactor(organelleUpgradeLevel);
     }
 
     private void damageIfZeroATP(float deltaTimeSeconds) {
