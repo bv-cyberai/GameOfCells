@@ -86,6 +86,8 @@ public class Cell {
     private float frequency = 0.05f;
     private float flagTime = 0f; // Phase offset of the sine wave.
     private int wiggleVelocityMultiplier = 5; //How quickly to wiggle
+    private float flagellumThickness = 9.375f;
+    private int sineVectors = 225; // The length of the tail.
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -992,6 +994,8 @@ public class Cell {
     public void setHasMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMassiveSizeUpgrade) sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
+        setFlagellumThickness(12.5f);
+        setSineVectors(300); //The new length of the flagellum.
     }
 
     /**
@@ -1096,13 +1100,11 @@ public class Cell {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0.239f, 0.498f, 0.651f, 1);
 
-        float thickness = 12.5f;
-
         for (int i = 0; i < flagellumVectors.size; i++) {
             Vector2 point = new Vector2(cellCircle.x + flagellumVectors.get(i).x, cellCircle.y + flagellumVectors.get(i).y);
 
             //Draw Circles along the sine wave.
-            shapeRenderer.circle(point.x, point.y, thickness);
+            shapeRenderer.circle(point.x, point.y, flagellumThickness);
         }
 
         shapeRenderer.end();
@@ -1120,9 +1122,10 @@ public class Cell {
         flagellumVectors.clear();
 
         //calculate new sin wave positions.
-        for (int y = 0; y < 300f; y++) {
+        for (int y = 0; y < sineVectors; y++) {
+//        for (int y = 0; y < 300f; y++) {
             float flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
-            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - 300)); // <-shifts flagella down, stupid calc, but it works
+            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - sineVectors)); // <-shifts flagella down, stupid calc, but it works
         }
 
         // Rotate the flagellum
@@ -1205,15 +1208,43 @@ public class Cell {
         return smoothedVelocity;
     }
 
+    /**
+     * hasSplitGetter
+     * @return True if cell ahs split.
+     */
     public boolean hasSplit() {
         return hasSplit;
     }
 
+    /**
+     * Has Split Setter
+     * @param hasSplit If the cell has split
+     */
     public void setHasSplit(boolean hasSplit) {
         this.hasSplit = hasSplit;
     }
 
+    /**
+     * Flagellum Vectors Getter
+     * @return The Flaggellum Vectors
+     */
     public Array<Vector2> getFlagellumVectors() {
         return this.flagellumVectors;
+    }
+
+    /**
+     * Flagellum Thickness Getter
+     * @return The thickness of the flagellum.
+     */
+    public float getFlagellumThickness() {
+        return flagellumThickness;
+    }
+
+    public void setFlagellumThickness(float value) {
+        flagellumThickness = value;
+    }
+
+    public void setSineVectors(int value) {
+        sineVectors = value;
     }
 }
