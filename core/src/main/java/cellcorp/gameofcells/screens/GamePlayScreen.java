@@ -419,7 +419,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
                 && playerCell.hasNucleus()
                 && !playerCell.hasSplit()) {
             split();
-//            gameLoaderSaver.saveState();
         }
 
         // Only move the cell if the game is not paused

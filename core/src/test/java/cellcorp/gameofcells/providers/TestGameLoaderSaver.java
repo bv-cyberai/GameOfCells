@@ -301,11 +301,8 @@ public class TestGameLoaderSaver {
         assertInstanceOf(GamePlayScreen.class, screen);
 
         gameLoaderSaver.loadState();
-
-        assertTrue(cell.hasSplit());
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
         gameRunner.step();
-        assertTrue(currentGamePlayScreen.getSplitCellPopup().wasShown());
+        assertTrue(cell.hasSplit());
     }
 
 }

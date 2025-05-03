@@ -109,37 +109,37 @@ public class GameLoaderSaver {
             return;
         }
         //cell state
-        cell.setCellHealth(saveGame.getInteger("cellHealth",100));
-        cell.setCellATP(saveGame.getInteger("cellATP",30));
-        cell.setCellSize(saveGame.getFloat("cellSize",100));
-        cell.setHasSplit(saveGame.getBoolean("cellSplit",false));
+        cell.setCellHealth(saveGame.getInteger("cellHealth", 100));
+        cell.setCellATP(saveGame.getInteger("cellATP", 30));
+        cell.setCellSize(saveGame.getFloat("cellSize", 100));
+        cell.setHasSplit(saveGame.getBoolean("cellSplit", false));
 
 
         //size
-        cell.setHasSmallSizeUpgrade(saveGame.getBoolean("smallSize",false));
-        cell.setHasMediumSizeUpgrade(saveGame.getBoolean("mediumSize",false));
-        cell.setHasLargeSizeUpgrade(saveGame.getBoolean("largeSize",false));
-        cell.setHasMassiveSizeUpgrade(saveGame.getBoolean("massiveSize",false));
+        cell.setHasSmallSizeUpgrade(saveGame.getBoolean("smallSize", false));
+        cell.setHasMediumSizeUpgrade(saveGame.getBoolean("mediumSize", false));
+        cell.setHasLargeSizeUpgrade(saveGame.getBoolean("largeSize", false));
+        cell.setHasMassiveSizeUpgrade(saveGame.getBoolean("massiveSize", false));
 
         //organelles
-        cell.setHasMitochondria(saveGame.getBoolean("mito",false));
-        cell.setHasRibosomes(saveGame.getBoolean("ribo",false));
-        cell.setHasFlagella(saveGame.getBoolean("flag",false));
-        cell.setHasNucleus(saveGame.getBoolean("nuke",false));
+        cell.setHasMitochondria(saveGame.getBoolean("mito", false));
+        cell.setHasRibosomes(saveGame.getBoolean("ribo", false));
+        cell.setHasFlagella(saveGame.getBoolean("flag", false));
+        cell.setHasNucleus(saveGame.getBoolean("nuke", false));
 
         //stats state
-        stats.atpGenerated = saveGame.getInteger("atpGen",0);
-        stats.glucoseCollected = saveGame.getInteger("glukeCollected",0);
-        stats.distanceMoved = saveGame.getFloat("distanceMoved",0);
-        stats.gameTimer = saveGame.getFloat("time",0);
+        stats.atpGenerated = saveGame.getInteger("atpGen", 0);
+        stats.glucoseCollected = saveGame.getInteger("glukeCollected", 0);
+        stats.distanceMoved = saveGame.getFloat("distanceMoved", 0);
+        stats.gameTimer = saveGame.getFloat("time", 0);
 
         //Pop-up States
-        glucoseCollisionPopup.setWasShown(saveGame.getBoolean("glukePopup",false));
-        acidZonePopup.setWasShown(saveGame.getBoolean("acidPopup",false));
-        basicZonePopup.setWasShown(saveGame.getBoolean("basicPopup",false));
-        healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup",false));
-        cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup",false));
-        splitCellPopup.setWasShown(saveGame.getBoolean("splitPopup",false));
+        glucoseCollisionPopup.setWasShown(saveGame.getBoolean("glukePopup", false));
+        acidZonePopup.setWasShown(saveGame.getBoolean("acidPopup", false));
+        basicZonePopup.setWasShown(saveGame.getBoolean("basicPopup", false));
+        healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup", false));
+        cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup", false));
+        splitCellPopup.setWasShown(saveGame.getBoolean("splitPopup", false));
 
     }
 
