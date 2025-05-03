@@ -265,9 +265,6 @@ public class TestGameLoaderSaver {
 
         gameLoaderSaver.loadState(); // Load Game
 
-        currentGamePlayScreen.getSplitCellPopup().setWasShown(false);
-
-
         //Verify Load
 
         assertEquals(100, cell.getCellHealth());
@@ -293,15 +290,19 @@ public class TestGameLoaderSaver {
         assertTrue(currentGamePlayScreen.getBasicZonePopup().wasShown());
         assertFalse(currentGamePlayScreen.getSplitCellPopup().wasShown());
 
+        //split
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.U));
         gameRunner.runForSeconds(20);
 
+        //back to gamePlayScreen
         screen = gameRunner.game.getScreen();
         assertInstanceOf(GamePlayScreen.class, screen);
 
         gameLoaderSaver.loadState();
         gameRunner.step();
+
+        //verify split.
         assertTrue(cell.hasSplit());
     }
 
