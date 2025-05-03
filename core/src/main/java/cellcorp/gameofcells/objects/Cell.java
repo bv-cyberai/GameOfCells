@@ -87,7 +87,7 @@ public class Cell {
     private float flagTime = 0f; // Phase offset of the sine wave.
     private int wiggleVelocityMultiplier = 5; //How quickly to wiggle
     private float flagellumThickness = 9.375f;
-    private int sineVectors = 225; // The length of the tail.
+    private int flagellumLength = 225;
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -995,7 +995,7 @@ public class Cell {
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMassiveSizeUpgrade) sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
         setFlagellumThickness(12.5f);
-        setSineVectors(300); //The new length of the flagellum.
+        setFlagellumLength(300); //The new length of the flagellum.
     }
 
     /**
@@ -1122,10 +1122,9 @@ public class Cell {
         flagellumVectors.clear();
 
         //calculate new sin wave positions.
-        for (int y = 0; y < sineVectors; y++) {
-//        for (int y = 0; y < 300f; y++) {
+        for (int y = 0; y < flagellumLength; y++) {
             float flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
-            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - sineVectors)); // <-shifts flagella down, stupid calc, but it works
+            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - flagellumLength)); // <-shifts flagella down, stupid calc, but it works
         }
 
         // Rotate the flagellum
@@ -1240,11 +1239,27 @@ public class Cell {
         return flagellumThickness;
     }
 
+    /**
+     * Flagellum Length Setter
+     * @param value The new thickness
+     */
     public void setFlagellumThickness(float value) {
         flagellumThickness = value;
     }
 
-    public void setSineVectors(int value) {
-        sineVectors = value;
+    /**
+     * Set The length of the flagellum.
+     * @param value The new length
+     */
+    public void setFlagellumLength(int value) {
+        flagellumLength = value;
+    }
+
+    /**
+     * Return the length of the flagellum
+     * @return The Length of the flagellum
+     */
+    public int getFlagellumLength() {
+        return flagellumLength;
     }
 }
