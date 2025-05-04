@@ -1099,7 +1099,7 @@ public class Cell {
 
     public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
 
-        if (!drawFlagellum || flagellumVectors.isEmpty() || isDying) return;
+        if (!drawFlagellum || flagellumVectors.isEmpty()) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0.239f, 0.498f, 0.651f, 1);
