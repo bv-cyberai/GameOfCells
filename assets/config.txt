@@ -8,8 +8,8 @@ cellMaxATP:100          ##Max Health
 cellMovementSpeed:200   ##Cell Movement Speed
 cellFlagMovementSpeed:370  ##Cell Movement Speed post flagella upgrade
 cellRotationSpeed:20    ##Cell Rotational Speed
-amountHealed:20 ##Amount Healed
-atpHealCost:20 ##Amount of ATP used to heal
+amountHealed:20 ##DEPRECATED - SEE ORGANELLE RATES
+atpHealCost:20 ##DEPRECATED - SEE ORGANELLE RATES
 damageReduction:2 ## Membrane resistance value (higher number means less damage taken)
 popupsAllowed:1 ##enables or disables popups (1 for on, 0 for off)
 

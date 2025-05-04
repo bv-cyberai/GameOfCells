@@ -1264,4 +1264,20 @@ public class Cell {
     public Array<Vector2> getFlagellumVectors() {
         return this.flagellumVectors;
     }
+
+    /**
+     * OgranelleUpgradeLevelSetter
+     * CAUTION: Likely should only be used with saving/loading.
+     * @param level The new number.
+     */
+    public void setOrganelleUpgradeLevel(int level) {
+        if(level < 0) {
+            organelleUpgradeLevel = 0;
+        }
+        else if(level > 4) {
+            organelleUpgradeLevel = 4;
+        }else {
+            organelleUpgradeLevel = level;
+        }
+    }
 }

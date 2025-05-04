@@ -61,6 +61,7 @@ public class GameLoaderSaver {
         saveGame.putInteger("cellHealth", cell.getCellHealth());
         saveGame.putInteger("cellATP", cell.getCellATP());
         saveGame.putFloat("cellSize", cell.getCellSize());
+        saveGame.putInteger("organelleLevel", cell.getOrganelleUpgradeLevel());
 
         //size
         saveGame.putBoolean("smallSize", cell.hasSmallSizeUpgrade());
@@ -108,6 +109,7 @@ public class GameLoaderSaver {
         cell.setCellHealth(saveGame.getInteger("cellHealth",100));
         cell.setCellATP(saveGame.getInteger("cellATP",30));
         cell.setCellSize(saveGame.getFloat("cellSize",100));
+        cell.setOrganelleUpgradeLevel(saveGame.getInteger("organelleLevel",0));
 
         //size
         cell.setHasSmallSizeUpgrade(saveGame.getBoolean("smallSize",false));
