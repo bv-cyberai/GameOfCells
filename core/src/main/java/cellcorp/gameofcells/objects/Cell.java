@@ -88,6 +88,7 @@ public class Cell {
     private int wiggleVelocityMultiplier = 5; //How quickly to wiggle
     private float flagellumThickness = 9.375f;
     private int flagellumLength = 225;
+    private boolean notUpgradeRenderCycle = true; // tracks size upgrade to avoid a visual flagellum bug
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -176,6 +177,7 @@ public class Cell {
         this.isDying = other.isDying;
         this.deathAnimationTime = other.deathAnimationTime;
         this.hasSplit = other.hasSplit;
+        this.notUpgradeRenderCycle = other.notUpgradeRenderCycle;
     }
 
     /**
@@ -979,6 +981,7 @@ public class Cell {
     public void setHasLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
         this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasLargeSizeUpgrade) sizeUpgradeLevel++;
+        notUpgradeRenderCycle = false;
     }
 
     /**
@@ -996,6 +999,7 @@ public class Cell {
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
         setFlagellumThickness(12.5f);
         setFlagellumLength(300); //The new length of the flagellum.
+        notUpgradeRenderCycle = false;
     }
 
     /**
@@ -1112,11 +1116,21 @@ public class Cell {
 
     public void updateFlagellum(float deltaTime) {
         //Prevent moving flagellum if cell hasn't moved
+        System.out.println(previousPosition);
+        System.out.println(cellCircle.x);
+        System.out.println(cellCircle.y);
         if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) {
-            return;
+
+            if(notUpgradeRenderCycle) {
+                System.out.println("HERE");
+
+                return;
+            }
+            notUpgradeRenderCycle = true;
         }
         //Track movement for the next render cycle
         previousPosition.set(cellCircle.x, cellCircle.y);
+//        System.out.println("PREVPOS: " + previousPosition);
         previousRotation = cellRotation;
 
         flagellumVectors.clear();
@@ -1136,7 +1150,10 @@ public class Cell {
         flagTime += deltaTime * wiggleVelocityMultiplier;
     }
 
-    //
+    /**
+     * Cell Speed Getter
+     * @return The Cell Speed
+     */
     public float getCellSpeed() {
         return CELL_SPEED;
     }
