@@ -457,8 +457,9 @@ public class ShopScreen implements GameOfCellsScreen {
     // It creates a label with the specified message and fades it out after a delay.
     private void showMessage(String message) {
         Label messageLabel = createLabel(message, 0.3f);
+        messageLabel.setAlignment(Align.center);
 
-        float x = (viewport.getWorldWidth() - messageLabel.getWidth()) / 2 - 40f;
+        float x = (viewport.getWorldWidth() - messageLabel.getWidth()) / 2;
         float y = 50f;
 
         messageLabel.setPosition(x, y);
