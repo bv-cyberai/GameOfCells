@@ -260,12 +260,10 @@ public class TestCell {
         assertInstanceOf(GamePlayScreen.class, runner.game.getScreen());
         var gameScreen = (GamePlayScreen) runner.game.getScreen();
         Cell cell = gameScreen.getCell();
-        System.out.println(Arrays.toString(cell.getHealRates()));
 
         //Mito
         cell.setHasSmallSizeUpgrade(true);
         cell.setHasMitochondria(true);
-        System.out.println(cell.getOrganelleUpgradeLevel());
 
         runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
         runner.step();
@@ -284,7 +282,6 @@ public class TestCell {
         runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
         cell.setHasMediumSizeUpgrade(true);
         cell.setHasRibosomes(true);
-        System.out.println(cell.getOrganelleUpgradeLevel());
 
         cell.setCellHealth(80);
         cell.setCellATP(100);
@@ -326,7 +323,6 @@ public class TestCell {
 
         assertEquals(100, cell.getCellHealth());
         assertEquals(95, cell.getCellATP());
-
 
     }
 }

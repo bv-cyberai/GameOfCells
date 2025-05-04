@@ -109,8 +109,11 @@ public class TestGameLoaderSaver {
 
         cell.setHasMitochondria(true);
         cell.setHasRibosomes(true);
+        int currOrganelleLevel = cell.getOrganelleUpgradeLevel();
+        System.out.println("CURR: " + currOrganelleLevel);
         cell.setHasFlagella(false);
         cell.setHasNucleus(false);
+        System.out.println("GET1: " + cell.getOrganelleUpgradeLevel());
 
         stats.atpGenerated = 40;
         stats.gameTimer = 40f;
@@ -125,7 +128,7 @@ public class TestGameLoaderSaver {
 
         //Save
         gameLoaderSaver.saveState();
-
+        System.out.println("GET2: " + cell.getOrganelleUpgradeLevel());
         //Change State
         cell.setCellHealth(70);
         cell.setCellATP(70);
@@ -140,6 +143,7 @@ public class TestGameLoaderSaver {
         cell.setHasRibosomes(false);
         cell.setHasFlagella(false);
         cell.setHasNucleus(false);
+        System.out.println("GET3: " + cell.getOrganelleUpgradeLevel());
 
         stats.atpGenerated = 50;
         stats.gameTimer = 50f;
@@ -154,6 +158,7 @@ public class TestGameLoaderSaver {
 
         //Load State
         gameLoaderSaver.loadState();
+        System.out.println("GET4: " + cell.getOrganelleUpgradeLevel());
 
         //Verify Load
 
@@ -168,6 +173,8 @@ public class TestGameLoaderSaver {
 
         assertTrue(cell.hasMitochondria());
         assertTrue(cell.hasRibosomes());
+        System.out.println("GET5: " + cell.getOrganelleUpgradeLevel());
+        assertEquals(currOrganelleLevel,cell.getOrganelleUpgradeLevel());
         assertFalse(cell.hasFlagella());
         assertFalse(cell.hasNucleus());
 

@@ -114,7 +114,7 @@ public class GameLoaderSaver {
         cell.setCellATP(saveGame.getInteger("cellATP", 30));
         cell.setCellSize(saveGame.getFloat("cellSize", 100));
         cell.setHasSplit(saveGame.getBoolean("cellSplit", false));
-        cell.setOrganelleUpgradeLevel(saveGame.getInteger("organelleLevel",0));
+
 
         //size
         cell.setHasSmallSizeUpgrade(saveGame.getBoolean("smallSize", false));
@@ -127,6 +127,7 @@ public class GameLoaderSaver {
         cell.setHasRibosomes(saveGame.getBoolean("ribo", false));
         cell.setHasFlagella(saveGame.getBoolean("flag", false));
         cell.setHasNucleus(saveGame.getBoolean("nuke", false));
+        cell.setOrganelleUpgradeLevel(saveGame.getInteger("organelleLevel",0));
 
         //stats state
         stats.atpGenerated = saveGame.getInteger("atpGen", 0);

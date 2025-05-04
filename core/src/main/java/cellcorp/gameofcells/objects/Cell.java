@@ -1271,6 +1271,7 @@ public class Cell {
      * @param level The new number.
      */
     public void setOrganelleUpgradeLevel(int level) {
+        System.out.println("LEVEL: " + level);
         if (level < 0) {
             organelleUpgradeLevel = 0;
         } else if (level > 4) {
@@ -1278,6 +1279,7 @@ public class Cell {
         } else {
             organelleUpgradeLevel = level;
         }
+        System.out.println("POSTUPDATE: " + organelleUpgradeLevel);
     }
 
     /**
