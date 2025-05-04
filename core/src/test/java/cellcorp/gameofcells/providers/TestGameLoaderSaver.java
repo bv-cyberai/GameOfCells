@@ -80,6 +80,7 @@ public class TestGameLoaderSaver {
 
     @Test
     public void testSaveThenLoad() {
+        float epsilon = 0.1f;
         var gameRunner = GameRunner.create();
 
         // Hold down space and step forward a frame.
@@ -104,12 +105,14 @@ public class TestGameLoaderSaver {
 
         cell.setHasSmallSizeUpgrade(true);
         cell.setHasMediumSizeUpgrade(true);
-        cell.setHasLargeSizeUpgrade(false);
+        cell.setHasLargeSizeUpgrade(true);
         cell.setHasMassiveSizeUpgrade(false);
 
         cell.setHasMitochondria(true);
         cell.setHasRibosomes(true);
-        cell.setHasFlagella(false);
+        cell.setHasFlagella(true);
+        float currFlagThick = cell.getFlagellumThickness();
+        int currFlagLength = cell.getFlagellumLength();
         cell.setHasNucleus(false);
 
         stats.atpGenerated = 40;
@@ -131,15 +134,17 @@ public class TestGameLoaderSaver {
         cell.setCellATP(70);
         cell.setCellSize(90);
 
-        cell.setHasSmallSizeUpgrade(false);
-        cell.setHasMediumSizeUpgrade(false);
-        cell.setHasLargeSizeUpgrade(false);
-        cell.setHasMassiveSizeUpgrade(false);
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasLargeSizeUpgrade(true);
+        //This changes flagellum thickness and length.
+        cell.setHasMassiveSizeUpgrade(true);
 
-        cell.setHasMitochondria(false);
-        cell.setHasRibosomes(false);
-        cell.setHasFlagella(false);
-        cell.setHasNucleus(false);
+        cell.setHasMitochondria(true);
+        cell.setHasRibosomes(true);
+        cell.setHasFlagella(true);
+        cell.setHasNucleus(true);
+
 
         stats.atpGenerated = 50;
         stats.gameTimer = 50f;
@@ -163,12 +168,14 @@ public class TestGameLoaderSaver {
 
         assertTrue(cell.hasSmallSizeUpgrade());
         assertTrue(cell.hasMediumSizeUpgrade());
-        assertFalse(cell.hasLargeSizeUpgrade());
+        assertTrue(cell.hasLargeSizeUpgrade());
         assertFalse(cell.hasMassiveSizeUpgrade());
 
         assertTrue(cell.hasMitochondria());
         assertTrue(cell.hasRibosomes());
-        assertFalse(cell.hasFlagella());
+        assertTrue(cell.hasFlagella());
+        assertTrue(currFlagThick - cell.getFlagellumThickness() <= epsilon);
+        assertEquals(currFlagLength, cell.getFlagellumLength());
         assertFalse(cell.hasNucleus());
 
         assertEquals(40, stats.atpGenerated);
