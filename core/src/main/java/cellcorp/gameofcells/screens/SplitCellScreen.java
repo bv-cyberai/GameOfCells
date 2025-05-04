@@ -144,6 +144,7 @@ public class SplitCellScreen implements GameOfCellsScreen {
     private void updateTimer(float deltaTimeSeconds) {
         if (isFinished(deltaTimeSeconds)) {
             game.setScreen(gamePlayScreen);
+            gamePlayScreen.getGameLoaderSaver().saveState();
             return;
         }
         timerSeconds += deltaTimeSeconds;
