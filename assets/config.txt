@@ -13,6 +13,14 @@ atpHealCost:20 ##Amount of ATP used to heal
 damageReduction:2 ## Membrane resistance value (higher number means less damage taken)
 popupsAllowed:1 ##enables or disables popups (1 for on, 0 for off)
 
+[organelleRates] ##These Change the AMOUNT_HEALED,ATP_HEAL_COST per organelle.
+## Note - #,# format should be kept.
+mitoHeal-Cost:20,5 ##Mitochondira
+riboHeal-Cost:15,10 ##Ribosomes
+flagHeal-Cost:10,15 ##Flagellum
+nukeHeal-Cost:5,20 ##Nucleus
+
+
 [flagellum]
 amplitude:25     ##Amplitude of flagellum wave
 frequency:0.05   ##Frequency of flagellum wave

@@ -127,10 +127,6 @@ public class Cell {
         var position = new Vector2(0, 0);
         cellCircle = new Circle(position, cellSize / 2);
         forceCircle = new Circle(position, cellSize * FORCE_CIRCLE_SIZE_MULTIPLIER);
-        healRates[0] = new Vector2(20,5);
-        healRates[1] = new Vector2(15,10);
-        healRates[2] = new Vector2(10,15);
-        healRates[3] = new Vector2(5,20);
     }
 
     /**
@@ -723,6 +719,17 @@ public class Cell {
             MEMBRANE_DAMAGE_REDUCTION = configProvider.getIntValue("damageReduction");
         } catch (NumberFormatException e) {
             MEMBRANE_DAMAGE_REDUCTION = 2;
+        }
+        try {
+            healRates[0] = configProvider.getVector2("mitoHeal-Cost");
+            healRates[1] = configProvider.getVector2("riboHeal-Cost");
+            healRates[2] = configProvider.getVector2("flagHeal-Cost");
+            healRates[3] = configProvider.getVector2("nukeHeal-Cost");
+        } catch(Exception e) {
+            healRates[0] = new Vector2(20,5);
+            healRates[1] = new Vector2(15,10);
+            healRates[2] = new Vector2(10,15);
+            healRates[3] = new Vector2(5,20);
         }
 
     }

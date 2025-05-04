@@ -4,6 +4,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -286,6 +287,24 @@ public class ConfigProvider {
             return defaultValue;
         }
     }
+
+    /**
+     * Get a Vector corresponding to the given key, or returns the given default.
+     */
+    public Vector2 getVector2(String key) {
+        String possibleVector = this.getStringValue(key);
+        if (possibleVector == null) {
+            throw new NullPointerException("Key: " + key + " null!");
+        }
+        String[] valueArray = possibleVector.split(",");
+
+        try {
+            return new Vector2(Integer.parseInt(valueArray[0]), Integer.parseInt(valueArray[1]));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid vector format for key: " + key);
+        }
+    }
+
 
     public HashMap<String, String> getConfigData() {
         return configData;
