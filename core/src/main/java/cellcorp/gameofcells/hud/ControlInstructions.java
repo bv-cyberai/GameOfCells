@@ -2,6 +2,8 @@ package cellcorp.gameofcells.hud;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.providers.InputProvider;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.util.List;
+
+import static cellcorp.gameofcells.hud.ControlInstructions.State.SHOW_CONTROLS_ICONS;
+import static cellcorp.gameofcells.hud.ControlInstructions.State.SHOW_INFO_ICON;
 
 /**
  * Manages display of the "I" info icon and the control instructions in the top-right of the HUD.
@@ -40,6 +45,7 @@ public class ControlInstructions {
     );
 
     private final GraphicsProvider graphicsProvider;
+    private final InputProvider inputProvider;
     private final AssetManager assetManager;
 
     /**
@@ -57,12 +63,15 @@ public class ControlInstructions {
      */
     private final Table controlsTable;
 
-    public ControlInstructions(GraphicsProvider graphicsProvider, AssetManager assetManager) {
+    private State state = SHOW_INFO_ICON;
+
+    public ControlInstructions(GraphicsProvider graphicsProvider, InputProvider inputProvider, AssetManager assetManager) {
         this.graphicsProvider = graphicsProvider;
+        this.inputProvider = inputProvider;
         this.assetManager = assetManager;
         this.infoTable = infoTable();
         this.controlsTable = controlsTable();
-        this.outerTable = outerTable();
+        this.outerTable = outerTable(infoTable);
     }
 
     private Table infoTable() {
@@ -93,12 +102,34 @@ public class ControlInstructions {
      * Create the initial outer table.
      * It has a single cell, which is filled at the start by `infoTable`
      */
-    private Table outerTable() {
+    private Table outerTable(Table infoTable) {
         var table = new Table();
 
         table.row();
         table.add(infoTable).fill();
         return table;
+    }
+
+    public void handleInput() {
+        if (inputProvider.isKeyPressed(Input.Keys.I)) {
+            moveToControlsIcons();
+        } else {
+            moveToInfoIcon();
+        }
+    }
+
+    public Table getTable() {
+        return outerTable;
+    }
+
+    /**
+     * Replaces the contents of `outerTable` with the given table.
+     */
+    private void setTable(Table table) {
+        outerTable.clear();
+
+        outerTable.row();
+        outerTable.add(table).fill();
     }
 
     private Label iconLabel(IconData iconData) {
@@ -120,8 +151,29 @@ public class ControlInstructions {
         return new Image(iconDrawable);
     }
 
-    public Table getTable() {
-        return outerTable;
+    /**
+     * Move the state to `SHOW_INFO_ICON`, updating `outerTable` appropriately
+     */
+    private void moveToInfoIcon() {
+        if (state == SHOW_CONTROLS_ICONS) {
+            state = SHOW_INFO_ICON;
+            setTable(infoTable);
+        }
+    }
+
+    /**
+     * Move the state to `SHOW_CONTROLS_ICON`, updating `outerTable` appropriately
+     */
+    private void moveToControlsIcons() {
+        if (state == SHOW_INFO_ICON) {
+            state = SHOW_CONTROLS_ICONS;
+            setTable(controlsTable);
+        }
+    }
+
+    protected enum State {
+        SHOW_INFO_ICON,
+        SHOW_CONTROLS_ICONS,
     }
 
     private static class IconData {

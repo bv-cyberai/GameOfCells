@@ -57,7 +57,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Set to true to enable debug drawing.
      */
-    public static final boolean DEBUG_DRAW_ENABLED = true;
+    public static final boolean DEBUG_DRAW_ENABLED = false;
     private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
     public final Stats stats = new Stats();
     private final Stage stage;
@@ -202,7 +202,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
-        this.hud = new HUD(graphicsProvider, assetManager, this, stats);
+        this.hud = new HUD(graphicsProvider, inputProvider, assetManager, this, stats);
         this.minimapRenderer = new MinimapRenderer(graphicsProvider,8000f, 8000f, 200f, 200f, (OrthographicCamera) camera);
         this.loadSave = loadSave;
         parallaxFar = assetManager.get(AssetFileNames.PARALLAX_FAR, Texture.class);
@@ -435,6 +435,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
                     (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
 
             );
+            hud.handleInput();
         }
         // Returns the player to the main Menu Screen
         if (inputProvider.isKeyJustPressed(Input.Keys.M)) {
@@ -724,10 +725,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     private void drawMinimap() {
         minimapRenderer.render(
-            Gdx.graphics.getWidth(), 
-            Gdx.graphics.getHeight(), 
-            playerCell.getX(), 
-            playerCell.getY(), 
+            Gdx.graphics.getWidth(),
+            Gdx.graphics.getHeight(),
+            playerCell.getX(),
+            playerCell.getY(),
             zoneManager.getAcidZones().values(),
             zoneManager.getBasicZones().values(),
             glucoseManager.getGlucoseArray()

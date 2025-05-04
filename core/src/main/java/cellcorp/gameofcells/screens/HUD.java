@@ -7,6 +7,7 @@ import cellcorp.gameofcells.hud.HudStats;
 import cellcorp.gameofcells.notification.NotificationManager;
 import cellcorp.gameofcells.objects.Stats;
 import cellcorp.gameofcells.providers.GraphicsProvider;
+import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -43,6 +44,7 @@ public class HUD implements Disposable {
     private final Stage stage;
     private final HudStats hudStats;
     private final Bars bars;
+    private final ControlInstructions controlInstructions;
     private final NotificationManager notificationManager;
     private final GlyphLayout popupLayout = new GlyphLayout();
     private final SpriteBatch popupSpriteBatch;
@@ -55,7 +57,7 @@ public class HUD implements Disposable {
     private float popupX, popupY, popupWidth, popupHeight;
     private Color popupColor;
 
-    public HUD(GraphicsProvider graphicsProvider, AssetManager assetManager, GamePlayScreen gamePlayScreen, Stats stats) {
+    public HUD(GraphicsProvider graphicsProvider, InputProvider inputProvider, AssetManager assetManager, GamePlayScreen gamePlayScreen, Stats stats) {
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
@@ -65,9 +67,9 @@ public class HUD implements Disposable {
         var cell = gamePlayScreen.getCell();
         this.hudStats = new HudStats(graphicsProvider, assetManager, cell, stats);
         this.bars = new Bars(graphicsProvider, assetManager, cell);
-        var icons = new ControlInstructions(graphicsProvider, assetManager);
+        this.controlInstructions = new ControlInstructions(graphicsProvider, inputProvider, assetManager);
         this.notificationManager = new NotificationManager(gamePlayScreen);
-        var table = table(hudStats.getTable(), bars.getTable(), icons.getTable(), notificationManager.getTable());
+        var table = table(hudStats.getTable(), bars.getTable(), controlInstructions.getTable(), notificationManager.getTable());
         stage.addActor(table);
 
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
@@ -106,6 +108,10 @@ public class HUD implements Disposable {
         table.add(rightCol).fill().width(COLUMN_WIDTH);
 
         return table;
+    }
+
+    public void handleInput() {
+        controlInstructions.handleInput();
     }
 
     public void update(float deltaTime) {
@@ -212,5 +218,12 @@ public class HUD implements Disposable {
         );
         batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
+    }
+
+    /**
+     * For test use only.
+     */
+    public ControlInstructions getControlInstructions() {
+        return controlInstructions;
     }
 }
