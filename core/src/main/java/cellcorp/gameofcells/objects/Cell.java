@@ -1280,4 +1280,12 @@ public class Cell {
         }
     }
 
+    /**
+     * Heal Rates Getter
+     * @return The heal reates.
+     */
+    public Vector2[] getHealRates() {
+        return healRates;
+    }
+
 }

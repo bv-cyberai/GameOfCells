@@ -15,6 +15,7 @@ import com.badlogic.gdx.Files;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -249,5 +250,83 @@ public class TestCell {
         //to change the speed upgrade amount.
         //This is also tested in a different manner in testMain.
         assertTrue(speedPostUpgrade > startSpeed);
+    }
+
+    @Test
+    public void testVariableCostHealRates() {
+        var runner = GameRunner.create();
+        runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+        assertInstanceOf(GamePlayScreen.class, runner.game.getScreen());
+        var gameScreen = (GamePlayScreen) runner.game.getScreen();
+        Cell cell = gameScreen.getCell();
+        System.out.println(Arrays.toString(cell.getHealRates()));
+
+        //Mito
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasMitochondria(true);
+        System.out.println(cell.getOrganelleUpgradeLevel());
+
+        runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        runner.step();
+
+        cell.setCellHealth(80);
+        cell.setCellATP(100);
+
+        runner.step();
+        runner.setHeldDownKeys(Set.of(Input.Keys.H));
+        runner.step();
+
+        assertEquals(85, cell.getCellHealth());
+        assertEquals(80, cell.getCellATP());
+
+        //Ribo
+        runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasRibosomes(true);
+        System.out.println(cell.getOrganelleUpgradeLevel());
+
+        cell.setCellHealth(80);
+        cell.setCellATP(100);
+
+        runner.step();
+        runner.setHeldDownKeys(Set.of(Input.Keys.H));
+        runner.step();
+
+        assertEquals(90, cell.getCellHealth());
+        assertEquals(85, cell.getCellATP());
+
+        //Flag
+        runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        cell.setHasLargeSizeUpgrade(true);
+        cell.setHasFlagella(true);
+        System.out.println(cell.getOrganelleUpgradeLevel());
+
+        cell.setCellHealth(80);
+        cell.setCellATP(100);
+
+        runner.step();
+        runner.setHeldDownKeys(Set.of(Input.Keys.H));
+        runner.step();
+
+        assertEquals(95, cell.getCellHealth());
+        assertEquals(90, cell.getCellATP());
+
+        //Nuke
+        runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        cell.setHasMassiveSizeUpgrade(true);
+        cell.setHasNucleus(true);
+
+        cell.setCellHealth(80);
+        cell.setCellATP(100);
+
+        runner.step();
+        runner.setHeldDownKeys(Set.of(Input.Keys.H));
+        runner.step();
+
+        assertEquals(100, cell.getCellHealth());
+        assertEquals(95, cell.getCellATP());
+
+
     }
 }
