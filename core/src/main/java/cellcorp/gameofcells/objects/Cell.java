@@ -423,15 +423,15 @@ public class Cell {
         batch.begin();
 
         batch.draw(
-                cellTexture,
-                bottomLeftX, bottomLeftY,
-                cellSize / 2, cellSize / 2,
-                cellSize, cellSize,
-                1f, 1f,
-                cellRotation,
-                0, 0,
-                cellTexture.getWidth(), cellTexture.getHeight(),
-                false, false
+            cellTexture,
+            bottomLeftX, bottomLeftY,
+            cellSize / 2, cellSize / 2,
+            cellSize, cellSize,
+            1f, 1f,
+            cellRotation,
+            0, 0,
+            cellTexture.getWidth(), cellTexture.getHeight(),
+            false, false
         );
 
         drawOrganelles(batch);
@@ -491,7 +491,7 @@ public class Cell {
 
         // Update stats
         var organellesPurchased = List.of(hasMitochondria, hasFlagella, hasNucleus, hasRibosomes)
-                .stream().filter(Boolean::booleanValue).count();
+            .stream().filter(Boolean::booleanValue).count();
         gamePlayScreen.stats.organellesPurchased = (int) organellesPurchased;
         int maxSize;
         if (hasMassiveSizeUpgrade) {
@@ -547,30 +547,30 @@ public class Cell {
 
             // Draw first mitochondrion (top-right side)
             batch.draw(
-                    mitochondriaTexture,
-                    centerX + offset1.x - size / 2,
-                    centerY + offset1.y - size / 2,
-                    size / 2, size / 2,
-                    size, size,
-                    1f, 1f,
-                    angle1,
-                    0, 0,
-                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                    false, true
+                mitochondriaTexture,
+                centerX + offset1.x - size / 2,
+                centerY + offset1.y - size / 2,
+                size / 2, size / 2,
+                size, size,
+                1f, 1f,
+                angle1,
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, true
             );
 
             // Draw second mitochondrion (bottom-left side)
             batch.draw(
-                    mitochondriaTexture,
-                    centerX + offset2.x - size / 2,
-                    centerY + offset2.y - size / 2,
-                    size / 2, size / 2,
-                    size, size,
-                    1f, 1f,
-                    angle2,
-                    0, 0,
-                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                    false, true
+                mitochondriaTexture,
+                centerX + offset2.x - size / 2,
+                centerY + offset2.y - size / 2,
+                size / 2, size / 2,
+                size, size,
+                1f, 1f,
+                angle2,
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, true
             );
         }
 
@@ -588,26 +588,26 @@ public class Cell {
 
             // Draw first ribosome (top-left side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset1.x - ribosomeSize / 2,
-                    centerY + offset1.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset1.x - ribosomeSize / 2,
+                centerY + offset1.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
 
             // Draw second ribosome (bottom-right side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset2.x - ribosomeSize / 2,
-                    centerY + offset2.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset2.x - ribosomeSize / 2,
+                centerY + offset2.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
 
             // Draw third ribosome (bottom-middle-left side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset3.x - ribosomeSize / 2,
-                    centerY + offset3.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset3.x - ribosomeSize / 2,
+                centerY + offset3.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
         }
 
@@ -621,16 +621,16 @@ public class Cell {
             float nucleusSize = baseSize * pulseScale; // Adjust size based on pulse effect
 
             batch.draw(
-                    nucleusTexture,
-                    centerX - nucleusSize / 2,
-                    centerY - nucleusSize / 2,
-                    nucleusSize / 2, nucleusSize / 2,
-                    nucleusSize, nucleusSize,
-                    1f, 1f,
-                    cellRotation,
-                    0, 0,
-                    nucleusTexture.getWidth(), nucleusTexture.getHeight(),
-                    false, false
+                nucleusTexture,
+                centerX - nucleusSize / 2,
+                centerY - nucleusSize / 2,
+                nucleusSize / 2, nucleusSize / 2,
+                nucleusSize, nucleusSize,
+                1f, 1f,
+                cellRotation,
+                0, 0,
+                nucleusTexture.getWidth(), nucleusTexture.getHeight(),
+                false, false
             );
         }
     }
@@ -721,15 +721,15 @@ public class Cell {
             MEMBRANE_DAMAGE_REDUCTION = 2;
         }
         try {
-            healRates[0] = configProvider.getVector2("mitoHeal-Cost");
-            healRates[1] = configProvider.getVector2("riboHeal-Cost");
-            healRates[2] = configProvider.getVector2("flagHeal-Cost");
-            healRates[3] = configProvider.getVector2("nukeHeal-Cost");
-        } catch(Exception e) {
-            healRates[0] = new Vector2(20,5);
-            healRates[1] = new Vector2(15,10);
-            healRates[2] = new Vector2(10,15);
-            healRates[3] = new Vector2(5,20);
+            healRates[0] = configProvider.getVector2("mitoHCost-Heal");
+            healRates[1] = configProvider.getVector2("riboCost-Heal");
+            healRates[2] = configProvider.getVector2("flagCost-Heal");
+            healRates[3] = configProvider.getVector2("nukeCost-Heal");
+        } catch (Exception e) {
+            healRates[0] = new Vector2(20, 5);
+            healRates[1] = new Vector2(15, 10);
+            healRates[2] = new Vector2(10, 15);
+            healRates[3] = new Vector2(5, 20);
         }
 
     }
@@ -1271,12 +1271,11 @@ public class Cell {
      * @param level The new number.
      */
     public void setOrganelleUpgradeLevel(int level) {
-        if(level < 0) {
+        if (level < 0) {
             organelleUpgradeLevel = 0;
-        }
-        else if(level > 4) {
+        } else if (level > 4) {
             organelleUpgradeLevel = 4;
-        }else {
+        } else {
             organelleUpgradeLevel = level;
         }
     }

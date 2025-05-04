@@ -13,12 +13,12 @@ atpHealCost:20 ##DEPRECATED - SEE ORGANELLE RATES
 damageReduction:2 ## Membrane resistance value (higher number means less damage taken)
 popupsAllowed:1 ##enables or disables popups (1 for on, 0 for off)
 
-[organelleRates] ##These Change the AMOUNT_HEALED,ATP_HEAL_COST per organelle.
+[organelleRates] ##These Change the ATP_HEAL_COST,AMOUNT_HEALED per organelle.
 ## Note - #,# format should be kept.
-mitoHeal-Cost:20,5 ##Mitochondira
-riboHeal-Cost:15,10 ##Ribosomes
-flagHeal-Cost:10,15 ##Flagellum
-nukeHeal-Cost:5,20 ##Nucleus
+mitoCost-Heal:20,5 ##Mitochondira
+riboCost-Heal:15,10 ##Ribosomes
+flagCost-Heal:10,15 ##Flagellum
+nukeCost-Heal:5,20 ##Nucleus
 
 
 [flagellum]
