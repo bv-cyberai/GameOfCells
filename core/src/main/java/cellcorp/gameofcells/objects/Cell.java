@@ -391,15 +391,15 @@ public class Cell {
         batch.begin();
 
         batch.draw(
-                cellTexture,
-                bottomLeftX, bottomLeftY,
-                cellSize / 2, cellSize / 2,
-                cellSize, cellSize,
-                1f, 1f,
-                cellRotation,
-                0, 0,
-                cellTexture.getWidth(), cellTexture.getHeight(),
-                false, false
+            cellTexture,
+            bottomLeftX, bottomLeftY,
+            cellSize / 2, cellSize / 2,
+            cellSize, cellSize,
+            1f, 1f,
+            cellRotation,
+            0, 0,
+            cellTexture.getWidth(), cellTexture.getHeight(),
+            false, false
         );
 
         drawOrganelles(batch);
@@ -459,7 +459,7 @@ public class Cell {
 
         // Update stats
         var organellesPurchased = List.of(hasMitochondria, hasFlagella, hasNucleus, hasRibosomes)
-                .stream().filter(Boolean::booleanValue).count();
+            .stream().filter(Boolean::booleanValue).count();
         gamePlayScreen.stats.organellesPurchased = (int) organellesPurchased;
         int maxSize;
         if (hasMassiveSizeUpgrade) {
@@ -514,30 +514,30 @@ public class Cell {
 
             // Draw first mitochondrion (top-right side)
             batch.draw(
-                    mitochondriaTexture,
-                    centerX + offset1.x - size / 2,
-                    centerY + offset1.y - size / 2,
-                    size / 2, size / 2,
-                    size, size,
-                    1f, 1f,
-                    angle1,
-                    0, 0,
-                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                    false, true
+                mitochondriaTexture,
+                centerX + offset1.x - size / 2,
+                centerY + offset1.y - size / 2,
+                size / 2, size / 2,
+                size, size,
+                1f, 1f,
+                angle1,
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, true
             );
 
             // Draw second mitochondrion (bottom-left side)
             batch.draw(
-                    mitochondriaTexture,
-                    centerX + offset2.x - size / 2,
-                    centerY + offset2.y - size / 2,
-                    size / 2, size / 2,
-                    size, size,
-                    1f, 1f,
-                    angle2,
-                    0, 0,
-                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                    false, true
+                mitochondriaTexture,
+                centerX + offset2.x - size / 2,
+                centerY + offset2.y - size / 2,
+                size / 2, size / 2,
+                size, size,
+                1f, 1f,
+                angle2,
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, true
             );
         }
 
@@ -555,26 +555,26 @@ public class Cell {
 
             // Draw first ribosome (top-left side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset1.x - ribosomeSize / 2,
-                    centerY + offset1.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset1.x - ribosomeSize / 2,
+                centerY + offset1.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
 
             // Draw second ribosome (bottom-right side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset2.x - ribosomeSize / 2,
-                    centerY + offset2.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset2.x - ribosomeSize / 2,
+                centerY + offset2.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
 
             // Draw third ribosome (bottom-middle-left side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset3.x - ribosomeSize / 2,
-                    centerY + offset3.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset3.x - ribosomeSize / 2,
+                centerY + offset3.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
         }
 
@@ -588,16 +588,16 @@ public class Cell {
             float nucleusSize = baseSize * pulseScale; // Adjust size based on pulse effect
 
             batch.draw(
-                    nucleusTexture,
-                    centerX - nucleusSize / 2,
-                    centerY - nucleusSize / 2,
-                    nucleusSize / 2, nucleusSize / 2,
-                    nucleusSize, nucleusSize,
-                    1f, 1f,
-                    cellRotation,
-                    0, 0,
-                    nucleusTexture.getWidth(), nucleusTexture.getHeight(),
-                    false, false
+                nucleusTexture,
+                centerX - nucleusSize / 2,
+                centerY - nucleusSize / 2,
+                nucleusSize / 2, nucleusSize / 2,
+                nucleusSize, nucleusSize,
+                1f, 1f,
+                cellRotation,
+                0, 0,
+                nucleusTexture.getWidth(), nucleusTexture.getHeight(),
+                false, false
             );
         }
     }
@@ -1121,16 +1121,13 @@ public class Cell {
         System.out.println(cellCircle.y);
         if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) {
 
-            if(notUpgradeRenderCycle) {
-                System.out.println("HERE");
-
+            if (notUpgradeRenderCycle) {
                 return;
             }
             notUpgradeRenderCycle = true;
         }
         //Track movement for the next render cycle
         previousPosition.set(cellCircle.x, cellCircle.y);
-//        System.out.println("PREVPOS: " + previousPosition);
         previousRotation = cellRotation;
 
         flagellumVectors.clear();
