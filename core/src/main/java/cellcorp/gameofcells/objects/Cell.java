@@ -110,7 +110,7 @@ public class Cell {
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
 
-    private Vector2[] healRates = new Vector2[4];
+    private Vector2[] healRates = new Vector2[4]; //Holds heal,cost vectors for healing
 
     /**
      * Whether this cell has split and created a save point
