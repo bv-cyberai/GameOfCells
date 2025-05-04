@@ -1280,4 +1280,5 @@ public class Cell {
             organelleUpgradeLevel = level;
         }
     }
+
 }
