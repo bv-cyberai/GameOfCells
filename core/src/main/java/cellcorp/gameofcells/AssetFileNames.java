@@ -155,4 +155,6 @@ public class AssetFileNames {
     public static String SCROLL_BAR = "scroll_bar.png";
 
     public static String WS_KEYS = "ws.png";
+
+    public static String CONTROLS_INFO_BUTTON = "i_key.png";
 }

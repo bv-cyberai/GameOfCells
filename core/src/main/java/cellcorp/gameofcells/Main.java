@@ -156,6 +156,7 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.SCROLL_BAR, Texture.class);
         assetManager.load(AssetFileNames.WS_KEYS, Texture.class);
         assetManager.load(AssetFileNames.ARROW_TO_BASIC_ZONE, Texture.class);
+        assetManager.load(AssetFileNames.CONTROLS_INFO_BUTTON, Texture.class);
         assetManager.finishLoading();
 
         // I know. I know.

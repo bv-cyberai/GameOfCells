@@ -57,7 +57,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * Set to true to enable debug drawing.
      */
-    public static final boolean DEBUG_DRAW_ENABLED = false;
+    public static final boolean DEBUG_DRAW_ENABLED = true;
     private static final float LOW_ENERGY_COOLDOWN = 10f; // 10 seconds cooldown for low energy warning
     public final Stats stats = new Stats();
     private final Stage stage;
@@ -285,11 +285,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
-        if (loadSave == 1  && gameLoaderSaver!= null) {
+        if (loadSave == 1 && gameLoaderSaver != null) {
             gameLoaderSaver.loadState();
             loadSave = -1;
         }
-        if (loadSave == 0 && gameLoaderSaver!= null) {
+        if (loadSave == 0 && gameLoaderSaver != null) {
             GameLoaderSaver.clearSaveFile();
             loadSave = -1;
         }
