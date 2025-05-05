@@ -97,7 +97,7 @@ public class TestHUD {
                     CharSequence text = invocation.getArgument(0);
                     Label.LabelStyle style = invocation.getArgument(1);
                     Label label = new Label(text, style);
-                    label.setFontScale(0.2f); // mimic the game’s scaling
+                    label.setFontScale(0.2f); // mimic the game's scaling
                     return label;
                 });
 
@@ -162,7 +162,7 @@ public class TestHUD {
         assertEquals(2, innerTable.getCells().size);
 
         // While `I` is held down, inner table should have more than 2 elements
-        runner.setHeldDownKeys(Set.of(Input.Keys.I));
+        runner.setHeldDownKeys(Set.of(Input.Keys.C));
         runner.step();
 
         outerTable = controlInstructions.getTable();

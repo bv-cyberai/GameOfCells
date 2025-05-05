@@ -111,10 +111,8 @@ public class ControlInstructions {
     }
 
     public void handleInput() {
-        if (inputProvider.isKeyPressed(Input.Keys.I)) {
-            moveToControlsIcons();
-        } else {
-            moveToInfoIcon();
+        if (inputProvider.isKeyJustPressed(Input.Keys.C)) {
+            toggleState();
         }
     }
 
@@ -152,22 +150,16 @@ public class ControlInstructions {
     }
 
     /**
-     * Move the state to `SHOW_INFO_ICON`, updating `outerTable` appropriately
+     * Move to the non-active state, updating `outerTable` appropriately.
      */
-    private void moveToInfoIcon() {
-        if (state == SHOW_CONTROLS_ICONS) {
-            state = SHOW_INFO_ICON;
-            setTable(infoTable);
-        }
-    }
-
-    /**
-     * Move the state to `SHOW_CONTROLS_ICON`, updating `outerTable` appropriately
-     */
-    private void moveToControlsIcons() {
+    private void toggleState() {
         if (state == SHOW_INFO_ICON) {
             state = SHOW_CONTROLS_ICONS;
             setTable(controlsTable);
+        } else {
+            // in SHOW_CONTROLS_ICONS
+            state = SHOW_INFO_ICON;
+            setTable(infoTable);
         }
     }
 
