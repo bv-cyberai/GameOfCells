@@ -234,8 +234,15 @@ public class TestMainMenuScreen {
         // Inactivity timer should be very small (one frame's worth)
         assertTrue(mainMenuScreen.getInactivityTimer() < 0.1f);
 
-        // Run for more than timeout (20s) - should transition to AttractScreen
-        gameRunner.runForSeconds(21f);
+        // Clear input
+        gameRunner.setHeldDownKeys(Set.of());
+
+        // Run until after timeout
+        for (int i = 0; i < 210; i++) { // simulate 21 seconds
+            mainMenuScreen.update(0.1f);
+        }
+
+        // Now assert the screen changed
         assertInstanceOf(AttractScreen.class, gameRunner.game.getScreen());
     }
 
