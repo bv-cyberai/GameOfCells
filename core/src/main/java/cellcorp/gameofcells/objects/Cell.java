@@ -1116,9 +1116,6 @@ public class Cell {
 
     public void updateFlagellum(float deltaTime) {
         //Prevent moving flagellum if cell hasn't moved
-        System.out.println(previousPosition);
-        System.out.println(cellCircle.x);
-        System.out.println(cellCircle.y);
         if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) {
 
             if (notUpgradeRenderCycle) {
