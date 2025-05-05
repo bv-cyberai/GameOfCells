@@ -3,8 +3,10 @@ package cellcorp.gameofcells.objects;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -112,6 +114,8 @@ public class Cell {
     // Death tracking / effects
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
+    private float flagellumLengthLossFactor = 0f;
+    private float flagellumAlpha = 1f;
 
     /**
      * Whether this cell has split and created a save point
@@ -422,6 +426,7 @@ public class Cell {
             if (deathAnimationTime >= DEATH_ANIMATION_DURATION) {
                 gamePlayScreen.endGame();
             }
+            updateFlagellum(deltaTimeSeconds); //used to fade the flagellum
             return;
         }
 
@@ -1099,10 +1104,14 @@ public class Cell {
 
     public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
 
-        if (!drawFlagellum || flagellumVectors.isEmpty() || isDying) return;
+        if (!drawFlagellum || flagellumVectors.isEmpty()) return;
+
+        //These glCommands enable alpha to actually affect the color.
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0.239f, 0.498f, 0.651f, 1);
+        shapeRenderer.setColor(0.239f, 0.498f, 0.651f, flagellumAlpha);
 
         for (int i = 0; i < flagellumVectors.size; i++) {
             Vector2 point = new Vector2(cellCircle.x + flagellumVectors.get(i).x, cellCircle.y + flagellumVectors.get(i).y);
@@ -1112,11 +1121,35 @@ public class Cell {
         }
 
         shapeRenderer.end();
+        //Disable this command after drawing.
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
     }
 
     public void updateFlagellum(float deltaTime) {
+        //Dying Animation
+        if (isDying) {
+            //Length Change
+            flagellumLengthLossFactor += (flagellumLength / DEATH_ANIMATION_DURATION) * deltaTime * 1.25f;
+            //Float, so if ths is close to 1, subtract.
+            //Required as length is an int.
+            if (flagellumLengthLossFactor >= 0.9) {
+                flagellumLength -= 1;
+                flagellumLengthLossFactor = 0;
+            }
+            //Fade
+            flagellumAlpha -= (flagellumAlpha / DEATH_ANIMATION_DURATION) * deltaTime * 6;
+            //Again, floats suck.
+            if (flagellumAlpha <= 0.001) {
+                flagellumAlpha = 0;
+            }
+
+            //Change thickness.
+            flagellumThickness -= (flagellumThickness / DEATH_ANIMATION_DURATION) * deltaTime;
+        }
+
         //Prevent moving flagellum if cell hasn't moved
-        if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) {
+        if ((cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) && !isDying) {
 
             if (notUpgradeRenderCycle) {
                 return;
@@ -1146,6 +1179,7 @@ public class Cell {
 
     /**
      * Cell Speed Getter
+     *
      * @return The Cell Speed
      */
     public float getCellSpeed() {
@@ -1220,6 +1254,7 @@ public class Cell {
 
     /**
      * hasSplitGetter
+     *
      * @return True if cell ahs split.
      */
     public boolean hasSplit() {
@@ -1228,6 +1263,7 @@ public class Cell {
 
     /**
      * Has Split Setter
+     *
      * @param hasSplit If the cell has split
      */
     public void setHasSplit(boolean hasSplit) {
@@ -1236,6 +1272,7 @@ public class Cell {
 
     /**
      * Flagellum Vectors Getter
+     *
      * @return The Flagellum Vectors
      */
     public Array<Vector2> getFlagellumVectors() {
@@ -1244,6 +1281,7 @@ public class Cell {
 
     /**
      * Flagellum Thickness Getter
+     *
      * @return The thickness of the flagellum.
      */
     public float getFlagellumThickness() {
@@ -1252,6 +1290,7 @@ public class Cell {
 
     /**
      * Flagellum Length Setter
+     *
      * @param value The new thickness
      */
     public void setFlagellumThickness(float value) {
@@ -1260,6 +1299,7 @@ public class Cell {
 
     /**
      * Set The length of the flagellum.
+     *
      * @param value The new length
      */
     public void setFlagellumLength(int value) {
@@ -1268,6 +1308,7 @@ public class Cell {
 
     /**
      * Return the length of the flagellum
+     *
      * @return The Length of the flagellum
      */
     public int getFlagellumLength() {
