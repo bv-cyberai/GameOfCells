@@ -1239,7 +1239,7 @@ public class Cell {
 
     /**
      * Flagellum Vectors Getter
-     * @return The Flaggellum Vectors
+     * @return The Flagellum Vectors
      */
     public Array<Vector2> getFlagellumVectors() {
         return this.flagellumVectors;
