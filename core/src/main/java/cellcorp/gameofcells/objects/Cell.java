@@ -116,7 +116,6 @@ public class Cell {
     private float deathAnimationTime = 0f; // Time spent in the death animation
     private float flagellumLengthLossFactor = 0f;
     private float flagellumAlpha =1f;
-    private float flagellumThicknessLossFactor = 0f;
 
     /**
      * Whether this cell has split and created a save point
@@ -1107,11 +1106,6 @@ public class Cell {
 
         if (!drawFlagellum || flagellumVectors.isEmpty()) return;
 
-        if(isDying) {
-            System.out.println("F_A0: " + flagellumAlpha);
-//            flagellumAlpha -= (flagellumAlpha / DEATH_ANIMATION_DURATION)/10;
-            System.out.println("F_A1: " + flagellumAlpha);
-        }
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1131,19 +1125,13 @@ public class Cell {
     }
 
     public void updateFlagellum(float deltaTime) {
-        //Prevent moving flagellum if cell hasn't moved
+        //Dying Animation
         if(isDying) {
-//            System.out.println("DT: " + deltaTime);
-//            System.out.println("FL: " + flagellumLength);
-//            System.out.println("D_A: "+ DEATH_ANIMATION_DURATION);
             flagellumLengthLossFactor += (flagellumLength / DEATH_ANIMATION_DURATION) * deltaTime * 1.25f;
             if(flagellumLengthLossFactor >= 0.9 ) {
                 flagellumLength -= 1;
                 flagellumLengthLossFactor = 0;
             }
-
-//            float progressAlpha = Math.min(deathAnimationTime / DEATH_ANIMATION_DURATION,1f);
-//           flagellumAlpha = 4f * (1f - progressAlpha);
             flagellumAlpha -= (flagellumAlpha / DEATH_ANIMATION_DURATION) * deltaTime * 6;
 
             if (flagellumAlpha <= 0.001 )  {
@@ -1151,8 +1139,9 @@ public class Cell {
             }
 
             flagellumThickness -= (flagellumThickness/DEATH_ANIMATION_DURATION) * deltaTime;
-//            System.out.println("FLAGLENGTH: " + flagellumLength);
         }
+
+        //Prevent moving flagellum if cell hasn't moved
         if ((cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) && !isDying) {
 
             if (notUpgradeRenderCycle) {
