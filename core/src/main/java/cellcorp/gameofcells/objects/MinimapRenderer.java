@@ -22,13 +22,12 @@ public class MinimapRenderer {
     private final float visibleWorldWidth = 2000f;
     private final float visibleWorldHeight = 2000f;
 
-    private final ShapeRenderer shapeRenderer;
+    private ShapeRenderer shapeRenderer;
     private final FitViewport viewport;
 
     public MinimapRenderer(GraphicsProvider graphicsProvider, float worldWidth, float worldHeight, float minimapWidth, float minimapHeight, OrthographicCamera camera) {
         this.minimapWidth = minimapWidth;
         this.minimapHeight = minimapHeight;
-        this.shapeRenderer = new ShapeRenderer();
         // Needed for `ScissorStack` clipping to work
         this.viewport = graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT);
     }
@@ -40,6 +39,10 @@ public class MinimapRenderer {
     public void render(float screenWidth, float screenHeight, float playerX, float playerY,
                        Collection<Zone> acidZones, Collection<Zone> basicZones,
                        List<Glucose> glucoseList) {
+        if (shapeRenderer == null) {
+            shapeRenderer = new ShapeRenderer();
+        }
+
         float x = margin;
         float y = margin;
 
