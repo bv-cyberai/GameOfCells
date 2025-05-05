@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import cellcorp.gameofcells.providers.GameLoaderSaver;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
@@ -50,9 +51,9 @@ public class MainMenuScreen implements GameOfCellsScreen {
      */
     private static final String[] MENU_OPTIONS = {
         "NEW GAME",
+        "LOAD GAME",
         "GAME INFO",
-        "EXIT",
-        "RESUME GAME"
+        "EXIT"
     };
     /**
      * The instructions for the main menu
@@ -134,12 +135,15 @@ public class MainMenuScreen implements GameOfCellsScreen {
      */
     @Override
     public void show() {
+        boolean hasSave = !GameLoaderSaver.isSaveFileEmpty();
+
         menuSystem.initializeMainMenu(
             "GAME OF CELLS",
             MENU_OPTIONS,
             INSTRUCTIONS,
             wasdArrowsIcon,
-            spaceEnterIcon
+            spaceEnterIcon,
+            new boolean[] {true, hasSave, true, true} // enables for each item
         );
     }
 
@@ -230,7 +234,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Confirm selection with Enter or Space key
         if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
             || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
-            switch (menuSystem.getSelectedOptionIndex()) {
+            int selectedOption = menuSystem.getSelectedOptionIndex();
+            if (!menuSystem.isOptionEnabled(selectedOption)) {
+                return; // Ignore if the selected option is disabled
+            }
+
+            switch (selectedOption) {
                 case 0:
                     // Start the game
                     game.setScreen(new GamePlayScreen(
@@ -239,29 +248,29 @@ public class MainMenuScreen implements GameOfCellsScreen {
                             game,
                             assetManager, configProvider, 0));
                     break;
-                case 1: // Settings
-                    // Open the settings screen
-                    game.setScreen(new GameInfoControlsScreen(
-                            inputProvider,
-                            graphicsProvider,
-                            game,
-                            assetManager,
-                            this,
-                            null,
-                            viewport,
-                            configProvider ));
-                    break;
-                case 2:
-                    // Exit the game
-                    Gdx.app.exit();
-                    break;
-                case 3:
-                    // Start the game and load the previous save
+                case 1: 
+                    // Load game
                     game.setScreen(new GamePlayScreen(
                         inputProvider,
                         graphicsProvider,
                         game,
                         assetManager, configProvider, 1));
+                    break;
+                case 2:
+                    // Show game info screen
+                    game.setScreen(new GameInfoControlsScreen(
+                                inputProvider,
+                                graphicsProvider,
+                                game,
+                                assetManager,
+                                this,
+                                null,
+                                viewport,
+                                configProvider ));
+                    break;
+                case 3:
+                    // Exit the game
+                    Gdx.app.exit();
                     break;
             }
         }

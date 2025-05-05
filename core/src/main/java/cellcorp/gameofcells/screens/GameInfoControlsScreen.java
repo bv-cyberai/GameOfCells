@@ -70,7 +70,9 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         "ESC/P - Pause / Go back",
         "",
         "Gameplay:",
-        "WIP"
+        "Buy organelles to grow stronger",
+        "Divide to create new life",
+        "Stay alive and thrive!"
     };
 
     private static final String INSTRUCTION = "Press ENTER / SPACE to return...";

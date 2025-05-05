@@ -117,6 +117,9 @@ public class Main implements ApplicationListener {
 
         camera.setToOrtho(false, graphicsProvider.getWidth(), graphicsProvider.getHeight());
 
+        // Clear save file on fresh launch.
+        GameLoaderSaver.clearSaveFile();
+
         // Load up the assets, blocking until they're loaded.
         // The asset manager expects the asset's file name,
         // and the class of the asset to load.

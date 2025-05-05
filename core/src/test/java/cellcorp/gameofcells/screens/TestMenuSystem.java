@@ -131,8 +131,10 @@ public class TestMenuSystem {
     public void testInitializeMainMenuDoesNotThrow() {
         Texture mockTex1 = mock(Texture.class);
         Texture mockTex2 = mock(Texture.class);
+        boolean[] enabled = new boolean[] {true, true}; // enable both menu items
+
         assertDoesNotThrow(() ->
-            menuSystem.initializeMainMenu("Main", new String[]{"Start", "Quit"}, "Keys", mockTex1, mockTex2));
+            menuSystem.initializeMainMenu("Main", new String[]{"Start", "Quit"}, "Keys", mockTex1, mockTex2, enabled));
     }
 
     @Test
