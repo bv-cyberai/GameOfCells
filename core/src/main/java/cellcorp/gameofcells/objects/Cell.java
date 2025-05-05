@@ -3,8 +3,10 @@ package cellcorp.gameofcells.objects;
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -112,6 +114,9 @@ public class Cell {
     // Death tracking / effects
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
+    private float flagellumLengthLossFactor = 0f;
+    private float flagellumAlpha =1f;
+    private float flagellumThicknessLossFactor = 0f;
 
     /**
      * Whether this cell has split and created a save point
@@ -422,6 +427,7 @@ public class Cell {
             if (deathAnimationTime >= DEATH_ANIMATION_DURATION) {
                 gamePlayScreen.endGame();
             }
+            updateFlagellum(deltaTimeSeconds); //used to fade the flagellum
             return;
         }
 
@@ -1101,8 +1107,16 @@ public class Cell {
 
         if (!drawFlagellum || flagellumVectors.isEmpty()) return;
 
+        if(isDying) {
+            System.out.println("F_A0: " + flagellumAlpha);
+//            flagellumAlpha -= (flagellumAlpha / DEATH_ANIMATION_DURATION)/10;
+            System.out.println("F_A1: " + flagellumAlpha);
+        }
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0.239f, 0.498f, 0.651f, 1);
+        shapeRenderer.setColor(0.239f, 0.498f, 0.651f, flagellumAlpha);
 
         for (int i = 0; i < flagellumVectors.size; i++) {
             Vector2 point = new Vector2(cellCircle.x + flagellumVectors.get(i).x, cellCircle.y + flagellumVectors.get(i).y);
@@ -1112,11 +1126,34 @@ public class Cell {
         }
 
         shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
     }
 
     public void updateFlagellum(float deltaTime) {
         //Prevent moving flagellum if cell hasn't moved
-        if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) {
+        if(isDying) {
+//            System.out.println("DT: " + deltaTime);
+//            System.out.println("FL: " + flagellumLength);
+//            System.out.println("D_A: "+ DEATH_ANIMATION_DURATION);
+            flagellumLengthLossFactor += (flagellumLength / DEATH_ANIMATION_DURATION) * deltaTime * 1.25f;
+            if(flagellumLengthLossFactor >= 0.9 ) {
+                flagellumLength -= 1;
+                flagellumLengthLossFactor = 0;
+            }
+
+//            float progressAlpha = Math.min(deathAnimationTime / DEATH_ANIMATION_DURATION,1f);
+//           flagellumAlpha = 4f * (1f - progressAlpha);
+            flagellumAlpha -= (flagellumAlpha / DEATH_ANIMATION_DURATION) * deltaTime * 6;
+
+            if (flagellumAlpha <= 0.001 )  {
+                flagellumAlpha = 0;
+            }
+
+            flagellumThickness -= (flagellumThickness/DEATH_ANIMATION_DURATION) * deltaTime;
+//            System.out.println("FLAGLENGTH: " + flagellumLength);
+        }
+        if ((cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) && !isDying) {
 
             if (notUpgradeRenderCycle) {
                 return;
