@@ -79,6 +79,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final PopupInfoScreen cellMembranePopup;
     private final PopupInfoScreen splitCellPopup;
 
+    // ==== Minimap ====
+    private final MinimapRenderer minimapRenderer;
+
     // ==== The Camera / Viewport Regime ====
     // (Mark is 95% sure the following is correct, from research and review of the
     // classes' code):
@@ -200,6 +203,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, assetManager, this, stats);
+        this.minimapRenderer = new MinimapRenderer(graphicsProvider,8000f, 8000f, 200f, 200f, (OrthographicCamera) camera);
         this.loadSave = loadSave;
         parallaxFar = assetManager.get(AssetFileNames.PARALLAX_FAR, Texture.class);
         parallaxMid = assetManager.get(AssetFileNames.PARALLAX_MID, Texture.class);
@@ -510,6 +514,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         drawBackground();
         playerCell.draw(batch, shapeRenderer);
         drawHUD();
+        drawMinimap();
     }
 
     public void setUpDraw() {
@@ -717,6 +722,17 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.end();
     }
 
+    private void drawMinimap() {
+        minimapRenderer.render(
+            Gdx.graphics.getWidth(), 
+            Gdx.graphics.getHeight(), 
+            playerCell.getX(), 
+            playerCell.getY(), 
+            zoneManager.getAcidZones().values(),
+            zoneManager.getBasicZones().values(),
+            glucoseManager.getGlucoseArray()
+        );
+    }
 
     /**
      * Draw chunk borders.
