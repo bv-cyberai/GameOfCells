@@ -75,6 +75,8 @@ public class GameLoaderSaver {
         saveGame.putBoolean("mito", cell.hasMitochondria());
         saveGame.putBoolean("ribo", cell.hasRibosomes());
         saveGame.putBoolean("flag", cell.hasFlagella());
+        saveGame.putFloat("flagThick", cell.getFlagellumThickness());
+        saveGame.putInteger("flagLength",cell.getFlagellumLength());
         saveGame.putBoolean("nuke", cell.hasNucleus());
 
         //stats state
@@ -125,6 +127,8 @@ public class GameLoaderSaver {
         cell.setHasMitochondria(saveGame.getBoolean("mito", false));
         cell.setHasRibosomes(saveGame.getBoolean("ribo", false));
         cell.setHasFlagella(saveGame.getBoolean("flag", false));
+        cell.setFlagellumThickness(saveGame.getFloat("flagThick", 9.375f));
+        cell.setFlagellumLength(saveGame.getInteger("flagLength",225));
         cell.setHasNucleus(saveGame.getBoolean("nuke", false));
 
         //stats state

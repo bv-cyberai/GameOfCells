@@ -86,6 +86,9 @@ public class Cell {
     private float frequency = 0.05f;
     private float flagTime = 0f; // Phase offset of the sine wave.
     private int wiggleVelocityMultiplier = 5; //How quickly to wiggle
+    private float flagellumThickness = 9.375f;
+    private int flagellumLength = 225;
+    private boolean notUpgradeRenderCycle = true; // tracks size upgrade to avoid a visual flagellum bug
     /**
      * Times how long the cell has been taking zero-ATP damage.
      * Used to group damage, instead of applying a tiny amount each tick.
@@ -174,6 +177,7 @@ public class Cell {
         this.isDying = other.isDying;
         this.deathAnimationTime = other.deathAnimationTime;
         this.hasSplit = other.hasSplit;
+        this.notUpgradeRenderCycle = other.notUpgradeRenderCycle;
     }
 
     /**
@@ -387,15 +391,15 @@ public class Cell {
         batch.begin();
 
         batch.draw(
-                cellTexture,
-                bottomLeftX, bottomLeftY,
-                cellSize / 2, cellSize / 2,
-                cellSize, cellSize,
-                1f, 1f,
-                cellRotation,
-                0, 0,
-                cellTexture.getWidth(), cellTexture.getHeight(),
-                false, false
+            cellTexture,
+            bottomLeftX, bottomLeftY,
+            cellSize / 2, cellSize / 2,
+            cellSize, cellSize,
+            1f, 1f,
+            cellRotation,
+            0, 0,
+            cellTexture.getWidth(), cellTexture.getHeight(),
+            false, false
         );
 
         drawOrganelles(batch);
@@ -455,7 +459,7 @@ public class Cell {
 
         // Update stats
         var organellesPurchased = List.of(hasMitochondria, hasFlagella, hasNucleus, hasRibosomes)
-                .stream().filter(Boolean::booleanValue).count();
+            .stream().filter(Boolean::booleanValue).count();
         gamePlayScreen.stats.organellesPurchased = (int) organellesPurchased;
         int maxSize;
         if (hasMassiveSizeUpgrade) {
@@ -510,30 +514,30 @@ public class Cell {
 
             // Draw first mitochondrion (top-right side)
             batch.draw(
-                    mitochondriaTexture,
-                    centerX + offset1.x - size / 2,
-                    centerY + offset1.y - size / 2,
-                    size / 2, size / 2,
-                    size, size,
-                    1f, 1f,
-                    angle1,
-                    0, 0,
-                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                    false, true
+                mitochondriaTexture,
+                centerX + offset1.x - size / 2,
+                centerY + offset1.y - size / 2,
+                size / 2, size / 2,
+                size, size,
+                1f, 1f,
+                angle1,
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, true
             );
 
             // Draw second mitochondrion (bottom-left side)
             batch.draw(
-                    mitochondriaTexture,
-                    centerX + offset2.x - size / 2,
-                    centerY + offset2.y - size / 2,
-                    size / 2, size / 2,
-                    size, size,
-                    1f, 1f,
-                    angle2,
-                    0, 0,
-                    mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
-                    false, true
+                mitochondriaTexture,
+                centerX + offset2.x - size / 2,
+                centerY + offset2.y - size / 2,
+                size / 2, size / 2,
+                size, size,
+                1f, 1f,
+                angle2,
+                0, 0,
+                mitochondriaTexture.getWidth(), mitochondriaTexture.getHeight(),
+                false, true
             );
         }
 
@@ -551,26 +555,26 @@ public class Cell {
 
             // Draw first ribosome (top-left side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset1.x - ribosomeSize / 2,
-                    centerY + offset1.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset1.x - ribosomeSize / 2,
+                centerY + offset1.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
 
             // Draw second ribosome (bottom-right side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset2.x - ribosomeSize / 2,
-                    centerY + offset2.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset2.x - ribosomeSize / 2,
+                centerY + offset2.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
 
             // Draw third ribosome (bottom-middle-left side)
             batch.draw(
-                    ribosomeTexture,
-                    centerX + offset3.x - ribosomeSize / 2,
-                    centerY + offset3.y - ribosomeSize / 2,
-                    ribosomeSize, ribosomeSize
+                ribosomeTexture,
+                centerX + offset3.x - ribosomeSize / 2,
+                centerY + offset3.y - ribosomeSize / 2,
+                ribosomeSize, ribosomeSize
             );
         }
 
@@ -584,16 +588,16 @@ public class Cell {
             float nucleusSize = baseSize * pulseScale; // Adjust size based on pulse effect
 
             batch.draw(
-                    nucleusTexture,
-                    centerX - nucleusSize / 2,
-                    centerY - nucleusSize / 2,
-                    nucleusSize / 2, nucleusSize / 2,
-                    nucleusSize, nucleusSize,
-                    1f, 1f,
-                    cellRotation,
-                    0, 0,
-                    nucleusTexture.getWidth(), nucleusTexture.getHeight(),
-                    false, false
+                nucleusTexture,
+                centerX - nucleusSize / 2,
+                centerY - nucleusSize / 2,
+                nucleusSize / 2, nucleusSize / 2,
+                nucleusSize, nucleusSize,
+                1f, 1f,
+                cellRotation,
+                0, 0,
+                nucleusTexture.getWidth(), nucleusTexture.getHeight(),
+                false, false
             );
         }
     }
@@ -977,6 +981,7 @@ public class Cell {
     public void setHasLargeSizeUpgrade(boolean hasLargeSizeUpgrade) {
         this.hasLargeSizeUpgrade = hasLargeSizeUpgrade;
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasLargeSizeUpgrade) sizeUpgradeLevel++;
+        notUpgradeRenderCycle = false;
     }
 
     /**
@@ -992,6 +997,9 @@ public class Cell {
     public void setHasMassiveSizeUpgrade(boolean hasMassiveSizeUpgrade) {
         if ((sizeUpgradeLevel < MAX_SIZE_UPGRADES) && hasMassiveSizeUpgrade) sizeUpgradeLevel++;
         this.hasMassiveSizeUpgrade = hasMassiveSizeUpgrade;
+        setFlagellumThickness(12.5f);
+        setFlagellumLength(300); //The new length of the flagellum.
+        notUpgradeRenderCycle = false;
     }
 
     /**
@@ -1096,13 +1104,11 @@ public class Cell {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0.239f, 0.498f, 0.651f, 1);
 
-        float thickness = 12.5f;
-
         for (int i = 0; i < flagellumVectors.size; i++) {
             Vector2 point = new Vector2(cellCircle.x + flagellumVectors.get(i).x, cellCircle.y + flagellumVectors.get(i).y);
 
             //Draw Circles along the sine wave.
-            shapeRenderer.circle(point.x, point.y, thickness);
+            shapeRenderer.circle(point.x, point.y, flagellumThickness);
         }
 
         shapeRenderer.end();
@@ -1110,8 +1116,15 @@ public class Cell {
 
     public void updateFlagellum(float deltaTime) {
         //Prevent moving flagellum if cell hasn't moved
+        System.out.println(previousPosition);
+        System.out.println(cellCircle.x);
+        System.out.println(cellCircle.y);
         if (cellCircle.x == previousPosition.x && cellCircle.y == previousPosition.y && cellRotation == previousRotation) {
-            return;
+
+            if (notUpgradeRenderCycle) {
+                return;
+            }
+            notUpgradeRenderCycle = true;
         }
         //Track movement for the next render cycle
         previousPosition.set(cellCircle.x, cellCircle.y);
@@ -1120,9 +1133,9 @@ public class Cell {
         flagellumVectors.clear();
 
         //calculate new sin wave positions.
-        for (int y = 0; y < 300f; y++) {
+        for (int y = 0; y < flagellumLength; y++) {
             float flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
-            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - 300)); // <-shifts flagella down, stupid calc, but it works
+            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - flagellumLength)); // <-shifts flagella down, stupid calc, but it works
         }
 
         // Rotate the flagellum
@@ -1134,7 +1147,10 @@ public class Cell {
         flagTime += deltaTime * wiggleVelocityMultiplier;
     }
 
-    //
+    /**
+     * Cell Speed Getter
+     * @return The Cell Speed
+     */
     public float getCellSpeed() {
         return CELL_SPEED;
     }
@@ -1205,15 +1221,59 @@ public class Cell {
         return smoothedVelocity;
     }
 
+    /**
+     * hasSplitGetter
+     * @return True if cell ahs split.
+     */
     public boolean hasSplit() {
         return hasSplit;
     }
 
+    /**
+     * Has Split Setter
+     * @param hasSplit If the cell has split
+     */
     public void setHasSplit(boolean hasSplit) {
         this.hasSplit = hasSplit;
     }
 
+    /**
+     * Flagellum Vectors Getter
+     * @return The Flagellum Vectors
+     */
     public Array<Vector2> getFlagellumVectors() {
         return this.flagellumVectors;
+    }
+
+    /**
+     * Flagellum Thickness Getter
+     * @return The thickness of the flagellum.
+     */
+    public float getFlagellumThickness() {
+        return flagellumThickness;
+    }
+
+    /**
+     * Flagellum Length Setter
+     * @param value The new thickness
+     */
+    public void setFlagellumThickness(float value) {
+        flagellumThickness = value;
+    }
+
+    /**
+     * Set The length of the flagellum.
+     * @param value The new length
+     */
+    public void setFlagellumLength(int value) {
+        flagellumLength = value;
+    }
+
+    /**
+     * Return the length of the flagellum
+     * @return The Length of the flagellum
+     */
+    public int getFlagellumLength() {
+        return flagellumLength;
     }
 }

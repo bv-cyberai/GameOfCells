@@ -250,4 +250,33 @@ public class TestCell {
         //This is also tested in a different manner in testMain.
         assertTrue(speedPostUpgrade > startSpeed);
     }
+
+    @Test
+    public void testFlagellaThicknessAndLength() {
+        var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var gamePlayScreen = Mockito.mock(GamePlayScreen.class);
+        ConfigProvider configProvider = new ConfigProvider();
+
+        var cell = new Cell(gamePlayScreen, fakeAssetManager, configProvider);
+
+        cell.setHasSmallSizeUpgrade(true);
+        cell.setHasMitochondria(true);
+
+        cell.setHasMediumSizeUpgrade(true);
+        cell.setHasRibosomes(true);
+
+        cell.setHasLargeSizeUpgrade(true);
+        cell.setHasFlagella(true);
+        float initThickness = cell.getFlagellumThickness();
+        float initLength = cell.getFlagellumLength();
+
+        cell.setHasMassiveSizeUpgrade(true);
+        float currThickness = cell.getFlagellumThickness();
+        float currLength = cell.getFlagellumLength();
+
+        //Did not test for specific values, in case they are ever changed later. 
+        assertTrue(currThickness >initThickness);
+        assertTrue(currLength > initLength);
+
+    }
 }
