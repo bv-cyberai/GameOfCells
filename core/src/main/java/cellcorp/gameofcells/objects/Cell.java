@@ -1129,17 +1129,22 @@ public class Cell {
     public void updateFlagellum(float deltaTime) {
         //Dying Animation
         if (isDying) {
+            //Length Change
             flagellumLengthLossFactor += (flagellumLength / DEATH_ANIMATION_DURATION) * deltaTime * 1.25f;
+            //Float, so if ths is close to 1, subtract.
+            //Required as length is an int.
             if (flagellumLengthLossFactor >= 0.9) {
                 flagellumLength -= 1;
                 flagellumLengthLossFactor = 0;
             }
+            //Fade
             flagellumAlpha -= (flagellumAlpha / DEATH_ANIMATION_DURATION) * deltaTime * 6;
-
+            //Again, floats suck.
             if (flagellumAlpha <= 0.001) {
                 flagellumAlpha = 0;
             }
 
+            //Change thickness.
             flagellumThickness -= (flagellumThickness / DEATH_ANIMATION_DURATION) * deltaTime;
         }
 
