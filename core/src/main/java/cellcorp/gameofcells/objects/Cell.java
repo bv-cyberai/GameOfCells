@@ -115,7 +115,7 @@ public class Cell {
     private boolean isDying = false; // Whether the cell is dying
     private float deathAnimationTime = 0f; // Time spent in the death animation
     private float flagellumLengthLossFactor = 0f;
-    private float flagellumAlpha =1f;
+    private float flagellumAlpha = 1f;
 
     /**
      * Whether this cell has split and created a save point
@@ -1126,19 +1126,19 @@ public class Cell {
 
     public void updateFlagellum(float deltaTime) {
         //Dying Animation
-        if(isDying) {
+        if (isDying) {
             flagellumLengthLossFactor += (flagellumLength / DEATH_ANIMATION_DURATION) * deltaTime * 1.25f;
-            if(flagellumLengthLossFactor >= 0.9 ) {
+            if (flagellumLengthLossFactor >= 0.9) {
                 flagellumLength -= 1;
                 flagellumLengthLossFactor = 0;
             }
             flagellumAlpha -= (flagellumAlpha / DEATH_ANIMATION_DURATION) * deltaTime * 6;
 
-            if (flagellumAlpha <= 0.001 )  {
+            if (flagellumAlpha <= 0.001) {
                 flagellumAlpha = 0;
             }
 
-            flagellumThickness -= (flagellumThickness/DEATH_ANIMATION_DURATION) * deltaTime;
+            flagellumThickness -= (flagellumThickness / DEATH_ANIMATION_DURATION) * deltaTime;
         }
 
         //Prevent moving flagellum if cell hasn't moved
@@ -1172,6 +1172,7 @@ public class Cell {
 
     /**
      * Cell Speed Getter
+     *
      * @return The Cell Speed
      */
     public float getCellSpeed() {
@@ -1246,6 +1247,7 @@ public class Cell {
 
     /**
      * hasSplitGetter
+     *
      * @return True if cell ahs split.
      */
     public boolean hasSplit() {
@@ -1254,6 +1256,7 @@ public class Cell {
 
     /**
      * Has Split Setter
+     *
      * @param hasSplit If the cell has split
      */
     public void setHasSplit(boolean hasSplit) {
@@ -1262,6 +1265,7 @@ public class Cell {
 
     /**
      * Flagellum Vectors Getter
+     *
      * @return The Flagellum Vectors
      */
     public Array<Vector2> getFlagellumVectors() {
@@ -1270,6 +1274,7 @@ public class Cell {
 
     /**
      * Flagellum Thickness Getter
+     *
      * @return The thickness of the flagellum.
      */
     public float getFlagellumThickness() {
@@ -1278,6 +1283,7 @@ public class Cell {
 
     /**
      * Flagellum Length Setter
+     *
      * @param value The new thickness
      */
     public void setFlagellumThickness(float value) {
@@ -1286,6 +1292,7 @@ public class Cell {
 
     /**
      * Set The length of the flagellum.
+     *
      * @param value The new length
      */
     public void setFlagellumLength(int value) {
@@ -1294,6 +1301,7 @@ public class Cell {
 
     /**
      * Return the length of the flagellum
+     *
      * @return The Length of the flagellum
      */
     public int getFlagellumLength() {
