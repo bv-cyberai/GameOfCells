@@ -9,10 +9,8 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -39,7 +37,6 @@ public class TestMenuSystem {
     private AssetManager mockAssetManager;
     private GraphicsProvider mockGraphicsProvider;
     private BitmapFont mockFont;
-    private Label mockLabel;
 
     @BeforeAll
     public static void setUpHeadlessApp() {

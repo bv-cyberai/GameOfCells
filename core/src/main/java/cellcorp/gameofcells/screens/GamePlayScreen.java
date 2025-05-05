@@ -596,18 +596,27 @@ public class GamePlayScreen implements GameOfCellsScreen {
             shakeTime -= Gdx.graphics.getDeltaTime();
         }
 
+        // Here we apply the zoom effect
+        // The zoom effect is based on the player's cell health
+        // If the cell is dead, we zoom out to a maximum of 1.2f
+        // If the cell is alive, we zoom in to a minimum of 0.8f
         float zoomProgress = 1f;
         if (playerCell.getCellHealth() <= 0) {
             zoomProgress = Math.min(1f, playerCell.getDeathAnimationTime() / playerCell.getDeathAnimationDuration());
         }
 
         float currentZoom = MathUtils.lerp(originalZoom, targetZoom, zoomProgress);
-        applyZoomToViewport(currentZoom);
+        applyZoomToViewport(currentZoom); // Apply the zoom to the viewport
 
 
         camera.position.set(playerCell.getX() + offsetX, playerCell.getY() + offsetY, 0);
     }
 
+    /**
+     * Applies the zoom to the viewport.
+     *
+     * @param zoom The zoom level to apply.
+     */
     private void applyZoomToViewport(float zoom) {
         float newWidth = VIEW_RECT_WIDTH * zoom;
         float newHeight = VIEW_RECT_HEIGHT * zoom;

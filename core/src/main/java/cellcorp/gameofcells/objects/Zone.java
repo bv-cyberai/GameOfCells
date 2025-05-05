@@ -74,4 +74,11 @@ public final class Zone {
                 Math.pow(this.x() - x, 2) + Math.pow(this.y() - y, 2)
         );
     }
+
+    /**
+     * @return the radius of the zone
+     */
+    public float getZoneRadius() {
+        return ZONE_RADIUS;
+    }
 }
