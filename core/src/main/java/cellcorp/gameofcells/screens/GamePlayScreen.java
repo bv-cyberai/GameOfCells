@@ -139,14 +139,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final SpawnManager spawnManager;
     //private final HUD hud;
     private final HUD hud;
-
-    // Minimap
-    private MinimapRenderer minimapRenderer;
-
     private final boolean wasInBasicZone = false; // Whether the cell was in a basic zone last frame
     // Zoom fields
     private final float originalZoom = 1.2f; // Original zoom level
     private final float targetZoom = 0.8f; // Target zoom level
+    // Minimap
+    private final MinimapRenderer minimapRenderer;
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
     // so if these are in the shop, they won't persist.
@@ -190,9 +188,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, assetManager, this, stats);
-        
+
         // Initialize the minimap renderer
-        minimapRenderer = new MinimapRenderer(8000f, 8000f, 200f, 200f, (OrthographicCamera) camera);
+        minimapRenderer = new MinimapRenderer(graphicsProvider, 8000f, 8000f, 200f, 200f, (OrthographicCamera) camera);
 
         this.glucoseCollisionPopup = new PopupInfoScreen(
                 configProvider,
@@ -460,13 +458,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
         // Draw the minimap
         minimapRenderer.render(
-            Gdx.graphics.getWidth(),
-            Gdx.graphics.getHeight(),
-            playerCell.getX(),
-            playerCell.getY(),
-            zoneManager.getAcidZones().values(),
-            zoneManager.getBasicZones().values(),
-            glucoseManager.getGlucoseArray()
+                Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight(),
+                playerCell.getX(),
+                playerCell.getY(),
+                zoneManager.getAcidZones().values(),
+                zoneManager.getBasicZones().values(),
+                glucoseManager.getGlucoseArray()
         );
 
         if (DEBUG_DRAW_ENABLED) {
