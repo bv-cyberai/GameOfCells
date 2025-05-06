@@ -31,17 +31,18 @@ public class ControlInstructions {
     private static final float ROW_PADDING = 20f;
     private static final float COL_PADDING = 20f;
 
-    private static final float INFO_PADDING_TOP = 40f;
-    private static final float INFO_PADDING_RIGHT = 40f;
+    private static final float INFO_PADDING_TOP = 41f;
+    private static final float INFO_PADDING_RIGHT = 54.5f;
 
     private static final IconData INFO_ICON = new IconData("Controls", AssetFileNames.CONTROLS_INFO_BUTTON);
 
     private static final List<IconData> CONTROLS_ICON = List.of(
-        new IconData("Pause", AssetFileNames.PAUSE_BUTTON),
-        new IconData("Move", AssetFileNames.MOVE_KEY),
-        new IconData("Quit", AssetFileNames.QUIT_BUTTON),
-        new IconData("Shop", AssetFileNames.SHOP_BUTTON),
-        new IconData("Heal", AssetFileNames.HEAL_ICON)
+            new IconData("Hide\nControls", AssetFileNames.CONTROLS_INFO_BUTTON),
+            new IconData("Pause", AssetFileNames.PAUSE_BUTTON),
+            new IconData("Move", AssetFileNames.MOVE_KEY),
+            new IconData("Quit", AssetFileNames.QUIT_BUTTON),
+            new IconData("Shop", AssetFileNames.SHOP_BUTTON),
+            new IconData("Heal", AssetFileNames.HEAL_ICON)
     );
 
     private final GraphicsProvider graphicsProvider;
@@ -93,7 +94,7 @@ public class ControlInstructions {
             var icon = iconImage(iconData);
             table.row().padBottom(ROW_PADDING);
             table.add(label).bottom().left();
-            table.add(icon).padLeft(COL_PADDING);
+            table.add(icon).bottom().padLeft(COL_PADDING);
         }
         return table;
     }
