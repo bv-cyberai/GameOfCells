@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 public class AcidZoneSource implements NotificationSource {
     private static final String TEXT = "DANGER: Acid zone! You're taking damage!";
     private static final Float DURATION = null;
-    private static final Color COLOR = Color.YELLOW;
+    private static final Color COLOR = Color.WHITE;
 
     private final NotificationManager notificationManager;
 
@@ -38,7 +38,7 @@ public class AcidZoneSource implements NotificationSource {
         var zoneManager = gamePlayScreen.getZoneManager();
         var cell = gamePlayScreen.getCell();
         return zoneManager.distanceToNearestAcidZone(cell.getX(), cell.getY())
-                .map(d -> d <= Zone.ZONE_RADIUS)
-                .orElse(false);
+            .map(d -> d <= Zone.ZONE_RADIUS)
+            .orElse(false);
     }
 }

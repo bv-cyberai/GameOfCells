@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Null;
 
 public class Notification {
     private static final float FADE_OUT_DURATION_SECONDS = 0.5f;
-    private static final float FONT_SCALE = 0.25f;
+    private static final float FONT_SCALE = 0.35f;
 
     private final NotificationSource source;
 
@@ -40,7 +40,7 @@ public class Notification {
     }
 
     private Label label(GraphicsProvider graphicsProvider, AssetManager assetManager, String text) {
-        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        var font = assetManager.get(AssetFileNames.NOTIFICATION_FONT, BitmapFont.class);
         var labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Label label = graphicsProvider.createLabel(text, labelStyle);
         label.setFontScale(FONT_SCALE);

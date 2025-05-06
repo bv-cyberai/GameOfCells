@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 public class Bar extends BaseDrawable {
     private static final float WIDTH = 600;
     private static final float HEIGHT = 40;
-    private static final float FONT_SCALE = 0.3f;
+    private static final float FONT_SCALE = 0.40f;
 
     private final AssetManager assetManager;
     private final ShapeRenderer shapeRenderer;
@@ -40,7 +40,7 @@ public class Bar extends BaseDrawable {
     private GlyphLayout layout(AssetManager assetManager, String text) {
         // GlyphLayout uses the font scale at construction to calculate width, height.
         // So, we have to set it to whatever we'll be using in draw
-        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        var font = assetManager.get(AssetFileNames.NOTIFICATION_FONT, BitmapFont.class);
         var scaleX = font.getScaleX();
         var scaleY = font.getScaleY();
         font.getData().setScale(FONT_SCALE);
@@ -65,7 +65,7 @@ public class Bar extends BaseDrawable {
         shapeRenderer.setColor(color);
         batch.setColor(color);
 
-        var font = assetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class);
+        var font = assetManager.get(AssetFileNames.NOTIFICATION_FONT, BitmapFont.class);
         var scaleX = font.getScaleX();
         var scaleY = font.getScaleY();
         font.getData().setScale(FONT_SCALE);

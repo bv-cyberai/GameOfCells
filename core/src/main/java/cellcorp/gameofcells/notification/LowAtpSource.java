@@ -7,7 +7,7 @@ public class LowAtpSource implements NotificationSource {
     private static final int ATP_THRESHOLD = 20;
     private static final String TEXT = "WARNING: Low ATP. Find some glucose.";
     private static final Float DURATION = null;
-    private static final Color COLOR = Color.YELLOW;
+    private static final Color COLOR = Color.WHITE;
 
     private final NotificationManager notificationManager;
 

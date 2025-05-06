@@ -102,9 +102,9 @@ public class Main implements ApplicationListener {
         // Gdx.graphics is not instantiated until `create()`.
         // Just use the configuration constants here.
         var viewport = new FitViewport(
-                DEFAULT_SCREEN_WIDTH,
-                DEFAULT_SCREEN_HEIGHT,
-                camera
+            DEFAULT_SCREEN_WIDTH,
+            DEFAULT_SCREEN_HEIGHT,
+            camera
         );
 
         return new Main(inputProvider, graphicsProvider, assetManager, camera, viewport, configProvider);
@@ -134,6 +134,7 @@ public class Main implements ApplicationListener {
         assetManager.load(AssetFileNames.DANGER, Texture.class);
         assetManager.load(AssetFileNames.DEFAULT_FONT, BitmapFont.class);
         assetManager.load(AssetFileNames.HUD_FONT, BitmapFont.class);
+        assetManager.load(AssetFileNames.NOTIFICATION_FONT, BitmapFont.class);
         assetManager.load(AssetFileNames.MITOCHONDRIA_ICON, Texture.class);
         assetManager.load(AssetFileNames.RIBOSOME_ICON, Texture.class);
         assetManager.load(AssetFileNames.NUCLEUS_ICON, Texture.class);
