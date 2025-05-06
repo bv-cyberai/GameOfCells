@@ -546,7 +546,7 @@ public class Cell {
 
             assert (mitochondriaTexture != null);
 
-            float size = cellSize * 0.3f;
+            float size = cellSize * 0.2f;
 
             Vector2 offset1 = new Vector2(+cellRadius * 0.5f, +cellRadius * 0.5f).rotateDeg(cellRotation);
             Vector2 offset2 = new Vector2(-cellRadius * 0.5f, -cellRadius * 0.5f).rotateDeg(cellRotation);
