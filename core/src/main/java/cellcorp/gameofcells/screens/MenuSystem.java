@@ -403,8 +403,8 @@ public class MenuSystem {
             newIndex += direction;
         }
 
-        // if out of bounds, don't update
-        if (newIndex < 0 || newIndex >= menuOptions.length) {
+        // if out of bounds or still disabled after skipping, don't update
+        if (newIndex < 0 || newIndex >= menuOptions.length || !optionEnabled[newIndex]) {
             return; // Invalid index, do nothing
         }
 
