@@ -155,8 +155,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Texture parallaxNear;
     private final Texture floatingOverlay; // Texture for simulating fluid game movement
     private final Texture vignetteLowHealth; // Texture for low health warning
-    private int loadSave;
     int popupsAllowed = 1;
+    private int loadSave;
     private float overlayTime = 0f; // Time for the floating overlay animation
     // Part of game state.
     // Closing the shop and re-opening makes a new one,
@@ -180,10 +180,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * @param loadSave;
      */
     public GamePlayScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager, ConfigProvider configProvider, int loadSave) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager, ConfigProvider configProvider, int loadSave) {
 
         this.assetManager = assetManager;
         this.game = game;
@@ -203,7 +203,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
         this.hud = new HUD(graphicsProvider, inputProvider, assetManager, this, stats);
-        this.minimapRenderer = new MinimapRenderer(graphicsProvider,8000f, 8000f, 200f, 200f, (OrthographicCamera) camera);
+        this.minimapRenderer = new MinimapRenderer(graphicsProvider, 8000f, 8000f, 200f, 200f, camera);
         this.loadSave = loadSave;
         parallaxFar = assetManager.get(AssetFileNames.PARALLAX_FAR, Texture.class);
         parallaxMid = assetManager.get(AssetFileNames.PARALLAX_MID, Texture.class);
@@ -218,58 +218,58 @@ public class GamePlayScreen implements GameOfCellsScreen {
             popupsAllowed = 1;
         }
         this.glucoseCollisionPopup = new PopupInfoScreen(
-                configProvider,
-                graphicsProvider,
-                assetManager,
-                "glucosePopupMessage",
-                PopupInfoScreen.DEFAULT_GLUCOSE_POPUP_MESSAGE,
-                new Color(0.8f, 0.33f, 0.0f, 1f),
-                this::resumeGame
+            configProvider,
+            graphicsProvider,
+            assetManager,
+            "glucosePopupMessage",
+            PopupInfoScreen.DEFAULT_GLUCOSE_POPUP_MESSAGE,
+            new Color(0.8f, 0.33f, 0.0f, 1f),
+            this::resumeGame
         );
         this.acidZonePopup = new PopupInfoScreen(
-                configProvider,
-                graphicsProvider,
-                assetManager,
-                "dangerPopupMessage",
-                PopupInfoScreen.DEFAULT_ACID_ZONE_POPUP_MESSAGE,
-                new Color(0.8f, 0.0f, 0.4f, 1f),
-                this::resumeGame
+            configProvider,
+            graphicsProvider,
+            assetManager,
+            "dangerPopupMessage",
+            PopupInfoScreen.DEFAULT_ACID_ZONE_POPUP_MESSAGE,
+            new Color(0.8f, 0.0f, 0.4f, 1f),
+            this::resumeGame
         );
         this.basicZonePopup = new PopupInfoScreen(
-                configProvider,
-                graphicsProvider,
-                assetManager,
-                "basicPopupMessage",
-                PopupInfoScreen.DEFAULT_BASIC_ZONE_POPUP_MESSAGE,
-                new Color(0.0f, 0.0f, 0.25f, 1f),
-                this::resumeGame
+            configProvider,
+            graphicsProvider,
+            assetManager,
+            "basicPopupMessage",
+            PopupInfoScreen.DEFAULT_BASIC_ZONE_POPUP_MESSAGE,
+            new Color(0.0f, 0.0f, 0.25f, 1f),
+            this::resumeGame
         );
         this.healAvailablePopup = new PopupInfoScreen(
-                configProvider,
-                graphicsProvider,
-                assetManager,
-                "healAvailableMessage",
-                PopupInfoScreen.DEFAULT_HEAL_AVAILABLE_MESSAGE,
-                Color.BLACK,
-                this::resumeGame
+            configProvider,
+            graphicsProvider,
+            assetManager,
+            "healAvailableMessage",
+            PopupInfoScreen.DEFAULT_HEAL_AVAILABLE_MESSAGE,
+            Color.BLACK,
+            this::resumeGame
         );
         this.cellMembranePopup = new PopupInfoScreen(
-                configProvider,
-                graphicsProvider,
-                assetManager,
-                "sizeUpgrade1Message",
-                PopupInfoScreen.DEFAULT_SIZE_UPGRADE_1_MESSAGE,
-                Color.BLACK,
-                this::resumeGame
+            configProvider,
+            graphicsProvider,
+            assetManager,
+            "sizeUpgrade1Message",
+            PopupInfoScreen.DEFAULT_SIZE_UPGRADE_1_MESSAGE,
+            Color.BLACK,
+            this::resumeGame
         );
         this.splitCellPopup = new PopupInfoScreen(
-                configProvider,
-                graphicsProvider,
-                assetManager,
-                "splitCellMessage",
-                PopupInfoScreen.DEFAULT_SPLIT_CELL_MESSAGE,
-                Color.BLACK,
-                this::resumeGame
+            configProvider,
+            graphicsProvider,
+            assetManager,
+            "splitCellMessage",
+            PopupInfoScreen.DEFAULT_SPLIT_CELL_MESSAGE,
+            Color.BLACK,
+            this::resumeGame
         );
         gameLoaderSaver = new GameLoaderSaver(this);
     }
@@ -379,12 +379,12 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             pauseGame();
             game.setScreen(new ShopScreen(
-                    game,
-                    inputProvider,
-                    graphicsProvider,
-                    assetManager,
-                    this, // Pass the current screen to the shop screen
-                    playerCell
+                game,
+                inputProvider,
+                graphicsProvider,
+                assetManager,
+                this, // Pass the current screen to the shop screen
+                playerCell
             ));
         }
         if (inputProvider.isKeyJustPressed(Input.Keys.G)) {
@@ -420,19 +420,19 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
 
         if (inputProvider.isKeyJustPressed(Input.Keys.U)
-                && playerCell.hasNucleus()
-                && !playerCell.hasSplit()) {
+            && playerCell.hasNucleus()
+            && !playerCell.hasSplit()) {
             split();
         }
 
         // Only move the cell if the game is not paused
         if (!isPaused) {
             playerCell.move(
-                    deltaTimeSeconds,
-                    (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
-                    (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
-                    (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
-                    (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
+                deltaTimeSeconds,
+                (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
+                (inputProvider.isKeyPressed(Input.Keys.RIGHT) || inputProvider.isKeyPressed(Input.Keys.D)), // Check if the right key is pressed
+                (inputProvider.isKeyPressed(Input.Keys.UP) || inputProvider.isKeyPressed(Input.Keys.W)), // Check if the up key is pressed
+                (inputProvider.isKeyPressed(Input.Keys.DOWN) || inputProvider.isKeyPressed(Input.Keys.S)) // Check if the down key is pressed
 
             );
             hud.handleInput();
@@ -446,13 +446,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE) || inputProvider.isKeyJustPressed(Input.Keys.P)) {
             pauseGame();
             game.setScreen(new PauseScreen(
-                    this,
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager,
-                    camera,
-                    configProvider
+                this,
+                inputProvider,
+                graphicsProvider,
+                game,
+                assetManager,
+                camera,
+                configProvider
             ));
         }
 
@@ -643,31 +643,31 @@ public class GamePlayScreen implements GameOfCellsScreen {
         // Far layer - slowest movement (deep background)
         batch.setColor(1f, 1f, 1f, 0.6f);
         batch.draw(
-                parallaxFar,
-                camX - viewport.getWorldWidth() * 0.6f,
-                camY - viewport.getWorldHeight() * 0.6f,
-                viewport.getWorldWidth() * 1.2f,
-                viewport.getWorldHeight() * 1.2f
+            parallaxFar,
+            camX - viewport.getWorldWidth() * 0.6f,
+            camY - viewport.getWorldHeight() * 0.6f,
+            viewport.getWorldWidth() * 1.2f,
+            viewport.getWorldHeight() * 1.2f
         );
 
         // Mid layer - moderate movement
         batch.setColor(1f, 1f, 1f, 0.3f);
         batch.draw(
-                parallaxMid,
-                camX - viewport.getWorldWidth() * 0.55f,
-                camY - viewport.getWorldHeight() * 0.55f,
-                viewport.getWorldWidth() * 1.1f,
-                viewport.getWorldHeight() * 1.1f
+            parallaxMid,
+            camX - viewport.getWorldWidth() * 0.55f,
+            camY - viewport.getWorldHeight() * 0.55f,
+            viewport.getWorldWidth() * 1.1f,
+            viewport.getWorldHeight() * 1.1f
         );
 
         // Near layer - fastest movement (foreground)
         batch.setColor(1f, 1f, 1f, 0.15f);
         batch.draw(
-                parallaxNear,
-                camX - viewport.getWorldWidth() * 0.52f,
-                camY - viewport.getWorldHeight() * 0.52f,
-                viewport.getWorldWidth() * 1.04f,
-                viewport.getWorldHeight() * 1.04f
+            parallaxNear,
+            camX - viewport.getWorldWidth() * 0.52f,
+            camY - viewport.getWorldHeight() * 0.52f,
+            viewport.getWorldWidth() * 1.04f,
+            viewport.getWorldHeight() * 1.04f
         );
 
         batch.setColor(1f, 1f, 1f, 1f); // Reset to full opacity
@@ -692,11 +692,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.begin();
         batch.setColor(1f, 1f, 1f, 0.3f); // 0.2f alpha = subtle
         batch.draw(
-                floatingOverlay,
-                camX - viewport.getWorldWidth() / 2 + movementOffsetX,
-                camY - viewport.getWorldHeight() / 2 + movementOffsetY,
-                viewport.getWorldWidth(),
-                viewport.getWorldHeight()
+            floatingOverlay,
+            camX - viewport.getWorldWidth() / 2 + movementOffsetX,
+            camY - viewport.getWorldHeight() / 2 + movementOffsetY,
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight()
         );
         batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
@@ -713,11 +713,11 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.begin();
         batch.setColor(1f, 1f, 1f, pulse);
         batch.draw(
-                vignetteLowHealth,
-                camX - viewport.getWorldWidth() / 2,
-                camY - viewport.getWorldHeight() / 2,
-                viewport.getWorldWidth(),
-                viewport.getWorldHeight()
+            vignetteLowHealth,
+            camX - viewport.getWorldWidth() / 2,
+            camY - viewport.getWorldHeight() / 2,
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight()
         );
         batch.setColor(1f, 1f, 1f, 1f); // reset
         batch.end();
@@ -793,10 +793,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     public void endGame() {
         game.setScreen(new GameOverScreen(
-                inputProvider,
-                assetManager,
-                graphicsProvider,
-                game, configProvider, stats
+            inputProvider,
+            assetManager,
+            graphicsProvider,
+            game, configProvider, stats
         ));
     }
 
@@ -881,8 +881,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     protected boolean isInAcidZone(float x, float y) {
         return zoneManager.distanceToNearestAcidZone(x, y)
-                .map(d -> d <= Zone.ZONE_RADIUS)
-                .orElse(false);
+            .map(d -> d <= Zone.ZONE_RADIUS)
+            .orElse(false);
     }
 
     /**
@@ -917,8 +917,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
      */
     protected boolean isInBasicZone(float x, float y) {
         return zoneManager.distanceToNearestBasicZone(x, y)
-                .map(d -> d <= Zone.ZONE_RADIUS)
-                .orElse(false);
+            .map(d -> d <= Zone.ZONE_RADIUS)
+            .orElse(false);
     }
 
     /**
@@ -1159,6 +1159,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * Get Split Cell Popup()
+     *
      * @return The cell popup
      */
     public PopupInfoScreen getSplitCellPopup() {

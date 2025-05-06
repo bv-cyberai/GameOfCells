@@ -156,5 +156,5 @@ public class AssetFileNames {
 
     public static String WS_KEYS = "ws.png";
 
-    public static String CONTROLS_INFO_BUTTON = "i_key.png";
+    public static String CONTROLS_INFO_BUTTON = "c_key.png";
 }

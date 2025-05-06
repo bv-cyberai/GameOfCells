@@ -37,11 +37,11 @@ public class ControlInstructions {
     private static final IconData INFO_ICON = new IconData("Controls", AssetFileNames.CONTROLS_INFO_BUTTON);
 
     private static final List<IconData> CONTROLS_ICON = List.of(
-            new IconData("Pause", AssetFileNames.PAUSE_BUTTON),
-            new IconData("Move", AssetFileNames.MOVE_KEY),
-            new IconData("Quit", AssetFileNames.QUIT_BUTTON),
-            new IconData("Shop", AssetFileNames.SHOP_BUTTON),
-            new IconData("Heal", AssetFileNames.HEAL_ICON)
+        new IconData("Pause", AssetFileNames.PAUSE_BUTTON),
+        new IconData("Move", AssetFileNames.MOVE_KEY),
+        new IconData("Quit", AssetFileNames.QUIT_BUTTON),
+        new IconData("Shop", AssetFileNames.SHOP_BUTTON),
+        new IconData("Heal", AssetFileNames.HEAL_ICON)
     );
 
     private final GraphicsProvider graphicsProvider;
