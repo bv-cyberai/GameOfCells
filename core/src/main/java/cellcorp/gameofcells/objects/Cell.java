@@ -117,6 +117,8 @@ public class Cell {
     private float flagellumLengthLossFactor = 0f;
     private float flagellumAlpha = 1f;
 
+    private Vector2[] healRates = new Vector2[4]; //Holds heal,cost vectors for healing
+
     /**
      * Whether this cell has split and created a save point
      */
@@ -346,6 +348,40 @@ public class Cell {
     }
 
     /**
+     * Heal Cost Factor Setter
+     *
+     * Sets both the ATP_HEAL_COST and AMOUNT_HEALED
+     * based on organelle upgrade level.
+     * @param organelleUpgradeLevel
+     */
+    private void setHealCostFactor(int organelleUpgradeLevel) {
+        int indexShift = organelleUpgradeLevel - 1;
+        switch (indexShift) {
+            case 1:
+                //Ribo - Cost: 15 / Healed: 10
+                ATP_HEAL_COST = (int) healRates[1].x;
+                AMOUNT_HEALED = (int) healRates[1].y;
+                break;
+            case 2:
+                //Flag - Cost: 10 / Healed: 15
+                ATP_HEAL_COST = (int) healRates[2].x;
+                AMOUNT_HEALED = (int) healRates[2].y;
+                break;
+            case 3:
+                //Nuke - Cost: 5 / Healed: 20
+                ATP_HEAL_COST = (int) healRates[3].x;
+                AMOUNT_HEALED = (int) healRates[3].y;
+                break;
+            default:
+                //Mito/Default - Cost: 20 / Healed: 5
+                ATP_HEAL_COST = (int) healRates[0].x;
+                AMOUNT_HEALED = (int) healRates[0].y;
+
+        }
+
+    }
+
+    /**
      * Moves the cell to a specific position
      *
      * @param x - The new X position
@@ -481,6 +517,7 @@ public class Cell {
         gamePlayScreen.stats.maxSize = maxSize;
 
         updateFlagellum(deltaTimeSeconds);
+        setHealCostFactor(organelleUpgradeLevel);
     }
 
     private void damageIfZeroATP(float deltaTimeSeconds) {
@@ -691,6 +728,17 @@ public class Cell {
             MEMBRANE_DAMAGE_REDUCTION = configProvider.getIntValue("damageReduction");
         } catch (NumberFormatException e) {
             MEMBRANE_DAMAGE_REDUCTION = 2;
+        }
+        try {
+            healRates[0] = configProvider.getVector2("mitoHCost-Heal");
+            healRates[1] = configProvider.getVector2("riboCost-Heal");
+            healRates[2] = configProvider.getVector2("flagCost-Heal");
+            healRates[3] = configProvider.getVector2("nukeCost-Heal");
+        } catch (Exception e) {
+            healRates[0] = new Vector2(20, 5);
+            healRates[1] = new Vector2(15, 10);
+            healRates[2] = new Vector2(10, 15);
+            healRates[3] = new Vector2(5, 20);
         }
 
     }
@@ -1314,4 +1362,30 @@ public class Cell {
     public int getFlagellumLength() {
         return flagellumLength;
     }
+
+    /**
+     * OgranelleUpgradeLevelSetter
+     * CAUTION: Likely should only be used with saving/loading.
+     * @param level The new number.
+     */
+    public void setOrganelleUpgradeLevel(int level) {
+        System.out.println("LEVEL: " + level);
+        if (level < 0) {
+            organelleUpgradeLevel = 0;
+        } else if (level > 4) {
+            organelleUpgradeLevel = 4;
+        } else {
+            organelleUpgradeLevel = level;
+        }
+        System.out.println("POSTUPDATE: " + organelleUpgradeLevel);
+    }
+
+    /**
+     * Heal Rates Getter
+     * @return The heal reates.
+     */
+    public Vector2[] getHealRates() {
+        return healRates;
+    }
+
 }

@@ -64,6 +64,7 @@ public class GameLoaderSaver {
         saveGame.putInteger("cellATP", cell.getCellATP());
         saveGame.putFloat("cellSize", cell.getCellSize());
         saveGame.putBoolean("cellSplit", cell.hasSplit());
+        saveGame.putInteger("organelleLevel", cell.getOrganelleUpgradeLevel());
 
         //size
         saveGame.putBoolean("smallSize", cell.hasSmallSizeUpgrade());
@@ -130,6 +131,7 @@ public class GameLoaderSaver {
         cell.setFlagellumThickness(saveGame.getFloat("flagThick", 9.375f));
         cell.setFlagellumLength(saveGame.getInteger("flagLength",225));
         cell.setHasNucleus(saveGame.getBoolean("nuke", false));
+        cell.setOrganelleUpgradeLevel(saveGame.getInteger("organelleLevel",0));
 
         //stats state
         stats.atpGenerated = saveGame.getInteger("atpGen", 0);

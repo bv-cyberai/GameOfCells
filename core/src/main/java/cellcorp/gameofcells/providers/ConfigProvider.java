@@ -4,6 +4,7 @@ import cellcorp.gameofcells.AssetFileNames;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -104,40 +105,40 @@ public class ConfigProvider {
         request.setUrl(CACHE_BUSTER);
 
         Gdx.net.sendHttpRequest(
-                request, new Net.HttpResponseListener() {
-                    @Override
-                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                        fileString = httpResponse.getResultAsString();
+            request, new Net.HttpResponseListener() {
+                @Override
+                public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                    fileString = httpResponse.getResultAsString();
 
-                        if (fileString == null || fileString.isEmpty()) {
-                            Gdx.app.error("ConfigProvider", "Empty config file received!");
-                            return;
-                        }
-
-                        //This should print information to the javascript console
-                        // accessed via your browsers developer tools.
-                        Gdx.app.log("Config Debug", "RAWDATA \n" + fileString);
-
-                        //Ensures filesStrings can be parsed correctly.
-                        fileString = fileString.replace("\r\n", "\n");
-
-                        descriptionString = fileString;
-                        //For some reason this only works here, which means its also called separately in
-                        //load config local
-                        parseObjectAttributes();
-                        parseDescriptions();
+                    if (fileString == null || fileString.isEmpty()) {
+                        Gdx.app.error("ConfigProvider", "Empty config file received!");
+                        return;
                     }
 
-                    @Override
-                    public void failed(Throwable t) {
-                        Gdx.app.error("ConfigProvider", "Failed to load config from server: " + t.getMessage());
-                    }
+                    //This should print information to the javascript console
+                    // accessed via your browsers developer tools.
+                    Gdx.app.log("Config Debug", "RAWDATA \n" + fileString);
 
-                    @Override
-                    public void cancelled() {
-                        Gdx.app.error("ConfigProvider", "Config request cancelled.");
-                    }
+                    //Ensures filesStrings can be parsed correctly.
+                    fileString = fileString.replace("\r\n", "\n");
+
+                    descriptionString = fileString;
+                    //For some reason this only works here, which means its also called separately in
+                    //load config local
+                    parseObjectAttributes();
+                    parseDescriptions();
                 }
+
+                @Override
+                public void failed(Throwable t) {
+                    Gdx.app.error("ConfigProvider", "Failed to load config from server: " + t.getMessage());
+                }
+
+                @Override
+                public void cancelled() {
+                    Gdx.app.error("ConfigProvider", "Config request cancelled.");
+                }
+            }
         );
     }
 
@@ -286,6 +287,24 @@ public class ConfigProvider {
             return defaultValue;
         }
     }
+
+    /**
+     * Get a Vector corresponding to the given key, or returns the given default.
+     */
+    public Vector2 getVector2(String key) {
+        String possibleVector = this.getStringValue(key);
+        if (possibleVector == null) {
+            throw new NullPointerException("Key: " + key + " null!");
+        }
+        String[] valueArray = possibleVector.split(",");
+
+        try {
+            return new Vector2(Integer.parseInt(valueArray[0]), Integer.parseInt(valueArray[1]));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid vector format for key: " + key);
+        }
+    }
+
 
     public HashMap<String, String> getConfigData() {
         return configData;

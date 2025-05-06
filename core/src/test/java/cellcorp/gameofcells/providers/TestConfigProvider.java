@@ -5,6 +5,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -25,9 +26,12 @@ public class TestConfigProvider {
         testConfigData.put("cellHealth","50");
         testConfigData.put("glucosePopupMessage","glucoseFound");
         testConfigData.put("cellMovementSpeed","200");
+        testConfigData.put("mitoHeal-Cost","20,5");
+        testConfigData.put("badVector", null);
         testConfigData.put("badint",null);
         testConfigData.put("badPopupMessage",null);
         testConfigData.put("badFloat",null);
+
 
 
     }
@@ -43,7 +47,7 @@ public class TestConfigProvider {
         FileHandle mockFileHandle = mock(FileHandle.class);
         when(Gdx.files.internal(AssetFileNames.TEST_CONFIG)).thenReturn(mockFileHandle);
         when(mockFileHandle.readString()).thenReturn("## line comment\n\n[cell]\ntestInt:100       ##inline comment is ignored.\n"+
-            "testFloat:100\n[descriptions]/\ntestMessage:Read me/\n");
+            "testFloat:100\ntestVector:20,5\n[descriptions]/\ntestMessage:Read me/\n");
 
 
         configProvider.loadDataForParsingTestDoNotUse();
@@ -51,6 +55,7 @@ public class TestConfigProvider {
         expectedConfigData.put("testInt", "100");
         expectedConfigData.put("testFloat", "100");
         expectedConfigData.put("testMessage", "Read me");
+        expectedConfigData.put("testVector", "20,5");
         HashMap<String, String> testParsingData = configProvider.getConfigData();
         assertEquals(expectedConfigData, testParsingData);
     }
@@ -61,6 +66,7 @@ public class TestConfigProvider {
         assertEquals(50,configProvider.getIntValue("cellHealth"));
         assertEquals("glucoseFound", configProvider.getStringValue("glucosePopupMessage"));
         assertEquals(200f, configProvider.getFloatValue("cellMovementSpeed"));
+        assertEquals(new Vector2(20,5),configProvider.getVector2("mitoHeal-Cost"));
     }
 
     @Test
@@ -68,5 +74,6 @@ public class TestConfigProvider {
         assertThrowsExactly(NumberFormatException.class, () -> configProvider.getIntValue("badint"));
         assertThrowsExactly(NullPointerException.class, () -> configProvider.getStringValue("badPopupMessage"));
         assertThrowsExactly(NumberFormatException.class, () -> configProvider.getFloatValue("badFloat"));
+        assertThrows(Exception.class, () -> configProvider.getVector2("badVector"));
     }
 }
