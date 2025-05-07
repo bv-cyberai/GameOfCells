@@ -1388,4 +1388,11 @@ public class Cell {
         return healRates;
     }
 
+    /**
+     * Is Dying Getter
+     * @return True if the cell is dying.
+     */
+    public boolean isDying() {
+        return isDying;
+    }
 }
