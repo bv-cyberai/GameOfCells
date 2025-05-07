@@ -49,6 +49,7 @@ public class MenuSystem {
     private Table mainTable;
     private String[] menuOptions;
     private int selectedOptionIndex = 0;
+    private boolean[] optionEnabled; // Array to track enabled/disabled options
 
     // Constants for text sizes
     // These constants define the font sizes for different elements in the menu
@@ -136,11 +137,12 @@ public class MenuSystem {
      * @param wasdArrowsIcon The texture for the WASD/Arrows icon
      * @param spaceEnterIcon The texture for the Space/Enter icon
      */
-    public void initializeMainMenu(String title, String[] menuOptions, String instructions, Texture wasdArrowsIcon, Texture spaceEnterIcon) {
+    public void initializeMainMenu(String title, String[] menuOptions, String instructions, Texture wasdArrowsIcon, Texture spaceEnterIcon, boolean[] optionEnabled) {
         clear();
 
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
+        this.optionEnabled = optionEnabled;
 
         mainTable = new Table();
         mainTable.setFillParent(true);
@@ -155,8 +157,12 @@ public class MenuSystem {
         // Menu options - lowered with less padding
         for (int i = 0; i < menuOptions.length; i++) {
             Label optionLabel = createLabel(menuOptions[i], 0.3f);
-            optionLabel.setColor(i == getSelectedOptionIndex() ? Color.YELLOW : Color.LIGHT_GRAY);
-            mainTable.add(optionLabel).padBottom(15).row(); // Reduced from 20
+            if (!optionEnabled[i]) {
+                optionLabel.setColor(Color.DARK_GRAY); // disabled look
+            } else {
+                optionLabel.setColor(i == selectedOptionIndex ? Color.YELLOW : Color.LIGHT_GRAY);
+            }
+            mainTable.add(optionLabel).padBottom(15).row();
         }
 
         // Control icons at bottom
@@ -261,6 +267,10 @@ public class MenuSystem {
 
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
+        this.optionEnabled = new boolean[menuOptions.length];
+        for (int i = 0; i < optionEnabled.length; i++) {
+            optionEnabled[i] = true; // Enable all options by default
+        }
 
         mainTable = new Table();
         mainTable.setFillParent(true);
@@ -382,7 +392,19 @@ public class MenuSystem {
      * @param newIndex The new selected option index
      */
     public void updateSelection(int newIndex) {
-        if (newIndex < 0 || newIndex >= menuOptions.length) {
+        if (menuOptions == null || optionEnabled == null) {
+            return; // No options to select from
+        }
+
+        int direction = (newIndex > selectedOptionIndex) ? 1 : -1;
+
+        // clamp newIndex within bounds and skip disabled options
+        while(newIndex >= 0 && newIndex < menuOptions.length && !optionEnabled[newIndex]) {
+            newIndex += direction;
+        }
+
+        // if out of bounds or still disabled after skipping, don't update
+        if (newIndex < 0 || newIndex >= menuOptions.length || !optionEnabled[newIndex]) {
             return; // Invalid index, do nothing
         }
 
@@ -447,5 +469,15 @@ public class MenuSystem {
      */
     public int getMenuOptionCount() {
         return menuOptions.length;
+    }
+
+    /**
+     * Checks if the option at the given index is enabled.
+     * 
+     * @param index
+     * @return
+     */
+    public boolean isOptionEnabled(int index) {
+        return optionEnabled[index];
     }
 }
