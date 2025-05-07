@@ -12,6 +12,7 @@ public class NucleusUpgrade extends OrganelleUpgrade {
 
     /**
      * Check if the nucleus upgrade is already purchased.
+     *
      * @param cell
      */
     @Override
@@ -22,6 +23,7 @@ public class NucleusUpgrade extends OrganelleUpgrade {
     /**
      * Apply the upgrade's perks to the cell.
      * Unlock advanced abilities.
+     *
      * @param cell
      */
     @Override
@@ -33,11 +35,10 @@ public class NucleusUpgrade extends OrganelleUpgrade {
 
     /**
      * Check if the previous upgrade is purchased.
-     * Nucleus requires Flagella to be purchased.
-     * @param organelleUpgradeScreen
+     * Nucleus requires Flagellum to be purchased.
      */
     @Override
     public boolean isPreviousUpgradePurchased(Cell cell) {
-        return cell.hasFlagella();
+        return cell.hasFlagellum();
     }
 }

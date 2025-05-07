@@ -28,9 +28,10 @@ public class GameLoaderSaver {
 
     /**
      * Constructor
-     *
+     * <p>
      * From the game state, pulls various objects that track game state
      * to save.
+     *
      * @param gamePlayScreen The game state
      */
     public GameLoaderSaver(GamePlayScreen gamePlayScreen) {
@@ -55,7 +56,7 @@ public class GameLoaderSaver {
 
     /**
      * saveState
-     *
+     * <p>
      * Saves the state of the game.
      */
     public void saveState() {
@@ -75,9 +76,9 @@ public class GameLoaderSaver {
         //organelles
         saveGame.putBoolean("mito", cell.hasMitochondria());
         saveGame.putBoolean("ribo", cell.hasRibosomes());
-        saveGame.putBoolean("flag", cell.hasFlagella());
+        saveGame.putBoolean("flag", cell.hasFlagellum());
         saveGame.putFloat("flagThick", cell.getFlagellumThickness());
-        saveGame.putInteger("flagLength",cell.getFlagellumLength());
+        saveGame.putInteger("flagLength", cell.getFlagellumLength());
         saveGame.putBoolean("nuke", cell.hasNucleus());
 
         //stats state
@@ -100,10 +101,10 @@ public class GameLoaderSaver {
 
     /**
      * loadState
-     *
+     * <p>
      * loads the state of the game. If a field is included in saveState, but
      * not in loadState the current/default value is kept.
-     *
+     * <p>
      * If we load something, that does not exist, the default values of provider
      * will be given (0, null, etc...);
      */
@@ -127,11 +128,11 @@ public class GameLoaderSaver {
         //organelles
         cell.setHasMitochondria(saveGame.getBoolean("mito", false));
         cell.setHasRibosomes(saveGame.getBoolean("ribo", false));
-        cell.setHasFlagella(saveGame.getBoolean("flag", false));
+        cell.setHasFlagellum(saveGame.getBoolean("flag", false));
         cell.setFlagellumThickness(saveGame.getFloat("flagThick", 9.375f));
-        cell.setFlagellumLength(saveGame.getInteger("flagLength",225));
+        cell.setFlagellumLength(saveGame.getInteger("flagLength", 225));
         cell.setHasNucleus(saveGame.getBoolean("nuke", false));
-        cell.setOrganelleUpgradeLevel(saveGame.getInteger("organelleLevel",0));
+        cell.setOrganelleUpgradeLevel(saveGame.getInteger("organelleLevel", 0));
 
         //stats state
         stats.atpGenerated = saveGame.getInteger("atpGen", 0);
@@ -180,7 +181,7 @@ public class GameLoaderSaver {
         if (Gdx.app == null) {
             return;
         }
-        
+
         try {
             if (saveGame == null) {
                 saveGame = Gdx.app.getPreferences("saveGame");
@@ -196,7 +197,7 @@ public class GameLoaderSaver {
 
     /**
      * Update
-     *
+     * <p>
      * Used for autosaving the game.
      */
     public void update() {
@@ -208,9 +209,10 @@ public class GameLoaderSaver {
 
     /**
      * Preference Injector
-     *
+     * <p>
      * Allows changing the preference object so that tests can be
      * run with a fake preferences object to check logic.
+     *
      * @param fakePreferences The fake object.
      */
     public void injectFakePreferences(Preferences fakePreferences) {

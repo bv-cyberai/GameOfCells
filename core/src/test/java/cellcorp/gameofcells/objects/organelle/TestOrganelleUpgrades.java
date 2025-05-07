@@ -57,7 +57,7 @@ public class TestOrganelleUpgrades {
 
     @Test
     public void testFlagellaUpgradeFailsWithoutRibosomes() {
-        OrganelleUpgrade upgrade = new FlagellaUpgrade();
+        OrganelleUpgrade upgrade = new FlagellumUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
         when(mockCell.getSizeUpgradeLevel()).thenReturn(4); // size unit = 3
         when(mockCell.hasRibosomes()).thenReturn(false);
@@ -67,16 +67,16 @@ public class TestOrganelleUpgrades {
 
     @Test
     public void testFlagellaUpgradeSuccess() {
-        OrganelleUpgrade upgrade = new FlagellaUpgrade();
+        OrganelleUpgrade upgrade = new FlagellumUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
         when(mockCell.getSizeUpgradeLevel()).thenReturn(3); // size unit = 3
         when(mockCell.hasRibosomes()).thenReturn(true);
-        when(mockCell.hasFlagella()).thenReturn(false);
+        when(mockCell.hasFlagellum()).thenReturn(false);
 
         assertTrue(upgrade.canPurchase(mockCell));
         upgrade.applyUpgrade(mockCell);
 
-        verify(mockCell).setHasFlagella(true);
+        verify(mockCell).setHasFlagellum(true);
         verify(mockCell).removeCellATP(70);
     }
 
@@ -85,7 +85,7 @@ public class TestOrganelleUpgrades {
         OrganelleUpgrade upgrade = new NucleusUpgrade();
         when(mockCell.getCellATP()).thenReturn(100);
         when(mockCell.getSizeUpgradeLevel()).thenReturn(4); // size unit = 4
-        when(mockCell.hasFlagella()).thenReturn(false);
+        when(mockCell.hasFlagellum()).thenReturn(false);
 
         assertFalse(upgrade.canPurchase(mockCell));
     }
@@ -95,7 +95,7 @@ public class TestOrganelleUpgrades {
         OrganelleUpgrade upgrade = new NucleusUpgrade();
         when(mockCell.getCellATP()).thenReturn(150);
         when(mockCell.getSizeUpgradeLevel()).thenReturn(4); // size unit = 4
-        when(mockCell.hasFlagella()).thenReturn(true);
+        when(mockCell.hasFlagellum()).thenReturn(true);
         when(mockCell.hasNucleus()).thenReturn(false);
 
         assertTrue(upgrade.canPurchase(mockCell));
@@ -109,7 +109,7 @@ public class TestOrganelleUpgrades {
     public void testDescriptionsAndPerks() {
         OrganelleUpgrade mito = new MitochondriaUpgrade();
         OrganelleUpgrade ribo = new RibosomeUpgrade();
-        OrganelleUpgrade flag = new FlagellaUpgrade();
+        OrganelleUpgrade flag = new FlagellumUpgrade();
         OrganelleUpgrade nuc = new NucleusUpgrade();
 
         assertEquals("Mitochondria", mito.getName());

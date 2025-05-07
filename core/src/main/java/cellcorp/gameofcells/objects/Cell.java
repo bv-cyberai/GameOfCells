@@ -52,7 +52,7 @@ public class Cell {
     public static int AMOUNT_HEALED = 5;
     public static int MEMBRANE_DAMAGE_REDUCTION = 1;
     private static float CELL_SPEED = 200f; // Speed of the cell
-    private static float CELL_SPEED_WITH_FLAGELLA = 370f; //Amount to increase cell speed after buying flagella
+    private static float CELL_SPEED_WITH_FLAGELLUM = 370f; //Amount to increase cell speed after buying flagellum
     private static float ROTATION_SPEED = 20f; //How quickly the cell rotates
     private final AssetManager assetManager;
     private final ConfigProvider configProvider;
@@ -69,7 +69,7 @@ public class Cell {
     // Organelle Upgrades
     private boolean hasMitochondria = false; // Whether the cell has the mitochondria upgrade
     private boolean hasRibosomes = false; // Whether the cell has the ribosomes upgrade
-    private boolean hasFlagella = false; // Whether the cell has the flagella upgrade
+    private boolean hasFlagellum = false; // Whether the cell has the flagellum upgrade
     private boolean hasNucleus = false; // Whether the cell has the nucleus upgrade
     // Size Upgrades
     private boolean hasSmallSizeUpgrade = false; // Whether the cell has the small size upgrade
@@ -117,7 +117,7 @@ public class Cell {
     private float flagellumLengthLossFactor = 0f;
     private float flagellumAlpha = 1f;
 
-    private Vector2[] healRates = new Vector2[4]; //Holds heal,cost vectors for healing
+    private final Vector2[] healRates = new Vector2[4]; //Holds heal,cost vectors for healing
 
     /**
      * Whether this cell has split and created a save point
@@ -153,7 +153,7 @@ public class Cell {
         this.cellATP = other.cellATP;
         this.hasMitochondria = other.hasMitochondria;
         this.hasRibosomes = other.hasRibosomes;
-        this.hasFlagella = other.hasFlagella;
+        this.hasFlagellum = other.hasFlagellum;
         this.hasNucleus = other.hasNucleus;
         this.hasSmallSizeUpgrade = other.hasSmallSizeUpgrade;
         this.hasMediumSizeUpgrade = other.hasMediumSizeUpgrade;
@@ -260,15 +260,16 @@ public class Cell {
         }
 
         //Update cell position.
-        cellCircle.x += dx * CELL_SPEED * deltaTime;
-        cellCircle.y += dy * CELL_SPEED * deltaTime;
+        var speed = getCellSpeed();
+        cellCircle.x += dx * speed * deltaTime;
+        cellCircle.y += dy * speed * deltaTime;
 
         //Update force circle
         setCellForceCircle(cellCircle.x, cellCircle.y);
 
         // game stasts
         if (moveLeft || moveRight || moveUp || moveDown) {
-            gamePlayScreen.stats.distanceMoved += CELL_SPEED * deltaTime;
+            gamePlayScreen.stats.distanceMoved += speed * deltaTime;
         }
     }
 
@@ -349,9 +350,10 @@ public class Cell {
 
     /**
      * Heal Cost Factor Setter
-     *
+     * <p>
      * Sets both the ATP_HEAL_COST and AMOUNT_HEALED
      * based on organelle upgrade level.
+     *
      * @param organelleUpgradeLevel
      */
     private void setHealCostFactor(int organelleUpgradeLevel) {
@@ -426,7 +428,7 @@ public class Cell {
             cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
         }
 
-        drawFlagellum(hasFlagella, shapeRenderer); //moved outside of draw organelles to be underneath the cell.
+        drawFlagellum(hasFlagellum, shapeRenderer); //moved outside of draw organelles to be underneath the cell.
 
         batch.begin();
 
@@ -499,7 +501,7 @@ public class Cell {
         }
 
         // Update stats
-        var organellesPurchased = List.of(hasMitochondria, hasFlagella, hasNucleus, hasRibosomes)
+        var organellesPurchased = List.of(hasMitochondria, hasFlagellum, hasNucleus, hasRibosomes)
             .stream().filter(Boolean::booleanValue).count();
         gamePlayScreen.stats.organellesPurchased = (int) organellesPurchased;
         int maxSize;
@@ -703,10 +705,10 @@ public class Cell {
         }
 
         try {
-            CELL_SPEED_WITH_FLAGELLA = configProvider.getFloatValue("cellFlagMovementSpeed");
-            System.out.println("CSWF: " + CELL_SPEED_WITH_FLAGELLA);
+            CELL_SPEED_WITH_FLAGELLUM = configProvider.getFloatValue("cellFlagMovementSpeed");
+            System.out.println("CSWF: " + CELL_SPEED_WITH_FLAGELLUM);
         } catch (NumberFormatException e) {
-            CELL_SPEED_WITH_FLAGELLA = 370f;
+            CELL_SPEED_WITH_FLAGELLUM = 370f;
 
         }
         try {
@@ -957,21 +959,18 @@ public class Cell {
     }
 
     /**
-     * Set whether the cell has the flagella upgrade
+     * Set whether the cell has the flagellum upgrade
      */
-    public void setHasFlagella(boolean hasFlagella) {
-        this.hasFlagella = hasFlagella;
-        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagella) organelleUpgradeLevel++;
-
-        //flagella increases movement speed.
-        CELL_SPEED = CELL_SPEED_WITH_FLAGELLA;
+    public void setHasFlagellum(boolean hasFlagellum) {
+        this.hasFlagellum = hasFlagellum;
+        if ((organelleUpgradeLevel < MAX_ORGANELLE_UPGRADES) && hasFlagellum) organelleUpgradeLevel++;
     }
 
     /**
-     * Check if the cell has the flagella upgrade
+     * Check if the cell has the flagellum upgrade
      */
-    public boolean hasFlagella() {
-        return hasFlagella;
+    public boolean hasFlagellum() {
+        return hasFlagellum;
     }
 
     /**
@@ -1213,7 +1212,7 @@ public class Cell {
         //calculate new sin wave positions.
         for (int y = 0; y < flagellumLength; y++) {
             float flagX = (float) (amplitude * Math.sin((y * frequency + flagTime)));
-            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - flagellumLength)); // <-shifts flagella down, stupid calc, but it works
+            flagellumVectors.add(new Vector2(flagX, y - cellCircle.radius - flagellumLength)); // <-shifts flagellum down, stupid calc, but it works
         }
 
         // Rotate the flagellum
@@ -1226,12 +1225,12 @@ public class Cell {
     }
 
     /**
-     * Cell Speed Getter
+     * Calculates cell speed based on whether the cell has a flagellum.
      *
      * @return The Cell Speed
      */
     public float getCellSpeed() {
-        return CELL_SPEED;
+        return hasFlagellum ? CELL_SPEED_WITH_FLAGELLUM : CELL_SPEED;
     }
 
     /**
@@ -1366,6 +1365,7 @@ public class Cell {
     /**
      * OgranelleUpgradeLevelSetter
      * CAUTION: Likely should only be used with saving/loading.
+     *
      * @param level The new number.
      */
     public void setOrganelleUpgradeLevel(int level) {
@@ -1382,6 +1382,7 @@ public class Cell {
 
     /**
      * Heal Rates Getter
+     *
      * @return The heal reates.
      */
     public Vector2[] getHealRates() {

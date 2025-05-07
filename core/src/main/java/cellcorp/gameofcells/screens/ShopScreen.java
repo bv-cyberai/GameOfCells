@@ -100,12 +100,12 @@ public class ShopScreen implements GameOfCellsScreen {
      * @param cell             The player's cell used to determine available upgrades
      */
     public ShopScreen(
-            Main game,
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            AssetManager assetManager,
-            GamePlayScreen previousScreen,
-            Cell cell
+        Main game,
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        AssetManager assetManager,
+        GamePlayScreen previousScreen,
+        Cell cell
     ) {
         this.game = game;
         this.inputProvider = inputProvider;
@@ -157,8 +157,8 @@ public class ShopScreen implements GameOfCellsScreen {
         if (!playerCell.hasRibosomes()) {
             organelleUpgrades.add(new RibosomeUpgrade());
         }
-        if (!playerCell.hasFlagella()) {
-            organelleUpgrades.add(new FlagellaUpgrade());
+        if (!playerCell.hasFlagellum()) {
+            organelleUpgrades.add(new FlagellumUpgrade());
         }
         if (!playerCell.hasNucleus()) {
             organelleUpgrades.add(new NucleusUpgrade());
@@ -174,8 +174,8 @@ public class ShopScreen implements GameOfCellsScreen {
     // and alignment of UI elements.
     private void createUI() {
         Table[] shopTables = menuSystem.initializeShopLayout(
-                "CELL SHOP",
-                "Press ARROW keys to switch sides | ENTER to purchase | ESC to exit"
+            "CELL SHOP",
+            "Press ARROW keys to switch sides | ENTER to purchase | ESC to exit"
         );
 
         Table leftTable = shopTables[0];    // Size upgrades column
@@ -297,7 +297,7 @@ public class ShopScreen implements GameOfCellsScreen {
         if (upgrade instanceof RibosomeUpgrade) {
             return new Color(1.0f, 0.8f, 0.0f, 1.0f); // Yellow
         }
-        if (upgrade instanceof FlagellaUpgrade) {
+        if (upgrade instanceof FlagellumUpgrade) {
             return new Color(0.6f, 0.2f, 0.8f, 1.0f); // Purple
         }
         if (upgrade instanceof NucleusUpgrade) {
@@ -389,8 +389,8 @@ public class ShopScreen implements GameOfCellsScreen {
 
         // Safely sequence the actions
         stage.getRoot().addAction(Actions.sequence(
-                fadeOutAction,
-                returnAction
+            fadeOutAction,
+            returnAction
         ));
     }
 
@@ -466,9 +466,9 @@ public class ShopScreen implements GameOfCellsScreen {
 
         stage.addActor(messageLabel);
         messageLabel.addAction(Actions.sequence(
-                Actions.delay(2f),
-                Actions.fadeOut(0.5f),
-                Actions.removeActor()
+            Actions.delay(2f),
+            Actions.fadeOut(0.5f),
+            Actions.removeActor()
         ));
     }
 
@@ -524,8 +524,8 @@ public class ShopScreen implements GameOfCellsScreen {
                 if (x < 10 || x >= width - 10 || y < 10 || y >= height - 10) {
                     // Create a gradient effect for the border
                     float alpha = Math.max(
-                            Math.max(10 - x, x - (width - 10)),
-                            Math.max(10 - y, y - (height - 10))
+                        Math.max(10 - x, x - (width - 10)),
+                        Math.max(10 - y, y - (height - 10))
                     ) / 10f; // Normalize to 0..1
                     pixmap.setColor(1, 1, 0, alpha); // Yellow with transparency
                     pixmap.drawPixel(x, y);
@@ -571,12 +571,12 @@ public class ShopScreen implements GameOfCellsScreen {
         } else if (inputProvider.isKeyJustPressed(Input.Keys.RIGHT)) {
             updateSelection(false);
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
-                || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             boolean isSizeSelected = currentSizeCard != null &&
-                    currentSizeCard.findActor("glowingBorder").isVisible();
+                currentSizeCard.findActor("glowingBorder").isVisible();
             attemptPurchase(isSizeSelected);
         } else if (inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)
-                || inputProvider.isKeyJustPressed(Input.Keys.Q)) {
+            || inputProvider.isKeyJustPressed(Input.Keys.Q)) {
             exitShop();
         }
     }
@@ -586,13 +586,13 @@ public class ShopScreen implements GameOfCellsScreen {
     // It also resumes the game state and updates the player's cell.
     private void exitShop() {
         stage.getRoot().addAction(Actions.sequence(
-                Actions.fadeOut(1f),
-                Actions.run(() -> {
-                    if (previousScreen != null) {
-                        previousScreen.resumeGame();
-                        game.setScreen(previousScreen);
-                    }
-                })
+            Actions.fadeOut(1f),
+            Actions.run(() -> {
+                if (previousScreen != null) {
+                    previousScreen.resumeGame();
+                    game.setScreen(previousScreen);
+                }
+            })
         ));
     }
 

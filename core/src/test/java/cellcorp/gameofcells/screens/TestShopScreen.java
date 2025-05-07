@@ -1,15 +1,7 @@
 package cellcorp.gameofcells.screens;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Set;
-import java.util.List;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
+import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.runner.GameRunner;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -19,9 +11,15 @@ import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import cellcorp.gameofcells.Main;
-import cellcorp.gameofcells.runner.GameRunner;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestShopScreen {
 
@@ -31,12 +29,29 @@ public class TestShopScreen {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
+            @Override
+            public void create() {
+            }
+
+            @Override
+            public void resize(int width, int height) {
+            }
+
+            @Override
+            public void render() {
+            }
+
+            @Override
+            public void pause() {
+            }
+
+            @Override
+            public void resume() {
+            }
+
+            @Override
+            public void dispose() {
+            }
         }, config);
 
         // Mock the graphics provider
@@ -75,7 +90,7 @@ public class TestShopScreen {
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
 
         // Verify initial screen is the shop screen
-        assertTrue(shopScreen == gameRunner.game.getScreen());
+        assertSame(shopScreen, gameRunner.game.getScreen());
 
         // Press escape key to return to the previous screen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
@@ -84,7 +99,7 @@ public class TestShopScreen {
         var previousScreen = gameRunner.game.getScreen();
 
         // Verify that the previous screen is the gameplay screen
-        assertTrue(previousScreen instanceof GamePlayScreen);
+        assertInstanceOf(GamePlayScreen.class, previousScreen);
         assertFalse(previousScreen instanceof ShopScreen);
         assertNotEquals(shopScreen, previousScreen);
     }
@@ -104,7 +119,7 @@ public class TestShopScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step(); 
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
 
@@ -118,7 +133,7 @@ public class TestShopScreen {
         var previousScreen = gameRunner.game.getScreen();
 
         // Verify that the previous screen is the gameplay screen
-        assertTrue(previousScreen instanceof GamePlayScreen);
+        assertInstanceOf(GamePlayScreen.class, previousScreen);
     }
 
     /**
@@ -136,7 +151,7 @@ public class TestShopScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step(); 
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
 
@@ -150,7 +165,7 @@ public class TestShopScreen {
         var previousScreen = gameRunner.game.getScreen();
 
         // Verify that the previous screen is the gameplay screen
-        assertTrue(previousScreen instanceof GamePlayScreen);
+        assertInstanceOf(GamePlayScreen.class, previousScreen);
     }
 
     /**
@@ -168,7 +183,7 @@ public class TestShopScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step(); 
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
 
@@ -182,7 +197,7 @@ public class TestShopScreen {
         var previousScreen = gameRunner.game.getScreen();
 
         // Verify that the previous screen is the gameplay screen
-        assertTrue(previousScreen instanceof GamePlayScreen);
+        assertInstanceOf(GamePlayScreen.class, previousScreen);
     }
 
     /**
@@ -200,7 +215,7 @@ public class TestShopScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step(); 
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
 
@@ -230,10 +245,14 @@ public class TestShopScreen {
     @Test
     public void canPurchaseSizeUpgradeWhenRequirementsMet() {
         var gameRunner = GameRunner.create();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER)); gameRunner.step(); 
-        gameRunner.setHeldDownKeys(Set.of()); gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q)); gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of()); gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
         var cell = shopScreen.getPlayerCell();
@@ -243,9 +262,9 @@ public class TestShopScreen {
         cell.setCellSize(300); // Larger than any upgrade requirement
 
         // Press ENTER to buy selected (size) upgrade
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER)); 
-        gameRunner.step(); 
-        gameRunner.setHeldDownKeys(Set.of()); 
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
 
         // After purchase, cell should have at least one size flag set to true
@@ -260,10 +279,14 @@ public class TestShopScreen {
     @Test
     public void cannotPurchaseUpgradeWhenRequirementsNotMet() {
         var gameRunner = GameRunner.create();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER)); gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of()); gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q)); gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of()); gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
         var cell = shopScreen.getPlayerCell();
@@ -274,8 +297,8 @@ public class TestShopScreen {
 
         // Attempt to buy (should fail)
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-        gameRunner.step(); 
-        gameRunner.setHeldDownKeys(Set.of()); 
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
 
         // Verify no upgrades were gained
@@ -285,10 +308,14 @@ public class TestShopScreen {
     @Test
     public void shopDisplaysMessagesWhenUpgradesExhausted() throws Exception {
         var runner = GameRunner.create();
-        runner.setHeldDownKeys(Set.of(Input.Keys.ENTER)); runner.step();
-        runner.setHeldDownKeys(Set.of()); runner.step();
-        runner.setHeldDownKeys(Set.of(Input.Keys.Q)); runner.step();
-        runner.setHeldDownKeys(Set.of()); runner.step();
+        runner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        runner.step();
+        runner.setHeldDownKeys(Set.of());
+        runner.step();
+        runner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        runner.step();
+        runner.setHeldDownKeys(Set.of());
+        runner.step();
 
         var shop = (ShopScreen) runner.game.getScreen();
         var cell = shop.getPlayerCell();
@@ -302,7 +329,7 @@ public class TestShopScreen {
         // Simulate unlocking all organelles
         cell.setHasMitochondria(true);
         cell.setHasRibosomes(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
         cell.setHasNucleus(true);
 
         // Use reflection to empty upgrade lists in ShopScreen
@@ -347,7 +374,7 @@ public class TestShopScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step(); 
+        gameRunner.step();
 
         var shopScreen = (ShopScreen) gameRunner.game.getScreen();
 
@@ -379,7 +406,7 @@ public class TestShopScreen {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
         gameRunner.step();
         gameRunner.setHeldDownKeys(Set.of());
-        gameRunner.step(); 
+        gameRunner.step();
 
         var shop = (ShopScreen) gameRunner.game.getScreen();
         var cell = shop.getPlayerCell();
@@ -412,9 +439,9 @@ public class TestShopScreen {
         cell.setHasMitochondria(true); // Already owns organelle
         cell.setCellATP(100);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); 
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
         gameRunner.step(); // switch to organelle
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER)); 
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         gameRunner.step(); // try to buy
 
         assertEquals(100, cell.getCellATP(), "ATP should remain unchanged after attempted organelle re-purchase");
@@ -434,9 +461,9 @@ public class TestShopScreen {
 
         var shop = (ShopScreen) gameRunner.game.getScreen();
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT)); 
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
         gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT)); 
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
         gameRunner.step(); // press multiple times
 
         assertTrue(shop.isHighlighted(shop.getCurrentSizeCard()));
@@ -456,9 +483,9 @@ public class TestShopScreen {
 
         var shop = (ShopScreen) gameRunner.game.getScreen();
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); 
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
         gameRunner.step();
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); 
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
         gameRunner.step(); // press multiple times
 
         assertTrue(shop.isHighlighted(shop.getCurrentOrganelleCard()));
@@ -501,7 +528,8 @@ public class TestShopScreen {
         cell.setHasRibosomes(true);
         cell.setCellATP(100);
 
-        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT)); gameRunner.step(); // switch to organelle
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+        gameRunner.step(); // switch to organelle
 
         assertNotNull(shop.getCurrentOrganelleCard(), "Organelle card should still highlight an available upgrade");
     }

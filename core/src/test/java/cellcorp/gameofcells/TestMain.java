@@ -457,7 +457,7 @@ public class TestMain {
         runModifiedStep(6, gameRunner, gameCell, false);
         idleTestHelperAndAsserter(gameCell, 5f, startingATP, 7, epsilon, "7");
 
-        gameCell.setHasFlagella(true);
+        gameCell.setHasFlagellum(true);
         runModifiedStep(5, gameRunner, gameCell, false);
         idleTestHelperAndAsserter(gameCell, 4f, startingATP, 8, epsilon, "8");
 
@@ -521,7 +521,7 @@ public class TestMain {
         runModifiedStep(4, gameRunner, gameCell, true);
         movementTestHelperAndAsserter(startingATP, 7, gameCell, epsilon, "6", 2.5f);
 
-        gameCell.setHasFlagella(true);
+        gameCell.setHasFlagellum(true);
         runModifiedStep(3, gameRunner, gameCell, true);
         movementTestHelperAndAsserter(startingATP, 8, gameCell, epsilon, "7", 2.0f);
 
@@ -743,7 +743,7 @@ public class TestMain {
         gameCell.setHasRibosomes(true);
 
         gameCell.setHasLargeSizeUpgrade(true);
-        gameCell.setHasFlagella(true);
+        gameCell.setHasFlagellum(true);
 
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
         gameRunner.runForSeconds(2);
@@ -781,7 +781,7 @@ public class TestMain {
 
         cell.setHasMitochondria(true);
         cell.setHasRibosomes(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
         cell.setHasNucleus(false);
 
         currentGamePlayScreen.getBasicZonePopup().setWasShown(false);
@@ -804,7 +804,7 @@ public class TestMain {
 
         cell.setHasMitochondria(false);
         cell.setHasRibosomes(false);
-        cell.setHasFlagella(false);
+        cell.setHasFlagellum(false);
         cell.setHasNucleus(false);
         gameRunner.step();
         //Load State
@@ -818,7 +818,7 @@ public class TestMain {
 
         assertTrue(cell.hasMitochondria());
         assertTrue(cell.hasRibosomes());
-        assertTrue(cell.hasFlagella());
+        assertTrue(cell.hasFlagellum());
         assertTrue(cell.hasNucleus());
 
     }

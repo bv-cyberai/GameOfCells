@@ -1,21 +1,18 @@
 package cellcorp.gameofcells.objects;
 
 import cellcorp.gameofcells.TestMain;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.runner.GameRunner;
+import cellcorp.gameofcells.screens.GamePlayScreen;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.Files;
-
-import cellcorp.gameofcells.providers.ConfigProvider;
-import cellcorp.gameofcells.screens.GamePlayScreen;
-
-import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -213,8 +210,8 @@ public class TestCell {
 
         cell.setHasLargeSizeUpgrade(true);
         cell.setHasLargeSizeUpgrade(false);
-        cell.setHasFlagella(true);
-        cell.setHasFlagella(false);
+        cell.setHasFlagellum(true);
+        cell.setHasFlagellum(false);
         assertEquals(3, cell.getSizeUpgradeLevel());
         assertEquals(3, cell.getOrganelleUpgradeLevel());
 
@@ -242,7 +239,7 @@ public class TestCell {
         cell.setHasRibosomes(true);
 
         cell.setHasLargeSizeUpgrade(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
 
         float speedPostUpgrade = cell.getCellSpeed();
 
@@ -267,7 +264,7 @@ public class TestCell {
         cell.setHasRibosomes(true);
 
         cell.setHasLargeSizeUpgrade(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
         float initThickness = cell.getFlagellumThickness();
         float initLength = cell.getFlagellumLength();
 
@@ -276,7 +273,7 @@ public class TestCell {
         float currLength = cell.getFlagellumLength();
 
         //Did not test for specific values, in case they are ever changed later.
-        assertTrue(currThickness >initThickness);
+        assertTrue(currThickness > initThickness);
         assertTrue(currLength > initLength);
 
     }
@@ -325,7 +322,7 @@ public class TestCell {
         //Flag
         runner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
         cell.setHasLargeSizeUpgrade(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
         System.out.println(cell.getOrganelleUpgradeLevel());
 
         cell.setCellHealth(80);

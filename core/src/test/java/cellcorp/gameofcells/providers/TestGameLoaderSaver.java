@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 
 import java.util.Set;
 
-import static java.lang.Integer.getInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameLoaderSaver {
@@ -110,7 +109,7 @@ public class TestGameLoaderSaver {
 
         cell.setHasMitochondria(true);
         cell.setHasRibosomes(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
         float currFlagThick = cell.getFlagellumThickness();
         int currFlagLength = cell.getFlagellumLength();
         int currOrganelleLevel = cell.getOrganelleUpgradeLevel();
@@ -143,7 +142,7 @@ public class TestGameLoaderSaver {
 
         cell.setHasMitochondria(true);
         cell.setHasRibosomes(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
         cell.setHasNucleus(true);
 
 
@@ -174,10 +173,10 @@ public class TestGameLoaderSaver {
 
         assertTrue(cell.hasMitochondria());
         assertTrue(cell.hasRibosomes());
-        assertTrue(cell.hasFlagella());
+        assertTrue(cell.hasFlagellum());
         assertTrue(currFlagThick - cell.getFlagellumThickness() <= epsilon);
         assertEquals(currFlagLength, cell.getFlagellumLength());
-        assertEquals(currOrganelleLevel,cell.getOrganelleUpgradeLevel());
+        assertEquals(currOrganelleLevel, cell.getOrganelleUpgradeLevel());
         assertFalse(cell.hasNucleus());
 
         assertEquals(40, stats.atpGenerated);
@@ -253,7 +252,7 @@ public class TestGameLoaderSaver {
 
         cell.setHasMitochondria(true);
         cell.setHasRibosomes(true);
-        cell.setHasFlagella(true);
+        cell.setHasFlagellum(true);
         cell.setHasNucleus(false);
 
         stats.atpGenerated = 40;
@@ -287,7 +286,7 @@ public class TestGameLoaderSaver {
 
         assertTrue(cell.hasMitochondria());
         assertTrue(cell.hasRibosomes());
-        assertTrue(cell.hasFlagella());
+        assertTrue(cell.hasFlagellum());
         assertTrue(cell.hasNucleus());
 
         assertEquals(40, stats.atpGenerated);
