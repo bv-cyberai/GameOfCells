@@ -426,7 +426,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
 
         // Only move the cell if the game is not paused
-        if (!isPaused) {
+        if (!isPaused && !playerCell.isDying()) {
             playerCell.move(
                 deltaTimeSeconds,
                 (inputProvider.isKeyPressed(Input.Keys.LEFT) || inputProvider.isKeyPressed(Input.Keys.A)), // Check if the left key is pressed
