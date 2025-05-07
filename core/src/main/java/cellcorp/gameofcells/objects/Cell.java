@@ -184,6 +184,13 @@ public class Cell {
         this.deathAnimationTime = other.deathAnimationTime;
         this.hasSplit = other.hasSplit;
         this.notUpgradeRenderCycle = other.notUpgradeRenderCycle;
+        this.previousRotation = other.previousRotation;
+        this.flagellumThickness = other.flagellumThickness;
+        this.healRates = other.healRates;
+        this.flagellumLengthLossFactor = other.flagellumLengthLossFactor;
+        this.flagellumAlpha = other.flagellumAlpha;
+        this.flagellumLength = other.flagellumLength;
+        this.flagellumThickness = other.flagellumThickness;
     }
 
     /**
