@@ -229,6 +229,7 @@ public class ShopScreen implements GameOfCellsScreen {
         // Glowing border
         Image glowingBorder = new Image(createGlowingBorderTexture());
         glowingBorder.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
+        glowingBorder.setPosition(0, 0);
         glowingBorder.setVisible(false); // Hide the border by default
         glowingBorder.setName("glowingBorder");
         card.addActor(glowingBorder); // Add the border as an actor (not part of the table layout)
@@ -309,34 +310,31 @@ public class ShopScreen implements GameOfCellsScreen {
     // This method handles user input for the shop screen.
     // It checks for key presses to navigate between size and organelle upgrades,
     // and to purchase the selected upgrade.
-    private void updateSelection(boolean isSizeSelected) {
-        if (isSizeSelected && currentSizeCard != null) {
+    private void updateSelection(boolean selectingSize) {
+        Table selectedCard = selectingSize ? currentSizeCard : currentOrganelleCard;
+
+        // We'll hide all glowing borders first
+        if (currentSizeCard != null) {
             Image border = currentSizeCard.findActor("glowingBorder");
             if (border != null) {
-                currentSizeCard.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f, Interpolation.swingOut));
-                border.setVisible(true);
+                border.setVisible(false);
             }
+        }
 
-            if (currentOrganelleCard != null) {
-                Image borderOrganelle = currentOrganelleCard.findActor("glowingBorder");
-                if (borderOrganelle != null) {
-                    currentOrganelleCard.addAction(Actions.scaleTo(1.0f, 1.0f, 0.2f, Interpolation.swingOut));
-                    borderOrganelle.setVisible(false);
-                }
-            }
-        } else if (currentOrganelleCard != null) {
+        if (currentOrganelleCard != null) {
             Image border = currentOrganelleCard.findActor("glowingBorder");
             if (border != null) {
-                currentOrganelleCard.addAction(Actions.scaleTo(SELECTED_CARD_SCALE, SELECTED_CARD_SCALE, 0.2f, Interpolation.swingOut));
-                border.setVisible(true);
+                border.setVisible(false);
             }
-
-            if (currentSizeCard != null) {
-                Image borderSize = currentSizeCard.findActor("glowingBorder");
-                if (borderSize != null) {
-                    currentSizeCard.addAction(Actions.scaleTo(1.0f, 1.0f, 0.2f, Interpolation.swingOut));
-                    borderSize.setVisible(false);
-                }
+        }
+        
+        // Now we'll show and align the selcted glowing border
+        if (selectedCard != null) {
+            Image glowingBorder = selectedCard.findActor("glowingBorder");
+            if (glowingBorder != null) {
+                glowingBorder.setVisible(true);
+                glowingBorder.setPosition(0, 0);
+                glowingBorder.setSize(UPGRADE_CARD_WIDTH, UPGRADE_CARD_HEIGHT);
             }
         }
     }
@@ -432,8 +430,9 @@ public class ShopScreen implements GameOfCellsScreen {
         sizeTable.clear();
         if (!sizeUpgrades.isEmpty()) {
             currentSizeCard = createUpgradeCard(sizeUpgrades.get(0), true);
-            sizeTable.add(currentSizeCard).pad(10);
-            updateSelection(true);
+            sizeTable.add(currentSizeCard)
+                .width(UPGRADE_CARD_WIDTH)
+                .height(UPGRADE_CARD_HEIGHT);
         } else {
             sizeTable.add(createLabel("All size upgrades purchased!", UPGRADE_INFO_TEXT_SIZE));
         }
@@ -446,8 +445,9 @@ public class ShopScreen implements GameOfCellsScreen {
         organelleTable.clear();
         if (!organelleUpgrades.isEmpty()) {
             currentOrganelleCard = createUpgradeCard(organelleUpgrades.get(0), false);
-            organelleTable.add(currentOrganelleCard).pad(10);
-            updateSelection(false);
+            organelleTable.add(currentOrganelleCard)
+                .width(UPGRADE_CARD_WIDTH)
+                .height(UPGRADE_CARD_HEIGHT);
         } else {
             organelleTable.add(createLabel("All organelle upgrades purchased!", UPGRADE_INFO_TEXT_SIZE));
         }
