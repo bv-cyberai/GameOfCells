@@ -129,9 +129,9 @@ public class SplitCellScreen implements GameOfCellsScreen {
         flagellumVectors.clear();
 
         //calculate new sin wave positions.
-        for (int y = 0; y < 300f; y++) {
+        for (int y = 0; y < cell.getFlagellumLength(); y++) {
             float flagX = (float) (50 * Math.sin((y * 0.05f + timerSeconds)));
-            flagellumVectors.add(new Vector2(flagX, y - childCell.getCircle().radius - 300)); // <-shifts flagella down, stupid calc, but it works
+            flagellumVectors.add(new Vector2(flagX, y - childCell.getCircle().radius - cell.getFlagellumLength())); // <-shifts flagella down, stupid calc, but it works
         }
 
         // Rotate the flagellum
