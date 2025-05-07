@@ -311,6 +311,10 @@ public class ShopScreen implements GameOfCellsScreen {
     // It checks for key presses to navigate between size and organelle upgrades,
     // and to purchase the selected upgrade.
     private void updateSelection(boolean selectingSize) {
+        if (selectingSize && currentSizeCard == null && currentOrganelleCard != null) {
+            selectingSize = false;
+        }
+
         Table selectedCard = selectingSize ? currentSizeCard : currentOrganelleCard;
 
         // We'll hide all glowing borders first
