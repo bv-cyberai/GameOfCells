@@ -117,7 +117,7 @@ public class Cell {
     private float flagellumLengthLossFactor = 0f;
     private float flagellumAlpha = 1f;
 
-    private final Vector2[] healRates = new Vector2[4]; //Holds heal,cost vectors for healing
+    private Vector2[] healRates = new Vector2[4]; //Holds heal,cost vectors for healing
 
     /**
      * Whether this cell has split and created a save point
