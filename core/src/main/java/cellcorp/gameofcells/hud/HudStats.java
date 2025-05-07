@@ -16,6 +16,7 @@ public class HudStats {
     private static final String HEALTH_TEXT = "HEALTH: ";
     private static final String ATP_TEXT = "ATP: ";
     private static final String GAME_TIME_TEXT = "TIME: ";
+    private static final String EXTRA_LIVES_TEXT = "EXTRA LIVES: ";
 
     private final Cell cell;
     private final Stats stats;
@@ -24,6 +25,7 @@ public class HudStats {
     private final Label healthLabel;
     private final Label atpLabel;
     private final Label gameTimeLabel;
+    private final Label extraLivesLabel;
 
     public HudStats(GraphicsProvider graphicsProvider, AssetManager assetManager, Cell cell, Stats stats) {
         this.cell = cell;
@@ -38,6 +40,8 @@ public class HudStats {
         atpLabel.setFontScale(FONT_SCALE);
         this.gameTimeLabel = graphicsProvider.createLabel(gameTimeText(), labelStyle);
         gameTimeLabel.setFontScale(FONT_SCALE);
+        this.extraLivesLabel = graphicsProvider.createLabel(extraLivesText(), labelStyle);
+        extraLivesLabel.setFontScale(FONT_SCALE);
 
         this.table = table();
     }
@@ -49,6 +53,8 @@ public class HudStats {
         table.add(atpLabel).align(Align.left);
         table.row();
         table.add(gameTimeLabel).align(Align.left);
+        table.row();
+        table.add(extraLivesLabel).align(Align.left);
 
         return table;
     }
@@ -61,6 +67,7 @@ public class HudStats {
         healthLabel.setText(healthText());
         atpLabel.setText(atpText());
         gameTimeLabel.setText(gameTimeText());
+        extraLivesLabel.setText(extraLivesText());
     }
 
     private String healthText() {
@@ -73,5 +80,10 @@ public class HudStats {
 
     private String gameTimeText() {
         return GAME_TIME_TEXT + (int) stats.gameTimer;
+    }
+
+    private String extraLivesText() {
+        var extraLives = cell.hasSplit() ? 1 : 0;
+        return EXTRA_LIVES_TEXT + extraLives;
     }
 }

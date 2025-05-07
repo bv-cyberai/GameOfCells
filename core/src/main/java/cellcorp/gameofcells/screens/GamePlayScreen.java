@@ -1180,7 +1180,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * Splits the cell. Transitions to `SplitCellScreen` to play the animation.
      */
     private void split() {
-        playerCell.setHasSplit(true);
         var splitCellScreen = new SplitCellScreen(game, this);
         game.setScreen(splitCellScreen);
     }
