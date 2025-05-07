@@ -184,6 +184,7 @@ public class Cell {
         this.deathAnimationTime = other.deathAnimationTime;
         this.hasSplit = other.hasSplit;
         this.notUpgradeRenderCycle = other.notUpgradeRenderCycle;
+        this.flagellumThickness = other.flagellumThickness;
     }
 
     /**
