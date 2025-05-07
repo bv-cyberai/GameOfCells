@@ -184,6 +184,12 @@ public class Cell {
         this.deathAnimationTime = other.deathAnimationTime;
         this.hasSplit = other.hasSplit;
         this.notUpgradeRenderCycle = other.notUpgradeRenderCycle;
+        this.previousRotation = other.previousRotation;
+        this.flagellumThickness = other.flagellumThickness;
+        this.healRates = other.healRates;
+        this.flagellumLengthLossFactor = other.flagellumLengthLossFactor;
+        this.flagellumAlpha = other.flagellumAlpha;
+        this.flagellumLength = other.flagellumLength;
         this.flagellumThickness = other.flagellumThickness;
     }
 
@@ -350,9 +356,10 @@ public class Cell {
 
     /**
      * Heal Cost Factor Setter
-     *
+     * <p>
      * Sets both the ATP_HEAL_COST and AMOUNT_HEALED
      * based on organelle upgrade level.
+     *
      * @param organelleUpgradeLevel
      */
     private void setHealCostFactor(int organelleUpgradeLevel) {
@@ -1367,6 +1374,7 @@ public class Cell {
     /**
      * OgranelleUpgradeLevelSetter
      * CAUTION: Likely should only be used with saving/loading.
+     *
      * @param level The new number.
      */
     public void setOrganelleUpgradeLevel(int level) {
@@ -1383,6 +1391,7 @@ public class Cell {
 
     /**
      * Heal Rates Getter
+     *
      * @return The heal reates.
      */
     public Vector2[] getHealRates() {
