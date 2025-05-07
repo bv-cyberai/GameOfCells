@@ -201,7 +201,7 @@ public class GameLoaderSaver {
      * Used for autosaving the game.
      */
     public void update() {
-        if (cell.hasNucleus() && !hasAutoSaved) {
+        if (cell.hasSplit() && !hasAutoSaved) {
             saveState();
             hasAutoSaved = true;
         }

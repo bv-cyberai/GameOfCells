@@ -757,7 +757,7 @@ public class TestMain {
     }
 
     @Test
-    public void testAutoSaveAfterNucleusPurchase() {
+    public void testAutoSaveAfterCellSplit() {
         var gameRunner = GameRunner.create();
 
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
@@ -792,8 +792,9 @@ public class TestMain {
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
         gameRunner.step();
 
-        //simulate buying nucleus
+        //simulate buying nucleus and splitting
         cell.setHasNucleus(true);
+        cell.setHasSplit(true);
         gameRunner.step();
 
         //Change State
@@ -806,6 +807,7 @@ public class TestMain {
         cell.setHasRibosomes(false);
         cell.setHasFlagellum(false);
         cell.setHasNucleus(false);
+        cell.setHasSplit(false);
         gameRunner.step();
         //Load State
         gameLoaderSaver.loadState();
