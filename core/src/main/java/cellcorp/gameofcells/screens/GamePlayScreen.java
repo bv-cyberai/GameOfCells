@@ -790,15 +790,30 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
-     * For test use only.
+     * Ends the game.
      */
     public void endGame() {
+        endOfGameUpdateRespawns();
         game.setScreen(new GameOverScreen(
             inputProvider,
             assetManager,
             graphicsProvider,
             game, configProvider, stats
         ));
+    }
+
+    /**
+     * If the cell has no respawns, clear any existing save files.
+     * Otherwise, decrement respawns and save that.
+     */
+    private void endOfGameUpdateRespawns() {
+        var respawns = playerCell.getRespawns();
+        if (respawns == 0) {
+            GameLoaderSaver.clearSaveFile();
+        } else {
+            playerCell.setRespawns(respawns - 1);
+            gameLoaderSaver.saveRespawns();
+        }
     }
 
     /**

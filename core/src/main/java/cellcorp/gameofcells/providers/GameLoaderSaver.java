@@ -65,6 +65,7 @@ public class GameLoaderSaver {
         saveGame.putInteger("cellATP", cell.getCellATP());
         saveGame.putFloat("cellSize", cell.getCellSize());
         saveGame.putBoolean("cellSplit", cell.hasSplit());
+        saveGame.putInteger("respawns", cell.getRespawns());
         saveGame.putInteger("organelleLevel", cell.getOrganelleUpgradeLevel());
 
         //size
@@ -117,6 +118,7 @@ public class GameLoaderSaver {
         cell.setCellATP(saveGame.getInteger("cellATP", 30));
         cell.setCellSize(saveGame.getFloat("cellSize", 100));
         cell.setHasSplit(saveGame.getBoolean("cellSplit", false));
+        cell.setRespawns(saveGame.getInteger("respawns", 0));
 
 
         //size
@@ -147,7 +149,14 @@ public class GameLoaderSaver {
         healAvailablePopup.setWasShown(saveGame.getBoolean("healPopup", false));
         cellMembranePopup.setWasShown(saveGame.getBoolean("membranePopup", false));
         splitCellPopup.setWasShown(saveGame.getBoolean("splitPopup", false));
+    }
 
+    /**
+     * On cell death, we want to update then save the number of cell respawns,
+     * without overwriting other parts of the save game.
+     */
+    public void saveRespawns() {
+        saveGame.putInteger("respawns", cell.getRespawns());
     }
 
     /**

@@ -124,6 +124,11 @@ public class Cell {
      */
     private boolean hasSplit = false;
 
+    /**
+     * The number of respawns remaining. If the cell dies with 0 respawns, deletes any existing saves.
+     */
+    private int respawns = 0;
+
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
@@ -191,6 +196,7 @@ public class Cell {
         this.flagellumAlpha = other.flagellumAlpha;
         this.flagellumLength = other.flagellumLength;
         this.flagellumThickness = other.flagellumThickness;
+        this.respawns = other.respawns;
     }
 
     /**
@@ -1398,9 +1404,24 @@ public class Cell {
 
     /**
      * Is Dying Getter
+     *
      * @return True if the cell is dying.
      */
     public boolean isDying() {
         return isDying;
+    }
+
+    /**
+     * Gets the number of remaining cell respawns.
+     */
+    public int getRespawns() {
+        return respawns;
+    }
+
+    /**
+     * Sets the number of remaining cell respawns.
+     */
+    public void setRespawns(int respawns) {
+        this.respawns = respawns;
     }
 }

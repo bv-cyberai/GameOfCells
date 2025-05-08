@@ -824,5 +824,4 @@ public class TestMain {
         assertTrue(cell.hasNucleus());
 
     }
-
 }

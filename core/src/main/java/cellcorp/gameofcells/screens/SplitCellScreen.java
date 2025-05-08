@@ -145,6 +145,7 @@ public class SplitCellScreen implements GameOfCellsScreen {
         if (isFinished(deltaTimeSeconds)) {
             game.setScreen(gamePlayScreen);
             cell.setHasSplit(true);
+            cell.setRespawns(1);
             return;
         }
         timerSeconds += deltaTimeSeconds;
