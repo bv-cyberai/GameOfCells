@@ -35,6 +35,7 @@ public class ControlInstructions {
     private static final float INFO_PADDING_RIGHT = 54.5f;
 
     private static final IconData INFO_ICON = new IconData("Controls", AssetFileNames.CONTROLS_INFO_BUTTON);
+    IconData INNER_HEAL_ICON = new IconData("Heal", AssetFileNames.HEAL_ICON);
 
     private static final List<IconData> CONTROLS_ICON = List.of(
             new IconData("Hide\nControls", AssetFileNames.CONTROLS_INFO_BUTTON),
@@ -42,7 +43,6 @@ public class ControlInstructions {
             new IconData("Move", AssetFileNames.MOVE_KEY),
             new IconData("Quit", AssetFileNames.QUIT_BUTTON),
             new IconData("Shop", AssetFileNames.SHOP_BUTTON),
-            new IconData("Heal", AssetFileNames.HEAL_ICON)
     );
 
     private final GraphicsProvider graphicsProvider;
@@ -177,5 +177,12 @@ public class ControlInstructions {
             this.text = text;
             this.textureFileName = textureFileName;
         }
+    }
+    public void update() {
+        var label = iconLabel(INNER_HEAL_ICON);
+        var icon = iconImage(INNER_HEAL_ICON);
+        controlsTable.row().padBottom(ROW_PADDING);
+        controlsTable.add(label).bottom().left();
+        controlsTable.add(icon).bottom().padLeft(COL_PADDING);
     }
 }

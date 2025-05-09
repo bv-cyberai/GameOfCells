@@ -472,7 +472,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     @Override
     public void update(float deltaTimeSeconds) {
         if (!isPaused) {
-            hud.update(deltaTimeSeconds);
+
+            hud.update(deltaTimeSeconds, playerCell.hasMitochondria());
             zoneManager.update(deltaTimeSeconds);
             glucoseManager.update(deltaTimeSeconds);
             spawnManager.update();

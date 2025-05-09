@@ -56,6 +56,7 @@ public class HUD implements Disposable {
     private String popupMessage;
     private float popupX, popupY, popupWidth, popupHeight;
     private Color popupColor;
+    private boolean mitochondriaDisplayed = false;
 
     public HUD(GraphicsProvider graphicsProvider, InputProvider inputProvider, AssetManager assetManager, GamePlayScreen gamePlayScreen, Stats stats) {
         this.graphicsProvider = graphicsProvider;
@@ -114,8 +115,12 @@ public class HUD implements Disposable {
         controlInstructions.handleInput();
     }
 
-    public void update(float deltaTime) {
+    public void update(float deltaTime, boolean HasMitochondria) {
         hudStats.update();
+        if (HasMitochondria && (!mitochondriaDisplayed)) {
+            ControlInstructions.update();
+            mitochondriaDisplayed = true;
+        }
         bars.update();
         notificationManager.update(deltaTime);
     }
@@ -157,7 +162,7 @@ public class HUD implements Disposable {
         popupLayout.setText(popupFont, popupMessage);
 
         Texture backgroudRegion = graphicsProvider.createRoundedRectangleTexture(
-                (int) popupWidth, (int) popupHeight, popupColor, 20f);
+            (int) popupWidth, (int) popupHeight, popupColor, 20f);
 
         batch.begin();
         batch.draw(backgroudRegion, popupX, popupY, popupWidth, popupHeight);
@@ -165,8 +170,8 @@ public class HUD implements Disposable {
         Color oldColor = popupFont.getColor().cpy();
         popupFont.setColor(Color.BLACK);
         popupFont.draw(
-                batch, popupLayout, popupX + 40,
-                popupY + popupHeight - 40
+            batch, popupLayout, popupX + 40,
+            popupY + popupHeight - 40
         );
         popupFont.setColor(oldColor);
         batch.end();
@@ -206,15 +211,15 @@ public class HUD implements Disposable {
         batch.begin();
         batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(
-                arrowTexture,
-                arrowPos.x - arrowWidth / 2, arrowPos.y - arrowHeight / 2, // position
-                arrowWidth / 2, arrowHeight / 2, // origin
-                arrowWidth, arrowHeight, // size
-                1f, 1f, // scale
-                angle, // rotation
-                0, 0,
-                arrowTexture.getWidth(), arrowTexture.getHeight(),
-                false, false
+            arrowTexture,
+            arrowPos.x - arrowWidth / 2, arrowPos.y - arrowHeight / 2, // position
+            arrowWidth / 2, arrowHeight / 2, // origin
+            arrowWidth, arrowHeight, // size
+            1f, 1f, // scale
+            angle, // rotation
+            0, 0,
+            arrowTexture.getWidth(), arrowTexture.getHeight(),
+            false, false
         );
         batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
