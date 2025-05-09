@@ -38,11 +38,11 @@ public class ControlInstructions {
     IconData INNER_HEAL_ICON = new IconData("Heal", AssetFileNames.HEAL_ICON);
 
     private static final List<IconData> CONTROLS_ICON = List.of(
-            new IconData("Hide\nControls", AssetFileNames.CONTROLS_INFO_BUTTON),
-            new IconData("Pause", AssetFileNames.PAUSE_BUTTON),
-            new IconData("Move", AssetFileNames.MOVE_KEY),
-            new IconData("Quit", AssetFileNames.QUIT_BUTTON),
-            new IconData("Shop", AssetFileNames.SHOP_BUTTON),
+        new IconData("Hide\nControls", AssetFileNames.CONTROLS_INFO_BUTTON),
+        new IconData("Pause", AssetFileNames.PAUSE_BUTTON),
+        new IconData("Move", AssetFileNames.MOVE_KEY),
+        new IconData("Quit", AssetFileNames.QUIT_BUTTON),
+        new IconData("Shop", AssetFileNames.SHOP_BUTTON)
     );
 
     private final GraphicsProvider graphicsProvider;
@@ -178,6 +178,7 @@ public class ControlInstructions {
             this.textureFileName = textureFileName;
         }
     }
+
     public void update() {
         var label = iconLabel(INNER_HEAL_ICON);
         var icon = iconImage(INNER_HEAL_ICON);

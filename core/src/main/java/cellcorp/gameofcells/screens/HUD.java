@@ -118,7 +118,7 @@ public class HUD implements Disposable {
     public void update(float deltaTime, boolean HasMitochondria) {
         hudStats.update();
         if (HasMitochondria && (!mitochondriaDisplayed)) {
-            ControlInstructions.update();
+            controlInstructions.update();
             mitochondriaDisplayed = true;
         }
         bars.update();
