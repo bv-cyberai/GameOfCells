@@ -3,7 +3,10 @@ package cellcorp.gameofcells.screens;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import com.badlogic.gdx.Preferences;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,6 +23,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 
 import cellcorp.gameofcells.Main;
+import cellcorp.gameofcells.providers.GameLoaderSaver;
 import cellcorp.gameofcells.runner.GameRunner;
 
 import org.mockito.Mockito;
@@ -27,7 +31,7 @@ import org.mockito.Mockito;
 public class TestGameInfoControlsScreen {
 
     @BeforeAll
-    public static void initLibGDX() {
+    public static void initLibGDX() throws Exception {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
@@ -50,6 +54,16 @@ public class TestGameInfoControlsScreen {
         Gdx.gl = gl20;
         Gdx.gl20 = gl20;
         Gdx.gl30 = gl30;
+
+        // The tests in this class will fail if there is a saved file, so I set it so that it doesn't exist
+        // to avoid input key errors.
+        Preferences fakePreferences = Mockito.mock(Preferences.class);
+        Map fakeMap = new HashMap<>(); // Simulate no saved game state
+        Mockito.when(fakePreferences.get()).thenReturn(fakeMap);
+
+        var saveField = GameLoaderSaver.class.getDeclaredField("saveGame");
+        saveField.setAccessible(true);
+        saveField.set(null, fakePreferences);
     }
 
     @AfterAll
@@ -65,7 +79,7 @@ public class TestGameInfoControlsScreen {
      * It verifies that the screen is no longer the GameInfoControlsScreen after the key press.
      */
     @Test
-    public void testGameInfoScreenReturnsToPreviousScreenOnSpacePress() {
+    public void testGameInfoScreenReturnsToPreviousScreenOnSpacePress() throws Exception {
         GameRunner gameRunner = GameRunner.create();
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
         gameRunner.step();
