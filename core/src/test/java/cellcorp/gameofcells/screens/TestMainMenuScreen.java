@@ -2,6 +2,8 @@ package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.runner.GameRunner;
+import cellcorp.gameofcells.providers.GameLoaderSaver;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
@@ -11,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -320,5 +324,76 @@ public class TestMainMenuScreen {
         gameRunner.setHeldDownKeys(Set.of());
         gameRunner.step();
         assertEquals(3, mainMenuScreen.getSelectedOption()); // Should not wrap around
+    }
+
+    /**
+     * Verifies that the "Load Game" option is enabled when a save exists.
+     * When selected, it should correctly transition to the GamePlayScreen.
+     * 
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked") // Suppress unchecked cast warning
+    @Test
+    public void testLoadGameOptionEnabledWhenSaveExists() throws Exception{
+        Preferences fakePreferences = Mockito.mock(Preferences.class);
+        Map fakeMap = new HashMap<>();
+        fakeMap.put("cellHealth", "100"); // Simulate a saved game state
+        Mockito.when(fakePreferences.get()).thenReturn(fakeMap);
+
+        var saveField = GameLoaderSaver.class.getDeclaredField("saveGame");
+        saveField.setAccessible(true);
+        saveField.set(null, fakePreferences);
+
+        GameRunner gameRunner = GameRunner.create();
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+        // Move to "Load Game" (option 1)
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        assertEquals(1, mainMenuScreen.getSelectedOption()); // Should be on Load Game option
+
+        // Test selecting "Load Game"
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+    }
+
+    /**
+     * Verifies that the "Load Game" option is disabled when no save exists.
+     * When selected, it should correctly transition to the GameInfoControlsScreen.
+     * 
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testLoadGameOptionDisabledWhenNoSaveExists() throws Exception {
+        Preferences fakePreferences = Mockito.mock(Preferences.class);
+        Map fakeMap = new HashMap<>(); // Simulate no saved game state
+        Mockito.when(fakePreferences.get()).thenReturn(fakeMap);
+
+        var saveField = GameLoaderSaver.class.getDeclaredField("saveGame");
+        saveField.setAccessible(true);
+        saveField.set(null, fakePreferences);
+
+        GameRunner gameRunner = GameRunner.create();
+        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
+
+        // Press DOWN once — it should skip over disabled "LOAD GAME" and land on "GAME INFO" (index 2)
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of());
+        gameRunner.step();
+
+        assertEquals(2, mainMenuScreen.getSelectedOption()); // Skipped index 1
+
+        // Press SPACE to activate (should load GameInfoControlsScreen)
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+
+        assertInstanceOf(GameInfoControlsScreen.class, gameRunner.game.getScreen());
     }
 }

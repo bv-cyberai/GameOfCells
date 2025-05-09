@@ -1187,4 +1187,8 @@ public class GamePlayScreen implements GameOfCellsScreen {
     public ConfigProvider getConfigProvider() {
         return this.configProvider;
     }
+
+    public int getLoadType() {
+        return loadSave;
+    }
 }
