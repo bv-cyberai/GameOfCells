@@ -291,7 +291,7 @@ directory, run the `tree` command in your favorite shell.
                     libgdx64.png
  ```
 
-**599 directories, 5590 files**
+**599 directories, 5551 files**
 
 ## Notes
 
