@@ -305,7 +305,7 @@ directory, run the `tree` command in your favorite shell.
  gradle build
  ```
 
-### run
+### Run
 
  ```sh
  gradle Run
@@ -329,6 +329,12 @@ Access the following URL via a web browser:
 
 [http://localhost:8080/index.html](http://localhost:8080/index.html)
 
+## Testing
+
+### Tests
+
+Testing is performed via JUnit tests on each build.
+
 ## Debug mode
 
 For manual testing, the game has two debug facilities.
@@ -343,11 +349,27 @@ There are also a set of debug keys:
 * `E`: Add ATP to cell
 * `F`: Remove ATP from cell
 * `T`: Damage the cell
-* `Y`: Enable the cell's healing functionality
+* `Y`: Report heal is available
+* `N`: Give cell a nucleus
 * `M`: Go to main menu
 * `0`: Set health to zero
 * `O`: Overwrite Save
 * `L`: Load Save
+
+## Asset list
+
+### List of assets/licenses:
+
+### Creative Commons:
+- https://openclipart.org/detail/75313/glossy-balls
+
+### SIL Open Font License
+
+- Rubik
+
+
+## ====== Process Information ======
+The following is information related to team specific processes. 
 
 # Pull Request Reviewer Order
 
@@ -384,23 +406,6 @@ Run ```gradle superdev``` and navigate to  [http://localhost:8080/index.html](ht
 
 Edit and save config.txt as desired. Refresh web instance of game to see updated configs.
 
-## Testing
 
-### Test
 
-Testing is performed via JUnit tests on each build.
 
-## Asset list
-
-### List of assets/licenses:
-
-### Creative Commons:
-
-Glucose: - Still Undecided.
-
-- https://en.wikipedia.org/wiki/Glucose#/media/File:Beta-D-glucose-from-xtal-3D-balls.png
-- https://openclipart.org/detail/75313/glossy-balls
-
-### SIL Open Font License
-
-- Rubik
