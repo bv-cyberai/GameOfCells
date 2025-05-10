@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 
 public class LowHealthSource implements NotificationSource {
     private static final float HEALTH_THRESHOLD = 30;
-    private static final String TEXT = "DANGER: Low Health!!! Press H to heal.";
+    private static final String TEXT = "DANGER: Low Health!!!";
     private static final Float DURATION = null;
     private static final Color DARK_RED = new Color(0.7f, 0, 0, 1);
     private static final Color COLOR = DARK_RED;
