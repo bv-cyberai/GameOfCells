@@ -201,7 +201,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
         this.shapeRenderer = graphicsProvider.createShapeRenderer();
         this.batch = graphicsProvider.createSpriteBatch();
         this.stage = new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch());
-        this.hud = new HUD(graphicsProvider, inputProvider, assetManager, this, stats);
+        this.hud = new HUD(graphicsProvider, inputProvider, configProvider, assetManager, this, stats);
         this.minimapRenderer = new MinimapRenderer(graphicsProvider, 8000f, 8000f, 200f, 200f, camera);
         this.loadSave = loadSave;
         parallaxFar = assetManager.get(AssetFileNames.PARALLAX_FAR, Texture.class);
@@ -1180,7 +1180,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
 
     /**
      * For test use only.
-     * 
+     *
      * @param wasShown
      */
     public void setHealAvailablePopupWasShown(boolean wasShown) {

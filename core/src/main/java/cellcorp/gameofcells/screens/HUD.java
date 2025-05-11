@@ -6,6 +6,7 @@ import cellcorp.gameofcells.hud.ControlInstructions;
 import cellcorp.gameofcells.hud.HudStats;
 import cellcorp.gameofcells.notification.NotificationManager;
 import cellcorp.gameofcells.objects.Stats;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
 import com.badlogic.gdx.Gdx;
@@ -58,7 +59,7 @@ public class HUD implements Disposable {
     private Color popupColor;
     private boolean mitochondriaDisplayed = false;
 
-    public HUD(GraphicsProvider graphicsProvider, InputProvider inputProvider, AssetManager assetManager, GamePlayScreen gamePlayScreen, Stats stats) {
+    public HUD(GraphicsProvider graphicsProvider, InputProvider inputProvider, ConfigProvider configProvider, AssetManager assetManager, GamePlayScreen gamePlayScreen, Stats stats) {
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
@@ -69,7 +70,7 @@ public class HUD implements Disposable {
         this.hudStats = new HudStats(graphicsProvider, assetManager, cell, stats);
         this.bars = new Bars(graphicsProvider, assetManager, cell);
         this.controlInstructions = new ControlInstructions(graphicsProvider, inputProvider, assetManager);
-        this.notificationManager = new NotificationManager(gamePlayScreen);
+        this.notificationManager = new NotificationManager(configProvider, gamePlayScreen);
         var table = table(hudStats.getTable(), bars.getTable(), controlInstructions.getTable(), notificationManager.getTable());
         stage.addActor(table);
 

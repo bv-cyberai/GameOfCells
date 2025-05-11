@@ -2,6 +2,7 @@ package cellcorp.gameofcells.screens;
 
 import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.objects.Stats;
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.FakeInputProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.runner.GameRunner;
@@ -46,31 +47,31 @@ public class TestHUD {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(
-                new ApplicationListener() {
-                    @Override
-                    public void create() {
-                    }
+            new ApplicationListener() {
+                @Override
+                public void create() {
+                }
 
-                    @Override
-                    public void resize(int width, int height) {
-                    }
+                @Override
+                public void resize(int width, int height) {
+                }
 
-                    @Override
-                    public void render() {
-                    }
+                @Override
+                public void render() {
+                }
 
-                    @Override
-                    public void pause() {
-                    }
+                @Override
+                public void pause() {
+                }
 
-                    @Override
-                    public void resume() {
-                    }
+                @Override
+                public void resume() {
+                }
 
-                    @Override
-                    public void dispose() {
-                    }
-                }, config
+                @Override
+                public void dispose() {
+                }
+            }, config
         );
 
         Gdx.graphics = mock(Graphics.class);
@@ -84,6 +85,7 @@ public class TestHUD {
 
     @BeforeEach
     public void setup() {
+        var mockConfigProvider = mock(ConfigProvider.class);
         mockAssetManager = mock(AssetManager.class);
         mockGraphicsProvider = mock(GraphicsProvider.class);
         mockGamePlayScreen = mock(GamePlayScreen.class);
@@ -93,13 +95,13 @@ public class TestHUD {
         when(mockAssetManager.get(AssetFileNames.HUD_FONT, BitmapFont.class)).thenReturn(font);
 
         when(mockGraphicsProvider.createLabel(any(CharSequence.class), any(Label.LabelStyle.class)))
-                .thenAnswer(invocation -> {
-                    CharSequence text = invocation.getArgument(0);
-                    Label.LabelStyle style = invocation.getArgument(1);
-                    Label label = new Label(text, style);
-                    label.setFontScale(0.2f); // mimic the game's scaling
-                    return label;
-                });
+            .thenAnswer(invocation -> {
+                CharSequence text = invocation.getArgument(0);
+                Label.LabelStyle style = invocation.getArgument(1);
+                Label label = new Label(text, style);
+                label.setFontScale(0.2f); // mimic the game's scaling
+                return label;
+            });
 
         var inputProvider = new FakeInputProvider();
 
@@ -107,7 +109,7 @@ public class TestHUD {
         Texture fakeTexture = mock(Texture.class);
         when(mockGraphicsProvider.createSpriteBatch()).thenReturn(fakeBatch);
         when(mockGraphicsProvider.createRoundedRectangleTexture(anyInt(), anyInt(), any(), anyFloat()))
-                .thenReturn(fakeTexture);
+            .thenReturn(fakeTexture);
 
         OrthographicCamera camera = new OrthographicCamera();
         camera.update();
@@ -117,7 +119,7 @@ public class TestHUD {
         when(mockGamePlayScreen.getCell()).thenReturn(mock(cellcorp.gameofcells.objects.Cell.class));
         when(mockGamePlayScreen.getZoneManager()).thenReturn(mock(cellcorp.gameofcells.objects.ZoneManager.class));
 
-        hud = new HUD(mockGraphicsProvider, inputProvider, mockAssetManager, mockGamePlayScreen, mockStats);
+        hud = new HUD(mockGraphicsProvider, inputProvider, mockConfigProvider, mockAssetManager, mockGamePlayScreen, mockStats);
     }
 
 

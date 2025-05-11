@@ -1,5 +1,6 @@
 package cellcorp.gameofcells.notification;
 
+import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -16,14 +17,16 @@ public class NotificationManager {
     private final List<Notification> notifications;
     private final Table table = new Table();
 
-    public NotificationManager(GamePlayScreen gamePlayScreen) {
+    public NotificationManager(ConfigProvider configProvider, GamePlayScreen gamePlayScreen) {
         sources = List.of(
-                new AcidZoneSource(this),
-                new LowAtpSource(this),
-                new NoAtpSource(this),
-                new LowHealthSource(this),
-                new CanSplitCellSource(this)
+            new AcidZoneSource(configProvider, this),
+            new LowATPSource(configProvider, this),
+            new NoATPSource(configProvider, this),
+            new LowHealthSource(configProvider, this),
+            new CanDivideCellSource(configProvider, this),
+            new CanBuyFirstUpgradeSource(configProvider, this)
         );
+
 
         this.gamePlayScreen = gamePlayScreen;
         this.notifications = new ArrayList<>();

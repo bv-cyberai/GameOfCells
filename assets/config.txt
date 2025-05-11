@@ -40,6 +40,13 @@ mitochondriaUpgradeCost:30 ##UNIMPLEMENTED - This is being refactored this sprin
 ## Note: There should be no space before the variable name, this will break things.
 
 [descriptions]/
+[notifications]/
+acidZoneNotification:DANGER! Acid zone! You're taking damage!/
+canBuyFirstUpgradeNotification:You can buy an upgrade!\nPress Q to open the shop./
+canDivideCellNotification:Press U to divide the cell./
+lowATPNotification:WARNING! Low ATP. Find some glucose./
+lowHealthNotification:DANGER! Low Health!!!/
+noATPNotification:DANGER! No ATP! You're losing health!/
 [pop-ups]/
 glucosePopupMessage:You've collected glucose!\n\nCells convert glucose into ATP, which provides energy to the cell.\n\nIf you collect enough glucose, you can open the shop and spend glucose.\n\n You can make your cell larger, or buy organelles that unlock new abilities.\n\nDid you know?\nGlucose is a kind of sugar!\n\nPress 'Space' to continue!/
 dangerPopupMessage:ACID ZONE!\n\nHealth drains in pink areas. Move to safety quickly!\n\nPress 'Space' to continue!"/
