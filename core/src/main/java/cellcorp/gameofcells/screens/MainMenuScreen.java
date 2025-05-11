@@ -51,7 +51,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
      */
     private static final String[] MENU_OPTIONS = {
         "NEW GAME",
-        "LOAD GAME",
+        "RESUME GAME",
         "GAME INFO",
         "EXIT"
     };
