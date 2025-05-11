@@ -11,7 +11,6 @@ cellRotationSpeed:20    ##Cell Rotational Speed
 amountHealed:20 ##DEPRECATED - SEE ORGANELLE RATES
 atpHealCost:20 ##DEPRECATED - SEE ORGANELLE RATES
 damageReduction:2 ## Membrane resistance value (higher number means less damage taken)
-popupsAllowed:1 ##enables or disables popups (1 for on, 0 for off)
 
 [organelleRates] ##These Change the ATP_HEAL_COST,AMOUNT_HEALED per organelle.
 ## Note - #,# format should be kept.

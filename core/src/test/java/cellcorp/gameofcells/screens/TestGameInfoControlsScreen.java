@@ -10,7 +10,6 @@ import com.badlogic.gdx.Preferences;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -270,7 +269,6 @@ public class TestGameInfoControlsScreen {
     @Test
     public void testReturnToPreviousScreenWithEnterKey() {
         GameRunner gameRunner = GameRunner.create();
-        MainMenuScreen mainMenuScreen = (MainMenuScreen) gameRunner.game.getScreen();
 
         // Navigate to the GameInfoControlsScreen
         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
