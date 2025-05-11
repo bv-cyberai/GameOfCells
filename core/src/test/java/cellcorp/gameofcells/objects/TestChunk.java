@@ -74,16 +74,22 @@ public class TestChunk {
     }
 
     @Test
-    public void initialChunkDoesNotEqualChunkAfterMovingFor11Seconds() {
-        var runner = GameRunner.create();
+    public void initialChunkDoesNotEqualChunkAfterMovingFor10Seconds() {
+        GameRunner runner = GameRunner.create();
 
         runner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
         runner.step();
-        var cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
+
+        GamePlayScreen screen = (GamePlayScreen) runner.game.getScreen();
+        screen.setAcidZonePopupWasShown(true);
+        screen.setBasicZonePopupWasShown(true);
+        screen.setGlucoseCollisionPopupWasShown(true);
+
+        Cell cell = screen.getCell();
         var initialChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
 
-        runner.setHeldDownKeys(Set.of(Input.Keys.RIGHT, Input.Keys.C));
-        runner.runForSeconds(11);
+        runner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+        runner.runForSeconds(10);
         cell = ((GamePlayScreen) runner.game.getScreen()).getCell();
         var newChunk = Chunk.fromWorldCoords(cell.getX(), cell.getY());
         assertNotEquals(initialChunk, newChunk);

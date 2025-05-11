@@ -7,10 +7,14 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.FakePreferences;
 import cellcorp.gameofcells.providers.GameLoaderSaver;
 import cellcorp.gameofcells.runner.GameRunner;
+import cellcorp.gameofcells.screens.GameInfoControlsScreen;
 import cellcorp.gameofcells.screens.GameOverScreen;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import cellcorp.gameofcells.screens.MainMenuScreen;
 import cellcorp.gameofcells.screens.ShopScreen;
+import cellcorp.gameofcells.objects.GlucoseManager;
+import cellcorp.gameofcells.objects.Chunk;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
@@ -19,6 +23,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,6 +32,8 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -351,64 +359,57 @@ public class TestMain {
         assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
     }
 
-//     @Test
-//     public void canUseSpaceKeyToMoveForward() {
-//         var gameRunner = GameRunner.create();
-//         var game = gameRunner.game;
+    @Test
+    public void canUseSpaceKeyToMoveForward() {
+        var gameRunner = GameRunner.create();
+        var game = gameRunner.game;
 
-//         // Move down, press space to get to settings screen
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-//         gameRunner.step();
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
-//         gameRunner.step();
-//         assertInstanceOf(SettingsScreen.class, game.getScreen());
+        // Move down, press space to get to Game info screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.step();
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(GameInfoControlsScreen.class, game.getScreen());
 
-//         // Press space to get to controls-info screen
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
-//         gameRunner.step();
-//         assertInstanceOf(GameInfoControlsScreen.class, game.getScreen());
+        // Back out to main menu
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
+        gameRunner.step();
+        assertInstanceOf(MainMenuScreen.class, game.getScreen());
 
-//         // Back out to main menu
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
-//         gameRunner.step();
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ESCAPE));
-//         gameRunner.step();
-//         assertInstanceOf(MainMenuScreen.class, game.getScreen());
+        // Move to game screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, game.getScreen());
+        var gamePlayScreen = (GamePlayScreen) game.getScreen();
 
-//         // Move to game screen
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
-//         gameRunner.step();
-//         assertInstanceOf(GamePlayScreen.class, game.getScreen());
-//         var gamePlayScreen = (GamePlayScreen) game.getScreen();
+        // Get max ATP, for shop screen
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
+        gameRunner.runForSeconds(1);
+        assertEquals(100, gamePlayScreen.getCell().getCellATP());
 
-//         // Get max ATP, for shop screen
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.E));
-//         gameRunner.runForSeconds(1);
-//         assertEquals(100, gamePlayScreen.getCell().getCellATP());
+        var startSize = gamePlayScreen.getCell().getCellSize();
 
-//         // Open shop screen, go to size-upgrades, buy upgrade
-//         // TODO -- Shop screen is crashing.
-// //        var startSize = gamePlayScreen.getCell().getcellSize();
-// //        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
-// //        gameRunner.step();
-// //        assertInstanceOf(ShopScreen.class, game.getScreen());
-// //        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
-// //        gameRunner.step();
-// //        assertInstanceOf(SizeUpgradeScreen.class, game.getScreen());
-// //        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
-// //        gameRunner.step();
-// //        assertInstanceOf(GamePlayScreen.class, game.getScreen());
-// //        var endSize = gamePlayScreen.getCell().getcellSize();
-// //        assertNotEquals(startSize, endSize);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.Q));
+        gameRunner.step();
+        assertInstanceOf(ShopScreen.class, game.getScreen());
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
 
-//         // Go to game-over screen, restart with Space
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
-//         gameRunner.step();
-//         assertInstanceOf(GameOverScreen.class, game.getScreen());
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
-//         gameRunner.step();
-//         assertInstanceOf(MainMenuScreen.class, game.getScreen());
-//     }
+        gameRunner.runForSeconds(1);
+
+        assertInstanceOf(GamePlayScreen.class, game.getScreen());
+
+        var endSize = gamePlayScreen.getCell().getCellSize();
+        assertNotEquals(startSize, endSize);
+
+        // Go to game-over screen, restart with Space
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.G));
+        gameRunner.step();
+        assertInstanceOf(GameOverScreen.class, game.getScreen());
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.SPACE));
+        gameRunner.step();
+        assertInstanceOf(MainMenuScreen.class, game.getScreen());
+    }
 
     @Test
     void testIdleATPDeduction() {
@@ -485,8 +486,6 @@ public class TestMain {
         Glucose.setAtpPerGlucoseDoNotUseForTestingOnly(true);
 
         float startingATP = gameCell.getCellATP();
-
-        float expectedATPLost = 0f;
 
         runModifiedStep(6, gameRunner, gameCell, true);
         System.out.println("ATP: " + gameCell.getCellATP());
@@ -607,110 +606,111 @@ public class TestMain {
         assertTrue(Math.abs(gameCell.getLastTimeTakenforATPLoss()) - expectedSeconds < epsilon);
     }
 
-    // @Test
-    // public void testGlucoseMovement() {
-    //     float epsilon = 0.1f;
-    //     var gameRunner = GameRunner.create();
-    //     var fakeAssetManager = Mockito.mock(AssetManager.class);
+    @Test
+    public void testGlucoseMovement() {
+        float epsilon = 0.1f;
+        var gameRunner = GameRunner.create();
+        var fakeAssetManager = Mockito.mock(AssetManager.class);
 
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step();
-    //     assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
 
-    //     GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-    //     Cell gameCell = gamePlayScreen.getCell();
+        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        Cell gameCell = gamePlayScreen.getCell();
 
-    //     //chunk setup
-    //     GlucoseManager gm = gamePlayScreen.getGlucoseManager();
-    //     Chunk currentChunk = Chunk.fromWorldCoords(gameCell.getX(), gameCell.getY());
-    //     Map<Chunk, List<Glucose>> chunkList = gm.getGlucoses();
-    //     List<Glucose> currList = chunkList.get(currentChunk);
+        //chunk setup
+        GlucoseManager gm = gamePlayScreen.getGlucoseManager();
+        Chunk currentChunk = Chunk.fromWorldCoords(gameCell.getX(), gameCell.getY());
+        Map<Chunk, List<Glucose>> chunkList = gm.getGlucoses();
+        List<Glucose> currList = chunkList.get(currentChunk);
 
-    //     // add a singular glucose to current chuck at a known location
-    //     // adds a little padding so as not to trigger immediately.
-    //     Glucose testGlucose = new Glucose(fakeAssetManager, (gameCell.getX() + gameCell.getForceCircle().radius + 50), gameCell.getY());
-    //     currList.add(testGlucose);
+        // add a singular glucose to current chuck at a known location
+        // adds a little padding so as not to trigger immediately.
+        Glucose testGlucose = new Glucose(fakeAssetManager, (gameCell.getX() + gameCell.getForceCircle().radius + 50), gameCell.getY());
+        currList.add(testGlucose);
 
 
-    //     Vector2 initGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
-    //     //Loop until we detect first glucose collision.
-    //     while (!gameCell.getForceCircle().overlaps(testGlucose.getCircle())) {
-    //         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-    //         gameRunner.step();
-    //     }
-    //     //Step for 1 second.
-    //     for (int i = 0; i < 60; i++) {
-    //         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-    //         gameRunner.step();
-    //     }
+        Vector2 initGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
+        //Loop until we detect first glucose collision.
+        while (!gameCell.getForceCircle().overlaps(testGlucose.getCircle())) {
+            gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+            gameRunner.step();
+        }
+        //Step for 1 second.
+        for (int i = 0; i < 60; i++) {
+            gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+            gameRunner.step();
+        }
 
-    //     Vector2 finalGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
-    //     Vector2 differenceInGlucosePos = finalGlucosePos.sub(initGlucosePos);
+        Vector2 finalGlucosePos = new Vector2(testGlucose.getX(), testGlucose.getY());
+        Vector2 differenceInGlucosePos = finalGlucosePos.sub(initGlucosePos);
 
-    //     //30 was calculated by hand :(
-    //     //Glucose moves by expected amount, and direction.
-    //     assertTrue(differenceInGlucosePos.x - 30 < epsilon);
-    //     assertTrue(differenceInGlucosePos.y < epsilon);
-    // }
+        //30 was calculated by hand :(
+        //Glucose moves by expected amount, and direction.
+        assertTrue(differenceInGlucosePos.x - 30 < epsilon);
+        assertTrue(differenceInGlucosePos.y < epsilon);
+    }
 
-//     @Test
-//     public void testCellAngle() {
-//         float epsilon = 0.2f;
+    @Test
+    public void testCellAngle() {
+        float epsilon = 0.2f;
 
-//         var gameRunner = GameRunner.create();
-//         var fakeAssetManager = Mockito.mock(AssetManager.class);
+        var gameRunner = GameRunner.create();
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-//         gameRunner.step();
-//         assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
+        gameRunner.step();
+        assertInstanceOf(GamePlayScreen.class, gameRunner.game.getScreen());
 
-//         GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-//         Cell gameCell = gamePlayScreen.getCell();
+        GamePlayScreen gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
+        gamePlayScreen.setGlucoseCollisionPopupWasShown(true);
 
-//         //Default position
-//         assertEquals(0, gameCell.getCellRotation());
+        Cell gameCell = gamePlayScreen.getCell();
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.LEFT));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(45f - gameCell.getCellRotation());
-//         assertTrue(45f - gameCell.getCellRotation() < epsilon);
+        //Default position
+        assertEquals(0, gameCell.getCellRotation());
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(90f - gameCell.getCellRotation());
-//         assertTrue(90f - gameCell.getCellRotation() < epsilon);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.LEFT));
+        gameRunner.runForSeconds(2);
+//        System.out.println(45f - gameCell.getCellRotation());
+        assertTrue(45f - gameCell.getCellRotation() < epsilon);
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.LEFT));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(135 - gameCell.getCellRotation());
-//         assertTrue(135f - gameCell.getCellRotation() < epsilon);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.LEFT));
+        gameRunner.runForSeconds(2);
+//        System.out.println(90f - gameCell.getCellRotation());
+        assertTrue(90f - gameCell.getCellRotation() < epsilon);
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(180 - gameCell.getCellRotation());
-//         assertTrue(180f - gameCell.getCellRotation() < epsilon);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.LEFT));
+        gameRunner.runForSeconds(2);
+//        System.out.println(135 - gameCell.getCellRotation());
+        assertTrue(135f - gameCell.getCellRotation() < epsilon);
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.RIGHT));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(225 - gameCell.getCellRotation());
-//         assertTrue(225f - gameCell.getCellRotation() < epsilon);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN));
+        gameRunner.runForSeconds(2);
+//        System.out.println(180 - gameCell.getCellRotation());
+        assertTrue(180f - gameCell.getCellRotation() < epsilon);
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(270 - gameCell.getCellRotation());
-//         assertTrue(270f - gameCell.getCellRotation() < epsilon);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.DOWN, Input.Keys.RIGHT));
+        gameRunner.runForSeconds(2);
+//        System.out.println(225 - gameCell.getCellRotation());
+        assertTrue(225f - gameCell.getCellRotation() < epsilon);
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.RIGHT));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(315 - gameCell.getCellRotation());
-//         assertTrue(315f - gameCell.getCellRotation() < epsilon);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.RIGHT));
+        gameRunner.runForSeconds(2);
+//        System.out.println(270 - gameCell.getCellRotation());
+        assertTrue(270f - gameCell.getCellRotation() < epsilon);
 
-//         gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
-//         gameRunner.runForSeconds(2);
-// //        System.out.println(0 - gameCell.getCellRotation());
-//         assertTrue(0f - gameCell.getCellRotation() < epsilon);
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP, Input.Keys.RIGHT));
+        gameRunner.runForSeconds(2);
+//        System.out.println(315 - gameCell.getCellRotation());
+        assertTrue(315f - gameCell.getCellRotation() < epsilon);
 
-//     }
+        gameRunner.setHeldDownKeys(Set.of(Input.Keys.UP));
+        gameRunner.runForSeconds(2);
+//        System.out.println(0 - gameCell.getCellRotation());
+        assertTrue(0f - gameCell.getCellRotation() < epsilon);
+
+    }
 
     @Test
     public void testFlagellaIncreasesCellMovementSpeed() {

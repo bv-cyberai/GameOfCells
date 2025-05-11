@@ -38,22 +38,6 @@ public class TestGlucoseManager {
         new GlucoseManager(fakeAssetManager, fakeGamePlayScreen, zoneManager, cell);
     }
 
-// DEPRECATED
-// Max glucose no longer exists
-//    @Test
-//    public void glucoseManagerFillsArray() {
-//        var fakeAssetManager = Mockito.mock(AssetManager.class);
-//        var fakeGamePlayScreen = Mockito.mock(GamePlayScreen.class);
-//        var fakeConfigProvider = Mockito.mock(ConfigProvider.class);
-//        var cell = new Cell(fakeGamePlayScreen, fakeAssetManager,fakeConfigProvider);
-//        // Again pass arbitrary values for cellX and cellY
-//        var testManager = new GlucoseManager(fakeAssetManager, cell);
-//
-//        int testMaxGlucose = testManager.getMAX_GLUCOSE();
-//
-//        assertEquals(testMaxGlucose, testManager.getGlucoseArray().size());
-//    }
-
     @Test
     public void glucoseStoresCoordinatesAndRadiusCorrectly() {
         var fakeAssetManager = Mockito.mock(AssetManager.class);

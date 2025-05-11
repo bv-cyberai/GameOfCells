@@ -155,7 +155,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
     private final Texture parallaxNear;
     private final Texture floatingOverlay; // Texture for simulating fluid game movement
     private final Texture vignetteLowHealth; // Texture for low health warning
-    int popupsAllowed = 1;
     private int loadSave;
     private float overlayTime = 0f; // Time for the floating overlay animation
     // Part of game state.
@@ -211,12 +210,6 @@ public class GamePlayScreen implements GameOfCellsScreen {
         floatingOverlay = assetManager.get(AssetFileNames.FLOATING_OVERLAY, Texture.class);
         vignetteLowHealth = assetManager.get(AssetFileNames.VIGNETTE_LOW_HEALTH, Texture.class);
 
-
-        try {
-            popupsAllowed = configProvider.getIntValue("popupsAllowed");
-        } catch (NumberFormatException e) {
-            popupsAllowed = 1;
-        }
         this.glucoseCollisionPopup = new PopupInfoScreen(
             configProvider,
             graphicsProvider,
@@ -479,10 +472,10 @@ public class GamePlayScreen implements GameOfCellsScreen {
             spawnManager.update();
 
             playerCell.update(deltaTimeSeconds);
-            if (playerCell.hasMitochondria() && !healAvailablePopup.wasShown() && (popupsAllowed == 1)) {
+            if (playerCell.hasMitochondria() && !healAvailablePopup.wasShown()) {
                 reportHealAvailable();
             }
-            if (playerCell.hasSmallSizeUpgrade() && !cellMembranePopup.wasShown() && (popupsAllowed == 1)) {
+            if (playerCell.hasSmallSizeUpgrade() && !cellMembranePopup.wasShown()) {
                 reportCellMembrane();
             }
             if (playerCell.hasSplit() && !splitCellPopup.wasShown()) {
@@ -492,13 +485,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
             overlayTime += deltaTimeSeconds;
 
             boolean inBasicZone = isInBasicZone(playerCell.getX(), playerCell.getY());
-            if (inBasicZone && (popupsAllowed == 1)) {
+            if (inBasicZone) {
                 reportBasicZoneCollision();
             }
 
             // Check for acid zone
             boolean inAcidZone = isInAcidZone(playerCell.getX(), playerCell.getY());
-            if (inAcidZone && (popupsAllowed == 1)) {
+            if (inAcidZone) {
                 // We want to show the warning only once when entering the acid zone
                 reportAcidZoneCollision();
             }
@@ -837,7 +830,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * If this is the first collision, shows an info screen.
      */
     public void reportGlucoseCollision() {
-        if (!glucoseCollisionPopup.wasShown() && (popupsAllowed == 1)) {
+        if (!glucoseCollisionPopup.wasShown()) {
             pauseGame();
             glucoseCollisionPopup.show();
         }
@@ -848,7 +841,7 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for displaying the acid zone warning.
      */
     public void reportAcidZoneCollision() {
-        if (!acidZonePopup.wasShown() && playerCell.hasSmallSizeUpgrade() && (popupsAllowed == 1)) {
+        if (!acidZonePopup.wasShown() && playerCell.hasSmallSizeUpgrade()) {
             pauseGame();
             acidZonePopup.show();
         }
@@ -859,21 +852,21 @@ public class GamePlayScreen implements GameOfCellsScreen {
      * This is used for displaying the basic zone warning.
      */
     public void reportBasicZoneCollision() {
-        if (!basicZonePopup.wasShown() && (popupsAllowed == 1)) {
+        if (!basicZonePopup.wasShown()) {
             pauseGame();
             basicZonePopup.show();
         }
     }
 
     public void reportHealAvailable() {
-        if (!healAvailablePopup.wasShown() && (popupsAllowed == 1)) {
+        if (!healAvailablePopup.wasShown()) {
             pauseGame();
             healAvailablePopup.show();
         }
     }
 
     public void reportCellMembrane() {
-        if (!cellMembranePopup.wasShown() && (popupsAllowed == 1)) {
+        if (!cellMembranePopup.wasShown()) {
             pauseGame();
             cellMembranePopup.show();
         }
@@ -1123,6 +1116,13 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * For test use only.
      */
+    public void setGlucoseCollisionPopupWasShown(boolean wasShown) {
+        glucoseCollisionPopup.setWasShown(wasShown);
+    }
+
+    /**
+     * For test use only.
+     */
     public PopupInfoScreen getAcidZonePopup() {
         return acidZonePopup;
     }
@@ -1130,8 +1130,22 @@ public class GamePlayScreen implements GameOfCellsScreen {
     /**
      * For test use only.
      */
+    public void setAcidZonePopupWasShown(boolean wasShown) {
+        acidZonePopup.setWasShown(wasShown);
+    }
+
+    /**
+     * For test use only.
+     */
     public PopupInfoScreen getBasicZonePopup() {
         return basicZonePopup;
+    }
+
+    /**
+     * For test use only.
+     */
+    public void setBasicZonePopupWasShown(boolean wasShown) {
+        basicZonePopup.setWasShown(wasShown);
     }
 
     /**
@@ -1165,6 +1179,15 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
+     * For test use only.
+     * 
+     * @param wasShown
+     */
+    public void setHealAvailablePopupWasShown(boolean wasShown) {
+        healAvailablePopup.setWasShown(wasShown);
+    }
+
+    /**
      * Cell membrane popup getter
      *
      * @return the cell membrane popup
@@ -1174,12 +1197,27 @@ public class GamePlayScreen implements GameOfCellsScreen {
     }
 
     /**
+     * For test use only.
+     */
+    public void setCellMembranePopupWasShown(boolean wasShown) {
+        cellMembranePopup.setWasShown(wasShown);
+    }
+
+
+    /**
      * Get Split Cell Popup()
      *
      * @return The cell popup
      */
     public PopupInfoScreen getSplitCellPopup() {
         return splitCellPopup;
+    }
+
+    /**
+     * For test use only.
+     */
+    public void setSplitCellPopupWasShown(boolean wasShown) {
+        splitCellPopup.setWasShown(wasShown);
     }
 
     /**
@@ -1199,10 +1237,22 @@ public class GamePlayScreen implements GameOfCellsScreen {
         game.setScreen(splitCellScreen);
     }
 
+    /**
+     * Get the config provider.
+     *
+     * @return The config provider.
+     */
     public ConfigProvider getConfigProvider() {
-        return this.configProvider;
+        return configProvider;
     }
 
+    /**
+     * Get the load type.
+     * This is used for checking if the game is loading or saving.
+     * For example, if the game is loading, it will not show the load screen.
+     *
+     * @return 1 if loading, 0 if saving, -1 if neither.
+     */
     public int getLoadType() {
         return loadSave;
     }

@@ -473,38 +473,4 @@ public class TestGamePlayScreen {
         // Arrow should not be visible
         assertFalse(gamePlayScreen.isBasicZoneArrowVisible());
     }
-
-    // @Test
-    // public void shakeEffectUpdatesCamera(){
-    //     var gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step(); // Move to gameplay
-
-    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-    //     var initialX = gamePlayScreen.getCell().getX();
-
-    //     // Trigger shake effect
-    //     gamePlayScreen.triggerShake(1f, 10f);
-    //     gameRunner.runForSeconds(0.1f);
-
-    //     assertNotEquals(initialX, gamePlayScreen.getCell().getX(),
-    //             "Camera should shake and change position");
-    // }
-
-    // @Test
-    // public void zoomEffectAppliesCorrectly() {
-    //     var gameRunner = GameRunner.create();
-    //     gameRunner.setHeldDownKeys(Set.of(Input.Keys.ENTER));
-    //     gameRunner.step(); // Move to gameplay
-
-    //     var gamePlayScreen = (GamePlayScreen) gameRunner.game.getScreen();
-    //     float initialZoom = gamePlayScreen.getViewport().getWorldWidth();
-
-    //     // Simulate cell death
-    //     gamePlayScreen.getCell().applyDamage(100);
-    //     gameRunner.runForSeconds(1f);
-
-    //     assertTrue(gamePlayScreen.getViewport().getWorldWidth() < initialZoom,
-    //             "Zoom effect should apply on cell death");
-    // }
 }
