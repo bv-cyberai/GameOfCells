@@ -361,11 +361,18 @@ There are also a set of debug keys:
 ### List of assets/licenses:
 
 ### Creative Commons:
+Glucose
 - https://openclipart.org/detail/75313/glossy-balls
 
-### SIL Open Font License
+### SIL Open Font License:
 
 - Rubik
+
+### BioRender Attribution:
+**Scientific illustrations and textures created with [BioRender.com](https://biorender.com).**
+BioRender assets are used in this project with permission for internal educational purposes only, based on guidance provided by BioRender Support. No redistribution or commercial use is intended.
+- Cell Organelles
+
 
 
 # ====== Process Information ======
