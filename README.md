@@ -297,7 +297,7 @@ directory, run the `tree` command in your favorite shell.
 
  ```
 
-**599 directories, 5551 files**
+**604 directories, 5688 files**
 
 ## Notes
 
