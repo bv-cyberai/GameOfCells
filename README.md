@@ -24,6 +24,7 @@ directory, run the `tree` command in your favorite shell.
 
  ```
 .
+│   .gitignore
 │   build.gradle
 │   local_web_server.py
 │   pull_request_template.md
@@ -124,10 +125,11 @@ directory, run the `tree` command in your favorite shell.
 │       │               │
 │       │               ├───notification
 │       │               │       AcidZoneSource.java
-│       │               │       CanSplitCellSource.java
-│       │               │       LowAtpSource.java
+│       │               │       CanBuyFirstUpgradeSource.java
+│       │               │       CanDivideCellSource.java
+│       │               │       LowATPSource.java
 │       │               │       LowHealthSource.java
-│       │               │       NoAtpSource.java
+│       │               │       NoATPSource.java
 │       │               │       Notification.java
 │       │               │       NotificationManager.java
 │       │               │       NotificationSource.java
@@ -272,8 +274,11 @@ directory, run the `tree` command in your favorite shell.
 │                       │
 │                       └───gwt
 │                               GwtLauncher.java
+│   
 │
 └───lwjgl3
+    │   build.gradle
+    │   nativeimage.gradle
     │
     └───src
         └───main
@@ -289,6 +294,7 @@ directory, run the `tree` command in your favorite shell.
                     libgdx16.png
                     libgdx32.png
                     libgdx64.png
+
  ```
 
 **599 directories, 5551 files**
