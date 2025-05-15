@@ -5,6 +5,9 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * Checks whether the first upgrade can be bought
+ */
 public class CanBuyFirstUpgradeSource implements NotificationSource {
     private static final String CONFIG_KEY = "canBuyFirstUpgradeNotification";
     private static final String DEFAULT_TEXT = "You can buy an upgrade!\nPress Q to open the shop";
@@ -14,6 +17,9 @@ public class CanBuyFirstUpgradeSource implements NotificationSource {
     private final NotificationManager notificationManager;
     private final String text;
 
+    /**
+     * Create this source.
+     */
     public CanBuyFirstUpgradeSource(ConfigProvider configProvider, NotificationManager notificationManager) {
         this.notificationManager = notificationManager;
         this.text = configProvider.getStringOrDefault(CONFIG_KEY, DEFAULT_TEXT);

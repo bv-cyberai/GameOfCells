@@ -6,6 +6,9 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.Random;
 
+/**
+ * Particles!
+ */
 public class Particles {
     private static final int NUM_PARTICLES = 100; // Number of particles
     private final Array<Particle> particles;
@@ -20,11 +23,11 @@ public class Particles {
         // Initialize particles
         for (int i = 0; i < NUM_PARTICLES; i++) {
             particles.add(new Particle(
-                    random.nextFloat() * 1200, // Random x position (adjust to your screen width)
-                    random.nextFloat() * 800,  // Random y position (adjust to your screen height)
-                    random.nextFloat() * 2 + 1, // Random size between 1 and 3
-                    random.nextFloat() * 0.5f + 0.1f, // Random speed between 0.1 and 0.6
-                    whitePixelTexture // Pass the white pixel texture to the particle
+                random.nextFloat() * 1200, // Random x position (adjust to your screen width)
+                random.nextFloat() * 800,  // Random y position (adjust to your screen height)
+                random.nextFloat() * 2 + 1, // Random size between 1 and 3
+                random.nextFloat() * 0.5f + 0.1f, // Random speed between 0.1 and 0.6
+                whitePixelTexture // Pass the white pixel texture to the particle
             ));
         }
     }
@@ -76,6 +79,7 @@ public class Particles {
 
     /**
      * Checks if the particles are active
+     *
      * @return true if particles are active, false otherwise
      */
     public boolean isActive() {
@@ -84,6 +88,7 @@ public class Particles {
 
     /**
      * Get the white pixel texture.
+     *
      * @return The white pixel texture used for rendering particles.
      */
     public Texture getWhitePixelTexture() {
@@ -92,7 +97,7 @@ public class Particles {
 
     /**
      * Get the number of particles.
-     * 
+     *
      * @return The number of particles in the system.
      */
     public int getParticleCount() {

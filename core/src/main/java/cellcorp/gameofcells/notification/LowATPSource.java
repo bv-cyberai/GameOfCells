@@ -4,6 +4,9 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * Notification for low ATP warnings
+ */
 public class LowATPSource implements NotificationSource {
     private static final String CONFIG_KEY = "lowATPNotification";
     private static final String DEFAULT_TEXT = "WARNING: Low ATP. Find some glucose.";

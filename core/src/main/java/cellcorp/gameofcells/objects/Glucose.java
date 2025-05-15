@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Circle;
 
 /**
  * Glucose Object
- *
+ * <p>
  * Represents a glucose molecule which a cell converts
  * to ATP.
  *
@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.Circle;
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
  * @author Tim Davey / daveytj206
- *
  * @date 03/04/2025
  * @course CIS 405
  * @assignment GameOfCells
@@ -45,7 +44,7 @@ public class Glucose {
 
     /**
      * Draw
-     *
+     * <p>
      * Draws a cell.
      *
      * @param batch The gamePlayScreen Spritebatch
@@ -61,6 +60,9 @@ public class Glucose {
         batch.draw(glucoseTexture, bottomLeftX, bottomLeftY, diameter, diameter);
     }
 
+    /**
+     * Draw the glucose
+     */
     public void draw(ShapeRenderer shapeRenderer) {
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
             shapeRenderer.circle(boundCircle.x, boundCircle.y, boundCircle.radius);
@@ -106,9 +108,9 @@ public class Glucose {
      * @param setToZero If ture set ATP_PER_GLUCOSE to 0.
      */
     public static void setAtpPerGlucoseDoNotUseForTestingOnly(boolean setToZero) {
-        if(setToZero) {
+        if (setToZero) {
             ATP_PER_GLUCOSE = 0;
-        }else {
+        } else {
             ATP_PER_GLUCOSE = 20;
         }
 

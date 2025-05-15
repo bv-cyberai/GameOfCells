@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+/**
+ * Health/ATP bars drawn at the top of the hud.
+ */
 public class Bars {
     private static final Color DARK_RED = new Color(0.7f, 0, 0, 1);
 
@@ -16,6 +19,9 @@ public class Bars {
     private final Bar healthBar;
     private final Bar atpBar;
 
+    /**
+     * Construct the bars
+     */
     public Bars(GraphicsProvider graphicsProvider, AssetManager assetManager, Cell cell) {
         super();
         this.cell = cell;
@@ -37,6 +43,9 @@ public class Bars {
         return this.table;
     }
 
+    /**
+     * Update the bars for this game tick.
+     */
     public void update() {
         var percentHealth = (float) cell.getCellHealth() / (float) cell.getMaxHealth();
         healthBar.setFillPercent(percentHealth);

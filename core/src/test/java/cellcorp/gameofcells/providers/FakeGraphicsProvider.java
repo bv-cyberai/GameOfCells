@@ -13,6 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.mockito.Mockito;
 
+/**
+ * Implementation of GraphicsProvider for tests.
+ * Mostly just mocks things.
+ */
 public class FakeGraphicsProvider implements GraphicsProvider {
     @Override
     public int getWidth() {

@@ -2,6 +2,9 @@ package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
 
+/**
+ * Massive size upgrade.
+ */
 public class MassiveSizeUpgrade extends SizeUpgrade {
     private static final float SIZE_INCREASE = 50;
 

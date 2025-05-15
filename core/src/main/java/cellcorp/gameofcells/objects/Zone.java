@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.util.Objects;
 
+/**
+ * Acid or basic zone
+ */
 public final class Zone {
     public static final float ZONE_RADIUS = 800;
     private static final float ZONE_TEXTURE_RADIUS = 1000;
@@ -39,6 +42,9 @@ public final class Zone {
         return y;
     }
 
+    /**
+     * Draw the parts of the zone drawn with a spritebatch
+     */
     public void draw(SpriteBatch spriteBatch) {
         var texture = assetManager.get(texturePath, Texture.class);
         float bottomLeftX = x - ZONE_TEXTURE_RADIUS;
@@ -48,6 +54,9 @@ public final class Zone {
         spriteBatch.draw(texture, bottomLeftX, bottomLeftY, diameter, diameter);
     }
 
+    /**
+     * Draws the parts of this zone drawn with shapeRenderer
+     */
     public void draw(ShapeRenderer shapeRenderer) {
         if (GamePlayScreen.DEBUG_DRAW_ENABLED) {
             shapeRenderer.point(x, y, 0);
@@ -61,7 +70,7 @@ public final class Zone {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (Zone) obj;
         return Float.floatToIntBits(this.x) == Float.floatToIntBits(that.x) &&
-                Float.floatToIntBits(this.y) == Float.floatToIntBits(that.y);
+            Float.floatToIntBits(this.y) == Float.floatToIntBits(that.y);
     }
 
     @Override
@@ -69,9 +78,12 @@ public final class Zone {
         return Objects.hash(x, y);
     }
 
+    /**
+     * Distance of this zone to the given coordinates
+     */
     public double distanceFrom(float x, float y) {
         return Math.sqrt(
-                Math.pow(this.x() - x, 2) + Math.pow(this.y() - y, 2)
+            Math.pow(this.x() - x, 2) + Math.pow(this.y() - y, 2)
         );
     }
 

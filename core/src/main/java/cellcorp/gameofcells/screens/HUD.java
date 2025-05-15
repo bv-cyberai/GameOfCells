@@ -23,6 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+/**
+ * The screen's overlay
+ */
 public class HUD implements Disposable {
     /**
      * Width of the HUD view rectangle.
@@ -59,6 +62,9 @@ public class HUD implements Disposable {
     private Color popupColor;
     private boolean mitochondriaDisplayed = false;
 
+    /**
+     * Create a HUD
+     */
     public HUD(GraphicsProvider graphicsProvider, InputProvider inputProvider, ConfigProvider configProvider, AssetManager assetManager, GamePlayScreen gamePlayScreen, Stats stats) {
         this.graphicsProvider = graphicsProvider;
         this.assetManager = assetManager;
@@ -112,10 +118,16 @@ public class HUD implements Disposable {
         return table;
     }
 
+    /**
+     * Handle input for this tick.
+     */
     public void handleInput() {
         controlInstructions.handleInput();
     }
 
+    /**
+     * Update the HUD for this tick
+     */
     public void update(float deltaTime, boolean HasMitochondria) {
         hudStats.update();
         if (HasMitochondria && (!mitochondriaDisplayed)) {
@@ -126,6 +138,9 @@ public class HUD implements Disposable {
         notificationManager.update(deltaTime);
     }
 
+    /**
+     * Draw the HUD
+     */
     public void draw() {
         stage.draw();
         drawPopup(popupSpriteBatch);
@@ -144,6 +159,9 @@ public class HUD implements Disposable {
         return notificationManager;
     }
 
+    /**
+     * Enqueue a popup
+     */
     public void queuePopup(String message, float x, float y, float width, float height, Color bgColor) {
         this.shouldDrawPopup = true;
         this.popupMessage = message;
@@ -154,6 +172,9 @@ public class HUD implements Disposable {
         this.popupColor = bgColor;
     }
 
+    /**
+     * Draw the popup
+     */
     public void drawPopup(SpriteBatch batch) {
         if (!shouldDrawPopup) return;
         batch.setProjectionMatrix(viewport.getCamera().combined);

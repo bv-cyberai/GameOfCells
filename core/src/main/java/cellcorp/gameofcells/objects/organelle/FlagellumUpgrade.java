@@ -6,6 +6,9 @@ import cellcorp.gameofcells.objects.Cell;
  * Flagellum upgrade.
  */
 public class FlagellumUpgrade extends OrganelleUpgrade {
+    /**
+     * Create this upgrade.
+     */
     public FlagellumUpgrade() {
         super("Flagellum", 70, "Increases movement speed", "Increases movement speed", 70, 3);
     }

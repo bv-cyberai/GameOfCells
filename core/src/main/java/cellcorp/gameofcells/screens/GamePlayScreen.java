@@ -267,6 +267,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         gameLoaderSaver = new GameLoaderSaver(this);
     }
 
+    /**
+     * Trigger screen shaking
+     */
     public void triggerShake(float duration, float intensity) {
         this.shakeTime = duration;
         this.shakeDuration = duration;
@@ -512,6 +515,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         drawMinimap();
     }
 
+    /**
+     * Clear screen and set up OpenGL drawing requirements
+     */
     public void setUpDraw() {
         ScreenUtils.clear(Main.PURPLE);
 
@@ -521,6 +527,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         batch.setProjectionMatrix(camera.combined);
     }
 
+    /**
+     * Draw the background
+     */
     public void drawBackground() {
 
         // Draw parallax background layers
@@ -538,6 +547,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Draw the hud
+     */
     public void drawHUD() {
         // Draw low ATP warning
         drawLowHealthVignette();
@@ -858,6 +870,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Call this function to indicate a heal is available.
+     */
     public void reportHealAvailable() {
         if (!healAvailablePopup.wasShown()) {
             pauseGame();
@@ -865,6 +880,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Call this to indicate that a cell membrane popup was shown.
+     */
     public void reportCellMembrane() {
         if (!cellMembranePopup.wasShown()) {
             pauseGame();
@@ -872,6 +890,9 @@ public class GamePlayScreen implements GameOfCellsScreen {
         }
     }
 
+    /**
+     * Report that the cell has split.
+     */
     public void reportSplitCell() {
         if (!splitCellPopup.wasShown()) {
             pauseGame();

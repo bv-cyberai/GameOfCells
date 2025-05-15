@@ -74,6 +74,9 @@ public class ZoneManager {
         }
     }
 
+    /**
+     * Get the basic zones for the given list of chunks
+     */
     public Map<Chunk, Zone> basicZonesInChunks(List<Chunk> chunks) {
         Map<Chunk, Zone> map = new HashMap<>();
         for (var chunk : chunks) {
@@ -99,6 +102,9 @@ public class ZoneManager {
         return distanceToNearestZone(basicZones, x, y);
     }
 
+    /**
+     * Distance from the given coords to the nearst zone in the given zone map
+     */
     public Optional<Double> distanceToNearestZone(Map<Chunk, Zone> zoneMap, float x, float y) {
         // GWT emulates stream -- very slowly. We'll use enhanced for instead.
         var lowestDistance = Double.MAX_VALUE;
@@ -142,7 +148,7 @@ public class ZoneManager {
             for (int col = col0; col < col1; col++) {
                 // Don't spawn in the range (-1, -1) ..= (0, 0)
                 if ((-1 <= row && row <= 0)
-                        && (-1 <= col && col <= 0)) {
+                    && (-1 <= col && col <= 0)) {
                     continue;
                 }
                 var chunk = new Chunk(row, col);
@@ -209,7 +215,7 @@ public class ZoneManager {
 
         for (var ch : adjacentChunks) {
             if (overlap(acidZones, ch, zonePlacement)
-                    || overlap(basicZones, ch, zonePlacement)) {
+                || overlap(basicZones, ch, zonePlacement)) {
                 return true;
             }
         }
@@ -239,12 +245,12 @@ public class ZoneManager {
 
     private void despawnZoneSetOutsideRange(Map<Chunk, Zone> zoneSet, int row0, int col0, int row1, int col1) {
         var keepZones = zoneSet.
-                keySet().
-                stream().
-                filter(chunk ->
-                               row0 <= chunk.row() && chunk.row() < row1
-                                       && col0 <= chunk.col() && chunk.col() < col1
-                ).collect(Collectors.toList());
+            keySet().
+            stream().
+            filter(chunk ->
+                row0 <= chunk.row() && chunk.row() < row1
+                    && col0 <= chunk.col() && chunk.col() < col1
+            ).collect(Collectors.toList());
         zoneSet.keySet().retainAll(keepZones);
     }
 

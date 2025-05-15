@@ -4,6 +4,9 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * Checks whether the cell can divide
+ */
 public class CanDivideCellSource implements NotificationSource {
     private static final String CONFIG_KEY = "canDivideCellNotification";
     private static final String DEFAULT_TEXT = "Press U to divide the cell.";
@@ -13,6 +16,9 @@ public class CanDivideCellSource implements NotificationSource {
     private final NotificationManager notificationManager;
     private final String text;
 
+    /**
+     * Creates this source
+     */
     public CanDivideCellSource(ConfigProvider configProvider, NotificationManager notificationManager) {
         this.notificationManager = notificationManager;
         this.text = configProvider.getStringOrDefault(CONFIG_KEY, DEFAULT_TEXT);

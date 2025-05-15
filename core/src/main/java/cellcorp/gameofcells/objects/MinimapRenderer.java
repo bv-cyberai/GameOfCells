@@ -12,6 +12,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Renders the minimap
+ */
 public class MinimapRenderer {
     // Chosen to roughly existing minimap size and location.
     private static final int VIEW_RECT_WIDTH = 1333;
@@ -79,9 +82,9 @@ public class MinimapRenderer {
         // Player (centered)
         shapeRenderer.setColor(1f, 1f, 1f, 1f);
         shapeRenderer.rect(
-                x + minimapWidth / 2f - 2f,
-                y + minimapHeight / 2f - 2f,
-                4f, 4f
+            x + minimapWidth / 2f - 2f,
+            y + minimapHeight / 2f - 2f,
+            4f, 4f
         );
 
         shapeRenderer.end();

@@ -2,6 +2,9 @@ package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
 
+/**
+ * Small size upgrade
+ */
 public class SmallSizeUpgrade extends SizeUpgrade {
     public static final int ATP_COST = 50;
     private static final float SIZE_INCREASE = 75;

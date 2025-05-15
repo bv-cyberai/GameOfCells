@@ -26,6 +26,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+/**
+ * Main entrypoint of the game.
+ */
 public class Main implements ApplicationListener {
     public static final int DEFAULT_SCREEN_WIDTH = 1280;
     public static final int DEFAULT_SCREEN_HEIGHT = 800;
@@ -197,10 +200,16 @@ public class Main implements ApplicationListener {
         if (screen != null) screen.resize(width, height);
     }
 
+    /**
+     * @return The current screen
+     */
     public GameOfCellsScreen getScreen() {
         return this.screen;
     }
 
+    /**
+     * Set the game's screen, calling its `show` method.
+     */
     public void setScreen(GameOfCellsScreen screen) {
         if (this.screen != null) this.screen.hide();
 

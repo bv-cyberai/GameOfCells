@@ -4,6 +4,9 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * Warning for low-health.
+ */
 public class LowHealthSource implements NotificationSource {
     private static final String CONFIG_KEY = "lowHealthNotification";
     private static final String DEFAULT_TEXT = "DANGER: Low Health!!!";

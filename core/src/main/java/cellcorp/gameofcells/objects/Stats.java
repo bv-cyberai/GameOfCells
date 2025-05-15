@@ -1,5 +1,8 @@
 package cellcorp.gameofcells.objects;
 
+/**
+ * Tracks stats for end-of-game screen
+ */
 public class Stats {
     public float gameTimer = 0;
     public int glucoseCollected = 0;

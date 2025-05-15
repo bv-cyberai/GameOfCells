@@ -16,21 +16,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+/**
+ * Scrollable info screen
+ */
 public class PopupInfoScreen {
     // I feel this is not a _great_ place for these, but Idk where else to put them.
     // Maybe in `assets/defaults.timl` or something.
     public static final String DEFAULT_GLUCOSE_POPUP_MESSAGE =
-            "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
+        "You've collected glucose!\n\nCells convert glucose into ATP for energy.";
     public static final String DEFAULT_ACID_ZONE_POPUP_MESSAGE =
-            "DANGER ZONE!\n\nHealth drains in pink areas. Move to safety quickly!";
+        "DANGER ZONE!\n\nHealth drains in pink areas. Move to safety quickly!";
     public static final String DEFAULT_BASIC_ZONE_POPUP_MESSAGE =
-            "GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.";
+        "GLUCOSE ZONE!\n\nBlue areas contains lots of glucose.";
     public static final String DEFAULT_HEAL_AVAILABLE_MESSAGE =
-            "Congrats! You can heal damage now.\n\nPress the h button to heal damage.\n\nPress 'Space' to continue!";
+        "Congrats! You can heal damage now.\n\nPress the h button to heal damage.\n\nPress 'Space' to continue!";
     public static final String DEFAULT_SIZE_UPGRADE_1_MESSAGE =
-            "Your cell has grown!\n\nYou can now see acidic zones, which will damage your cell.\n\nPress 'Space' to continue!";
+        "Your cell has grown!\n\nYou can now see acidic zones, which will damage your cell.\n\nPress 'Space' to continue!";
     public static final String DEFAULT_SPLIT_CELL_MESSAGE =
-            "Your cell has divided.\n\nFrom now on, if your cell dies, you can load the game and play as the new cell.\n\nPress 'Space' to continue!";
+        "Your cell has divided.\n\nFrom now on, if your cell dies, you can load the game and play as the new cell.\n\nPress 'Space' to continue!";
 
     private static final float FONT_SCALE = 0.45f;
     private static final float HORIZONTAL_PADDING = (float) HUD.VIEW_RECT_WIDTH / 5;
@@ -87,10 +90,10 @@ public class PopupInfoScreen {
 
     private Drawable background(GraphicsProvider graphicsProvider) {
         Texture backgroundTexture = graphicsProvider.createRoundedRectangleTexture(
-                (int) SCROLL_PANE_WIDTH,
-                (int) SCROLL_PANE_HEIGHT,
-                backgroundColor,
-                SCROLL_PANE_CORNER_RADIUS
+            (int) SCROLL_PANE_WIDTH,
+            (int) SCROLL_PANE_HEIGHT,
+            backgroundColor,
+            SCROLL_PANE_CORNER_RADIUS
         );
         Drawable background = new TextureRegionDrawable(backgroundTexture);
         background.setLeftWidth(TEXT_HORIZONTAL_PADDING);
@@ -120,11 +123,17 @@ public class PopupInfoScreen {
         return table;
     }
 
+    /**
+     * Show this notification
+     */
     public void show() {
         this.isVisible = true;
         this.wasShown = true;
     }
 
+    /**
+     * Hide this notification
+     */
     public void hide() {
         isVisible = false;
         if (onHide != null) {
@@ -132,11 +141,14 @@ public class PopupInfoScreen {
         }
     }
 
+    /**
+     * Handle input for this tick
+     */
     public void handleInput(InputProvider inputProvider, float deltaTimeSeconds) {
         if (!isVisible) return;
 
         if (inputProvider.isKeyJustPressed(Input.Keys.ENTER)
-                || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
+            || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             hide();
         }
 
@@ -147,6 +159,9 @@ public class PopupInfoScreen {
         }
     }
 
+    /**
+     * Draw the popup screen
+     */
     public void draw() {
         if (!isVisible) return;
 

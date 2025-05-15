@@ -129,6 +129,9 @@ public class Cell {
      */
     private int respawns = 0;
 
+    /**
+     * Create this cell.
+     */
     public Cell(GamePlayScreen gamePlayScreen, AssetManager assetManager, ConfigProvider configProvider) {
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
@@ -471,6 +474,9 @@ public class Cell {
 
     }
 
+    /**
+     * Update the cell for this tick.
+     */
     public void update(float deltaTimeSeconds) {
         if (isDying) {
             deathAnimationTime += deltaTimeSeconds;
@@ -1162,6 +1168,9 @@ public class Cell {
         return forceCircle;
     }
 
+    /**
+     * Draw the flagellum.
+     */
     public void drawFlagellum(boolean drawFlagellum, ShapeRenderer shapeRenderer) {
 
         if (!drawFlagellum || flagellumVectors.isEmpty()) return;
@@ -1186,6 +1195,9 @@ public class Cell {
 
     }
 
+    /**
+     * Update the flagellum for this tick.
+     */
     public void updateFlagellum(float deltaTime) {
         //Dying Animation
         if (isDying) {

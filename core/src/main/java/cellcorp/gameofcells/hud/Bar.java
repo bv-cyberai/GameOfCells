@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 
+/**
+ * Bar drawn at the top of HUD.
+ */
 public class Bar extends BaseDrawable {
     private static final float WIDTH = 600;
     private static final float HEIGHT = 40;

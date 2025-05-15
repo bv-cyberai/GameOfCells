@@ -1,23 +1,5 @@
 package cellcorp.gameofcells.screens;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-
-import cellcorp.gameofcells.AssetFileNames;
 import cellcorp.gameofcells.Main;
 import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Glucose;
@@ -25,7 +7,22 @@ import cellcorp.gameofcells.objects.Particles;
 import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.providers.GraphicsProvider;
 import cellcorp.gameofcells.providers.InputProvider;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * Attract screen that shows when the main menu is left without input.
+ */
 public class AttractScreen implements GameOfCellsScreen {
     /**
      * Width of the HUD view rectangle.
@@ -55,19 +52,22 @@ public class AttractScreen implements GameOfCellsScreen {
 
     private Cell cell;
     private List<Glucose> glucoseList;
-    private Random random;
+    private final Random random;
     private float animationTime = 0f;
     private boolean isSimulationRunning = true;
     private float targetX, targetY;
     private float cellSpeed = 100f;
 
+    /**
+     * Create an attract screen.
+     */
     public AttractScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            GameOfCellsScreen previousScreen,
-            ConfigProvider configProvider) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        GameOfCellsScreen previousScreen,
+        ConfigProvider configProvider) {
 
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
@@ -85,9 +85,9 @@ public class AttractScreen implements GameOfCellsScreen {
 
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
-                new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch()),
-                assetManager,
-                graphicsProvider
+            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), graphicsProvider.createSpriteBatch()),
+            assetManager,
+            graphicsProvider
         );
 
         initializeGameObjects();
@@ -97,8 +97,8 @@ public class AttractScreen implements GameOfCellsScreen {
     private void initializeGameObjects() {
         this.cell = new Cell(
             new GamePlayScreen(inputProvider, graphicsProvider, game, assetManager, configProvider, 2),
-                assetManager,
-                configProvider);
+            assetManager,
+            configProvider);
 
         this.glucoseList = new ArrayList<>();
         for (int i = 0; i < NUM_GLUCOSE; i++) {
@@ -139,10 +139,12 @@ public class AttractScreen implements GameOfCellsScreen {
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
     public void hide() {

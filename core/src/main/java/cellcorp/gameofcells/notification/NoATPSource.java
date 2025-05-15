@@ -4,6 +4,9 @@ import cellcorp.gameofcells.providers.ConfigProvider;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * Warning for 0 ATP
+ */
 public class NoATPSource implements NotificationSource {
     private static final String CONFIG_KEY = "noATPNotification";
     private static final String DEFAULT_TEXT = "DANGER: No ATP! You're losing health!";

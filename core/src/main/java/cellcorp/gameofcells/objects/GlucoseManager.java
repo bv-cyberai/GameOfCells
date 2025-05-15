@@ -1,8 +1,5 @@
 package cellcorp.gameofcells.objects;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import cellcorp.gameofcells.Util;
 import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -11,6 +8,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Spawns, despawns, and draws glucose.
@@ -121,6 +121,9 @@ public class GlucoseManager {
     private final Map<Chunk, List<Glucose>> glucoses;
     private final Random rand;
 
+    /**
+     * Spawns and updates glucose
+     */
     public GlucoseManager(AssetManager assetManager, GamePlayScreen gamePlayScreen, ZoneManager zoneManager, Cell cell) {
         this.assetManager = assetManager;
         this.gamePlayScreen = gamePlayScreen;
@@ -131,6 +134,9 @@ public class GlucoseManager {
         this.rand = new Random();
     }
 
+    /**
+     * Spawn glucose in the given range of chunks
+     */
     public void spawnInRange(int row0, int col0, int row1, int col1) {
         for (int row = row0; row < row1; row++) {
             for (int col = col0; col < col1; col++) {
@@ -210,6 +216,9 @@ public class GlucoseManager {
         return new Glucose(assetManager, x, y);
     }
 
+    /**
+     * Despawn glucose outside the given range of chunks
+     */
     public void despawnOutsideRange(int row0, int col0, int row1, int col1) {
         var keep = glucoses.
             keySet().
@@ -231,7 +240,7 @@ public class GlucoseManager {
 
     /**
      * GlucoseMover
-     *
+     * <p>
      * Loops through the current and adjacent chunks to calculate movement of glucose.
      *
      * @param deltaTime time since last render cycle
@@ -247,10 +256,11 @@ public class GlucoseManager {
 
     /**
      * Glucose Mover Helper
-     *
+     * <p>
      * Calculates the new glucose positions after they've been pushed by the cell
      * for a given chunk.
-     * @param chunk The current chunk
+     *
+     * @param chunk     The current chunk
      * @param deltaTime Time since last render cycle
      */
     private void handleGlucoseMovementInChunk(Chunk chunk, float deltaTime) {

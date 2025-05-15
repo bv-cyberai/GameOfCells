@@ -21,6 +21,9 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
+/**
+ * Runs the game with the given inputs, for the given amounts of time.
+ */
 public class GameRunner {
     public static final int TICKS_PER_SECOND = 60;
     public static final float DELTA_TIME = 1 / (float) TICKS_PER_SECOND;
@@ -31,6 +34,9 @@ public class GameRunner {
 
     private int ticksElapsed = 0;
 
+    /**
+     * Creates a GameRunner.
+     */
     public GameRunner(Main game, FakeInputProvider inputProvider) {
         this.game = game;
         this.inputProvider = inputProvider;
@@ -79,6 +85,9 @@ public class GameRunner {
         ticksElapsed += 1;
     }
 
+    /**
+     * Run the game for a simulated number of seconds.
+     */
     public void runForSeconds(float seconds) {
         int steps = (int) (seconds * TICKS_PER_SECOND);
         for (int i = 0; i < steps; i++) {

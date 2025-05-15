@@ -66,6 +66,9 @@ public class ControlInstructions {
 
     private State state = SHOW_INFO_ICON;
 
+    /**
+     * Create an instance of control instructions
+     */
     public ControlInstructions(GraphicsProvider graphicsProvider, InputProvider inputProvider, AssetManager assetManager) {
         this.graphicsProvider = graphicsProvider;
         this.inputProvider = inputProvider;
@@ -111,6 +114,9 @@ public class ControlInstructions {
         return table;
     }
 
+    /**
+     * Handle input for this tick.
+     */
     public void handleInput() {
         if (inputProvider.isKeyJustPressed(Input.Keys.C)) {
             toggleState();
@@ -179,6 +185,9 @@ public class ControlInstructions {
         }
     }
 
+    /**
+     * Update for this tick.
+     */
     public void update() {
         var label = iconLabel(INNER_HEAL_ICON);
         var icon = iconImage(INNER_HEAL_ICON);

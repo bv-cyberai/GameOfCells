@@ -22,6 +22,9 @@ public final class Chunk {
     private final int row;
     private final int col;
 
+    /**
+     * Create a chunk at the given row and column.
+     */
     public Chunk(int row, int col) {
         this.row = row;
         this.col = col;
@@ -32,8 +35,8 @@ public final class Chunk {
      */
     public static Chunk fromWorldCoords(float x, float y) {
         return new Chunk(
-                (int) Math.floor(x / (float) CHUNK_LENGTH),
-                (int) Math.floor(y / (float) CHUNK_LENGTH)
+            (int) Math.floor(x / (float) CHUNK_LENGTH),
+            (int) Math.floor(y / (float) CHUNK_LENGTH)
         );
     }
 
@@ -51,7 +54,7 @@ public final class Chunk {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (Chunk) obj;
         return this.row == that.row &&
-                this.col == that.col;
+            this.col == that.col;
     }
 
     @Override
@@ -62,8 +65,8 @@ public final class Chunk {
     @Override
     public String toString() {
         return "Chunk[" +
-                "row=" + row + ", " +
-                "col=" + col + ']';
+            "row=" + row + ", " +
+            "col=" + col + ']';
     }
 
     /**
@@ -71,10 +74,10 @@ public final class Chunk {
      */
     public Rectangle toRectangle() {
         return new Rectangle(
-                row * CHUNK_LENGTH,
-                col * CHUNK_LENGTH,
-                CHUNK_LENGTH,
-                CHUNK_LENGTH
+            row * CHUNK_LENGTH,
+            col * CHUNK_LENGTH,
+            CHUNK_LENGTH,
+            CHUNK_LENGTH
         );
     }
 

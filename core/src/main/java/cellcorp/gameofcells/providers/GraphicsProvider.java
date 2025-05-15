@@ -138,18 +138,33 @@ public interface GraphicsProvider {
      */
     Matrix4 getScreenProjectionMatrix();
 
+    /**
+     * Create a Label
+     */
     Label createLabel(CharSequence text, Label.LabelStyle labelStyle);
 
+    /**
+     * Create an Image
+     */
     Image createImage(Texture texture);
 
+    /**
+     * Create a drawable texture region
+     */
     TextureRegionDrawable createTextureRegionDrawable(Texture texture);
 
+    /**
+     * Create a glyph layout
+     */
     GlyphLayout createGlyphLayout(BitmapFont font, String text);
 
+    /**
+     * Create a Scene2d stage
+     */
     default Stage createStage(int viewRectWidth, int viewRectHeight) {
         return new Stage(
-                this.createFitViewport(viewRectWidth, viewRectHeight),
-                this.createSpriteBatch()
+            this.createFitViewport(viewRectWidth, viewRectHeight),
+            this.createSpriteBatch()
         );
     }
 }

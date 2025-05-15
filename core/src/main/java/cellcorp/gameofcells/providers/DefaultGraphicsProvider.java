@@ -12,6 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+/**
+ * Default implementation of the graphics provider.
+ * Mostly just calls `Gdx.graphics` methods.
+ */
 public class DefaultGraphicsProvider implements GraphicsProvider {
     @Override
     public int getWidth() {

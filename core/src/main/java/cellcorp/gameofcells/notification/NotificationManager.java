@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Manages notifications, determining when to produce them.
+ */
 public class NotificationManager {
     private static final float PADDING = 10;
 

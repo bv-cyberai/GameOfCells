@@ -17,6 +17,9 @@ public class AcidZoneSource implements NotificationSource {
     private final NotificationManager notificationManager;
     private final String text;
 
+    /**
+     * Create an acid zone source.
+     */
     public AcidZoneSource(ConfigProvider configProvider, NotificationManager notificationManager) {
         this.notificationManager = notificationManager;
         text = configProvider.getStringOrDefault(CONFIG_KEY, DEFAULT_TEXT);

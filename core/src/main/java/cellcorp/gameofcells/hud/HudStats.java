@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * Stats displayed on the HUD
+ */
 public class HudStats {
     private static final float FONT_SCALE = 0.4f;
     private static final String HEALTH_TEXT = "HEALTH: ";

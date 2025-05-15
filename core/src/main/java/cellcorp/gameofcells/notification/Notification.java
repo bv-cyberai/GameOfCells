@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Null;
 
+/**
+ * A notification that can query whether to start fading out
+ */
 public class Notification {
     private static final float FADE_OUT_DURATION_SECONDS = 0.5f;
     private static final float FONT_SCALE = 0.35f;
