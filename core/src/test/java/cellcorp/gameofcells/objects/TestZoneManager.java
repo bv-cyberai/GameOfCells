@@ -26,31 +26,31 @@ public class TestZoneManager {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(
-                new ApplicationListener() {
-                    @Override
-                    public void create() {
-                    }
+            new ApplicationListener() {
+                @Override
+                public void create() {
+                }
 
-                    @Override
-                    public void resize(int width, int height) {
-                    }
+                @Override
+                public void resize(int width, int height) {
+                }
 
-                    @Override
-                    public void render() {
-                    }
+                @Override
+                public void render() {
+                }
 
-                    @Override
-                    public void pause() {
-                    }
+                @Override
+                public void pause() {
+                }
 
-                    @Override
-                    public void resume() {
-                    }
+                @Override
+                public void resume() {
+                }
 
-                    @Override
-                    public void dispose() {
-                    }
-                }, config
+                @Override
+                public void dispose() {
+                }
+            }, config
         );
 
         // Mock the graphics provider
@@ -68,12 +68,12 @@ public class TestZoneManager {
 
         // Return fake config string that has valid values
         String mockConfig = """
-                    cellHealth:100
-                    cellATP:30
-                    maxHealth:100
-                    maxATP:100
-                    [descriptions]/
-                """;
+                cellHealth:100
+                cellATP:30
+                maxHealth:100
+                maxATP:100
+                [descriptions]/
+            """;
 
         Mockito.when(fileHandle.readString()).thenReturn(mockConfig);
         Mockito.when(Gdx.files.internal(Mockito.anyString())).thenReturn(fileHandle);

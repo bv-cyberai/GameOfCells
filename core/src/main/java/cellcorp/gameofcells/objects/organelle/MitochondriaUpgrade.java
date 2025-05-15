@@ -1,6 +1,7 @@
 package cellcorp.gameofcells.objects.organelle;
 
 import cellcorp.gameofcells.objects.Cell;
+
 /**
  * Mitochondria upgrade.
  */
@@ -16,6 +17,7 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
 
     /**
      * Check if the mitochondria upgrade is already purchased.
+     *
      * @param cell
      */
     @Override
@@ -25,6 +27,7 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
 
     /**
      * Apply the upgrade's perks to the cell.
+     *
      * @param cell the game cell
      */
     @Override
@@ -37,6 +40,7 @@ public class MitochondriaUpgrade extends OrganelleUpgrade {
     /**
      * Check if the previous upgrade is purchased.
      * Mitochondria is the first upgrade, so no previous upgrade it required.
+     *
      * @param cell the game cell
      */
     @Override

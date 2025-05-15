@@ -331,7 +331,7 @@ public class ShopScreen implements GameOfCellsScreen {
                 border.setVisible(false);
             }
         }
-        
+
         // Now we'll show and align the selcted glowing border
         if (selectedCard != null) {
             Image glowingBorder = selectedCard.findActor("glowingBorder");

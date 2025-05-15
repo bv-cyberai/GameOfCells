@@ -20,7 +20,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * GameOver Screen
- *
+ * <p>
  * Presents the game over screen, and allows for resetting the game.
  *
  * @author Brendon Vineyard / vineyabn207
@@ -72,7 +72,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Constructor
-     *
+     * <p>
      * Creates a game over screen.
      *
      * @param inputProvider    - The input provider.
@@ -106,7 +106,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Handle Input
-     *
+     * <p>
      * Resets the game with 'Space'.
      */
     @Override
@@ -116,12 +116,12 @@ public class GameOverScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.SPACE)
             || inputProvider.isKeyJustPressed(Input.Keys.R)) {
             game.setScreen(new MainMenuScreen(inputProvider,
-            graphicsProvider,
-            game,
-            assetManager,
-            null,
-            viewport,
-            configProvider));
+                graphicsProvider,
+                game,
+                assetManager,
+                null,
+                viewport,
+                configProvider));
         }
     }
 
@@ -134,7 +134,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Draw
-     *
+     * <p>
      * Draws the game over message.
      */
     @Override
@@ -190,7 +190,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Render
-     *
+     * <p>
      * Does not call update has there is nothing to update.
      */
     @Override
@@ -239,7 +239,7 @@ public class GameOverScreen implements GameOfCellsScreen {
 
     /**
      * Get the stats object.
-     * 
+     *
      * @return the stats object
      */
     public Stats getStats() {

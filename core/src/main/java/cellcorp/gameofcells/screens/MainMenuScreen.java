@@ -29,8 +29,8 @@ import cellcorp.gameofcells.providers.InputProvider;
  * @course CIS 405
  * @assignment Game of Cells
  * @description This is the main menu screen of the game. This class handles displaying
- *              the main menu options, handling user input, and transitioning to the game
- *              screen or game info screen based on user selection.
+ * the main menu options, handling user input, and transitioning to the game
+ * screen or game info screen based on user selection.
  */
 public class MainMenuScreen implements GameOfCellsScreen {
     // Mark set these to be the previous `WORLD_WIDTH` and `WORLD_HEIGHT`.
@@ -84,22 +84,22 @@ public class MainMenuScreen implements GameOfCellsScreen {
     /**
      * Constructs a new MainMenuScreen.
      *
-     * @param inputProvider The input provider for handling user input
+     * @param inputProvider    The input provider for handling user input
      * @param graphicsProvider The graphics provider for rendering graphics
-     * @param game The main game instance
-     * @param assetManager The asset manager for loading and managing assets
-     * @param camera The camera used for rendering
-     * @param viewport The viewport for rendering
-     * @param configProvider The configuration provider for managing game settings
+     * @param game             The main game instance
+     * @param assetManager     The asset manager for loading and managing assets
+     * @param camera           The camera used for rendering
+     * @param viewport         The viewport for rendering
+     * @param configProvider   The configuration provider for managing game settings
      */
     public MainMenuScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            Camera camera,
-            Viewport viewport,
-            ConfigProvider configProvider) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        Camera camera,
+        Viewport viewport,
+        ConfigProvider configProvider) {
 
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
@@ -111,10 +111,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Load white pixel texture and initialize particles
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
-                new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT),
-                        graphicsProvider.createSpriteBatch()),
-                        assetManager,
-                        graphicsProvider
+            new Stage(graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT),
+                graphicsProvider.createSpriteBatch()),
+            assetManager,
+            graphicsProvider
         );
 
         this.cellTexture = assetManager.get(AssetFileNames.ATTRACT_SCREEN_CELL, Texture.class);
@@ -143,7 +143,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
             INSTRUCTIONS,
             wasdArrowsIcon,
             spaceEnterIcon,
-            new boolean[] {true, hasSave, true, true} // enables for each item
+            new boolean[]{true, hasSave, true, true} // enables for each item
         );
     }
 
@@ -164,7 +164,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
      * Resize the main menu screen.
      * This method is called when the window is resized.
      *
-     * @param width The new width of the window
+     * @param width  The new width of the window
      * @param height The new height of the window
      */
     @Override
@@ -227,7 +227,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
         if (inputProvider.isKeyJustPressed(Input.Keys.UP) || inputProvider.isKeyJustPressed(Input.Keys.W)) {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() - 1);
         }
-        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN)|| inputProvider.isKeyJustPressed(Input.Keys.S)) {
+        if (inputProvider.isKeyJustPressed(Input.Keys.DOWN) || inputProvider.isKeyJustPressed(Input.Keys.S)) {
             menuSystem.updateSelection(menuSystem.getSelectedOptionIndex() + 1);
         }
 
@@ -243,12 +243,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
                 case 0:
                     // Start the game
                     game.setScreen(new GamePlayScreen(
-                            inputProvider,
-                            graphicsProvider,
-                            game,
-                            assetManager, configProvider, 0));
+                        inputProvider,
+                        graphicsProvider,
+                        game,
+                        assetManager, configProvider, 0));
                     break;
-                case 1: 
+                case 1:
                     // Load game
                     game.setScreen(new GamePlayScreen(
                         inputProvider,
@@ -259,14 +259,14 @@ public class MainMenuScreen implements GameOfCellsScreen {
                 case 2:
                     // Show game info screen
                     game.setScreen(new GameInfoControlsScreen(
-                                inputProvider,
-                                graphicsProvider,
-                                game,
-                                assetManager,
-                                this,
-                                null,
-                                viewport,
-                                configProvider ));
+                        inputProvider,
+                        graphicsProvider,
+                        game,
+                        assetManager,
+                        this,
+                        null,
+                        viewport,
+                        configProvider));
                     break;
                 case 3:
                     // Exit the game
@@ -295,12 +295,12 @@ public class MainMenuScreen implements GameOfCellsScreen {
         // Transition to the attract screen if the inactivity timer exceeds the timeout
         if (inactivityTimer >= INACTIVITY_TIMEOUT) {
             game.setScreen(new AttractScreen(
-                    inputProvider,
-                    graphicsProvider,
-                    game,
-                    assetManager,
-                    this,
-                    configProvider ));
+                inputProvider,
+                graphicsProvider,
+                game,
+                assetManager,
+                this,
+                configProvider));
 
             inactivityTimer = 0f; // Reset the inactivity timer
         }
@@ -334,10 +334,10 @@ public class MainMenuScreen implements GameOfCellsScreen {
         batch.begin();
         batch.setColor(1, 1, 1, 0.15f);
         batch.draw(cellTexture,
-                cellX,
-                cellY,
-                cellWidth,
-                cellHeight);
+            cellX,
+            cellY,
+            cellWidth,
+            cellHeight);
         batch.setColor(1, 1, 1, 1); // Reset color to white
 
         // Draw the particles
@@ -351,6 +351,7 @@ public class MainMenuScreen implements GameOfCellsScreen {
 
     /**
      * Get the inactivity timer.
+     *
      * @return
      */
     public float getInactivityTimer() {

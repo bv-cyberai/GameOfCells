@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import com.badlogic.gdx.Preferences;
 
 import org.junit.jupiter.api.AfterAll;
@@ -35,12 +36,29 @@ public class TestGameInfoControlsScreen {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
+            @Override
+            public void create() {
+            }
+
+            @Override
+            public void resize(int width, int height) {
+            }
+
+            @Override
+            public void render() {
+            }
+
+            @Override
+            public void pause() {
+            }
+
+            @Override
+            public void resume() {
+            }
+
+            @Override
+            public void dispose() {
+            }
         }, config);
 
         // Mock the graphics provider
@@ -302,7 +320,7 @@ public class TestGameInfoControlsScreen {
         gameRunner.step();
 
         GameInfoControlsScreen screen = (GameInfoControlsScreen) gameRunner.game.getScreen();
-        
+
         assertDoesNotThrow(() -> {
             screen.update(0.5f);
         }, "Updating particle system should not throw exceptions");

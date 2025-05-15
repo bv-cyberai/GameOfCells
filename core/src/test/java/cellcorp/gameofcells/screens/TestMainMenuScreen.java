@@ -26,31 +26,31 @@ public class TestMainMenuScreen {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(
-                new ApplicationListener() {
-                    @Override
-                    public void create() {
-                    }
+            new ApplicationListener() {
+                @Override
+                public void create() {
+                }
 
-                    @Override
-                    public void resize(int width, int height) {
-                    }
+                @Override
+                public void resize(int width, int height) {
+                }
 
-                    @Override
-                    public void render() {
-                    }
+                @Override
+                public void render() {
+                }
 
-                    @Override
-                    public void pause() {
-                    }
+                @Override
+                public void pause() {
+                }
 
-                    @Override
-                    public void resume() {
-                    }
+                @Override
+                public void resume() {
+                }
 
-                    @Override
-                    public void dispose() {
-                    }
-                }, config
+                @Override
+                public void dispose() {
+                }
+            }, config
         );
 
         // Mock the graphics provider
@@ -168,13 +168,13 @@ public class TestMainMenuScreen {
 
         // Reset to main menu - IMPORTANT: Create fresh instance
         mainMenuScreen = new MainMenuScreen(
-                gameRunner.inputProvider,
-                gameRunner.game.getGraphicsProvider(),
-                gameRunner.game,
-                gameRunner.game.getAssetManager(),
-                gameRunner.game.getCamera(),
-                gameRunner.game.getViewport(),
-                gameRunner.configProvider
+            gameRunner.inputProvider,
+            gameRunner.game.getGraphicsProvider(),
+            gameRunner.game,
+            gameRunner.game.getAssetManager(),
+            gameRunner.game.getCamera(),
+            gameRunner.game.getViewport(),
+            gameRunner.configProvider
         );
         gameRunner.game.setScreen(mainMenuScreen);
 
@@ -329,12 +329,12 @@ public class TestMainMenuScreen {
     /**
      * Verifies that the "Load Game" option is enabled when a save exists.
      * When selected, it should correctly transition to the GamePlayScreen.
-     * 
+     *
      * @throws Exception
      */
     @SuppressWarnings("unchecked") // Suppress unchecked cast warning
     @Test
-    public void testLoadGameOptionEnabledWhenSaveExists() throws Exception{
+    public void testLoadGameOptionEnabledWhenSaveExists() throws Exception {
         Preferences fakePreferences = Mockito.mock(Preferences.class);
         Map fakeMap = new HashMap<>();
         fakeMap.put("cellHealth", "100"); // Simulate a saved game state
@@ -365,7 +365,7 @@ public class TestMainMenuScreen {
     /**
      * Verifies that the "Load Game" option is disabled when no save exists.
      * When selected, it should correctly transition to the GameInfoControlsScreen.
-     * 
+     *
      * @throws Exception
      */
     @SuppressWarnings("unchecked")

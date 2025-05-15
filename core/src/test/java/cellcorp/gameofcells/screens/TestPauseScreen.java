@@ -30,12 +30,29 @@ public class TestPauseScreen {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
+            @Override
+            public void create() {
+            }
+
+            @Override
+            public void resize(int width, int height) {
+            }
+
+            @Override
+            public void render() {
+            }
+
+            @Override
+            public void pause() {
+            }
+
+            @Override
+            public void resume() {
+            }
+
+            @Override
+            public void dispose() {
+            }
         }, config);
 
         // Mock the graphics provider
@@ -251,11 +268,11 @@ public class TestPauseScreen {
         gameRunner.step();
 
         PauseScreen pauseScreen = (PauseScreen) gameRunner.game.getScreen();
-        
+
         assertDoesNotThrow(() -> {
             pauseScreen.update(1f);
         });
-        
+
         assertNotNull(pauseScreen.getParticles());
     }
 }

@@ -43,7 +43,7 @@ public class TestParticles {
         particles.update(1.0f, 1200, 800);
 
         // Since we can't directly access the particles array,
-        // we assume the update logic works as long as the method 
+        // we assume the update logic works as long as the method
         // doesn't throw an exception
         assertTrue(true); // If no exception is thrown, the test passes
     }
@@ -67,10 +67,10 @@ public class TestParticles {
 
         // Verify that the draw method called SpriteBatch.draw for each particle
         Mockito.verify(mockBatch, Mockito.atLeastOnce()).draw(
-            Mockito.any(Texture.class), 
-            Mockito.anyFloat(), 
-            Mockito.anyFloat(), 
-            Mockito.anyFloat(), 
+            Mockito.any(Texture.class),
+            Mockito.anyFloat(),
+            Mockito.anyFloat(),
+            Mockito.anyFloat(),
             Mockito.anyFloat()
         );
     }

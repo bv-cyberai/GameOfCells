@@ -29,31 +29,31 @@ public class TestChunk {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(
-                new ApplicationListener() {
-                    @Override
-                    public void create() {
-                    }
+            new ApplicationListener() {
+                @Override
+                public void create() {
+                }
 
-                    @Override
-                    public void resize(int width, int height) {
-                    }
+                @Override
+                public void resize(int width, int height) {
+                }
 
-                    @Override
-                    public void render() {
-                    }
+                @Override
+                public void render() {
+                }
 
-                    @Override
-                    public void pause() {
-                    }
+                @Override
+                public void pause() {
+                }
 
-                    @Override
-                    public void resume() {
-                    }
+                @Override
+                public void resume() {
+                }
 
-                    @Override
-                    public void dispose() {
-                    }
-                }, config
+                @Override
+                public void dispose() {
+                }
+            }, config
         );
 
         // Mock the graphics provider
@@ -118,29 +118,29 @@ public class TestChunk {
     public void testAdjacentChunks() {
         var chunk = new Chunk(0, 0);
         var expected = Set.of(
-                new Chunk(-1, -1),
-                new Chunk(-1, 0),
-                new Chunk(-1, 1),
-                new Chunk(0, -1),
-                new Chunk(0, 0),
-                new Chunk(0, 1),
-                new Chunk(1, -1),
-                new Chunk(1, 0),
-                new Chunk(1, 1)
+            new Chunk(-1, -1),
+            new Chunk(-1, 0),
+            new Chunk(-1, 1),
+            new Chunk(0, -1),
+            new Chunk(0, 0),
+            new Chunk(0, 1),
+            new Chunk(1, -1),
+            new Chunk(1, 0),
+            new Chunk(1, 1)
         );
         assertEquals(expected, new HashSet<>(chunk.adjacentChunks()));
 
         chunk = new Chunk(-1000, -1000);
         expected = Set.of(
-                new Chunk(-999, -999),
-                new Chunk(-999, -1000),
-                new Chunk(-999, -1001),
-                new Chunk(-1000, -999),
-                new Chunk(-1000, -1000),
-                new Chunk(-1000, -1001),
-                new Chunk(-1001, -999),
-                new Chunk(-1001, -1000),
-                new Chunk(-1001, -1001)
+            new Chunk(-999, -999),
+            new Chunk(-999, -1000),
+            new Chunk(-999, -1001),
+            new Chunk(-1000, -999),
+            new Chunk(-1000, -1000),
+            new Chunk(-1000, -1001),
+            new Chunk(-1001, -999),
+            new Chunk(-1001, -1000),
+            new Chunk(-1001, -1001)
         );
         assertEquals(expected, new HashSet<>(chunk.adjacentChunks()));
     }

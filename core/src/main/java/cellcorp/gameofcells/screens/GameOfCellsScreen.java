@@ -9,12 +9,14 @@ import com.badlogic.gdx.Screen;
 public interface GameOfCellsScreen extends Screen {
     /**
      * Responds to key-presses, updating game state.
+     *
      * @param deltaTimeSeconds The time passed since the last call to `handleInput`, in seconds.
      */
     void handleInput(float deltaTimeSeconds);
 
     /**
      * Updates game state that does not depend on input.
+     *
      * @param deltaTimeSeconds The time passed since the last call to `update`, in seconds.
      */
     void update(float deltaTimeSeconds);

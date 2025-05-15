@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGamePlayScreen {
@@ -35,31 +36,31 @@ public class TestGamePlayScreen {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(
-                new ApplicationListener() {
-                    @Override
-                    public void create() {
-                    }
+            new ApplicationListener() {
+                @Override
+                public void create() {
+                }
 
-                    @Override
-                    public void resize(int width, int height) {
-                    }
+                @Override
+                public void resize(int width, int height) {
+                }
 
-                    @Override
-                    public void render() {
-                    }
+                @Override
+                public void render() {
+                }
 
-                    @Override
-                    public void pause() {
-                    }
+                @Override
+                public void pause() {
+                }
 
-                    @Override
-                    public void resume() {
-                    }
+                @Override
+                public void resume() {
+                }
 
-                    @Override
-                    public void dispose() {
-                    }
-                }, config
+                @Override
+                public void dispose() {
+                }
+            }, config
         );
 
         // Mock the graphics provider
@@ -215,13 +216,13 @@ public class TestGamePlayScreen {
         Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
         Vector2 zonePos = new Vector2(1000, 1000);
         zoneManager.getAcidZones().put(
-                testChunk,
-                new Zone(
-                        gamePlayScreen.getAssetManager(),
-                        AssetFileNames.ACID_ZONE,
-                        zonePos.x,
-                        zonePos.y
-                )
+            testChunk,
+            new Zone(
+                gamePlayScreen.getAssetManager(),
+                AssetFileNames.ACID_ZONE,
+                zonePos.x,
+                zonePos.y
+            )
         );
 
         // Run for 1 second (should take damage twice at 0.5s intervals)
@@ -229,14 +230,14 @@ public class TestGamePlayScreen {
 
         // Health should be less than 100
         assertTrue(
-                cell.getCellHealth() < 100,
-                "Cell health should decrease when in acid zone"
+            cell.getCellHealth() < 100,
+            "Cell health should decrease when in acid zone"
         );
 
         // Should take approximately 10 damage (max damage per second)
         assertEquals(
-                96, cell.getCellHealth(),
-                "Cell should take ~10 damage after 1 second in acid zone"
+            96, cell.getCellHealth(),
+            "Cell should take ~10 damage after 1 second in acid zone"
         );
     }
 
@@ -259,13 +260,13 @@ public class TestGamePlayScreen {
         Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
         Vector2 zonePos = new Vector2(1000, 1000);
         zoneManager.getBasicZones().put(
-                testChunk,
-                new Zone(
-                        gamePlayScreen.getAssetManager(),
-                        AssetFileNames.BASIC_ZONE,
-                        zonePos.x,
-                        zonePos.y
-                )
+            testChunk,
+            new Zone(
+                gamePlayScreen.getAssetManager(),
+                AssetFileNames.BASIC_ZONE,
+                zonePos.x,
+                zonePos.y
+            )
         );
 
         // Run for 1 second
@@ -273,8 +274,8 @@ public class TestGamePlayScreen {
 
         // Health should be less than 100
         assertTrue(
-                gamePlayScreen.isInBasicZone(cell.getX(), cell.getY()),
-                "Cell should be in basic zone"
+            gamePlayScreen.isInBasicZone(cell.getX(), cell.getY()),
+            "Cell should be in basic zone"
         );
         assertTrue(basicZonePopup.wasShown());
     }
@@ -388,7 +389,7 @@ public class TestGamePlayScreen {
         gameRunner.runForSeconds(1f);
 
         assertTrue(gamePlayScreen.getOverlayTime() > initialTime,
-                "Overlay animation time should progress with game time");
+            "Overlay animation time should progress with game time");
     }
 
     @Test
@@ -407,13 +408,13 @@ public class TestGamePlayScreen {
         Chunk testChunk = Chunk.fromWorldCoords(4000, 4000);
         Vector2 zonePos = new Vector2(4000, 4000);
         gamePlayScreen.getSpawnManager().getZoneManager().getBasicZones().put(
-                testChunk,
-                new Zone(
-                        gamePlayScreen.getAssetManager(),
-                        AssetFileNames.BASIC_ZONE,
-                        zonePos.x,
-                        zonePos.y
-                )
+            testChunk,
+            new Zone(
+                gamePlayScreen.getAssetManager(),
+                AssetFileNames.BASIC_ZONE,
+                zonePos.x,
+                zonePos.y
+            )
         );
 
         // Run for 1 second
@@ -458,13 +459,13 @@ public class TestGamePlayScreen {
         Chunk testChunk = Chunk.fromWorldCoords(1000, 1000);
         Vector2 zonePos = new Vector2(1000, 1000);
         gamePlayScreen.getSpawnManager().getZoneManager().getBasicZones().put(
-                testChunk,
-                new Zone(
-                        gamePlayScreen.getAssetManager(),
-                        AssetFileNames.BASIC_ZONE,
-                        zonePos.x,
-                        zonePos.y
-                )
+            testChunk,
+            new Zone(
+                gamePlayScreen.getAssetManager(),
+                AssetFileNames.BASIC_ZONE,
+                zonePos.x,
+                zonePos.y
+            )
         );
 
         // Run for 1 second

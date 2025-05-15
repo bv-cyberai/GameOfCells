@@ -44,12 +44,29 @@ public class TestMenuSystem {
 
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
+            @Override
+            public void create() {
+            }
+
+            @Override
+            public void resize(int width, int height) {
+            }
+
+            @Override
+            public void render() {
+            }
+
+            @Override
+            public void pause() {
+            }
+
+            @Override
+            public void resume() {
+            }
+
+            @Override
+            public void dispose() {
+            }
         }, config);
 
         Gdx.graphics = Mockito.mock(Graphics.class);
@@ -86,7 +103,7 @@ public class TestMenuSystem {
                 label.setFontScale(0.2f); // Set a default font scale
                 return label;
             });
-        
+
         Array<Actor> fakeActors = new Array<>();
         Table fakeTable = new Table();
         fakeActors.add(fakeTable);
@@ -128,7 +145,7 @@ public class TestMenuSystem {
     public void testInitializeMainMenuDoesNotThrow() {
         Texture mockTex1 = mock(Texture.class);
         Texture mockTex2 = mock(Texture.class);
-        boolean[] enabled = new boolean[] {true, true}; // enable both menu items
+        boolean[] enabled = new boolean[]{true, true}; // enable both menu items
 
         assertDoesNotThrow(() ->
             menuSystem.initializeMainMenu("Main", new String[]{"Start", "Quit"}, "Keys", mockTex1, mockTex2, enabled));

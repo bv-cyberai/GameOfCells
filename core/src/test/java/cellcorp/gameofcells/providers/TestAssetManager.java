@@ -3,6 +3,7 @@ package cellcorp.gameofcells.providers;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestAssetManager {

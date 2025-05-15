@@ -78,9 +78,9 @@ public abstract class OrganelleUpgrade implements Upgrade {
     @Override
     public boolean canPurchase(Cell cell) {
         return cell.getCellATP() >= cost &&
-                cell.getSizeUpgradeLevel() >= requiredSize &&
-                !isAlreadyPurchased(cell) &&
-                isPreviousUpgradePurchased(cell);
+            cell.getSizeUpgradeLevel() >= requiredSize &&
+            !isAlreadyPurchased(cell) &&
+            isPreviousUpgradePurchased(cell);
     }
 
     /**

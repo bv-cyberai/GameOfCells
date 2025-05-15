@@ -78,8 +78,8 @@ public abstract class SizeUpgrade implements Upgrade {
     @Override
     public boolean canPurchase(Cell cell) {
         return cell.getCellATP() >= atpCost &&
-                isPreviousUpgradePurchased(cell) &&
-                !isAlreadyPurchased(cell);
+            isPreviousUpgradePurchased(cell) &&
+            !isAlreadyPurchased(cell);
     }
 
     /**

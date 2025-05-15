@@ -20,7 +20,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * Pause Screen
- * 
+ *
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -29,12 +29,12 @@ import cellcorp.gameofcells.providers.InputProvider;
  * @course CIS 405
  * @assignment Game of Cells
  * @description This is the pause screen for the game. It is displayed when the game is paused.
- *              It allows the player to resume the game, view controls, or quit to the main menu.
- *              The pause screen is displayed over the game screen, and the game screen is paused
- *              while the pause screen is displayed.
- *              The pause screen is implemented as a singleton, so that there is only one instance
- *              of the pause screen at a time. This is to prevent multiple pause screens from
- *              being displayed at the same time, which could cause confusion for the player.
+ * It allows the player to resume the game, view controls, or quit to the main menu.
+ * The pause screen is displayed over the game screen, and the game screen is paused
+ * while the pause screen is displayed.
+ * The pause screen is implemented as a singleton, so that there is only one instance
+ * of the pause screen at a time. This is to prevent multiple pause screens from
+ * being displayed at the same time, which could cause confusion for the player.
  */
 
 public class PauseScreen implements GameOfCellsScreen {
@@ -53,9 +53,9 @@ public class PauseScreen implements GameOfCellsScreen {
 
     // The pause menu options
     private static final String[] PAUSE_OPTIONS = {
-            "Resume",
-            "Controls",
-            "Quit to Menu"
+        "Resume",
+        "Controls",
+        "Quit to Menu"
     };
     private static final String INSTRUCTIONS = "Arrow keys to navigate | Enter to select";
 
@@ -73,23 +73,23 @@ public class PauseScreen implements GameOfCellsScreen {
 
     /**
      * Constructor for the PauseScreen class.
-     * 
-     * @param gamePlayScreen The game play screen to pause
-     * @param inputProvider The input provider for handling user input
+     *
+     * @param gamePlayScreen   The game play screen to pause
+     * @param inputProvider    The input provider for handling user input
      * @param graphicsProvider The graphics provider for rendering
-     * @param game The main game instance
-     * @param assetManager The asset manager for loading assets
-     * @param camera The camera for rendering
-     * @param configProvider The configuration provider for loading game settings
+     * @param game             The main game instance
+     * @param assetManager     The asset manager for loading assets
+     * @param camera           The camera for rendering
+     * @param configProvider   The configuration provider for loading game settings
      */
     public PauseScreen(
-            GamePlayScreen gamePlayScreen,
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            Camera camera,
-            ConfigProvider configProvider) {
+        GamePlayScreen gamePlayScreen,
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        Camera camera,
+        ConfigProvider configProvider) {
 
         this.gamePlayScreen = gamePlayScreen;
         this.inputProvider = inputProvider;
@@ -121,7 +121,7 @@ public class PauseScreen implements GameOfCellsScreen {
     /**
      * Handles input for the pause screen.
      * This method is called every frame to handle user input.
-     * 
+     *
      * @param deltaTimeSeconds The time since the last frame
      */
     @Override
@@ -134,8 +134,8 @@ public class PauseScreen implements GameOfCellsScreen {
     /**
      * Resizes the pause screen.
      * This method is called when the window is resized.
-     * 
-     * @param width The new width of the window
+     *
+     * @param width  The new width of the window
      * @param height The new height of the window
      */
     @Override
@@ -186,7 +186,7 @@ public class PauseScreen implements GameOfCellsScreen {
     /**
      * Handles input for the pause screen.
      * This method is called every frame to handle user input.
-     * 
+     *
      * @param deltaTimeSeconds The time since the last frame
      */
     @Override
@@ -204,31 +204,31 @@ public class PauseScreen implements GameOfCellsScreen {
             || inputProvider.isKeyJustPressed(Input.Keys.SPACE)) {
             switch (menuSystem.getSelectedOptionIndex()) {
                 case 0: // Resume
-                gamePlayScreen.resumeGame();
+                    gamePlayScreen.resumeGame();
                     game.setScreen(gamePlayScreen);
                     break;
                 case 1: // Controls
                     game.setScreen(new GameInfoControlsScreen(
-                            inputProvider,
-                            graphicsProvider,
-                            game,
-                            assetManager,
-                            this,
-                            null,
-                            viewport,
-                            configProvider
+                        inputProvider,
+                        graphicsProvider,
+                        game,
+                        assetManager,
+                        this,
+                        null,
+                        viewport,
+                        configProvider
                     ));
                     break;
                 case 2: // Quit to Menu
-                gamePlayScreen.resumeGame();
+                    gamePlayScreen.resumeGame();
                     game.setScreen(new MainMenuScreen(
-                            inputProvider,
-                            graphicsProvider,
-                            game,
-                            assetManager,
-                            null,
-                            viewport,
-                            configProvider
+                        inputProvider,
+                        graphicsProvider,
+                        game,
+                        assetManager,
+                        null,
+                        viewport,
+                        configProvider
                     ));
                     break;
             }
@@ -245,7 +245,7 @@ public class PauseScreen implements GameOfCellsScreen {
     /**
      * Updates the pause screen.
      * This method is called every frame to update the game state.
-     * 
+     *
      * @param deltaTimeSeconds The time since the last frame
      */
     @Override
@@ -280,7 +280,7 @@ public class PauseScreen implements GameOfCellsScreen {
 
     /**
      * Get the menu system.
-     * 
+     *
      * @return The menu system used for the pause screen
      */
     public MenuSystem getMenuSystem() {
@@ -289,7 +289,7 @@ public class PauseScreen implements GameOfCellsScreen {
 
     /**
      * Get the particles object.
-     * 
+     *
      * @return The particles object used for rendering
      */
     public Particles getParticles() {

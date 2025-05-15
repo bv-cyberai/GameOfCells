@@ -7,12 +7,17 @@ package cellcorp.gameofcells.objects;
  */
 public interface Upgrade {
     String getName();
+
     String getDescription();
+
     String getPerks();
+
     int getRequiredATP();
+
     int getRequiredSize();
 
     // Generic version that works for both screens
     boolean canPurchase(Cell cell);
+
     void applyUpgrade(Cell cell);
 }

@@ -66,7 +66,7 @@ public class SpawnManager {
         glucoseManager.despawnOutsideRange(row0, col0, row1, col1);
     }
 
-    
+
     public ZoneManager getZoneManager() {
         return zoneManager;
     }

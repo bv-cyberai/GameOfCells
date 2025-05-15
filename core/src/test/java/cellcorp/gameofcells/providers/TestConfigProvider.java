@@ -16,22 +16,21 @@ import static org.mockito.Mockito.*;
 public class TestConfigProvider {
 
     ConfigProvider configProvider = new ConfigProvider();
-    HashMap<String,String> testConfigData = configProvider.getConfigData();
+    HashMap<String, String> testConfigData = configProvider.getConfigData();
 
     public TestConfigProvider() {
         //While I would like to test this with the config file,
         //the config file can change, so I've hardcode the values,
         //and just tested the getters.
 
-        testConfigData.put("cellHealth","50");
-        testConfigData.put("glucosePopupMessage","glucoseFound");
-        testConfigData.put("cellMovementSpeed","200");
-        testConfigData.put("mitoHeal-Cost","20,5");
+        testConfigData.put("cellHealth", "50");
+        testConfigData.put("glucosePopupMessage", "glucoseFound");
+        testConfigData.put("cellMovementSpeed", "200");
+        testConfigData.put("mitoHeal-Cost", "20,5");
         testConfigData.put("badVector", null);
-        testConfigData.put("badint",null);
-        testConfigData.put("badPopupMessage",null);
-        testConfigData.put("badFloat",null);
-
+        testConfigData.put("badint", null);
+        testConfigData.put("badPopupMessage", null);
+        testConfigData.put("badFloat", null);
 
 
     }
@@ -46,7 +45,7 @@ public class TestConfigProvider {
         Gdx.files = mock(Files.class);
         FileHandle mockFileHandle = mock(FileHandle.class);
         when(Gdx.files.internal(AssetFileNames.TEST_CONFIG)).thenReturn(mockFileHandle);
-        when(mockFileHandle.readString()).thenReturn("## line comment\n\n[cell]\ntestInt:100       ##inline comment is ignored.\n"+
+        when(mockFileHandle.readString()).thenReturn("## line comment\n\n[cell]\ntestInt:100       ##inline comment is ignored.\n" +
             "testFloat:100\ntestVector:20,5\n[descriptions]/\ntestMessage:Read me/\n");
 
 
@@ -63,10 +62,10 @@ public class TestConfigProvider {
 
     @Test
     public void testValueGetters() {
-        assertEquals(50,configProvider.getIntValue("cellHealth"));
+        assertEquals(50, configProvider.getIntValue("cellHealth"));
         assertEquals("glucoseFound", configProvider.getStringValue("glucosePopupMessage"));
         assertEquals(200f, configProvider.getFloatValue("cellMovementSpeed"));
-        assertEquals(new Vector2(20,5),configProvider.getVector2("mitoHeal-Cost"));
+        assertEquals(new Vector2(20, 5), configProvider.getVector2("mitoHeal-Cost"));
     }
 
     @Test

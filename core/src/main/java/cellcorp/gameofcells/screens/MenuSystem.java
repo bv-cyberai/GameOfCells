@@ -26,10 +26,10 @@ import cellcorp.gameofcells.providers.GraphicsProvider;
  * @course CIS 405
  * @assignment Game of Cells
  * @description This is the menu system for the game. This class handles displaying
- *              menus, updating menu selections, and clearing the menu when needed.
- *              It uses Scene2D for rendering and managing UI elements.
- *              The menu system is designed to be flexible and reusable for different
- *              types of menus, including main menus, pause menus, and shop menus.
+ * menus, updating menu selections, and clearing the menu when needed.
+ * It uses Scene2D for rendering and managing UI elements.
+ * The menu system is designed to be flexible and reusable for different
+ * types of menus, including main menus, pause menus, and shop menus.
  */
 
 
@@ -62,16 +62,16 @@ public class MenuSystem {
     /**
      * Constructor for the MenuSystem class.
      *
-     * @param stage The stage to which the menu will be added
-     * @param assetManager The asset manager for loading assets
+     * @param stage            The stage to which the menu will be added
+     * @param assetManager     The asset manager for loading assets
      * @param graphicsProvider The graphics provider for creating UI elements
      * @description This constructor initializes the MenuSystem with the provided
-     *              stage, asset manager, and graphics provider.
-     *              It sets up the necessary components for rendering the menu.
+     * stage, asset manager, and graphics provider.
+     * It sets up the necessary components for rendering the menu.
      */
     public MenuSystem(Stage stage,
-            AssetManager assetManager,
-            GraphicsProvider graphicsProvider) {
+                      AssetManager assetManager,
+                      GraphicsProvider graphicsProvider) {
         this.stage = stage;
         this.assetManager = assetManager;
         this.graphicsProvider = graphicsProvider;
@@ -79,14 +79,15 @@ public class MenuSystem {
     }
 
     // This method will be the default method for initializing a menu
+
     /**
      * Initializes a menu with the given options.
      *
-     * @param title The title of the menu
-     * @param menuOptions The array of menu options
+     * @param title        The title of the menu
+     * @param menuOptions  The array of menu options
      * @param instructions The instruction text to display (optional)
      */
-    public void initialize(String title, String [] menuOptions, String instructions) {
+    public void initialize(String title, String[] menuOptions, String instructions) {
         // We set the menu options and selected option index
         this.menuOptions = menuOptions;
         this.selectedOptionIndex = 0;
@@ -131,9 +132,9 @@ public class MenuSystem {
     /**
      * Initializes a main menu-specific layout with a title, menu options, and instructions.
      *
-     * @param title The title of the main menu
-     * @param menuOptions The array of menu options
-     * @param instructions Bottom instructions text
+     * @param title          The title of the main menu
+     * @param menuOptions    The array of menu options
+     * @param instructions   Bottom instructions text
      * @param wasdArrowsIcon The texture for the WASD/Arrows icon
      * @param spaceEnterIcon The texture for the Space/Enter icon
      */
@@ -172,22 +173,22 @@ public class MenuSystem {
         Image wasdImage = graphicsProvider.createImage(wasdArrowsIcon);
         wasdImage.setColor(0.8f, 0.9f, 1f, 0.9f);
         controlsTable.add(wasdImage)
-                .size(150, 150 * (428f/636f)) // Smaller size
-                .padRight(20);
+            .size(150, 150 * (428f / 636f)) // Smaller size
+            .padRight(20);
 
         Image spaceImage = graphicsProvider.createImage(spaceEnterIcon);
         spaceImage.setColor(0.8f, 0.9f, 1f, 0.9f);
         controlsTable.add(spaceImage)
-                .size(180, 190 * (210f/800f))
-                    .padTop(60);
+            .size(180, 190 * (210f / 800f))
+            .padTop(60);
 //                .size(180, 180 * (202f/800f)); // Smaller size
 
         mainTable.add().height(40).row(); // New space to push icons down
 
         // Add the controls table to the main table
         mainTable.add(controlsTable)
-                .padBottom(20)
-                .row(); // Lowered position
+            .padBottom(20)
+            .row(); // Lowered position
 
         // Add the main table to the stage
         stage.addActor(mainTable);
@@ -197,8 +198,10 @@ public class MenuSystem {
     // It doesn't necessarily need to be for info and controls, but that's the current use case
     // I thought it would be better to have a separate method for this
     // to avoid confusion with the regular menu initialization
+
     /**
      * Initializes the split layout with the given title, left text, right text, and instructions.
+     *
      * @param title
      * @param leftText
      * @param rightText
@@ -258,8 +261,8 @@ public class MenuSystem {
     /**
      * Initializes a pause-specific menu layout with a title, menu options, and instructions.
      *
-     * @param title The title of the pause menu
-     * @param menuOptions The array of menu options
+     * @param title        The title of the pause menu
+     * @param menuOptions  The array of menu options
      * @param instructions The instruction text to display (optional)
      */
     public void initializePauseMenu(String title, String[] menuOptions, String instructions) {
@@ -304,10 +307,10 @@ public class MenuSystem {
      * Initializes a shop-specific layout with three columns:
      * Left for size upgrades, center for stats, and right for organelle upgrades.
      *
-     * @param title The shop title
+     * @param title        The shop title
      * @param instructions Bottom instructions text
      * @return An array of tables for size upgrades, stats, and organelle upgrades
-     *         (left, center, right respectively)
+     * (left, center, right respectively)
      */
     public Table[] initializeShopLayout(String title, String instructions) {
         clear();
@@ -350,9 +353,9 @@ public class MenuSystem {
      *
      * @param headerText The header text for the column
      * @return A Table object representing the column
-     *         with a header and separator line
-     *         (for size upgrades or organelle upgrades)
-     *         aligned to the top
+     * with a header and separator line
+     * (for size upgrades or organelle upgrades)
+     * aligned to the top
      */
     private Table createShopColumn(String headerText) {
         Table column = new Table();
@@ -373,7 +376,7 @@ public class MenuSystem {
     /**
      * Creates a simple line texture for separators
      *
-     * @param width The width of the line
+     * @param width  The width of the line
      * @param height The height of the line
      * @return A Texture object representing the line
      */
@@ -399,7 +402,7 @@ public class MenuSystem {
         int direction = (newIndex > selectedOptionIndex) ? 1 : -1;
 
         // clamp newIndex within bounds and skip disabled options
-        while(newIndex >= 0 && newIndex < menuOptions.length && !optionEnabled[newIndex]) {
+        while (newIndex >= 0 && newIndex < menuOptions.length && !optionEnabled[newIndex]) {
             newIndex += direction;
         }
 
@@ -451,6 +454,7 @@ public class MenuSystem {
 
     /**
      * Creates a label with the given text and font size.
+     *
      * @param text
      * @param delta
      * @return A Label object with the specified text and font size
@@ -473,7 +477,7 @@ public class MenuSystem {
 
     /**
      * Checks if the option at the given index is enabled.
-     * 
+     *
      * @param index
      * @return
      */

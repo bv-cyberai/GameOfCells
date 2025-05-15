@@ -17,7 +17,7 @@ import cellcorp.gameofcells.providers.InputProvider;
 
 /**
  * Game Information and Controls Screen
- * 
+ *
  * @author Brendon Vineyard / vineyabn207
  * @author Andrew Sennoga-Kimuli / sennogat106
  * @author Mark Murphy / murphyml207
@@ -26,9 +26,9 @@ import cellcorp.gameofcells.providers.InputProvider;
  * @course CIS 405
  * @assignment Game of Cells
  * @description This is the game information and controls screen. This class handles displaying
- *              the game information and controls to the user. It also handles user input and 
- *              updates the screen accordingly. The screen is displayed when the user selects 
- *              the "Game Info" option from the main menu.
+ * the game information and controls to the user. It also handles user input and
+ * updates the screen accordingly. The screen is displayed when the user selects
+ * the "Game Info" option from the main menu.
  */
 public class GameInfoControlsScreen implements GameOfCellsScreen {
     /**
@@ -93,25 +93,25 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     /**
      * Constructs a new GameInfoControlsScreen.
-     * 
-     * @param inputProvider The input provider for handling user input
+     *
+     * @param inputProvider    The input provider for handling user input
      * @param graphicsProvider The graphics provider for rendering graphics
-     * @param game The main game instance
-     * @param assetManager The asset manager for loading assets
-     * @param previousScreen The previous screen to return to
-     * @param camera The camera for rendering
-     * @param viewport The viewport for rendering
-     * @param configProvider The configuration provider for loading game settings
+     * @param game             The main game instance
+     * @param assetManager     The asset manager for loading assets
+     * @param previousScreen   The previous screen to return to
+     * @param camera           The camera for rendering
+     * @param viewport         The viewport for rendering
+     * @param configProvider   The configuration provider for loading game settings
      */
     public GameInfoControlsScreen(
-            InputProvider inputProvider,
-            GraphicsProvider graphicsProvider,
-            Main game,
-            AssetManager assetManager,
-            GameOfCellsScreen previousScreen,
-            Camera camera,
-            Viewport viewport,
-            ConfigProvider configProvider) {
+        InputProvider inputProvider,
+        GraphicsProvider graphicsProvider,
+        Main game,
+        AssetManager assetManager,
+        GameOfCellsScreen previousScreen,
+        Camera camera,
+        Viewport viewport,
+        ConfigProvider configProvider) {
         this.inputProvider = inputProvider;
         this.graphicsProvider = graphicsProvider;
         this.configProvider = configProvider;
@@ -123,10 +123,10 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         this.particles = new Particles(graphicsProvider.createWhitePixelTexture());
         this.menuSystem = new MenuSystem(
             new Stage(
-                graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT), 
-                graphicsProvider.createSpriteBatch()), 
-                assetManager,
-                graphicsProvider
+                graphicsProvider.createFitViewport(VIEW_RECT_WIDTH, VIEW_RECT_HEIGHT),
+                graphicsProvider.createSpriteBatch()),
+            assetManager,
+            graphicsProvider
         );
 
         this.cellTexture = assetManager.get(AssetFileNames.CELL, Texture.class);
@@ -142,8 +142,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     public void show() {
         // Initialize simple back menu
         menuSystem.initializeSplitLayout(
-            "GAME INFORMATION", 
-            GAME_INFO, 
+            "GAME INFORMATION",
+            GAME_INFO,
             CONTROLS,
             INSTRUCTION);
     }
@@ -152,6 +152,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      * Renders the screen.
      * This method is called every frame to update and draw the screen.
      * It handles user input, updates the game state, and draws the screen.
+     *
      * @param delta The time elapsed since the last frame, in seconds
      */
     @Override
@@ -165,7 +166,8 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      * Resizes the screen.
      * This method is called when the screen is resized.
      * It updates the viewport to match the new screen dimensions.
-     * @param width The new width of the screen
+     *
+     * @param width  The new width of the screen
      * @param height The new height of the screen
      */
     @Override
@@ -215,6 +217,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
      * Handles user input.
      * This method checks for user input and updates the game state accordingly.
      * It returns to the previous screen if any key is pressed.
+     *
      * @param deltaTimeSeconds The time elapsed since the last frame, in seconds
      */
     @Override
@@ -222,7 +225,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         // Return to the settings screen if any key is pressed
         if (inputProvider.isKeyJustPressed(Input.Keys.SPACE) ||
             inputProvider.isKeyJustPressed(Input.Keys.ENTER) ||
-            inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)){
+            inputProvider.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(previousScreen);
         }
     }
@@ -230,6 +233,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
     /**
      * Updates the game state.
      * This method updates the particles and any other game state as needed.
+     *
      * @param deltaTimeSeconds The time elapsed since the last frame, in seconds
      */
     @Override
@@ -254,7 +258,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
         SpriteBatch batch = graphicsProvider.createSpriteBatch();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        
+
         // Draw sem-transparent cell texture
         float cellWidth = 400;
         float cellHeight = 400;
@@ -263,10 +267,10 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
         batch.setColor(1, 1, 1, 0.15f);
         batch.draw(cellTexture,
-                cellX,
-                cellY,
-                cellWidth, 
-                cellHeight);
+            cellX,
+            cellY,
+            cellWidth,
+            cellHeight);
         batch.setColor(1, 1, 1, 1); // Reset color to white
 
         // Draw particles
@@ -280,6 +284,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     /**
      * Get the position of the message.
+     *
      * @return The x coordinate of the message.
      */
     public float getMessagePositionX() {
@@ -288,16 +293,17 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     /**
      * Get the position of the message.
+     *
      * @return The y coordinate of the message.
      */
     public float getMessagePositionY() {
         return startY;
     }
-    
+
 
     /**
      * Get the particles.
-     * 
+     *
      * @return The particles object.
      */
     public Particles getParticles() {
@@ -306,7 +312,7 @@ public class GameInfoControlsScreen implements GameOfCellsScreen {
 
     /**
      * Get the viewport.
-     * 
+     *
      * @return The viewport object.
      */
     public Viewport getViewport() {

@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * Fake Preferences Class
- *
+ * <p>
  * This class simulates using Gdx.preferences.
  * This class is used to test the saving and loading logic
  * of GameSaverLoader.
@@ -17,6 +17,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Add Boolean
+     *
      * @param key
      * @param val
      * @return The preferences object
@@ -29,6 +30,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Add Int
+     *
      * @param key
      * @param val
      * @return The preferences object
@@ -47,6 +49,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Add Float
+     *
      * @param key
      * @param val
      * @return The preferences object
@@ -71,6 +74,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Boolean Getter
+     *
      * @param key
      * @return the value
      */
@@ -81,6 +85,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Integer Getter
+     *
      * @param key
      * @return the value
      */
@@ -97,6 +102,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Float Getter
+     *
      * @param key
      * @return the value
      */
@@ -113,6 +119,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Boolean getter
+     *
      * @param key
      * @param defValue
      * @return the value
@@ -124,6 +131,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Integer getter
+     *
      * @param key
      * @param defValue
      * @return the value
@@ -141,6 +149,7 @@ public class FakePreferences implements Preferences {
 
     /**
      * Float Getter
+     *
      * @param key
      * @param defValue
      * @return The value

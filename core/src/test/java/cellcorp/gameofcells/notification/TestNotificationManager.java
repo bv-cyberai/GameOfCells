@@ -40,31 +40,31 @@ public class TestNotificationManager {
         System.setProperty("com.badlogic.gdx.backends.headless.disableNativesLoading", "true");
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(
-                new ApplicationListener() {
-                    @Override
-                    public void create() {
-                    }
+            new ApplicationListener() {
+                @Override
+                public void create() {
+                }
 
-                    @Override
-                    public void resize(int width, int height) {
-                    }
+                @Override
+                public void resize(int width, int height) {
+                }
 
-                    @Override
-                    public void render() {
-                    }
+                @Override
+                public void render() {
+                }
 
-                    @Override
-                    public void pause() {
-                    }
+                @Override
+                public void pause() {
+                }
 
-                    @Override
-                    public void resume() {
-                    }
+                @Override
+                public void resume() {
+                }
 
-                    @Override
-                    public void dispose() {
-                    }
-                }, config
+                @Override
+                public void dispose() {
+                }
+            }, config
         );
 
         // Mock the graphics provider

@@ -17,11 +17,11 @@ public class TestNotification {
     @Test
     public void updateAdvancesTime() {
         Notification notification = new Notification(
-                new FakeGraphicsProvider(),
-                Mockito.mock(AssetManager.class),
-                TestNotificationManager.NEVER_FADE_OUT_SOURCE,
-                "Expire",
-                10f
+            new FakeGraphicsProvider(),
+            Mockito.mock(AssetManager.class),
+            TestNotificationManager.NEVER_FADE_OUT_SOURCE,
+            "Expire",
+            10f
         );
 
         notification.update(0.25f);
@@ -38,11 +38,11 @@ public class TestNotification {
     @Test
     public void updateReturnsTrueWhenExpired() {
         Notification notification = new Notification(
-                new FakeGraphicsProvider(),
-                Mockito.mock(AssetManager.class),
-                TestNotificationManager.NEVER_FADE_OUT_SOURCE,
-                "Expire",
-                0.2f
+            new FakeGraphicsProvider(),
+            Mockito.mock(AssetManager.class),
+            TestNotificationManager.NEVER_FADE_OUT_SOURCE,
+            "Expire",
+            0.2f
         );
 
         assertFalse(notification.update(0.2f)); // Not expired
@@ -56,11 +56,11 @@ public class TestNotification {
     @Test
     public void updateReturnsTrueWhenManuallyExpired() {
         Notification notification = new Notification(
-                new FakeGraphicsProvider(),
-                Mockito.mock(AssetManager.class),
-                TestNotificationManager.NEVER_FADE_OUT_SOURCE,
-                "Expire",
-                null
+            new FakeGraphicsProvider(),
+            Mockito.mock(AssetManager.class),
+            TestNotificationManager.NEVER_FADE_OUT_SOURCE,
+            "Expire",
+            null
         );
 
         notification.update(0.01f);
@@ -71,11 +71,11 @@ public class TestNotification {
     @Test
     public void fadeOutReducesAlpha() {
         Notification notification = new Notification(
-                new FakeGraphicsProvider(),
-                Mockito.mock(AssetManager.class),
-                TestNotificationManager.NEVER_FADE_OUT_SOURCE,
-                "Expire",
-                1.5f
+            new FakeGraphicsProvider(),
+            Mockito.mock(AssetManager.class),
+            TestNotificationManager.NEVER_FADE_OUT_SOURCE,
+            "Expire",
+            1.5f
         );
 
         // Move to near end of duration

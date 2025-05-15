@@ -26,12 +26,29 @@ public class TestAttractScreen {
         // Initialize headless LibGDX
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
+            @Override
+            public void create() {
+            }
+
+            @Override
+            public void resize(int width, int height) {
+            }
+
+            @Override
+            public void render() {
+            }
+
+            @Override
+            public void pause() {
+            }
+
+            @Override
+            public void resume() {
+            }
+
+            @Override
+            public void dispose() {
+            }
         }, config);
 
         // Mock the graphics provider
@@ -55,7 +72,7 @@ public class TestAttractScreen {
     public void TestAttractScreenIntialState() {
         GameRunner gameRunner = GameRunner.create();
         gameRunner.runForSeconds(21f);
-        
+
         var attractScreen = gameRunner.game.getScreen();
         assertTrue(attractScreen instanceof AttractScreen, "AttractScreen should be the current screen");
     }
@@ -65,11 +82,11 @@ public class TestAttractScreen {
     public void TestAttractScreenSimulationRunning() {
         GameRunner gameRunner = GameRunner.create();
         gameRunner.runForSeconds(21f);
-        
+
         var attractScreen = (AttractScreen) gameRunner.game.getScreen();
         assertTrue(attractScreen.isSimulationRunning(), "AttractScreen should be in simulation mode");
     }
-    
+
     // Test to check if the cell moves towards the target
     // This test will run the game for a few seconds and check if the cell has moved.
     @Test
