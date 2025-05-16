@@ -13,7 +13,18 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Renders the minimap
+ * MinimapRenderer Class
+ * <p>
+ * Controls the Rendering by the minimap. Draws the minimap
+ * based on the Glucose and zones in the chunk.
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class MinimapRenderer {
     // Chosen to roughly existing minimap size and location.
@@ -82,9 +93,9 @@ public class MinimapRenderer {
         // Player (centered)
         shapeRenderer.setColor(1f, 1f, 1f, 1f);
         shapeRenderer.rect(
-            x + minimapWidth / 2f - 2f,
-            y + minimapHeight / 2f - 2f,
-            4f, 4f
+                x + minimapWidth / 2f - 2f,
+                y + minimapHeight / 2f - 2f,
+                4f, 4f
         );
 
         shapeRenderer.end();

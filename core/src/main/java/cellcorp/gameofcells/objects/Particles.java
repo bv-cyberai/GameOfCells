@@ -7,8 +7,19 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Random;
 
 /**
- * Particles!
+ * Particles Class
+ * <p>
+ * Controls the Rendering of the Particles displayed on the screen
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
+
 public class Particles {
     private static final int NUM_PARTICLES = 100; // Number of particles
     private final Array<Particle> particles;

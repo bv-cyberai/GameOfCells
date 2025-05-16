@@ -1,8 +1,18 @@
 package cellcorp.gameofcells;
 
 /**
+ * SplitCellScreen Class
+ *
  * Configuration class that holds file names for use with {@link com.badlogic.gdx.assets.AssetManager}.
  * Fields ending in `_NAME` are filenames that should be loadable as-is by the asset manager.
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class AssetFileNames {
     /**

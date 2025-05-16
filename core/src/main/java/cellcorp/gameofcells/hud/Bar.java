@@ -11,7 +11,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 
 /**
- * Bar drawn at the top of HUD.
+ * Bar Class
+ * <p>
+ * Manages the constructions of the bars displayed in the hud
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class Bar extends BaseDrawable {
     private static final float WIDTH = 600;

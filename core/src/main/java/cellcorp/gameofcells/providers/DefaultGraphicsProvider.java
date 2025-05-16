@@ -11,6 +11,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+/**
+ * GameLoaderSaver Provider
+ *
+ * Sets the Default graphical positioning and stats for the
+ * game
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/26/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 
 /**
  * Default implementation of the graphics provider.

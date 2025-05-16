@@ -4,7 +4,17 @@ import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Upgrade;
 
 /**
- * Base class for all organelle upgrades
+ * OrganelleUpgrade Class
+ * <p>
+ * Base class for all cell upgrades
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public abstract class OrganelleUpgrade implements Upgrade {
     protected String name;

@@ -6,7 +6,16 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
 /**
+ * AcidZoneSource Class
+ * <p>
  * Creates warning notifications when the player is in an acid zone.
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class AcidZoneSource implements NotificationSource {
     private static final String CONFIG_KEY = "acidZoneNotification";

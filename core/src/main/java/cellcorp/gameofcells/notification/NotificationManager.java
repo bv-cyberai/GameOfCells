@@ -7,9 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * Manages notifications, determining when to produce them.
+ * NotificationManager Class
+ * <p>
+ * Manages the use of the in game notifications
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class NotificationManager {
     private static final float PADDING = 10;

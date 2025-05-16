@@ -3,7 +3,17 @@ package cellcorp.gameofcells.objects.organelle;
 import cellcorp.gameofcells.objects.Cell;
 
 /**
- * Mitochondria upgrade.
+ * Mitochondria Class
+ * <p>
+ * Manages the implementation of the Mitochondria Upgrade
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class MitochondriaUpgrade extends OrganelleUpgrade {
     public MitochondriaUpgrade() {

@@ -18,6 +18,25 @@ import static cellcorp.gameofcells.hud.ControlInstructions.State.SHOW_CONTROLS_I
 import static cellcorp.gameofcells.hud.ControlInstructions.State.SHOW_INFO_ICON;
 
 /**
+ * ControlInstructions Class
+ * <p>
+ *
+ * Manages display of the "I" info icon and the control instructions in the top-right of the HUD.
+ * Strategy:
+ * - We have an outer `Table` which is placed in the HUD's table
+ * - We have two inner tables, which we swap between:
+ * - `infoTable`, which shows the single info key
+ * - `controlsTable`, which shows the full controls
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
+/**
  * Manages display of the "I" info icon and the control instructions in the top-right of the HUD.
  * Strategy:
  * - We have an outer `Table` which is placed in the HUD's table

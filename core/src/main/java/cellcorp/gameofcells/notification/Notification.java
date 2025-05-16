@@ -9,7 +9,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Null;
 
 /**
- * A notification that can query whether to start fading out
+ * Notification Class
+ * <p>
+ * Centralizes the use of the in game notifications
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class Notification {
     private static final float FADE_OUT_DURATION_SECONDS = 0.5f;

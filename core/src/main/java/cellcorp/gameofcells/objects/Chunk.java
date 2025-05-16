@@ -5,12 +5,22 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 /**
+ * Chunk Class
+ * <p>
+ *
  * A chunk of world space -- like chunks in minecraft.
  * Used for spawning / despawning logic.
  * This is just a value class, it has no state or behavior.
  * Any two chunks with the same `row()` and `col()` are equal.
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public final class Chunk {
     /**

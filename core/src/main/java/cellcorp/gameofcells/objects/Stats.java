@@ -1,7 +1,16 @@
 package cellcorp.gameofcells.objects;
 
 /**
- * Tracks stats for end-of-game screen
+ * Stats Class
+ * <p>
+ * Tracks the in game stats for the game over screen display
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class Stats {
     public float gameTimer = 0;

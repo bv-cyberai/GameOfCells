@@ -15,9 +15,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
 /**
- * Scrollable info screen
+ * PopupInfo Screen
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 04/09/2025
+ * @course CIS 405
+ * @assignment Game of Cells
+ * @description This class controls all of the
+ * popups in the game, specifically in regards to drawing the popups to the screen
+ * and the formating of said popups
  */
 public class PopupInfoScreen {
     // I feel this is not a _great_ place for these, but Idk where else to put them.

@@ -21,7 +21,18 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Attract screen that shows when the main menu is left without input.
+ * Attract Screen
+ *
+ * Runs a simulation of the game displayed when the player
+ * is idle on the main menu screen
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class AttractScreen implements GameOfCellsScreen {
     /**

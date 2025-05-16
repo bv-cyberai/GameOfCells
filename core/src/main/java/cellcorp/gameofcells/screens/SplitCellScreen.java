@@ -13,8 +13,19 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import static cellcorp.gameofcells.screens.SplitCellScreen.State.*;
 
 /**
+ * SplitCellScreen Class
+ *
  * Screen that plays the cell splitting animation.
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
+
 public class SplitCellScreen implements GameOfCellsScreen {
     private static final float START_DURATION = 1;
     private static final float ZOOM_IN_DURATION = 3;

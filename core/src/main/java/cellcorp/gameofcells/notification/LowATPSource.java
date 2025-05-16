@@ -5,7 +5,16 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Notification for low ATP warnings
+ * LowATPSource Class
+ * <p>
+ * Controls the popup indicating that the player is Low on ATP
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class LowATPSource implements NotificationSource {
     private static final String CONFIG_KEY = "lowATPNotification";

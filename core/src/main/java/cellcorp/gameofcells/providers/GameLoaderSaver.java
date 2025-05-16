@@ -8,10 +8,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 /**
- * Class that allows loading and
- * saving of GameOfCells. Also provides
- * auto save functionality on nucleus purchase.
+ * GameLoaderSaver Provider
+ *
+ *
+ *  * Class that allows loading and
+ *  * saving of GameOfCells. Also provides
+ *  * auto save functionality on nucleus purchase.
+ *
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/26/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
+
 public class GameLoaderSaver {
     private static Preferences saveGame;
 

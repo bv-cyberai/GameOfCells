@@ -4,9 +4,17 @@ import cellcorp.gameofcells.objects.Cell;
 import cellcorp.gameofcells.objects.Upgrade;
 
 /**
- * Size Upgrade
+ * MediumSizeUpgrade Class
  * <p>
  * Represents a size upgrade that can be purchased in the shop
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public abstract class SizeUpgrade implements Upgrade {
     protected final int sizeLevel;

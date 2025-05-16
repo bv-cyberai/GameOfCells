@@ -5,7 +5,17 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Warning for 0 ATP
+ * CanBuyFirstUpgradeSource Class
+ * <p>
+ * Controls the popup indicating that the player is losing health
+ * due to the lack of ATP.
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class NoATPSource implements NotificationSource {
     private static final String CONFIG_KEY = "noATPNotification";

@@ -9,7 +9,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.Objects;
 
 /**
- * Acid or basic zone
+ * Zone Class
+ * <p>
+ * Controls the construction of the zones within the gameplayscreen
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public final class Zone {
     public static final float ZONE_RADIUS = 800;

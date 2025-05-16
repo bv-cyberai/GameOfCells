@@ -5,8 +5,18 @@ import cellcorp.gameofcells.screens.GamePlayScreen;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Checks whether the cell can divide
+ * CanDivideCellSource Class
+ * <p>
+ * Controls the popup indicating that the player can divide
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
+
 public class CanDivideCellSource implements NotificationSource {
     private static final String CONFIG_KEY = "canDivideCellNotification";
     private static final String DEFAULT_TEXT = "Press U to divide the cell.";

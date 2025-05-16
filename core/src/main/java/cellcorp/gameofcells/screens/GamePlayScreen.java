@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
- * GamePlay Screen
+ * GamePlayScreen
  * <p>
  * Contains the main gameplay loop.
  *

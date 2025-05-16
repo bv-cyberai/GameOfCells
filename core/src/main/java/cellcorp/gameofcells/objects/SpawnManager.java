@@ -1,7 +1,16 @@
 package cellcorp.gameofcells.objects;
 
 /**
+ * SpawnManager Class
+ * <p>
  * Determines whether to spawn and despawn based on current cell position.
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class SpawnManager {
 

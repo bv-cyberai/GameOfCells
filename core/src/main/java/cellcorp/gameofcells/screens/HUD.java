@@ -24,6 +24,22 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
+ * HUD Screen
+ *
+ * Uses a Scene2d table to construct
+ * and draw the hud displayed in the
+ * gameplayscreen
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 03/05/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
+
+/**
  * The screen's overlay
  */
 public class HUD implements Disposable {

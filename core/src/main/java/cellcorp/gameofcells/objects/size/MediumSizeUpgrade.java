@@ -1,7 +1,20 @@
 package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
-
+/**
+ * MediumSizeUpgrade Class
+ * <p>
+ * Manages the gameplay and visual
+ * results of purchasing the Medium Size Upgrade
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
+ */
 public class MediumSizeUpgrade extends SizeUpgrade {
     private static final float SIZE_INCREASE = 50;
 

@@ -10,9 +10,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-
 /**
- * Stats displayed on the HUD
+ * HudStats Class
+ * <p>
+ * Manages the stats of the hud Icons in the gameplay screen
+ * Uses a scene 2d table to manages each of the stats
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class HudStats {
     private static final float FONT_SCALE = 0.4f;

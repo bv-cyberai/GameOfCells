@@ -14,11 +14,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * ZoneManager Class
+ * <p>
  * Manages acid and basic zones.
  * ZoneManager spawns at random locations in chunks, with a random spawn chance,
  * but it uses seeded Random calls, so a given ZoneManager will always
  * spawn zones at the same positions in the world, even between despawns.
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
+
 public class ZoneManager {
 
     private static final double ACID_ZONE_SPAWN_CHANCE = 0.4;

@@ -1,9 +1,19 @@
 package cellcorp.gameofcells.objects.size;
 
 import cellcorp.gameofcells.objects.Cell;
-
 /**
- * Small size upgrade
+ * SmallSizeUpgrade Class
+ * <p>
+ * Manages the gameplay and visual
+ * results of purchasing the small size upgrade
+ *
+ * @author Brendon Vineyard / vineyabn207
+ * @author Andrew Sennoga-Kimuli / sennogat106
+ * @author Mark Murphy / murphyml207
+ * @author Tim Davey / daveytj206
+ * @date 02/18/2025
+ * @course CIS 405
+ * @assignment GameOfCells
  */
 public class SmallSizeUpgrade extends SizeUpgrade {
     public static final int ATP_COST = 50;
