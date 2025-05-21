@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Game Of Cells
 
 ## ID Block
@@ -419,11 +418,3 @@ This will create a basic web server configured to handle requests from GameOfCel
 Run ```gradle superdev``` and navigate to  [http://localhost:8080/index.html](http://localhost:8080/index.html)
 
 Edit and save config.txt as desired. Refresh web instance of game to see updated configs.
-
-
-
-
-=======
-# GameOfCells
-Educational game that teaches biology by simulating cell growth, energy management, and environmental survival
->>>>>>> 186e22d5b27a13bc78e31cb07d1739214a8d98a2
