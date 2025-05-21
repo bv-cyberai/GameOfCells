@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Game Of Cells
 
 ## ID Block
@@ -422,3 +423,7 @@ Edit and save config.txt as desired. Refresh web instance of game to see updated
 
 
 
+=======
+# GameOfCells
+Educational game that teaches biology by simulating cell growth, energy management, and environmental survival
+>>>>>>> 186e22d5b27a13bc78e31cb07d1739214a8d98a2
